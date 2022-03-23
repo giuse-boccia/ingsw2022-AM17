@@ -10,8 +10,9 @@
 /dataSources.local.xml
 
 # IntelliJ files
-.idea/
+/.idea/
 *.iml
 
 # Compiled files
-out/
+/out/
+/target/
