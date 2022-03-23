@@ -36,6 +36,33 @@ public class GameBoardTest {
     }
 
     @Test
+    public void moveMotherNature3() {
+        while(gb.getMotherNatureIndex() != 5) gb.moveMotherNature(1);   // MN starts in island 5
+        ArrayList<Island> islands= gb.getIslands();
+
+        // Merge island 7 and island 8
+        islands.get(7).setOwner(game.getPlayers().get(1));
+        islands.get(8).setOwner(game.getPlayers().get(1));
+
+        // MN shouldn't move
+        assertEquals(5, gb.getMotherNatureIndex());
+
+        // Merge islands 2 and 3
+        islands.get(2).setOwner(game.getPlayers().get(2));
+        islands.get(3).setOwner(game.getPlayers().get(2));
+
+        // MN should be in island 4
+        assertEquals(4, gb.getMotherNatureIndex());
+
+        // Merge islands 4 and 5
+        islands.get(5).setOwner(game.getPlayers().get(2));
+        islands.get(4).setOwner(game.getPlayers().get(2));
+
+        // MN should be in island 2
+        assertEquals(2, gb.getMotherNatureIndex());
+    }
+
+    @Test
     public void mergeTwoIslands1() {
         ArrayList<Island> islands = gb.getIslands();
         assertEquals(12, islands.size());
@@ -71,32 +98,49 @@ public class GameBoardTest {
     }
 
     @Test
-    public void mergeThreeIslands1() {
+    public void mergeThreeIslands() {
         ArrayList<Island> islands = gb.getIslands();
 
+        // Rick conquers island 11
         islands.get(11).setOwner(game.getPlayers().get(0));
         assertEquals(1, gb.getIslands().get(11).getNumOfTowers());
 
+        while (gb.getMotherNatureIndex() != 1)
+            gb.moveMotherNature(1);
+
+        // Rick conquers island 1
         islands.get(1).setOwner(game.getPlayers().get(0));
         assertEquals(1, gb.getIslands().get(1).getNumOfTowers());
 
+        // Rick conquers island 0 (expected merge of i0, i1 and i11 into i11)
         islands.get(0).setOwner(game.getPlayers().get(0));
         assertEquals(10, gb.getIslands().size());
-        assertEquals(gb.getIslands().get(9).getOwner(), game.getPlayers().get(0));
-        assertEquals(gb.getIslands().get(9).getNumOfTowers(), 3);
+        assertEquals(game.getPlayers().get(0), gb.getIslands().get(9).getOwner());
+        assertEquals(3, gb.getIslands().get(9).getNumOfTowers());
         assertEquals(islands.get(11), gb.getIslands().get(9));
+        assertEquals(9, gb.getMotherNatureIndex());
 
+        // island 2 is now at index 0
+        assertEquals(islands.get(2), gb.getIslands().get(0));
+
+        // Rick conquers island 2 (now at index 0) (expected merge of i2, and previous i11)
         islands.get(2).setOwner(game.getPlayers().get(0));
         assertEquals(9, gb.getIslands().size());
         assertEquals(gb.getIslands().get(8).getOwner(), game.getPlayers().get(0));
         assertEquals(gb.getIslands().get(8).getNumOfTowers(), 4);
         assertEquals(islands.get(11), gb.getIslands().get(8));
+        assertEquals(8, gb.getMotherNatureIndex());
 
+        // island 10 is now at index 7
+        assertEquals(islands.get(10), gb.getIslands().get(7));
+
+        // Rick conquers island 10 (which now is at index 7) (expected merge of i10 and i0)
         islands.get(10).setOwner(game.getPlayers().get(0));
         assertEquals(8, gb.getIslands().size());
         assertEquals(gb.getIslands().get(7).getOwner(), game.getPlayers().get(0));
         assertEquals(gb.getIslands().get(7).getNumOfTowers(), 5);
         assertEquals(islands.get(10), gb.getIslands().get(7));
+        assertEquals(7, gb.getMotherNatureIndex());
     }
 
 }
