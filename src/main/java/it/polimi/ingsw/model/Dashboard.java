@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import java.util.ArrayList;
+
 public class Dashboard {
     private final Entrance entrance;
     private final DiningRoom diningRoom;
@@ -19,7 +21,7 @@ public class Dashboard {
         return diningRoom;
     }
 
-    public ProfessorRoom getProfessors() {
-        return professors;
+    public ArrayList<Professor> getProfessors() {
+        return professors.getProfessors();
     }
 }

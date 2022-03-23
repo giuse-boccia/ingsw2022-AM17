@@ -55,4 +55,8 @@ public class ProfessorRoom {
         }
         return false;
     }
+
+    public ArrayList<Professor> getProfessors() {
+        return new ArrayList<>(professors);
+    }
 }
