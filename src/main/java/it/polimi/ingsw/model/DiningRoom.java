@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class DiningRoom implements Place{
-    private final Collection<Student> students;
+    private final ArrayList<Student> students;
 
     public DiningRoom() {
         students = new ArrayList<>();
@@ -16,12 +16,7 @@ public class DiningRoom implements Place{
      * @return The number of students of the input color
      */
     public int getNumberOfStudentsOfColor(Color color){
-        int studentsCount = 0;
-        for(Student s : students){
-            if(s.getColor() == color)
-                studentsCount++;
-        }
-        return studentsCount;
+        return Students.countColor(students, color);
     }
 
     @Override
