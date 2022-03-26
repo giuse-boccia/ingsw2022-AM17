@@ -73,7 +73,7 @@ public class PlayerActionPhase {
         return mnStrategy.getMNMaxSteps(card);
     }
 
-    public void changeStrategy(PassiveCharacter playedCharacter) throws CharacterAlreadyPlayedException, InvalidCharacterException {
+    public void playPassiveCharacter(PassiveCharacter playedCharacter) throws CharacterAlreadyPlayedException, InvalidCharacterException {
         if (this.playedCharacter != null)
             throw new CharacterAlreadyPlayedException("You already played a character this turn");
         this.playedCharacter = playedCharacter;
