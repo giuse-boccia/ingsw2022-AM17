@@ -41,7 +41,7 @@ public class GameBoard {
 
         ArrayList<Student> students = Students.getSomeStudents(2);
         for (int i = 0; i < 12; i++) {
-            Island newIsland = new Island(this);
+            Island newIsland = new Island();
             if (i != motherNatureIndex && i != ((motherNatureIndex + 6) % 12)) {
                 newIsland.receiveStudent(students.get(0));
                 students.remove(0);
@@ -95,6 +95,40 @@ public class GameBoard {
         motherNatureIndex = (motherNatureIndex + steps) % islands.size();
     }
 
+    /**
+     * Sets a new owner for the given {@code Island} and checks if that island can now be merged with adjacent ones
+     *
+     * @param island   the {@code Island} which owner has to be changed
+     * @param newOwner the {@code Player} which will own the Island
+     */
+    public void setIslandOwner(Island island, Player newOwner) {
+        island.setOwner(newOwner);
+        mergeIfPossible(island);
+    }
+
+    /**
+     * Checks if the given {@code Island} can be merged with adjacent ones
+     *
+     * @param island the {@code Island} to be checked
+     */
+    private void mergeIfPossible(Island island) {
+        int indexOfIsland = islands.indexOf(island);
+        Island right = islands.get((indexOfIsland + 1) % islands.size());
+        Island left = islands.get((indexOfIsland + islands.size() - 1) % islands.size());
+        try {
+            if (left.getOwner() != null && left.getOwner() == island.getOwner()) {
+                if (right.getOwner() != null && right.getOwner() == island.getOwner()) {
+                    mergeIslands(left, island, right);
+                } else {
+                    mergeIslands(left, island);
+                }
+            } else if (right.getOwner() != null && right.getOwner() == island.getOwner())
+                mergeIslands(island, right);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+    }
 
     /**
      * Checks if two islands are adjacent
@@ -117,7 +151,7 @@ public class GameBoard {
      * @param right the second {@code Island} to be merged
      * @throws NotAdjacentIslandsException if the two islands are not adjacent
      */
-    public void mergeIslands(Island left, Island right) throws NotAdjacentIslandsException {
+    private void mergeIslands(Island left, Island right) throws NotAdjacentIslandsException {
         if (!areIslandsAdjacent(left, right)) throw new NotAdjacentIslandsException("Islands are not adjacent");
 
         Island mnIsland = islands.get(motherNatureIndex);
@@ -141,7 +175,7 @@ public class GameBoard {
      * @param second the second {@code Island} to be merged
      * @param third  the third {@code Island} to be merged
      */
-    public void mergeIslands(Island first, Island second, Island third) throws NotAdjacentIslandsException {
+    private void mergeIslands(Island first, Island second, Island third) throws NotAdjacentIslandsException {
         if (!areIslandsAdjacent(first, second) || !areIslandsAdjacent(second, third))
             throw new NotAdjacentIslandsException("Islands are not adjacent");
 
