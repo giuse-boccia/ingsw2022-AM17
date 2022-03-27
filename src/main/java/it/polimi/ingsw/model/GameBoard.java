@@ -27,8 +27,14 @@ public class GameBoard {
     }
 
     private Character[] initCharacters() {
-        // TODO
-        return new Character[3];
+        Character[] res = new Character[3];
+        ArrayList<Character> allCharacters = new ArrayList<>();
+
+        // TODO factory character
+        allCharacters.add(new ActiveCharacter(CardName.resolveIsland));
+        allCharacters.add(new NoEntryCharacter(CardName.noEntry));
+        // creates other character and shuffle
+        return res;
     }
 
     /**

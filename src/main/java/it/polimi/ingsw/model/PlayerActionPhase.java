@@ -98,6 +98,20 @@ public class PlayerActionPhase {
         } else {
             throw new InvalidCharacterException("This character does not need a color");
         }
+
     }
 
+    public void playActiveCharacter(ActiveCharacter playedCharacter) throws CharacterAlreadyPlayedException {
+        if (this.playedCharacter != null)
+            throw new CharacterAlreadyPlayedException("You already played a character this turn");
+        this.playedCharacter = playedCharacter;
+    }
+
+    public void playActiveCharacter(ActiveCharacter playedCharacter, Color color) throws CharacterAlreadyPlayedException {
+        // TODO
+    }
+
+    public void playActiveCharacter(ActiveCharacter playedCharacter, Island island) throws CharacterAlreadyPlayedException {
+        // TODO
+    }
 }
