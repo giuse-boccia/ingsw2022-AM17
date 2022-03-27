@@ -79,24 +79,24 @@ public class PlayerActionPhase {
         this.playedCharacter = playedCharacter;
 
         switch (playedCharacter.getCardName()) {
-            case plus2MNMoves:
-                this.mnStrategy = new MNBonus();
-                break;
-            case takeProfWithEqualStudents:
-                this.professorStrategy = new ProfessorWithDraw();
-                break;
-            case plus2Influence:
-                this.influenceStrategy = new InfluenceBonus(assistant.getPlayer());
-                break;
-            case ignoreTowers:
-                this.influenceStrategy = new InfluenceIgnoreTowers();
-                break;
-            case ignoreColor:
-                Color ignoredColor = ((PassiveCharacterWithColor) playedCharacter).getColor();
-                this.influenceStrategy = new InfluenceIgnoreColor(ignoredColor);
-                break;
-            default:
-                throw new InvalidCharacterException("Not a passive character");
+            case plus2MNMoves -> this.mnStrategy = new MNBonus();
+            case takeProfWithEqualStudents -> this.professorStrategy = new ProfessorWithDraw();
+            case plus2Influence -> this.influenceStrategy = new InfluenceBonus(assistant.getPlayer());
+            case ignoreTowers -> this.influenceStrategy = new InfluenceIgnoreTowers();
+
+            default -> throw new InvalidCharacterException("Not a passive character");
+        }
+    }
+
+    public void playPassiveCharacter(PassiveCharacter playedCharacter, Color color) throws CharacterAlreadyPlayedException, InvalidCharacterException {
+        if (this.playedCharacter != null)
+            throw new CharacterAlreadyPlayedException("You already played a character this turn");
+        this.playedCharacter = playedCharacter;
+
+        if (playedCharacter.getCardName() == CardName.ignoreColor) {
+            this.influenceStrategy = new InfluenceIgnoreColor(color);
+        } else {
+            throw new InvalidCharacterException("This character does not need a color");
         }
     }
 
