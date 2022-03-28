@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class Entrance implements Place{
     private final ArrayList<Student> students;
