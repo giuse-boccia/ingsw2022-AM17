@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class GameBoardTest {
 
     Game game = new Game(createPlayers());
-    GameBoard gb = new GameBoard(game);
+    GameBoard gb = game.getGameBoard();
 
     private ArrayList<Player> createPlayers(){
         ArrayList<Player> players = new ArrayList<>();
