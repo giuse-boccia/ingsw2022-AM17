@@ -1,21 +1,15 @@
 package it.polimi.ingsw.model;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 
 public class GameBoardTest {
 
-    Game game = new Game(createPlayers());
+    Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
-
-    private ArrayList<Player> createPlayers(){
-        ArrayList<Player> players = new ArrayList<>();
-        players.add(new Player("Rick", game, 6));
-        players.add(new Player("Clod", game, 6));
-        players.add(new Player("Giuse", game, 6));
-        return players;
-    }
 
     @Test
     public void moveMotherNature1() {
