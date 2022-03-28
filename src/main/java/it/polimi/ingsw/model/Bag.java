@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.EmptyBagException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,7 +20,8 @@ public class Bag implements Place{
     /**
      * @return a random {@code Student} of the collection
      */
-    public Student getRandStudent(){
+    public Student getRandStudent() throws EmptyBagException {
+        if (students.size() == 0) throw new EmptyBagException("The bag is empty!");
         return students.get(0);
     }
 
