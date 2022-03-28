@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class TestGameFactory {
 
     public static Game getNewGame() {
-        return new Game(createPlayers());
+        return new Game(createPlayers(), false);
     }
 
     private static ArrayList<Player> createPlayers() {

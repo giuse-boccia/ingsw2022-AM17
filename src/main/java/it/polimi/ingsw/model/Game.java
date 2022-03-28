@@ -4,28 +4,34 @@ import it.polimi.ingsw.exceptions.CharacterAlreadyPlayedException;
 import it.polimi.ingsw.exceptions.InvalidCharacterException;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Game {
     private final ArrayList<Player> players;
     private final GameBoard gameBoard;
     private final Round currentRound;
+    private final boolean isExpert;
 
-    public Game(ArrayList<Player> players) {
+    public Game(ArrayList<Player> players, boolean isExpert) {
         this.players = players;
         gameBoard = new GameBoard(this);
-        currentRound = new Round(0);
+        this.isExpert = isExpert;
+        currentRound = createNewRound();
     }
 
-    private boolean gameEnded(){
+    private boolean gameEnded() {
         return false;
     }
 
-    public void setup() {
-
+    private Round createNewRound() {
+        int firstPlayerIndex = new Random().nextInt(players.size());
+        return new Round(firstPlayerIndex, this);
     }
 
     public void start() {
 
+
+        // Create new Round
     }
 
     public void playCharacter(Character character) throws InvalidCharacterException, CharacterAlreadyPlayedException {
@@ -75,5 +81,9 @@ public class Game {
 
     public Round getCurrentRound() {
         return currentRound;
+    }
+
+    public boolean isExpert() {
+        return isExpert;
     }
 }
