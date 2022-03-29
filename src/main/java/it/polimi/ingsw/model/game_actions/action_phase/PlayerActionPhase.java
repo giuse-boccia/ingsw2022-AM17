@@ -111,6 +111,11 @@ public abstract class PlayerActionPhase {
         character.useEffect(this, island, color, srcStudents, dstStudents);
     }
 
+    /**
+     * Instances the correct strategy accordingly to the playedCharacter
+     *
+     * @param playedCharacter the {@code Character} which we want to set the correct strategy accordingly to
+     */
     public void playPassiveCharacter(PassiveCharacter playedCharacter) {
         switch (playedCharacter.getCardName()) {
             case plus2MNMoves -> this.mnStrategy = new MNBonus();
@@ -120,6 +125,11 @@ public abstract class PlayerActionPhase {
         }
     }
 
+    /**
+     * Instances the {@code InfluenceIgnoreColor} strategy
+     *
+     * @param color the color which we want to ignore in the influence compute
+     */
     public void playPassiveCharacterWithColor(Color color) {
         this.influenceStrategy = new InfluenceIgnoreColor(color);
     }

@@ -25,6 +25,30 @@ public class Player {
         }
     }
 
+    public void moveStudent(Place from, Place to, Student student) {
+
+    }
+
+    public void playAssistant(Assistant assistant) {
+
+    }
+
+    public void useCharacter(Character character) {
+        // chiama charachter.useEffect() e toglie monete e lancia eccezione se non ha abbastanza monete
+    }
+
+    public void pickWizard(Wizard wizard) {
+
+    }
+
+    private void checkProfessors(Color color) {
+        // Steal professor if possible
+    }
+
+    public void fillFromCloud(Cloud cloud) {
+
+    }
+
     /**
      * Returns the remaining towers in the player dashboard
      *
@@ -59,29 +83,5 @@ public class Player {
 
     public Wizard getWizard() {
         return wizard;
-    }
-
-    public void moveStudent(Place from, Place to, Student student){
-
-    }
-
-    public void playAssistant(Assistant assistant){
-
-    }
-
-    public void useCharacter(Character character){
-        // chiama charachter.useEffect() e toglie monete e lancia eccezione se non ha abbastanza monete
-    }
-
-    public void pickWizard(Wizard wizard){
-
-    }
-
-    private void checkProfessors(Color color){
-        // Steal professor if possible
-    }
-
-    public void fillFromCloud(Cloud cloud){
-
     }
 }

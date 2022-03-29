@@ -22,10 +22,12 @@ public class Game {
         isEnded = false;
     }
 
-    private boolean gameEnded() {
-        return false;
-    }
-
+    /**
+     * If it's the last {@code Round}, it ends the {@code Game};
+     * else it creates the next {@code Round}
+     *
+     * @param nextFirstPlayerIndex the index of the player starting in the next {@code Round}
+     */
     public void nextRound(int nextFirstPlayerIndex) {
         if (currentRound.isLastRound()) {
             end();
@@ -35,15 +37,26 @@ public class Game {
         }
     }
 
+    /**
+     * Ends the {@code Game}
+     */
     private void end() {
         isEnded = true;
         // check winner etc...
     }
 
+    /**
+     * Checks if it's the {@code Game} has ended
+     *
+     * @return true if the {@code Game} has ended
+     */
     public boolean isEnded() {
         return isEnded;
     }
 
+    /**
+     * Starts the {@code Game} creating the first {@code Round}
+     */
     public void start() {
         int nextFirstPlayerIndex = new Random().nextInt(players.size());
         currentRound = new Round(nextFirstPlayerIndex, this);

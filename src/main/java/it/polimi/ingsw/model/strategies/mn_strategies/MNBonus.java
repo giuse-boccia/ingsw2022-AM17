@@ -14,6 +14,13 @@ public class MNBonus implements MNStrategy {
         this.bonus = bonus;
     }
 
+    /**
+     * The method to calculate the maximum number of steps that mother nature can do this turn when the effect of the
+     * {@code Character} called "plus2MNMoves" is active
+     *
+     * @param card the {@code Assistant} card played this turn
+     * @return the maximum number of steps that mother nature can do this turn
+     */
     @Override
     public int getMNMaxSteps(Assistant card) {
         return card.getNumSteps() + bonus;
