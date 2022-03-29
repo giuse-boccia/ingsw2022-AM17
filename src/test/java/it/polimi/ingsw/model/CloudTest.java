@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
+import it.polimi.ingsw.model.game_objects.Bag;
+import it.polimi.ingsw.model.game_objects.Cloud;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

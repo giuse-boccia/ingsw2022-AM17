@@ -1,6 +1,10 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
+import it.polimi.ingsw.model.game_objects.Bag;
+import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_objects.Student;
+import it.polimi.ingsw.model.utils.Students;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

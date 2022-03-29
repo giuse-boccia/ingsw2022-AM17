@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.game_objects.GameBoard;
+import it.polimi.ingsw.model.game_objects.Island;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -111,6 +113,7 @@ public class GameBoardTest {
         // Rick conquers island 1
         gb.setIslandOwner(islands.get(1), game.getPlayers().get(0));
         assertEquals(1, gb.getIslands().get(1).getNumOfTowers());
+        assertEquals(1, gb.getMotherNatureIndex());
 
         // Rick conquers island 0 (expected merge of i0, i1 and i11 into i11)
         gb.setIslandOwner(islands.get(0), game.getPlayers().get(0));

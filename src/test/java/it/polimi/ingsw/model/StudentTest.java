@@ -1,6 +1,10 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
+import it.polimi.ingsw.model.game_objects.*;
+import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
+import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
+import it.polimi.ingsw.model.utils.Students;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
