@@ -35,5 +35,6 @@ public abstract class Character {
 
     public abstract void useEffect(
             PlayerActionPhase currentPlayerActionPhase, Island island, Color color,
-            ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidCharacterException, CharacterAlreadyPlayedException;
+            ArrayList<Student> srcStudents, ArrayList<Student> dstStudents
+    ) throws InvalidCharacterException, CharacterAlreadyPlayedException;
 }

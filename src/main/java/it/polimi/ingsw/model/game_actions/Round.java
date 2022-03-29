@@ -12,8 +12,11 @@ import java.util.Comparator;
 
 public class Round {
     private final int firstPlayerIndex;
+    private int currentPlayerIndex = -1;
+    private int currentAssistantIndex = -1;
     private final Game game;
     private PlanningPhase planningPhase;
+    private ArrayList<Assistant> playedAssistants;
     private PlayerActionPhase currentPlayerActionPhase;
     private boolean isLastRound;
 
@@ -29,34 +32,46 @@ public class Round {
         this.isLastRound = isLastRound;
     }
 
-    public int play() {
-
-        ArrayList<Assistant> assistants;
-
+    public void startPlanningPhase() {
         try {
             fillClouds();
         } catch (EmptyBagException e) {
             isLastRound = true;
         }
 
-        planningPhase = new PlanningPhase(createPlayersArray());
-        assistants = planningPhase.playAssistants();
+        planningPhase = new PlanningPhase(createPlayersArray(), this);
+    }
+
+    public void endPlanningPhase(ArrayList<Assistant> playedAssistants) {
+        this.playedAssistants = playedAssistants;
 
         // Sort assistants based on the "value" attribute of each card
-        assistants = (ArrayList<Assistant>) assistants.stream()
+        this.playedAssistants = (ArrayList<Assistant>) playedAssistants.stream()
                 .sorted(Comparator.comparingInt(Assistant::getValue))
                 .toList();
 
-        for (Assistant assistant : assistants) {
-            currentPlayerActionPhase = PlayerActionPhaseFactory.createPlayerActionPhase(assistant, game.getGameBoard(), game.isExpert());
-            currentPlayerActionPhase.play();
-        }
-
-        if (isLastRound) {
-            return -1;
-        }
-        return game.getPlayers().indexOf(assistants.get(0).getPlayer());
+        nextPlayerActionPhase();
     }
+
+    public void nextPlayerActionPhase() {
+        currentAssistantIndex++;
+
+        if (currentAssistantIndex == game.getPlayers().size()) {
+            Player nextFirstPlayer = playedAssistants.get(0).getPlayer();
+            game.nextRound(game.getPlayers().indexOf(nextFirstPlayer));
+        } else {
+            Player currentPlayer = playedAssistants.get(currentAssistantIndex).getPlayer();
+            currentPlayerIndex = game.getPlayers().indexOf(currentPlayer);
+            currentPlayerActionPhase = PlayerActionPhaseFactory.createPlayerActionPhase(
+                    playedAssistants.get(currentAssistantIndex), game.getGameBoard(), game.isExpert()
+            );
+        }
+    }
+
+    public boolean isLastRound() {
+        return isLastRound;
+    }
+
 
     private void fillClouds() throws EmptyBagException {
         for (Cloud cloud : game.getGameBoard().getClouds()) {

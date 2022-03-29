@@ -9,29 +9,44 @@ import java.util.Random;
 public class Game {
     private final ArrayList<Player> players;
     private final GameBoard gameBoard;
-    private final Round currentRound;
     private final boolean isExpert;
+    private Round currentRound;
+    private int roundsPlayed;
+    private boolean isEnded;
 
     public Game(ArrayList<Player> players, boolean isExpert) {
         this.players = players;
         gameBoard = new GameBoard(this);
         this.isExpert = isExpert;
-        currentRound = createNewRound();
+        roundsPlayed = 0;
+        isEnded = false;
     }
 
     private boolean gameEnded() {
         return false;
     }
 
-    private Round createNewRound() {
-        int firstPlayerIndex = new Random().nextInt(players.size());
-        return new Round(firstPlayerIndex, this);
+    public void nextRound(int nextFirstPlayerIndex) {
+        if (currentRound.isLastRound()) {
+            end();
+        } else {
+            roundsPlayed++;
+            currentRound = new Round(nextFirstPlayerIndex, this, roundsPlayed == 9);
+        }
+    }
+
+    private void end() {
+        isEnded = true;
+        // check winner etc...
+    }
+
+    public boolean isEnded() {
+        return isEnded;
     }
 
     public void start() {
-
-
-        // Create new Round
+        int nextFirstPlayerIndex = new Random().nextInt(players.size());
+        currentRound = new Round(nextFirstPlayerIndex, this);
     }
 
     public ArrayList<Player> getPlayers() {
