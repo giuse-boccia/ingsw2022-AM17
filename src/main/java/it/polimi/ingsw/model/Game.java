@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.CharacterAlreadyPlayedException;
-import it.polimi.ingsw.exceptions.InvalidCharacterException;
+import it.polimi.ingsw.model.game_actions.Round;
+import it.polimi.ingsw.model.game_objects.GameBoard;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -32,43 +32,6 @@ public class Game {
 
 
         // Create new Round
-    }
-
-    public void playCharacter(Character character) throws InvalidCharacterException, CharacterAlreadyPlayedException {
-        switch (character.getCardName()) {
-            case plus2MNMoves, takeProfWithEqualStudents, plus2Influence, ignoreTowers -> {
-                PassiveCharacter passiveCharacter = (PassiveCharacter) character;
-                currentRound.getCurrentPlayerActionPhase().playPassiveCharacter(passiveCharacter);
-            }
-            case move1FromCardToDining, swap3FromEntranceToCard, swap2FromEntranceToDiningRoom -> {
-                ActiveCharacter activeCharacter = (ActiveCharacter) character;
-                currentRound.getCurrentPlayerActionPhase().playActiveCharacter(activeCharacter);
-            }
-            default -> throw new InvalidCharacterException("This character requires a Color or an Island");
-        }
-    }
-
-    public void playCharacter(Character character, Color color) throws InvalidCharacterException, CharacterAlreadyPlayedException {
-        switch (character.getCardName()) {
-            case ignoreColor -> {
-                PassiveCharacter playedCharacter = (PassiveCharacter) character;
-                currentRound.getCurrentPlayerActionPhase().playPassiveCharacter(playedCharacter, color);
-            }
-            case everyOneMove3FromDiningRoomToBag -> {
-                MovingCharacter everyOneMovesCharacter = (MovingCharacter) character;
-                currentRound.getCurrentPlayerActionPhase().playActiveCharacter(everyOneMovesCharacter, color);
-            }
-            default -> throw new InvalidCharacterException("This character does not require a Color");
-        }
-    }
-
-    public void playCharacter(Character character, Island island) throws InvalidCharacterException, CharacterAlreadyPlayedException {
-        if (character.getCardName() == CardName.move1FromCardToIsland || character.getCardName() == CardName.resolveIsland || character.getCardName() == CardName.noEntry) {
-            ActiveCharacter activeCharacter = (ActiveCharacter) character;
-            currentRound.getCurrentPlayerActionPhase().playActiveCharacter(activeCharacter, island);
-        } else {
-            throw new InvalidCharacterException("This character does not require an Island");
-        }
     }
 
     public ArrayList<Player> getPlayers() {

@@ -1,5 +1,9 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.character.Character;
+import it.polimi.ingsw.model.game_objects.*;
+import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
+
 import java.util.ArrayList;
 
 public class Player {
@@ -66,7 +70,7 @@ public class Player {
     }
 
     public void useCharacter(Character character){
-        // chiama charachter.useEffect()
+        // chiama charachter.useEffect() e toglie monete e lancia eccezione se non ha abbastanza monete
     }
 
     public void pickWizard(Wizard wizard){
