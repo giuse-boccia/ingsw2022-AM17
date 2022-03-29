@@ -1,17 +1,29 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.game_actions.action_phase;
 
 import it.polimi.ingsw.exceptions.CharacterAlreadyPlayedException;
 import it.polimi.ingsw.exceptions.InvalidCharacterException;
+import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.character.*;
+import it.polimi.ingsw.model.character.Character;
+import it.polimi.ingsw.model.game_objects.*;
+import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
+import it.polimi.ingsw.model.strategies.influence_strategies.*;
+import it.polimi.ingsw.model.strategies.mn_strategies.MNBonus;
+import it.polimi.ingsw.model.strategies.mn_strategies.MNDefault;
+import it.polimi.ingsw.model.strategies.mn_strategies.MNStrategy;
+import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorDefault;
+import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorStrategy;
+import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorWithDraw;
 
 import java.util.ArrayList;
 
-public class PlayerActionPhase {
-    private final Assistant assistant;
-    private final GameBoard gb;
-    private Character playedCharacter;
-    private InfluenceStrategy influenceStrategy;
-    private ProfessorStrategy professorStrategy;
-    private MNStrategy mnStrategy;
+public abstract class PlayerActionPhase {
+    protected final Assistant assistant;
+    protected final GameBoard gb;
+    protected Character playedCharacter;
+    protected InfluenceStrategy influenceStrategy;
+    protected ProfessorStrategy professorStrategy;
+    protected MNStrategy mnStrategy;
 
 
     public PlayerActionPhase(Assistant assistant, GameBoard gb) {
@@ -27,8 +39,19 @@ public class PlayerActionPhase {
      * Resolves the island where mother nature is and possibly changes that island's owner.
      * In case of tie between two or more players, the owner of the island is not changed
      */
-    private void resolveIsland() {
-        Island islandToResolve = gb.getIslands().get(gb.getMotherNatureIndex());
+    // FIXME call this method with gb.getIslands().get(gb.getMotherNatureIndex()); when you are inside this class
+    public void resolveIsland(Island islandToResolve) {
+
+        if (islandToResolve.getNoEntryNum() > 0) {
+            for (Character character : gb.getGame().getGameBoard().getCharacters()) {
+                if (character.getCardName() == CharacterName.noEntry) {
+                    NoEntryCharacter noEntryCharacter = (NoEntryCharacter) character;
+                    noEntryCharacter.addNoEntry();
+                    return;
+                }
+            }
+        }
+
         ArrayList<Player> players = gb.getGame().getPlayers();
 
         Player newOwner = null;
@@ -46,7 +69,7 @@ public class PlayerActionPhase {
         }
 
         if (newOwner != null) {
-            islandToResolve.setOwner(newOwner);
+            gb.setIslandOwner(islandToResolve, newOwner);
         }
     }
 
@@ -73,45 +96,38 @@ public class PlayerActionPhase {
         return mnStrategy.getMNMaxSteps(card);
     }
 
-    public void playPassiveCharacter(PassiveCharacter playedCharacter) throws CharacterAlreadyPlayedException, InvalidCharacterException {
+    /**
+     * Method to use the effect of a character and to check if one had already been used this turn
+     *
+     * @param character The character which we want to use the effect of
+     * @throws InvalidCharacterException       if the {@code Character} is not valid
+     * @throws CharacterAlreadyPlayedException if a {@code Character} has already been used
+     */
+    public void playCharacter(Character character, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents)
+            throws InvalidCharacterException, CharacterAlreadyPlayedException {
         if (this.playedCharacter != null)
             throw new CharacterAlreadyPlayedException("You already played a character this turn");
-        this.playedCharacter = playedCharacter;
+        this.playedCharacter = character;
+        character.useEffect(this, island, color, srcStudents, dstStudents);
+    }
 
+    public void playPassiveCharacter(PassiveCharacter playedCharacter) {
         switch (playedCharacter.getCardName()) {
             case plus2MNMoves -> this.mnStrategy = new MNBonus();
             case takeProfWithEqualStudents -> this.professorStrategy = new ProfessorWithDraw();
             case plus2Influence -> this.influenceStrategy = new InfluenceBonus(assistant.getPlayer());
             case ignoreTowers -> this.influenceStrategy = new InfluenceIgnoreTowers();
-
-            default -> throw new InvalidCharacterException("Not a passive character");
         }
     }
 
-    public void playPassiveCharacter(PassiveCharacter playedCharacter, Color color) throws CharacterAlreadyPlayedException, InvalidCharacterException {
-        if (this.playedCharacter != null)
-            throw new CharacterAlreadyPlayedException("You already played a character this turn");
-        this.playedCharacter = playedCharacter;
-
-        if (playedCharacter.getCardName() == CardName.ignoreColor) {
-            this.influenceStrategy = new InfluenceIgnoreColor(color);
-        } else {
-            throw new InvalidCharacterException("This character does not need a color");
-        }
-
+    public void playPassiveCharacterWithColor(Color color) {
+        this.influenceStrategy = new InfluenceIgnoreColor(color);
     }
 
-    public void playActiveCharacter(ActiveCharacter playedCharacter) throws CharacterAlreadyPlayedException {
-        if (this.playedCharacter != null)
-            throw new CharacterAlreadyPlayedException("You already played a character this turn");
-        this.playedCharacter = playedCharacter;
+    public Player getCurrentPlayer() {
+        return assistant.getPlayer();
     }
 
-    public void playActiveCharacter(ActiveCharacter playedCharacter, Color color) throws CharacterAlreadyPlayedException {
-        // TODO
-    }
+    public abstract void play();
 
-    public void playActiveCharacter(ActiveCharacter playedCharacter, Island island) throws CharacterAlreadyPlayedException {
-        // TODO
-    }
 }
