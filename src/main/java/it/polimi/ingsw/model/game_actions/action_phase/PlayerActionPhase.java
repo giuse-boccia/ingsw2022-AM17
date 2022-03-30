@@ -36,10 +36,11 @@ public abstract class PlayerActionPhase {
     }
 
     /**
-     * Resolves the island where mother nature is and possibly changes that island's owner.
+     * Resolves an island and possibly changes that island's owner.
      * In case of tie between two or more players, the owner of the island is not changed
+     *
+     * @param islandToResolve the island to resolve
      */
-    // FIXME call this method with gb.getIslands().get(gb.getMotherNatureIndex()); when you are inside this class
     public void resolveIsland(Island islandToResolve) {
 
         if (islandToResolve.getNoEntryNum() > 0) {
@@ -71,6 +72,14 @@ public abstract class PlayerActionPhase {
         if (newOwner != null) {
             gb.setIslandOwner(islandToResolve, newOwner);
         }
+    }
+
+    /**
+     * Resolves the island where mother nature is and eventually changes that island's owner.
+     * In case of tie between two or more players, the owner of the island is not changed
+     */
+    public void resolveIsland() {
+        resolveIsland(gb.getIslands().get(gb.getMotherNatureIndex()));
     }
 
     /**
