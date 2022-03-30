@@ -15,7 +15,7 @@ class MNStrategyTest {
     GameBoard gb = g.getGameBoard();
 
     @Test
-    public void MNDefaultTest() {
+    public void mnDefaultTest() {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
         Player clod = g.getPlayers().get(1);        // Clod is player 1
 
@@ -33,7 +33,7 @@ class MNStrategyTest {
     }
 
     @Test
-    public void MNBonusTest1() {
+    public void mnBonusTest1() {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
         Player clod = g.getPlayers().get(1);        // Clod is player 1
 
