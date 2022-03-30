@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.Player;
 public interface InfluenceStrategy {
 
     /**
-     * Returns the influence value of a certain {@code Player} on an {@code Island}
+     * Returns the influence value of the selected {@code Player} on an {@code Island}
      *
      * @param island the {@code Island} to be considered
      * @param player the {@code Player} to calculate the influence of

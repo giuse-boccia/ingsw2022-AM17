@@ -14,6 +14,14 @@ public class InfluenceIgnoreColor implements InfluenceStrategy {
         this.colorToIgnore = colorToIgnore;
     }
 
+    /**
+     * The strategy to calculate the influence of the selected {@code Island} when the effect of the
+     * {@code Character} called "ignoreColor" is active
+     *
+     * @param island the {@code Island} to be considered
+     * @param player the {@code Player} to calculate the influence of
+     * @return an int representing the influence of the player on the island
+     */
     @Override
     public int computeInfluence(Island island, Player player) {
         int difference = 0;

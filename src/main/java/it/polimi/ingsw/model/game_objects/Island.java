@@ -23,6 +23,22 @@ public class Island implements Place {
         return owner;
     }
 
+    public ArrayList<Student> getStudents() {
+        return new ArrayList<>(students);
+    }
+
+    public int getNoEntryNum() {
+        return noEntryNum;
+    }
+
+    public int getNumOfTowers() {
+        return numOfTowers;
+    }
+
+    public void increaseNoEntryNum() {
+        noEntryNum++;
+    }
+
     /**
      * Sets a new owner and adds a tower if the island hase none.
      * Does NOT check if the island can be merged with adjacent islands
@@ -35,22 +51,6 @@ public class Island implements Place {
         if (numOfTowers == 0) {
             numOfTowers = 1;
         }
-    }
-
-    public ArrayList<Student> getStudents() {
-        return new ArrayList<>(students);
-    }
-
-    public int getNoEntryNum() {
-        return noEntryNum;
-    }
-
-    public void increaseNoEntryNum() {
-        noEntryNum++;
-    }
-
-    public int getNumOfTowers() {
-        return numOfTowers;
     }
 
     /**

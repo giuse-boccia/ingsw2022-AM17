@@ -11,7 +11,7 @@ public class Player {
     private final Dashboard dashboard;
     private final String name;
     private int numCoins;
-    private final Wizard wizard = null;
+    private Wizard wizard = null;
     private final int initialTowers;
 
     public Player(String name, int initialTowers) {
@@ -23,6 +23,32 @@ public class Player {
         for (int i = 1; i <= 10; i++) {
             hand.add(new Assistant(i % 2 != 0 ? i / 2 + 1 : i / 2, i, this));
         }
+    }
+
+    public void moveStudent(Place from, Place to, Student student) {
+        from.giveStudent(to, student);
+        // TODO: If move TO my diningRoom check if can steal professor using playerActionPhase Strategy
+    }
+
+    public void playAssistant(Assistant assistant) {
+
+    }
+
+    public void useCharacter(Character character) {
+        // chiama charachter.useEffect() e toglie monete e lancia eccezione se non ha abbastanza monete
+    }
+
+    public void pickWizard(Wizard wizard) {
+        // TODO: check if wizard is not picked by others
+        this.wizard = wizard;
+    }
+
+    private void checkProfessors(Color color) {
+        // Steal professor if possible
+    }
+
+    public void fillFromCloud(Cloud cloud) {
+
     }
 
     /**
@@ -59,29 +85,5 @@ public class Player {
 
     public Wizard getWizard() {
         return wizard;
-    }
-
-    public void moveStudent(Place from, Place to, Student student){
-
-    }
-
-    public void playAssistant(Assistant assistant){
-
-    }
-
-    public void useCharacter(Character character){
-        // chiama charachter.useEffect() e toglie monete e lancia eccezione se non ha abbastanza monete
-    }
-
-    public void pickWizard(Wizard wizard){
-
-    }
-
-    private void checkProfessors(Color color){
-        // Steal professor if possible
-    }
-
-    public void fillFromCloud(Cloud cloud){
-
     }
 }

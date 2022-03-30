@@ -15,12 +15,15 @@ public class DiningRoom implements Place {
     }
 
     /**
-     *
      * @param color The color which we want to know the number of students of
      * @return The number of students of the input color
      */
-    public int getNumberOfStudentsOfColor(Color color){
+    public int getNumberOfStudentsOfColor(Color color) {
         return Students.countColor(students, color);
+    }
+
+    public ArrayList<Student> getStudents() {
+        return new ArrayList<>(students);
     }
 
     @Override
@@ -32,9 +35,5 @@ public class DiningRoom implements Place {
     @Override
     public void receiveStudent(Student student) {
         students.add(student);
-    }
-
-    public ArrayList<Student> getStudents() {
-        return new ArrayList<>(students);
     }
 }

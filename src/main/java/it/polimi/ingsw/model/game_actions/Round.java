@@ -32,6 +32,9 @@ public class Round {
         this.isLastRound = isLastRound;
     }
 
+    /**
+     * Starts the {@code PlanningPhase} of the {@code Round}
+     */
     public void startPlanningPhase() {
         try {
             fillClouds();
@@ -42,6 +45,11 @@ public class Round {
         planningPhase = new PlanningPhase(createPlayersArray(), this);
     }
 
+    /**
+     * Sorts the playedAssistants by their value and starts the first {@code PlayerActionPhase}
+     *
+     * @param playedAssistants the assistants played in the {@code PlanningPhase}
+     */
     public void endPlanningPhase(ArrayList<Assistant> playedAssistants) {
         this.playedAssistants = playedAssistants;
 
@@ -53,6 +61,10 @@ public class Round {
         nextPlayerActionPhase();
     }
 
+    /**
+     * If every {@code Player} has completed their {@code PlayerActionPhase} creates the next {@code Round}, else
+     * creates the next {@code PlayerActionPhase}
+     */
     public void nextPlayerActionPhase() {
         currentAssistantIndex++;
 
@@ -68,17 +80,31 @@ public class Round {
         }
     }
 
+    /**
+     * Checks if it's the last {@code Round} of the {@code Game}
+     *
+     * @return true if it's the last {@code Round}
+     */
     public boolean isLastRound() {
         return isLastRound;
     }
 
-
+    /**
+     * Fills the clouds from the {@code Bag}
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     private void fillClouds() throws EmptyBagException {
         for (Cloud cloud : game.getGameBoard().getClouds()) {
             cloud.fillFromBag(game.getGameBoard().getBag());
         }
     }
 
+    /**
+     * Sorts the players in the order they should play the {@code PlanningPhase} in
+     *
+     * @return the {@code ArrayList} containing the players in the order they should play the {@code PlanningPhase} in
+     */
     private ArrayList<Player> createPlayersArray() {
         ArrayList<Player> playersInOrder = new ArrayList<>();
         int numPlayers = game.getPlayers().size();

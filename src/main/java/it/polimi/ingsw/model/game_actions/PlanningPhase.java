@@ -18,6 +18,13 @@ public class PlanningPhase {
         this.round = round;
     }
 
+    /**
+     * Adds an {@code Assistant} to the playedAssistant {@code ArrayList}
+     *
+     * @param assistant the {@code Assistant} to add
+     * @throws InvalidActionException if the player who is trying to play the {@code Assistant} is not the one actually
+     *                                playing this turn
+     */
     public void addAssistant(Assistant assistant) throws InvalidActionException {
         Player player = assistant.getPlayer();
 
@@ -27,7 +34,7 @@ public class PlanningPhase {
 
         playedAssistants.add(assistant);
 
-        // End planning phase if necessary
+        // Ends planning phase if necessary
         if (playedAssistants.size() == playersInOrder.size()) {
             round.endPlanningPhase(playedAssistants);
         }
