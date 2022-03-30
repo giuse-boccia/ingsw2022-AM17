@@ -16,19 +16,15 @@ public class ProfessorRoom {
 
     /**
      * Transfers the professor from the object to destination
-     * @param color the input {@code Color}
+     *
+     * @param color       the input {@code Color}
      * @param destination the destination professor room - of another player
      * @throws ProfessorNotFoundException if the object doesn't contain a professor of the input color
      */
-    public void giveProfessor(Color color, ProfessorRoom destination) throws ProfessorNotFoundException{
-        for (Professor p: professors) {
-            if(p.getColor() == color){
-                try{
-                    destination.takeProfessor(p);
-                }catch (Exception e){
-                    e.printStackTrace();
-                    System.out.println(e.getMessage());
-                }
+    public void giveProfessor(Color color, ProfessorRoom destination) throws ProfessorNotFoundException, ProfessorAlreadyPresentException {
+        for (Professor p : professors) {
+            if (p.getColor() == color) {
+                destination.takeProfessor(p);
                 professors.remove(p);
                 return;
             }
@@ -50,12 +46,16 @@ public class ProfessorRoom {
      * @param color The {@code Color} of the {@code Professor} we want to know if it is present in the object
      * @return true if the {@code ProfessorRoom} contains the {@code Professor} of the given {@code Color}
      */
-    public boolean hasProfessorOfColor(Color color){
+    public boolean hasProfessorOfColor(Color color) {
         for (Professor p : professors) {
-            if(p.getColor() == color)
+            if (p.getColor() == color)
                 return true;
         }
         return false;
+    }
+
+    public ArrayList<Professor> getProfessors() {
+        return new ArrayList<>(professors);
     }
 
 }
