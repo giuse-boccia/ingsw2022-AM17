@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model.game_objects;
 
-import it.polimi.ingsw.exceptions.EmptyBagException;
-import it.polimi.ingsw.exceptions.NotAdjacentIslandsException;
 import it.polimi.ingsw.exceptions.ProfessorAlreadyPresentException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
@@ -152,19 +150,15 @@ public class GameBoard {
         int indexOfIsland = islands.indexOf(island);
         Island right = islands.get((indexOfIsland + 1) % islands.size());
         Island left = islands.get((indexOfIsland + islands.size() - 1) % islands.size());
-        try {
-            if (left.getOwner() != null && left.getOwner() == island.getOwner()) {
-                if (right.getOwner() != null && right.getOwner() == island.getOwner()) {
-                    mergeIslands(left, island, right);
-                } else {
-                    mergeIslands(left, island);
-                }
-            } else if (right.getOwner() != null && right.getOwner() == island.getOwner())
-                mergeIslands(island, right);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
+        if (left.getOwner() != null && left.getOwner() == island.getOwner()) {
+            if (right.getOwner() != null && right.getOwner() == island.getOwner()) {
+                mergeIslands(left, island, right);
+            } else {
+                mergeIslands(left, island);
+            }
+        } else if (right.getOwner() != null && right.getOwner() == island.getOwner())
+            mergeIslands(island, right);
+
     }
 
     /**
@@ -186,11 +180,8 @@ public class GameBoard {
      *
      * @param left  the first {@code Island} to be merged
      * @param right the second {@code Island} to be merged
-     * @throws NotAdjacentIslandsException if the two islands are not adjacent
      */
-    private void mergeIslands(Island left, Island right) throws NotAdjacentIslandsException {
-        if (!areIslandsAdjacent(left, right)) throw new NotAdjacentIslandsException("Islands are not adjacent");
-
+    private void mergeIslands(Island left, Island right) {
         Island mnIsland = islands.get(motherNatureIndex);
 
         left.mergeWith(right);
@@ -212,10 +203,7 @@ public class GameBoard {
      * @param second the second {@code Island} to be merged
      * @param third  the third {@code Island} to be merged
      */
-    private void mergeIslands(Island first, Island second, Island third) throws NotAdjacentIslandsException {
-        if (!areIslandsAdjacent(first, second) || !areIslandsAdjacent(second, third))
-            throw new NotAdjacentIslandsException("Islands are not adjacent");
-
+    private void mergeIslands(Island first, Island second, Island third) {
         mergeIslands(first, second);
         mergeIslands(first, third);
     }
