@@ -1,7 +1,9 @@
 package it.polimi.ingsw.model.character;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidCharacterException;
+import it.polimi.ingsw.exceptions.StudentNotOnTheCardException;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
@@ -23,7 +25,8 @@ public class MovingCharacter extends GameboardCharacter implements Place {
     }
 
     @Override
-    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidCharacterException {
+    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents)
+            throws InvalidCharacterException, StudentNotOnTheCardException, InvalidActionException {
 
         switch (this.getCardName()) {
             case move1FromCardToIsland -> {
@@ -34,10 +37,22 @@ public class MovingCharacter extends GameboardCharacter implements Place {
             }
             case swapUpTo3FromEntranceToCard -> {
                 Entrance curEntrance = currentPlayerActionPhase.getCurrentPlayer().getDashboard().getEntrance();
+                if (!this.students.containsAll(dstStudents)) {
+                    throw new InvalidActionException("One or more students are not on the card");
+                }
+                if (!curEntrance.getStudents().containsAll(srcStudents)) {
+                    throw new InvalidActionException("One or more students are not on the entrance");
+                }
                 swapStudents(curEntrance, this, srcStudents, dstStudents);
             }
             case swapUpTo2FromEntranceToDiningRoom -> {
                 Dashboard curDashBoard = currentPlayerActionPhase.getCurrentPlayer().getDashboard();
+                if (!curDashBoard.getEntrance().getStudents().containsAll(srcStudents)) {
+                    throw new InvalidActionException("One or more students are not on the entrance");
+                }
+                if (!curDashBoard.getDiningRoom().getStudents().containsAll(dstStudents)) {
+                    throw new InvalidActionException("One or more students are not on the dining room");
+                }
                 swapStudents(curDashBoard.getEntrance(), curDashBoard.getDiningRoom(), srcStudents, dstStudents);
             }
             default -> {
@@ -55,7 +70,13 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         }
     }
 
-    private void swapStudents(Place src, Place dst, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) {
+    private void swapStudents(Place src, Place dst, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidActionException {
+        if (srcStudents.size() > numStudents) {
+            throw new InvalidActionException("You can move up to two students");
+        }
+        if (srcStudents.size() != dstStudents.size()) {
+            throw new InvalidActionException("This is not a valid swap");
+        }
         for (int i = 0; i < srcStudents.size(); i++) {
             Student firstStudentToSwap = srcStudents.get(i);
             Student secondStudentToSwap = dstStudents.get(i);
@@ -66,9 +87,15 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         }
     }
 
-    private void moveStudentAwayFromCard(Place destination, ArrayList<Student> srcStudents) {
-        for (int i = 0; i < srcStudents.size(); i++) {
-            giveStudent(destination, srcStudents.get(i));
+    private void moveStudentAwayFromCard(Place destination, ArrayList<Student> srcStudents) throws StudentNotOnTheCardException, InvalidActionException {
+        if (!students.containsAll(srcStudents)) {
+            throw new StudentNotOnTheCardException("The student is not on the card");
+        }
+        if (srcStudents.size() != 1) {
+            throw new InvalidActionException("You can move up to two students");
+        }
+        for (int i = 0; i < numStudents; i++) {
+            this.giveStudent(destination, srcStudents.get(i));
         }
     }
 

@@ -1,7 +1,9 @@
 package it.polimi.ingsw.model.character;
 
 import it.polimi.ingsw.exceptions.CharacterAlreadyPlayedException;
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidCharacterException;
+import it.polimi.ingsw.exceptions.StudentNotOnTheCardException;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Island;
@@ -36,5 +38,5 @@ public abstract class Character {
     public abstract void useEffect(
             PlayerActionPhase currentPlayerActionPhase, Island island, Color color,
             ArrayList<Student> srcStudents, ArrayList<Student> dstStudents
-    ) throws InvalidCharacterException, CharacterAlreadyPlayedException;
+    ) throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException;
 }
