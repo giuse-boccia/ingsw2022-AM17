@@ -19,7 +19,7 @@ class ProfessorStrategyTest {
     GameBoard gb = g.getGameBoard();
 
     @Test
-    public void professorDefaultGameTest() throws ProfessorAlreadyPresentException {
+    public void professorDefaultTest() throws ProfessorAlreadyPresentException {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
         Player clod = g.getPlayers().get(1);        // Clod is player 1
 
@@ -61,7 +61,7 @@ class ProfessorStrategyTest {
     }
 
     @Test
-    public void professorOnDrawGameTest() throws ProfessorAlreadyPresentException {
+    public void professorOnDrawTest() throws ProfessorAlreadyPresentException {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
         Player clod = g.getPlayers().get(1);        // Clod is player 1
 

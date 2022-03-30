@@ -89,11 +89,10 @@ public abstract class PlayerActionPhase {
     /**
      * Returns the maximum number of steps that mother nature can do this turn
      *
-     * @param card the {@code Assistant} card played this turn
      * @return the maximum number of steps that mother nature can do this turn
      */
-    public int getMNMaxSteps(Assistant card) {
-        return mnStrategy.getMNMaxSteps(card);
+    public int getMNMaxSteps() {
+        return mnStrategy.getMNMaxSteps(this.assistant);
     }
 
     /**
