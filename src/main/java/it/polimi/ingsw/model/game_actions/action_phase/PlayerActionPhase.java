@@ -1,7 +1,9 @@
 package it.polimi.ingsw.model.game_actions.action_phase;
 
 import it.polimi.ingsw.exceptions.CharacterAlreadyPlayedException;
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidCharacterException;
+import it.polimi.ingsw.exceptions.StudentNotOnTheCardException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
@@ -104,7 +106,7 @@ public abstract class PlayerActionPhase {
      * @throws CharacterAlreadyPlayedException if a {@code Character} has already been used
      */
     public void playCharacter(Character character, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents)
-            throws InvalidCharacterException, CharacterAlreadyPlayedException {
+            throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException {
         if (this.playedCharacter != null)
             throw new CharacterAlreadyPlayedException("You already played a character this turn");
         this.playedCharacter = character;

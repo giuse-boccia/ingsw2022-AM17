@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.game_objects;
 
+import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.exceptions.NotAdjacentIslandsException;
 import it.polimi.ingsw.exceptions.ProfessorAlreadyPresentException;
 import it.polimi.ingsw.model.Game;
@@ -42,15 +43,15 @@ public class GameBoard {
         Character[] res = new Character[3];
         ArrayList<Character> allCharacters = new ArrayList<>();
 
-        allCharacters.add(new ResolveIslandCharacter(CharacterName.resolveIsland, game.getGameBoard()));
-        // TODO call addNoEntry() of the Character if mother nature steps into an island with a noEntry (just use card.getName()==noEntry...)
-        allCharacters.add(new NoEntryCharacter(CharacterName.noEntry, game.getGameBoard()));
-        allCharacters.add(new EveryOneMovesCharacter(CharacterName.everyOneMove3FromDiningRoomToBag, game.getGameBoard()));
+        allCharacters.add(new ResolveIslandCharacter(CharacterName.resolveIsland, this));
 
-        allCharacters.add(new MovingCharacter(CharacterName.move1FromCardToIsland, game.getGameBoard(), 4, 1));
-        allCharacters.add(new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, game.getGameBoard(), 0, 2));
-        allCharacters.add(new MovingCharacter(CharacterName.swapUpTo3FromEntranceToCard, game.getGameBoard(), 6, 3));
-        allCharacters.add(new MovingCharacter(CharacterName.move1FromCardToIsland, game.getGameBoard(), 1, 1));
+        allCharacters.add(new NoEntryCharacter(CharacterName.noEntry, this));
+        allCharacters.add(new EveryOneMovesCharacter(CharacterName.everyOneMove3FromDiningRoomToBag, this));
+
+        allCharacters.add(new MovingCharacter(CharacterName.move1FromCardToIsland, this, 4, 1));
+        allCharacters.add(new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, this, 0, 2));
+        allCharacters.add(new MovingCharacter(CharacterName.swapUpTo3FromEntranceToCard, this, 6, 3));
+        allCharacters.add(new MovingCharacter(CharacterName.move1FromCardToDining, this, 1, 1));
 
         allCharacters.add(new PassiveCharacter(CharacterName.plus2MNMoves));
         allCharacters.add(new PassiveCharacter(CharacterName.takeProfWithEqualStudents));
