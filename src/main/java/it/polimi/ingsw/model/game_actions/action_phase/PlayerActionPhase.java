@@ -38,10 +38,11 @@ public abstract class PlayerActionPhase {
     }
 
     /**
-     * Resolves the island where mother nature is and possibly changes that island's owner.
+     * Resolves an island and possibly changes that island's owner.
      * In case of tie between two or more players, the owner of the island is not changed
+     *
+     * @param islandToResolve the island to resolve
      */
-    // FIXME call this method with gb.getIslands().get(gb.getMotherNatureIndex()); when you are inside this class
     public void resolveIsland(Island islandToResolve) {
 
         if (islandToResolve.getNoEntryNum() > 0) {
@@ -76,6 +77,14 @@ public abstract class PlayerActionPhase {
     }
 
     /**
+     * Resolves the island where mother nature is and eventually changes that island's owner.
+     * In case of tie between two or more players, the owner of the island is not changed
+     */
+    public void resolveIsland() {
+        resolveIsland(gb.getIslands().get(gb.getMotherNatureIndex()));
+    }
+
+    /**
      * Checks if the player who owns myDiningRoom can steal the professor from the player who owns
      * otherDiningRoom
      *
@@ -91,11 +100,10 @@ public abstract class PlayerActionPhase {
     /**
      * Returns the maximum number of steps that mother nature can do this turn
      *
-     * @param card the {@code Assistant} card played this turn
      * @return the maximum number of steps that mother nature can do this turn
      */
-    public int getMNMaxSteps(Assistant card) {
-        return mnStrategy.getMNMaxSteps(card);
+    public int getMNMaxSteps() {
+        return mnStrategy.getMNMaxSteps(this.assistant);
     }
 
     /**

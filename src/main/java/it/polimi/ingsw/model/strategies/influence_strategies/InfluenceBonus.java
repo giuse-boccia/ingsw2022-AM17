@@ -27,6 +27,6 @@ public class InfluenceBonus implements InfluenceStrategy {
      */
     @Override
     public int computeInfluence(Island island, Player player) {
-        return InfluenceDefault.computeDefaultInfluence(island, player) + bonus;
+        return InfluenceDefault.computeDefaultInfluence(island, player) + (player == buffedPlayer ? bonus : 0);
     }
 }
