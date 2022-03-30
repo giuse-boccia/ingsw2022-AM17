@@ -11,7 +11,7 @@ public class Player {
     private final Dashboard dashboard;
     private final String name;
     private int numCoins;
-    private final Wizard wizard = null;
+    private Wizard wizard = null;
     private final int initialTowers;
 
     public Player(String name, int initialTowers) {
@@ -26,7 +26,8 @@ public class Player {
     }
 
     public void moveStudent(Place from, Place to, Student student) {
-
+        from.giveStudent(to, student);
+        // TODO: If move TO my diningRoom check if can steal professor using playerActionPhase Strategy
     }
 
     public void playAssistant(Assistant assistant) {
@@ -38,7 +39,8 @@ public class Player {
     }
 
     public void pickWizard(Wizard wizard) {
-
+        // TODO: check if wizard is not picked by others
+        this.wizard = wizard;
     }
 
     private void checkProfessors(Color color) {
