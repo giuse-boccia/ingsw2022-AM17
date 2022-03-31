@@ -54,9 +54,9 @@ public class Round {
         this.playedAssistants = playedAssistants;
 
         // Sort assistants based on the "value" attribute of each card
-        this.playedAssistants = (ArrayList<Assistant>) playedAssistants.stream()
+        this.playedAssistants = new ArrayList<>(playedAssistants.stream()
                 .sorted(Comparator.comparingInt(Assistant::getValue))
-                .toList();
+                .toList());
 
         nextPlayerActionPhase();
     }

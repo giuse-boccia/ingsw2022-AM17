@@ -34,6 +34,7 @@ public class Game {
         } else {
             roundsPlayed++;
             currentRound = new Round(nextFirstPlayerIndex, this, roundsPlayed == 9);
+            currentRound.startPlanningPhase();
         }
     }
 
@@ -60,6 +61,12 @@ public class Game {
     public void start() {
         int nextFirstPlayerIndex = new Random().nextInt(players.size());
         currentRound = new Round(nextFirstPlayerIndex, this);
+        currentRound.startPlanningPhase();
+    }
+
+    public void start(int nextFirstPlayerIndex) {
+        currentRound = new Round(nextFirstPlayerIndex, this);
+        currentRound.startPlanningPhase();
     }
 
     public ArrayList<Player> getPlayers() {

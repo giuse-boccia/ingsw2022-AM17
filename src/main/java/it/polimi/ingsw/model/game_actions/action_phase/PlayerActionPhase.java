@@ -1,14 +1,13 @@
 package it.polimi.ingsw.model.game_actions.action_phase;
 
-import it.polimi.ingsw.exceptions.CharacterAlreadyPlayedException;
-import it.polimi.ingsw.exceptions.InvalidActionException;
-import it.polimi.ingsw.exceptions.InvalidCharacterException;
-import it.polimi.ingsw.exceptions.StudentNotOnTheCardException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
+import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
+import it.polimi.ingsw.model.game_objects.dashboard_objects.ProfessorRoom;
 import it.polimi.ingsw.model.strategies.influence_strategies.*;
 import it.polimi.ingsw.model.strategies.mn_strategies.MNBonus;
 import it.polimi.ingsw.model.strategies.mn_strategies.MNDefault;
@@ -16,6 +15,7 @@ import it.polimi.ingsw.model.strategies.mn_strategies.MNStrategy;
 import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorDefault;
 import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorStrategy;
 import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorWithDraw;
+import it.polimi.ingsw.model.utils.Students;
 
 import java.util.ArrayList;
 
@@ -26,6 +26,8 @@ public abstract class PlayerActionPhase {
     protected InfluenceStrategy influenceStrategy;
     protected ProfessorStrategy professorStrategy;
     protected MNStrategy mnStrategy;
+    int numStudentsMoved = 0;
+    boolean mnMoved = false;
 
 
     public PlayerActionPhase(Assistant assistant, GameBoard gb) {
@@ -97,6 +99,29 @@ public abstract class PlayerActionPhase {
         return professorStrategy.canStealProfessor(color, myDiningRoom, otherDiningRoom);
     }
 
+    private void stealProfessorIfPossible(Color color) {
+        try {
+            gb.getStartingProfessors().giveProfessor(color, getCurrentPlayer().getDashboard().getProfessorRoom());
+        } catch (ProfessorAlreadyPresentException ignored) {
+        } catch (ProfessorNotFoundException e) {
+            ArrayList<Player> players = gb.getGame().getPlayers();
+            players.remove(getCurrentPlayer());
+
+            for (Player p : players) {
+                DiningRoom otherDining = p.getDashboard().getDiningRoom();
+                ProfessorRoom otherProfRoom = p.getDashboard().getProfessorRoom();
+                if (otherProfRoom.hasProfessorOfColor(color) &&
+                        canStealProfessor(color, getCurrentPlayer().getDashboard().getDiningRoom(), otherDining)) {
+                    try {
+                        otherProfRoom.giveProfessor(color, getCurrentPlayer().getDashboard().getProfessorRoom());
+                    } catch (ProfessorAlreadyPresentException | ProfessorNotFoundException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Returns the maximum number of steps that mother nature can do this turn
      *
@@ -114,7 +139,7 @@ public abstract class PlayerActionPhase {
      * @throws CharacterAlreadyPlayedException if a {@code Character} has already been used
      */
     public void playCharacter(Character character, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents)
-            throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException {
+            throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException {
         if (this.playedCharacter != null)
             throw new CharacterAlreadyPlayedException("You already played a character this turn");
         this.playedCharacter = character;
@@ -146,6 +171,74 @@ public abstract class PlayerActionPhase {
 
     public Player getCurrentPlayer() {
         return assistant.getPlayer();
+    }
+
+    public void moveStudent(Player player, Color color, Place place) throws InvalidActionException, InvalidStudentException {
+        // TODO InvalidStudent - if I don't own a student of this color, InvalidPlace if I attempt to move it into
+        // TODO the Entrance (it happens when entrance.getStudents() == 7-numStudPlayed
+        if (player != assistant.getPlayer()) {
+            throw new InvalidActionException("It's not your turn");
+        }
+
+        if (numStudentsMoved == gb.getGame().getPlayers().size() + 1) {
+            throw new InvalidActionException("You have already moved " + numStudentsMoved + " students");
+        }
+
+        Entrance entrance = assistant.getPlayer().getDashboard().getEntrance();
+
+        entrance.giveStudent(
+                place, Students.findFirstStudentOfColor(entrance.getStudents(), color)
+        );
+
+        numStudentsMoved++;
+
+        stealProfessorIfPossible(color);
+    }
+
+    // FIXME Player check could be done in Game (if it's the Facade), which calls PlayerActionPhase - just a supposition though
+    public void moveMotherNature(Player player, int numSteps) throws InvalidActionException, InvalidStepsForMotherNatureException {
+
+        if (player != assistant.getPlayer()) {
+            throw new InvalidActionException("It's not your turn");
+        }
+
+        if (numStudentsMoved < gb.getGame().getPlayers().size() + 1) {
+            throw new InvalidActionException("Move your students first");
+        }
+
+        if (numSteps < 0 || numSteps > mnStrategy.getMNMaxSteps(assistant)) {
+            throw new InvalidStepsForMotherNatureException("Invalid move for mother nature");
+        }
+
+        gb.moveMotherNature(numSteps);
+        resolveIsland();
+
+        mnMoved = true;
+    }
+
+    public void chooseCloud(Player player, int cloudIndex) throws InvalidActionException, InvalidCloudException {
+
+        if (player != assistant.getPlayer()) {
+            throw new InvalidActionException("It's not your turn");
+        }
+
+        if (numStudentsMoved < gb.getGame().getPlayers().size() + 1) {
+            throw new InvalidActionException("Move your students first");
+        }
+
+        if (!mnMoved) {
+            throw new InvalidActionException("Move mother nature first");
+        }
+
+        if (cloudIndex < 0 || cloudIndex >= gb.getClouds().size() || gb.getClouds().get(cloudIndex).isEmpty()) {
+            throw new InvalidCloudException("The selected cloud is not valid");
+        }
+
+        Cloud cloud = gb.getClouds().get(cloudIndex);
+        cloud.emptyTo(player.getDashboard().getEntrance());
+
+        // The PlayerActionPhase is finished
+        gb.getGame().getCurrentRound().nextPlayerActionPhase();
     }
 
     public abstract void play();
