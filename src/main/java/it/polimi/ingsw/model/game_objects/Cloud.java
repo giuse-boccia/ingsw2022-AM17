@@ -35,6 +35,10 @@ public class Cloud implements Place {
         }
     }
 
+    public boolean isEmpty() {
+        return students.size() == 0;
+    }
+
     @Override
     public void giveStudent(Place destination, Student student) {
         students.remove(student);
