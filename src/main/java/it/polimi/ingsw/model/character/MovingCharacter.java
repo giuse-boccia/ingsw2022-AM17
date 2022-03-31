@@ -1,9 +1,6 @@
 package it.polimi.ingsw.model.character;
 
-import it.polimi.ingsw.exceptions.EmptyBagException;
-import it.polimi.ingsw.exceptions.InvalidActionException;
-import it.polimi.ingsw.exceptions.InvalidCharacterException;
-import it.polimi.ingsw.exceptions.StudentNotOnTheCardException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
@@ -26,7 +23,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
 
     @Override
     public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents)
-            throws InvalidCharacterException, StudentNotOnTheCardException, InvalidActionException {
+            throws InvalidCharacterException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException {
 
         switch (this.getCardName()) {
             case move1FromCardToIsland -> {
@@ -70,7 +67,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         }
     }
 
-    private void swapStudents(Place src, Place dst, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidActionException {
+    private void swapStudents(Place src, Place dst, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidActionException, InvalidStudentException {
         if (srcStudents.size() > numStudents) {
             throw new InvalidActionException("You can move up to two students");
         }

@@ -1,13 +1,15 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Player {
-    private final ArrayList<Assistant> hand;
+    private final Assistant[] hand;
     private final Dashboard dashboard;
     private final String name;
     private int numCoins;
@@ -19,19 +21,23 @@ public class Player {
         this.initialTowers = initialTowers;
         this.numCoins = 1;
         this.dashboard = new Dashboard();
-        this.hand = new ArrayList<>();
+        this.hand = new Assistant[10];
         for (int i = 1; i <= 10; i++) {
-            hand.add(new Assistant(i % 2 != 0 ? i / 2 + 1 : i / 2, i, this));
+            hand[i - 1] = new Assistant(i % 2 != 0 ? i / 2 + 1 : i / 2, i, this);
         }
     }
 
     public void moveStudent(Place from, Place to, Student student) {
-        from.giveStudent(to, student);
+        try {
+            from.giveStudent(to, student);
+        } catch (InvalidStudentException e) {
+            e.printStackTrace();
+        }
         // TODO: If move TO my diningRoom check if can steal professor using playerActionPhase Strategy
     }
 
     public void playAssistant(Assistant assistant) {
-
+        hand[assistant.getValue() - 1] = null;
     }
 
     public void useCharacter(Character character) {
@@ -66,8 +72,8 @@ public class Player {
         return res;
     }
 
-    public ArrayList<Assistant> getHand() {
-        return new ArrayList<>(hand);
+    public Assistant[] getHand() {
+        return hand.clone();
     }
 
     public Dashboard getDashboard() {

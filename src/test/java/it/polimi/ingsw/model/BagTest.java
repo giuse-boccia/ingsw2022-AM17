@@ -27,11 +27,16 @@ public class BagTest {
 
         assertThrows(EmptyBagException.class, () -> bag.giveStudent(chosenPlayer.getDashboard().getEntrance(), bag.getRandStudent()));
 
+        Student newStudent = new Student(Color.GREEN);
+        bag.receiveStudent(newStudent);
+        assertDoesNotThrow(() -> assertEquals(newStudent, bag.getRandStudent()));
+
         ArrayList<Student> students = chosenPlayer.getDashboard().getEntrance().getStudents();
         assertEquals(120, students.size());
         for (Color color : Color.values()) {
             assertEquals(24, Students.countColor(students, color));
         }
+
     }
 
 }

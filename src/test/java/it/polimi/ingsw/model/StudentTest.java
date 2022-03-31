@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
+import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
@@ -17,7 +18,7 @@ class StudentTest {
     Game game = TestGameFactory.getNewGame();
 
     @Test
-    void testEntranceToDining() throws EmptyBagException {
+    void testEntranceToDining() throws EmptyBagException, InvalidStudentException {
         Bag gameBag = game.getGameBoard().getBag();
         for (int i = 0; i < game.getPlayers().size(); i++) {
             Dashboard selectedPlayerDashboard = game.getPlayers().get(i).getDashboard();
@@ -44,7 +45,7 @@ class StudentTest {
     }
 
     @Test
-    void testEntranceToIsland() throws EmptyBagException {
+    void testEntranceToIsland() throws EmptyBagException, InvalidStudentException {
         Bag bag = game.getGameBoard().getBag();
         for (Player player : game.getPlayers()) {
             Entrance playerEntrance = player.getDashboard().getEntrance();
