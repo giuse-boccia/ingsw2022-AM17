@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.character;
+package it.polimi.ingsw.model.characters;
 
 public enum CharacterName {
     move1FromCardToIsland(1),

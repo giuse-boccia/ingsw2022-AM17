@@ -1,8 +1,11 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.strategies;
 
 import it.polimi.ingsw.exceptions.ProfessorAlreadyPresentException;
-import it.polimi.ingsw.model.character.CharacterName;
-import it.polimi.ingsw.model.character.PassiveCharacter;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.TestGameFactory;
+import it.polimi.ingsw.model.characters.CharacterName;
+import it.polimi.ingsw.model.characters.PassiveCharacter;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.*;

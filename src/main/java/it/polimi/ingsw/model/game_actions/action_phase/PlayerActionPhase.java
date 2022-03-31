@@ -2,8 +2,8 @@ package it.polimi.ingsw.model.game_actions.action_phase;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.character.*;
-import it.polimi.ingsw.model.character.Character;
+import it.polimi.ingsw.model.characters.*;
+import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
@@ -198,13 +198,7 @@ public abstract class PlayerActionPhase {
     // FIXME Player check could be done in Game (if it's the Facade), which calls PlayerActionPhase - just a supposition though
     public void moveMotherNature(Player player, int numSteps) throws InvalidActionException, InvalidStepsForMotherNatureException {
 
-        if (player != assistant.getPlayer()) {
-            throw new InvalidActionException("It's not your turn");
-        }
-
-        if (numStudentsMoved < gb.getGame().getPlayers().size() + 1) {
-            throw new InvalidActionException("Move your students first");
-        }
+        checkInvalidAction(player);
 
         if (numSteps < 0 || numSteps > mnStrategy.getMNMaxSteps(assistant)) {
             throw new InvalidStepsForMotherNatureException("Invalid move for mother nature");
@@ -218,13 +212,7 @@ public abstract class PlayerActionPhase {
 
     public void chooseCloud(Player player, int cloudIndex) throws InvalidActionException, InvalidCloudException {
 
-        if (player != assistant.getPlayer()) {
-            throw new InvalidActionException("It's not your turn");
-        }
-
-        if (numStudentsMoved < gb.getGame().getPlayers().size() + 1) {
-            throw new InvalidActionException("Move your students first");
-        }
+        checkInvalidAction(player);
 
         if (!mnMoved) {
             throw new InvalidActionException("Move mother nature first");
@@ -239,6 +227,17 @@ public abstract class PlayerActionPhase {
 
         // The PlayerActionPhase is finished
         gb.getGame().getCurrentRound().nextPlayerActionPhase();
+    }
+
+    private void checkInvalidAction(Player player) throws InvalidActionException {
+        if (player != assistant.getPlayer()) {
+            throw new InvalidActionException("It's not your turn");
+        }
+
+        int studentsToMove = gb.getGame().getPlayers().size() % 2 == 0 ? 3 : 4;
+        if (numStudentsMoved < studentsToMove) {
+            throw new InvalidActionException("Move your students first");
+        }
     }
 
     public abstract void play();

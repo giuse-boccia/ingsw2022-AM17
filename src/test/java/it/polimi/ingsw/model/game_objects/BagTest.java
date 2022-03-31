@@ -1,6 +1,9 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.game_objects;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.game_objects.Bag;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;

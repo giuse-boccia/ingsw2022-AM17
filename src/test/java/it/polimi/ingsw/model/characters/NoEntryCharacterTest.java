@@ -1,10 +1,8 @@
-package it.polimi.ingsw.model.characters_tests;
+package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.exceptions.InvalidCharacterException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.TestGameFactory;
-import it.polimi.ingsw.model.character.CharacterName;
-import it.polimi.ingsw.model.character.NoEntryCharacter;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.Assistant;

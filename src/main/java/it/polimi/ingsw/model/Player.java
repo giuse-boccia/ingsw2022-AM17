@@ -1,12 +1,9 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.InvalidStudentException;
-import it.polimi.ingsw.model.character.Character;
+import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Player {
     private final Assistant[] hand;

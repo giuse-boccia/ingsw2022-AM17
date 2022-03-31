@@ -42,6 +42,10 @@ public class PlanningPhase {
 
         Player player = assistant.getPlayer();
 
+        if (isEnded()) {
+            throw new InvalidActionException("Planning phase is ended");
+        }
+
         if (player != playersInOrder.get(playedAssistants.size())) {
             throw new InvalidActionException("You can't play an assistant now");
         }
@@ -75,5 +79,8 @@ public class PlanningPhase {
         return new ArrayList<>(playedAssistants);
     }
 
+    public boolean isEnded() {
+        return playedAssistants.size() == playersInOrder.size();
+    }
 
 }

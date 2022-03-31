@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.character;
+package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.exceptions.InvalidCharacterException;
 import it.polimi.ingsw.model.game_objects.Color;

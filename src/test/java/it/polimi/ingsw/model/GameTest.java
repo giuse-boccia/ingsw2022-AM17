@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.model.game_actions.PlanningPhase;
 import it.polimi.ingsw.model.game_actions.Round;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.*;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FullGameTest {
+public class GameTest {
 
     Game game = TestGameFactory.getNewGame();
     Bag bag = game.getGameBoard().getBag();
@@ -82,7 +81,7 @@ public class FullGameTest {
         );
         assertThrows(InvalidActionException.class,
                 () -> pap.chooseCloud(clod, 1),
-                "Move mother nature first"
+                "Move your students first"
         );
 
         assertDoesNotThrow(() -> pap.moveStudent(clod, Color.BLUE, clod.getDashboard().getDiningRoom()));
@@ -132,6 +131,8 @@ public class FullGameTest {
             assertDoesNotThrow(() -> pap2.moveStudent(giuse, Color.BLUE, giuse.getDashboard().getDiningRoom()));
             assertDoesNotThrow(() -> pap2.moveStudent(giuse, Color.PINK, giuse.getDashboard().getDiningRoom()));
         }
+        assertTrue(giuse.getDashboard().getProfessorRoom().hasProfessorOfColor(Color.BLUE));
+        assertFalse(clod.getDashboard().getProfessorRoom().hasProfessorOfColor(Color.BLUE));
         assertDoesNotThrow(() -> pap2.moveMotherNature(giuse, 3));
         assertEquals(4, game.getGameBoard().getMotherNatureIndex());
         assertEquals(giuse, game.getGameBoard().getIslands().get(4).getOwner());
@@ -140,6 +141,7 @@ public class FullGameTest {
                 () -> pap2.chooseCloud(giuse, 1),
                 "The selected cloud is not valid"
         );
+        assertEquals(5, giuse.getDashboard().getEntrance().getStudents().size());
         assertDoesNotThrow(() -> pap2.chooseCloud(giuse, 2));
         assertTrue(game.getGameBoard().getClouds().get(2).isEmpty());
         assertEquals(9, giuse.getDashboard().getEntrance().getStudents().size());
@@ -147,6 +149,9 @@ public class FullGameTest {
         // Now it's Rick's turn
         PlayerActionPhase pap3 = game.getCurrentRound().getCurrentPlayerActionPhase();
         assertEquals(rick, pap3.getCurrentPlayer());
+
+        assertThrows(InvalidActionException.class, () -> playAssistant(rick, 9));
+
         for (int i = 0; i < 2; i++) {
             assertDoesNotThrow(() -> pap3.moveStudent(rick, Color.PINK, rick.getDashboard().getDiningRoom()));
         }
@@ -169,6 +174,7 @@ public class FullGameTest {
                 InvalidActionException.class,
                 () -> playAssistant(rick, 5)
         );
+
         assertThrows(
                 AlreadyPlayedAssistantException.class,
                 () -> playAssistant(clod, 5)
@@ -231,7 +237,7 @@ public class FullGameTest {
 
     }
 
-    // Every Island has a pink student - except Island0 and Ilsand6
+    // Every Island has a pink student - except Island0 and Island6
     private void prepareIslands(int mnIndex) {
         ArrayList<Island> islands = game.getGameBoard().getIslands();
         assertEquals(12, islands.size());

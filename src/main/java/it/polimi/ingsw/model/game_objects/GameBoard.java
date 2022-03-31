@@ -3,8 +3,8 @@ package it.polimi.ingsw.model.game_objects;
 import it.polimi.ingsw.exceptions.ProfessorAlreadyPresentException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.character.*;
-import it.polimi.ingsw.model.character.Character;
+import it.polimi.ingsw.model.characters.*;
+import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.ProfessorRoom;
 import it.polimi.ingsw.model.utils.Students;
 
