@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.characters;
 
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidCharacterException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.TestGameFactory;
@@ -37,7 +38,7 @@ public class NoEntryCharacterTest {
         PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
                 new Assistant(4, 8, game.getPlayers().get(0)), gb, true
         );
-        assertThrows(InvalidCharacterException.class,
+        assertThrows(InvalidActionException.class,
                 () -> pap.playCharacter(character, selectedIsland, null, null, null),
                 "There are no NoEntry pawns left on this card");
 
