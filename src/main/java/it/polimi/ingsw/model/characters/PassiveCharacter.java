@@ -15,6 +15,17 @@ public class PassiveCharacter extends Character {
         super(characterName);
     }
 
+    /**
+     * Uses the correct effect of a {@code PassiveCharacter}
+     *
+     * @param currentPlayerActionPhase the {@code PlayerActionPhase} which the effect is used in
+     * @param island                   the {@code Island} which the {@code Character} affects
+     * @param color                    the {@code Color} which the {@code Character} affects
+     * @param srcStudents              the students to be moved to the destination
+     * @param dstStudents              the students to be moved to the source (only if the effect is a "swap" effect)
+     * @throws InvalidCharacterException       if the {@code Character} is not a {@code PassiveCharacter}
+     * @throws CharacterAlreadyPlayedException if the {@code Player} has already played a {@code Character} this turn
+     */
     @Override
     public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidCharacterException, CharacterAlreadyPlayedException {
 

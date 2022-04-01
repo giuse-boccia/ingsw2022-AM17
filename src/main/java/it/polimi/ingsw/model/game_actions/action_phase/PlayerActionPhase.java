@@ -99,6 +99,11 @@ public abstract class PlayerActionPhase {
         return professorStrategy.canStealProfessor(color, myDiningRoom, otherDiningRoom);
     }
 
+    /**
+     * Moves the {@code Professor} of the selected {@code Color} to the current {@code Character} {@code ProfessorRoom}
+     *
+     * @param color the {@code Colo} of the {@code Professor} to steal
+     */
     private void stealProfessorIfPossible(Color color) {
         try {
             gb.getStartingProfessors().giveProfessor(color, getCurrentPlayer().getDashboard().getProfessorRoom());
@@ -169,10 +174,15 @@ public abstract class PlayerActionPhase {
         this.influenceStrategy = new InfluenceIgnoreColor(color);
     }
 
-    public Player getCurrentPlayer() {
-        return assistant.getPlayer();
-    }
-
+    /**
+     * Moves a {@code Student} of the selected {@code Color} to the selected {@code Place}
+     *
+     * @param player the {@code Player} who moves the {@code Student}
+     * @param color  the {@code Colo} of the {@code Student} to move
+     * @param place  the destination to move the {@code Student} to
+     * @throws InvalidActionException  if the action is not valid
+     * @throws InvalidStudentException if the {@code Player} does not own a {@code Student} of the selected {@code Color}
+     */
     public void moveStudent(Player player, Color color, Place place) throws InvalidActionException, InvalidStudentException {
         // TODO InvalidStudent - if I don't own a student of this color, InvalidPlace if I attempt to move it into
         // TODO the Entrance (it happens when entrance.getStudents() == 7-numStudPlayed
@@ -195,6 +205,15 @@ public abstract class PlayerActionPhase {
         stealProfessorIfPossible(color);
     }
 
+
+    /**
+     * Moves MotherNature of the selected number of steps (numSteps)
+     *
+     * @param player   the {@code Player} who moves MotherNature
+     * @param numSteps the number of steps which MotherNature should move of
+     * @throws InvalidActionException               if the action is not valid
+     * @throws InvalidStepsForMotherNatureException if the number of steps selected is greater than the allowed number of steps
+     */
     // FIXME Player check could be done in Game (if it's the Facade), which calls PlayerActionPhase - just a supposition though
     public void moveMotherNature(Player player, int numSteps) throws InvalidActionException, InvalidStepsForMotherNatureException {
 
@@ -210,6 +229,14 @@ public abstract class PlayerActionPhase {
         mnMoved = true;
     }
 
+    /**
+     * Chooses a cloud not yet chosen ad fills the selected {@code Player} {@code Entrance} with the students on it
+     *
+     * @param player     the {@code Player} who chooses the {@code Cloud}
+     * @param cloudIndex the index of the {@code Cloud}
+     * @throws InvalidActionException if the action is not valid
+     * @throws InvalidCloudException  if the {@code Cloud} is not valid
+     */
     public void chooseCloud(Player player, int cloudIndex) throws InvalidActionException, InvalidCloudException {
 
         checkInvalidAction(player);
@@ -229,6 +256,12 @@ public abstract class PlayerActionPhase {
         gb.getGame().getCurrentRound().nextPlayerActionPhase();
     }
 
+    /**
+     * Checks if the action selected from the selected {@code Player} is not valid
+     *
+     * @param player the {@code Player} to check
+     * @throws InvalidActionException if the action is not valid
+     */
     private void checkInvalidAction(Player player) throws InvalidActionException {
         if (player != assistant.getPlayer()) {
             throw new InvalidActionException("It's not your turn");
@@ -241,5 +274,9 @@ public abstract class PlayerActionPhase {
     }
 
     public abstract void play();
+
+    public Player getCurrentPlayer() {
+        return assistant.getPlayer();
+    }
 
 }

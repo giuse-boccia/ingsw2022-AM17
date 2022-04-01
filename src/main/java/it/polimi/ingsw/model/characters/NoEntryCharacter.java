@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.characters;
 
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidCharacterException;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.GameBoard;
@@ -22,19 +23,37 @@ public class NoEntryCharacter extends GameboardCharacter {
         this.noEntryNum = noEntryNum;
     }
 
+    /**
+     * Adds a noEntry tile to the {@code Character}
+     */
     public void addNoEntry() {
         noEntryNum++;
     }
 
+    /**
+     * Puts a noEntry tile on the selected {@code Island}
+     *
+     * @param currentPlayerActionPhase the {@code PlayerActionPhase} which the effect is used in
+     * @param island                   the {@code Island} which the {@code Character} affects
+     * @param color                    the {@code Color} which the {@code Character} affects
+     * @param srcStudents              the students to be moved to the destination
+     * @param dstStudents              the students to be moved to the source (only if the effect is a "swap" effect)
+     * @throws InvalidActionException if there are no noEntry tiles on the {@code Character}
+     */
     @Override
-    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidCharacterException {
+    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidActionException {
         removeNoEntry();
         island.increaseNoEntryNum();
         super.addCoinAfterFirstUse();
     }
 
-    private void removeNoEntry() throws InvalidCharacterException {
-        if (noEntryNum == 0) throw new InvalidCharacterException("There are no NoEntry pawns left on this card");
+    /**
+     * removes a noEntry tile from the {@code Character}
+     *
+     * @throws InvalidActionException if there are no noEntry tiles on the {@code Character}
+     */
+    private void removeNoEntry() throws InvalidActionException {
+        if (noEntryNum == 0) throw new InvalidActionException("There are no NoEntry pawns left on this card");
         noEntryNum--;
     }
 }

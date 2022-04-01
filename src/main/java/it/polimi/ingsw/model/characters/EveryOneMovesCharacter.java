@@ -16,6 +16,16 @@ public class EveryOneMovesCharacter extends GameboardCharacter {
         super(characterName, gb);
     }
 
+    /**
+     * Every {@code Player} moves 3 students (if they have them) of the selected {@code Color} from their
+     * {@code DiningRoom} to the {@code Bag}
+     *
+     * @param currentPlayerActionPhase the {@code PlayerActionPhase} which the effect is used in
+     * @param island                   the {@code Island} which the {@code Character} affects
+     * @param color                    the {@code Color} which the {@code Character} affects
+     * @param srcStudents              the students to be moved to the destination
+     * @param dstStudents              the students to be moved to the source (only if the effect is a "swap" effect)
+     */
     @Override
     public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) {
         for (Player player : getGameBoard().getGame().getPlayers()) {

@@ -28,10 +28,27 @@ public abstract class Character {
         return characterName;
     }
 
+    /**
+     * Adds the coin on the {@code Character} after its first use
+     */
     protected void addCoinAfterFirstUse() {
         hasCoin = true;
     }
 
+    /**
+     * Uses the effect of the {@code Character}
+     *
+     * @param currentPlayerActionPhase the {@code PlayerActionPhase} which the effect is used in
+     * @param island                   the {@code Island} which the {@code Character} affects
+     * @param color                    the {@code Color} which the {@code Character} affects
+     * @param srcStudents              the students to be moved to the destination
+     * @param dstStudents              the students to be moved to the source (only if the effect is a "swap" effect)
+     * @throws InvalidCharacterException       if
+     * @throws CharacterAlreadyPlayedException if the current {@code Player} has already played a {@code Character}
+     * @throws StudentNotOnTheCardException    if the {@code Character} has not the selected {@code Student} on it
+     * @throws InvalidActionException          if the action is not valid
+     * @throws InvalidStudentException         if the {@code Student} is not valid
+     */
     public abstract void useEffect(
             PlayerActionPhase currentPlayerActionPhase, Island island, Color color,
             ArrayList<Student> srcStudents, ArrayList<Student> dstStudents

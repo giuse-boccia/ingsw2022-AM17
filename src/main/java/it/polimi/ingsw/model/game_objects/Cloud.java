@@ -35,6 +35,11 @@ public class Cloud implements Place {
         }
     }
 
+    /**
+     * Checks if the {@code Bag} is empty
+     *
+     * @return true if the {@code Bag} is empty
+     */
     public boolean isEmpty() {
         return students.size() == 0;
     }

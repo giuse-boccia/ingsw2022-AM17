@@ -24,6 +24,13 @@ public class Player {
         }
     }
 
+    /**
+     * Moves the selected {@code Student} from the from {@code Place} to the to {@code Place}
+     *
+     * @param from    the {@code Place} to move the selected {@code Student} from
+     * @param to      the {@code Place} to move the selected {@code Student} to
+     * @param student the {@code Student} to move
+     */
     public void moveStudent(Place from, Place to, Student student) {
         try {
             from.giveStudent(to, student);
@@ -33,14 +40,29 @@ public class Player {
         // TODO: If move TO my diningRoom check if can steal professor using playerActionPhase Strategy
     }
 
+    /**
+     * Plays an {@code Assistant} from the hand of the {@code Player}
+     *
+     * @param assistant the {@code Assistant} to play
+     */
     public void playAssistant(Assistant assistant) {
         hand[assistant.getValue() - 1] = null;
     }
 
+    /**
+     * Uses the effect of the selected {@code Character}
+     *
+     * @param character the {@code Character} to use the effect of
+     */
     public void useCharacter(Character character) {
         // chiama charachter.useEffect() e toglie monete e lancia eccezione se non ha abbastanza monete
     }
 
+    /**
+     * Picks a {@code Wizard} not been picked by another {@code Player} yet
+     *
+     * @param wizard the {@code Wizard} chosen
+     */
     public void pickWizard(Wizard wizard) {
         // TODO: check if wizard is not picked by others
         this.wizard = wizard;
@@ -50,6 +72,11 @@ public class Player {
         // Steal professor if possible
     }
 
+    /**
+     * Fills the {@code Entrance} of the current {@code Player} with the students from the selected {@code Cloud}
+     *
+     * @param cloud the {@code Cloud} to be emptied to the {@code Player} {@code Entrance}
+     */
     public void fillFromCloud(Cloud cloud) {
 
     }
@@ -80,7 +107,6 @@ public class Player {
     public String getName() {
         return name;
     }
-
 
     public int getNumCoins() {
         return numCoins;

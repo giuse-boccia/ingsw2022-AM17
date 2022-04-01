@@ -63,6 +63,13 @@ public class PlanningPhase {
         }
     }
 
+    /**
+     * Checks if the selected {@code Assistant} is playable
+     *
+     * @param assistant the {@code Assistant} to check
+     * @return true if the {@code Assistan} has a different value from all the other values of the other assistans
+     * played or if the current {@code Player} has no other playable assistant
+     */
     private boolean isAssistantPlayable(Assistant assistant) {
         List<Integer> playedValues =
                 playedAssistants.stream().map(Assistant::getValue).toList();

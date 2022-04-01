@@ -21,6 +21,20 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         students = new ArrayList<>();
     }
 
+    /**
+     * Uses the correct effect of one {@code MovingCharacter} accordingly to its name and moves the scrStudents to the
+     * correct destination
+     *
+     * @param currentPlayerActionPhase the {@code PlayerActionPhase} which the effect is used in
+     * @param island                   the {@code Island} which the {@code Character} affects
+     * @param color                    the {@code Color} which the {@code Character} affects
+     * @param srcStudents              the students to be moved to the destination
+     * @param dstStudents              the students to be moved to the source (only if the effect is a "swap" effect)
+     * @throws InvalidCharacterException    if the {@code Character} is not valid
+     * @throws StudentNotOnTheCardException if the {@code Student} is not on the card
+     * @throws InvalidActionException       if the action is not valid
+     * @throws InvalidStudentException      if the {@code Student} is not valid
+     */
     @Override
     public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents)
             throws InvalidCharacterException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException {
@@ -35,10 +49,10 @@ public class MovingCharacter extends GameboardCharacter implements Place {
             case swapUpTo3FromEntranceToCard -> {
                 Entrance curEntrance = currentPlayerActionPhase.getCurrentPlayer().getDashboard().getEntrance();
                 if (!this.students.containsAll(dstStudents)) {
-                    throw new InvalidActionException("One or more students are not on the card");
+                    throw new InvalidActionException("One or more students are not yet on the card");
                 }
                 if (!curEntrance.getStudents().containsAll(srcStudents)) {
-                    throw new InvalidActionException("One or more students are not on the entrance");
+                    throw new InvalidActionException("One or more students are not yet in the entrance");
                 }
                 swapStudents(curEntrance, this, srcStudents, dstStudents);
             }
@@ -60,6 +74,11 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         super.addCoinAfterFirstUse();
     }
 
+    /**
+     * Fills the selected {@code Character} with the correct number of students from the {@code Bag}
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     public void fillCardFromBag() throws EmptyBagException {
         Bag bag = getGameBoard().getBag();
         while (students.size() < initialStudents) {
@@ -67,6 +86,16 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         }
     }
 
+    /**
+     * Moves the scrStudents from the src to the dst and viceversa
+     *
+     * @param src         the scource of scrStudents
+     * @param dst         the destination of srcStudents
+     * @param srcStudents the students to be moved from the stc to the dst
+     * @param dstStudents the students to be moved from the dst to the scr
+     * @throws InvalidActionException  if the action is not valid
+     * @throws InvalidStudentException it the student is not valid
+     */
     private void swapStudents(Place src, Place dst, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidActionException, InvalidStudentException {
         if (srcStudents.size() > numStudents) {
             throw new InvalidActionException("You can move up to two students");
@@ -84,6 +113,14 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         }
     }
 
+    /**
+     * Moves the scrStudents to the destination
+     *
+     * @param destination the destination to move the students to
+     * @param srcStudents the students to be moved
+     * @throws StudentNotOnTheCardException if the {@code Student} is not on the {@code Character}
+     * @throws InvalidActionException       if the action is not valid
+     */
     private void moveStudentAwayFromCard(Place destination, ArrayList<Student> srcStudents) throws StudentNotOnTheCardException, InvalidActionException {
         if (!students.containsAll(srcStudents)) {
             throw new StudentNotOnTheCardException("The student is not on the card");
