@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.Assistant;
-import it.polimi.ingsw.model.game_objects.Cloud;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Cloud;
 
 import java.util.ArrayList;
 import java.util.Comparator;

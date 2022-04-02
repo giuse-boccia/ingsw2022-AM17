@@ -1,6 +1,8 @@
-package it.polimi.ingsw.model.game_objects;
+package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
+import it.polimi.ingsw.model.game_objects.Place;
+import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.utils.Students;
 
 import java.util.ArrayList;
@@ -10,7 +12,7 @@ import java.util.Collections;
  * A bag initially containing 120 students.
  * The bag is shuffled at its creation and every time it receives a new {@code Student}
  */
-public class Bag implements Place{
+public class Bag implements Place {
     private final ArrayList<Student> students;
 
     public Bag(){

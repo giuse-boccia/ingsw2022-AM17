@@ -1,6 +1,8 @@
-package it.polimi.ingsw.model.game_objects;
+package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.game_objects.Place;
+import it.polimi.ingsw.model.game_objects.Student;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Bag;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 
 import java.util.ArrayList;
 

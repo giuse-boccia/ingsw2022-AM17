@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.characters;
 
-import it.polimi.ingsw.model.game_objects.GameBoard;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 
 /**
  * A subclass of {@code Character} which has a reference to the {@code GameBoard}

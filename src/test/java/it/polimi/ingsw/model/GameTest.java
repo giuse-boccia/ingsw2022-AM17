@@ -4,6 +4,8 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.game_actions.Round;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.*;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Bag;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.model.utils.Students;
 import org.junit.jupiter.api.Test;
 

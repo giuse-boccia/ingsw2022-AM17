@@ -1,10 +1,9 @@
 package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.exceptions.InvalidActionException;
-import it.polimi.ingsw.exceptions.InvalidCharacterException;
 import it.polimi.ingsw.model.game_objects.Color;
-import it.polimi.ingsw.model.game_objects.GameBoard;
-import it.polimi.ingsw.model.game_objects.Island;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Student;
 

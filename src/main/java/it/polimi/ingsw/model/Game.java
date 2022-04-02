@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.game_actions.Round;
-import it.polimi.ingsw.model.game_objects.GameBoard;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 
 import java.util.ArrayList;
 import java.util.Random;

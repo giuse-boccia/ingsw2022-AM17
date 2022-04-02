@@ -4,6 +4,8 @@ import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Cloud;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 
 public class Player {
     private final Assistant[] hand;

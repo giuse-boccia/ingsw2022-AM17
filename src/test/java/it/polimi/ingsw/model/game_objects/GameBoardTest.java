@@ -2,8 +2,8 @@ package it.polimi.ingsw.model.game_objects;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.TestGameFactory;
-import it.polimi.ingsw.model.game_objects.GameBoard;
-import it.polimi.ingsw.model.game_objects.Island;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

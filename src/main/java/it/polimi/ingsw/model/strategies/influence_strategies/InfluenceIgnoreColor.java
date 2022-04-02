@@ -2,8 +2,7 @@ package it.polimi.ingsw.model.strategies.influence_strategies;
 
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.game_objects.Color;
-import it.polimi.ingsw.model.game_objects.Island;
-import it.polimi.ingsw.model.game_objects.Professor;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.model.utils.Students;
 
 public class InfluenceIgnoreColor implements InfluenceStrategy {

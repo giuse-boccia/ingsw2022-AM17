@@ -8,7 +8,7 @@ import it.polimi.ingsw.model.characters.PassiveCharacter;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.Assistant;
-import it.polimi.ingsw.model.game_objects.GameBoard;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
