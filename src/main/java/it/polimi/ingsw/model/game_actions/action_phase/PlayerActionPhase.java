@@ -7,7 +7,6 @@ import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
-import it.polimi.ingsw.model.game_objects.dashboard_objects.ProfessorRoom;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Cloud;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
@@ -103,30 +102,25 @@ public abstract class PlayerActionPhase {
     }
 
     /**
-     * Moves the {@code Professor} of the selected {@code Color} to the current {@code Character} {@code ProfessorRoom}
+     * Checks if the current player can steal the professor of the given color and eventually sets him/her as
+     * its owner
      *
-     * @param color the {@code Colo} of the {@code Professor} to steal
+     * @param color the {@code Colo} of the professor to steal
      */
     private void stealProfessorIfPossible(Color color) {
-        try {
-            gb.getStartingProfessors().giveProfessor(color, getCurrentPlayer().getDashboard().getProfessorRoom());
-        } catch (ProfessorAlreadyPresentException ignored) {
-        } catch (ProfessorNotFoundException e) {
-            ArrayList<Player> players = gb.getGame().getPlayers();
-            players.remove(getCurrentPlayer());
 
-            for (Player p : players) {
-                DiningRoom otherDining = p.getDashboard().getDiningRoom();
-                ProfessorRoom otherProfRoom = p.getDashboard().getProfessorRoom();
-                if (otherProfRoom.hasProfessorOfColor(color) &&
-                        canStealProfessor(color, getCurrentPlayer().getDashboard().getDiningRoom(), otherDining)) {
-                    try {
-                        otherProfRoom.giveProfessor(color, getCurrentPlayer().getDashboard().getProfessorRoom());
-                    } catch (ProfessorAlreadyPresentException | ProfessorNotFoundException exception) {
-                        exception.printStackTrace();
-                    }
-                }
-            }
+        Player owner = gb.getOwnerOfProfessor(color);   // null if nobody owns the professor (see method javadoc)
+
+        if (owner == null) {
+            gb.setOwnerOfProfessor(color, getCurrentPlayer());
+            return;
+        }
+
+        if (professorStrategy.canStealProfessor(
+                color,
+                getCurrentPlayer().getDashboard().getDiningRoom(),
+                owner.getDashboard().getDiningRoom())) {
+            gb.setOwnerOfProfessor(color, getCurrentPlayer());
         }
     }
 

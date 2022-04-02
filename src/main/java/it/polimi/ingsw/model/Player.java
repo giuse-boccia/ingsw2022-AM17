@@ -7,6 +7,8 @@ import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Cloud;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 
+import java.util.List;
+
 public class Player {
     private final Assistant[] hand;
     private final Dashboard dashboard;
@@ -93,7 +95,7 @@ public class Player {
      *
      * @return the remaining towers in the player dashboard
      */
-    public int getNumberOfTowers(Game game) {
+    public int getNumberOfTowers() {
         int res = initialTowers;
         for (Island island : game.getGameBoard().getIslands()) {
             if (island.getOwner() == this) {
@@ -101,6 +103,28 @@ public class Player {
             }
         }
         return res;
+    }
+
+    /**
+     * Returns a {@code List} of the colors of the professors owned by the player
+     *
+     * @return a {@code List} of the colors of the professors owned by the player
+     */
+    public List<Color> getColorsOfOwnedProfessors() {
+        return game.getGameBoard()
+                .getColorsOfOwnedProfessors(this);
+    }
+
+    /**
+     * Checks if the {@code Player} controls the professor of the given {@code Color}
+     *
+     * @param color the color of the professor to check
+     * @return true if the {@code Player} controls the professor of the given {@code Color}
+     */
+    public boolean hasProfessor(Color color) {
+        return game.getGameBoard()
+                .getColorsOfOwnedProfessors(this)
+                .contains(color);
     }
 
     public Assistant[] getHand() {
@@ -117,6 +141,10 @@ public class Player {
 
     public int getNumCoins() {
         return numCoins;
+    }
+
+    public void addCoin() {
+        numCoins++;
     }
 
     public Wizard getWizard() {

@@ -24,12 +24,9 @@ class ProfessorStrategyTest {
 
     /**
      * Tests the default strategy to check if a {@code Player} can steal a {@code Professor} from another {@code Player}
-     *
-     * @throws ProfessorAlreadyPresentException if the {@code Professor} is already in the {@code ProfessorRoom} of the {@code Player}
-     *                                          who is trying to steal it
      */
     @Test
-    public void professorDefaultTest() throws ProfessorAlreadyPresentException {
+    public void professorDefaultTest() {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
         Player clod = g.getPlayers().get(1);        // Clod is player 1
 
@@ -41,11 +38,11 @@ class ProfessorStrategyTest {
         PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(a, gb, true);
 
         // Clod has green professor and 1 green student
-        clod.getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.GREEN));
+        gb.setOwnerOfProfessor(Color.GREEN, clod);
         clod.getDashboard().getDiningRoom().receiveStudent(new Student(Color.GREEN));
 
         assertEquals(1, dr1.getNumberOfStudentsOfColor(Color.GREEN));
-        assertTrue(clod.getDashboard().getProfessorRoom().hasProfessorOfColor(Color.GREEN));
+        assertTrue(clod.hasProfessor(Color.GREEN));
 
         // Rick has 2 green students on his entrance
         Student s1 = new Student(Color.GREEN);
@@ -73,12 +70,9 @@ class ProfessorStrategyTest {
     /**
      * Tests the strategy to check if a {@code Player} can steal a {@code Professor} from another {@code Player} when the
      * effect of the {@code Player} called "takeProfWithEqualStudents" is active
-     *
-     * @throws ProfessorAlreadyPresentException if the {@code Professor} is already in the {@code ProfessorRoom} of the {@code Player}
-     *                                          who is trying to steal it
      */
     @Test
-    public void professorOnDrawTest() throws ProfessorAlreadyPresentException {
+    public void professorOnDrawTest() {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
         Player clod = g.getPlayers().get(1);        // Clod is player 1
 
@@ -94,11 +88,11 @@ class ProfessorStrategyTest {
         pap.playPassiveCharacter(pc);
 
         // Clod has green professor and 1 green student
-        clod.getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.GREEN));
+        gb.setOwnerOfProfessor(Color.GREEN, clod);
         clod.getDashboard().getDiningRoom().receiveStudent(new Student(Color.GREEN));
 
         assertEquals(1, dr1.getNumberOfStudentsOfColor(Color.GREEN));
-        assertTrue(clod.getDashboard().getProfessorRoom().hasProfessorOfColor(Color.GREEN));
+        assertTrue(clod.hasProfessor(Color.GREEN));
 
         // Rick has 2 green students on his entrance
         Student s1 = new Student(Color.GREEN);

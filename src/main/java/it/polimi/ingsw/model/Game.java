@@ -69,6 +69,10 @@ public class Game {
     }
 
     public void start(int nextFirstPlayerIndex) {
+        for (Player player : players) {
+            player.addToGame(this);
+        }
+
         currentRound = new Round(nextFirstPlayerIndex, this);
         currentRound.startPlanningPhase();
     }

@@ -25,7 +25,7 @@ public class InfluenceIgnoreColor implements InfluenceStrategy {
     public int computeInfluence(Island island, Player player) {
         int difference = 0;
 
-        if (player.getDashboard().getProfessorRoom().hasProfessorOfColor(colorToIgnore)) {
+        if (player.hasProfessor(colorToIgnore)) {
             difference = Students.countColor(island.getStudents(), colorToIgnore);
         }
 

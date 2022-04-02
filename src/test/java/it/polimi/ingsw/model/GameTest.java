@@ -45,7 +45,6 @@ public class GameTest {
      * Plays the first round of a non-expert {@code Game}
      */
     private void playFirstRound() {
-        game.start(0);
         Round firstRound = game.getCurrentRound();
 
         assertFalse(firstRound.isLastRound());
@@ -73,8 +72,7 @@ public class GameTest {
 
         //Now several clients can call PlayerActionPhase
         assertDoesNotThrow(() -> pap.moveStudent(clod, Color.GREEN, clod.getDashboard().getDiningRoom()));
-        assertTrue(clod.getDashboard().getProfessorRoom().hasProfessorOfColor(Color.GREEN));
-        assertFalse(game.getGameBoard().getStartingProfessors().hasProfessorOfColor(Color.GREEN));
+        assertTrue(clod.hasProfessor(Color.GREEN));
         assertDoesNotThrow(() -> pap.moveStudent(clod, Color.GREEN, clod.getDashboard().getDiningRoom()));
         assertThrows(InvalidActionException.class,
                 () -> pap.moveStudent(giuse, Color.PINK, clod.getDashboard().getDiningRoom()),
@@ -93,8 +91,7 @@ public class GameTest {
         );
 
         assertDoesNotThrow(() -> pap.moveStudent(clod, Color.BLUE, clod.getDashboard().getDiningRoom()));
-        assertTrue(clod.getDashboard().getProfessorRoom().hasProfessorOfColor(Color.BLUE));
-        assertFalse(game.getGameBoard().getStartingProfessors().hasProfessorOfColor(Color.BLUE));
+        assertTrue(clod.hasProfessor(Color.BLUE));
         assertDoesNotThrow(() -> pap.moveStudent(clod, Color.BLUE, game.getGameBoard().getIslands().get(1)));
 
         assertEquals(2, Students.countColor(clod.getDashboard().getDiningRoom().getStudents(), Color.GREEN));
@@ -139,8 +136,8 @@ public class GameTest {
             assertDoesNotThrow(() -> pap2.moveStudent(giuse, Color.BLUE, giuse.getDashboard().getDiningRoom()));
             assertDoesNotThrow(() -> pap2.moveStudent(giuse, Color.PINK, giuse.getDashboard().getDiningRoom()));
         }
-        assertTrue(giuse.getDashboard().getProfessorRoom().hasProfessorOfColor(Color.BLUE));
-        assertFalse(clod.getDashboard().getProfessorRoom().hasProfessorOfColor(Color.BLUE));
+        assertTrue(giuse.hasProfessor(Color.BLUE));
+        assertFalse(clod.hasProfessor(Color.BLUE));
         assertDoesNotThrow(() -> pap2.moveMotherNature(giuse, 3));
         assertEquals(4, game.getGameBoard().getMotherNatureIndex());
         assertEquals(giuse, game.getGameBoard().getIslands().get(4).getOwner());
@@ -163,11 +160,11 @@ public class GameTest {
         for (int i = 0; i < 2; i++) {
             assertDoesNotThrow(() -> pap3.moveStudent(rick, Color.PINK, rick.getDashboard().getDiningRoom()));
         }
-        assertFalse(rick.getDashboard().getProfessorRoom().hasProfessorOfColor(Color.PINK));
+        assertFalse(rick.hasProfessor(Color.PINK));
         assertDoesNotThrow(() -> pap3.moveStudent(rick, Color.PINK, rick.getDashboard().getDiningRoom()));
-        assertTrue(rick.getDashboard().getProfessorRoom().hasProfessorOfColor(Color.PINK));
+        assertTrue(rick.hasProfessor(Color.PINK));
         assertDoesNotThrow(() -> pap3.moveStudent(rick, Color.GREEN, rick.getDashboard().getDiningRoom()));
-        assertFalse(rick.getDashboard().getProfessorRoom().hasProfessorOfColor(Color.GREEN));
+        assertFalse(rick.hasProfessor(Color.GREEN));
 
         assertDoesNotThrow(() -> pap3.moveMotherNature(rick, 4));
         assertEquals(rick, game.getGameBoard().getIslands().get(8).getOwner());
@@ -230,14 +227,14 @@ public class GameTest {
         checkInitialDashboard();
 
         for (Color color : Color.values()) {
-            assertTrue(game.getGameBoard().getStartingProfessors().hasProfessorOfColor(color));
+            assertNull(game.getGameBoard().getOwnerOfProfessor(color));
         }
-        assertEquals(5, game.getGameBoard().getStartingProfessors().getProfessors().size());
+        assertEquals(5, game.getGameBoard().getColorsOfOwnedProfessors(null).size());
 
         for (Player player : players) {
             assertEquals(0, player.getDashboard().getDiningRoom().getStudents().size());
             assertEquals(0, player.getDashboard().getEntrance().getStudents().size());
-            assertEquals(0, player.getDashboard().getProfessorRoom().getProfessors().size());
+            assertEquals(0, player.getColorsOfOwnedProfessors().size());
         }
 
         // FIXME what happens when a player chooses a Wizard that is already been chosen? Maybe thrown an Exception - but in Game class, not in Player

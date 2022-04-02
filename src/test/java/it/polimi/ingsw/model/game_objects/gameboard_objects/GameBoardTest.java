@@ -1,14 +1,15 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
-import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
-import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
+import it.polimi.ingsw.model.game_objects.Color;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameBoardTest {
 
@@ -160,5 +161,4 @@ public class GameBoardTest {
         assertEquals(islands.get(10), gb.getIslands().get(7));
         assertEquals(7, gb.getMotherNatureIndex());
     }
-
 }

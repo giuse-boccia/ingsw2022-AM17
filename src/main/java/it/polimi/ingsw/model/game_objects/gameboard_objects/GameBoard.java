@@ -1,20 +1,15 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
-import it.polimi.ingsw.exceptions.ProfessorAlreadyPresentException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.game_objects.Color;
-import it.polimi.ingsw.model.game_objects.Professor;
 import it.polimi.ingsw.model.game_objects.Student;
-import it.polimi.ingsw.model.game_objects.dashboard_objects.ProfessorRoom;
 import it.polimi.ingsw.model.utils.Students;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameBoard {
     private final ArrayList<Island> islands;
@@ -22,14 +17,14 @@ public class GameBoard {
     private final Character[] characters;
     private final Game game;
     private final Bag bag;
-    private final ProfessorRoom startingProfessors;
+    private final Map<Color, Player> professors;
     private int motherNatureIndex;
 
     public GameBoard(Game game) {
         this.game = game;
         bag = new Bag();
         motherNatureIndex = new Random().nextInt(12);
-        this.startingProfessors = initProfessors();
+        this.professors = initProfessorMap();
         this.clouds = initClouds();
         this.islands = initIslands();
         this.characters = initCharacters();
@@ -107,21 +102,14 @@ public class GameBoard {
     /**
      * Initializes professors to start the game
      *
-     * @return a {@code ProfessorRoom} with one professor for each color
+     * @return a {@code Map} with the five colors as keys and 5 null as values
      */
-    private ProfessorRoom initProfessors() {
-        ProfessorRoom result = new ProfessorRoom();
-
-        for (Color color : Color.values()) {
-            try {
-                result.takeProfessor(new Professor(color));
-            } catch (ProfessorAlreadyPresentException e) {
-                e.printStackTrace();
-                System.out.println(e.getMessage());
-            }
+    private Map<Color, Player> initProfessorMap() {
+        Map<Color, Player> res = new HashMap<>();
+        for (Color c : Color.values()) {
+            res.put(c, null);
         }
-
-        return result;
+        return res;
     }
 
     /**
@@ -235,9 +223,40 @@ public class GameBoard {
         return bag;
     }
 
-    public ProfessorRoom getStartingProfessors() {
-        return startingProfessors;
+    public Map<Color, Player> getProfessorsMap() {
+        return professors;
     }
 
+    /**
+     * Returns the {@code Player} who owns the professor of the given color or {@code null} if nobody owns the professor
+     *
+     * @param color the color of the professor to check
+     * @return {@code null} if nobody owns the professor, or the {@code Player} who owns the professor
+     */
+    public Player getOwnerOfProfessor(Color color) {
+        return professors.get(color);
+    }
 
+    /**
+     * Sets a new owner for the professor of the given color
+     *
+     * @param color  the color of the professor
+     * @param player the new owner of the professor
+     */
+    public void setOwnerOfProfessor(Color color, Player player) {
+        professors.put(color, player);
+
+    }
+
+    /**
+     * Given a {@code Player}, returns a {@code List} of the colors of the professors which he/she owns
+     *
+     * @param player the {@code Player} to check the owned professors of
+     * @return a {@code List} of the colors of which that {@code Player} owns the professor of
+     */
+    public List<Color> getColorsOfOwnedProfessors(Player player) {
+        return professors.keySet().stream()
+                .filter(color -> professors.get(color) == player)
+                .collect(Collectors.toList());
+    }
 }

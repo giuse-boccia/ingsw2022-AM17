@@ -22,12 +22,9 @@ public class ResolveIslandCharacterTest {
 
     /**
      * Tests the effect of the {@code Character} called "resolveIsland"
-     *
-     * @throws ProfessorAlreadyPresentException if the {@code Professor} is already present in the {@code ProfessorRoom}
-     *                                          of the {@code Player} who is trying to get it
      */
     @Test
-    void testResolveIslandCharacter1() throws ProfessorAlreadyPresentException {
+    void testResolveIslandCharacter1() {
         ResolveIslandCharacter character = new ResolveIslandCharacter(CharacterName.noEntry, gb);
         PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
                 new Assistant(4, 8, game.getPlayers().get(0)), gb, true
@@ -44,9 +41,9 @@ public class ResolveIslandCharacterTest {
             islands.get(0).receiveStudent(new Student(Color.GREEN));
         }
         islands.get(0).receiveStudent(new Student(Color.BLUE));
-        game.getPlayers().get(0).getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.GREEN));
-        game.getPlayers().get(0).getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.RED));
-        game.getPlayers().get(1).getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.BLUE));
+        gb.setOwnerOfProfessor(Color.GREEN, game.getPlayers().get(0));
+        gb.setOwnerOfProfessor(Color.RED, game.getPlayers().get(0));
+        gb.setOwnerOfProfessor(Color.BLUE, game.getPlayers().get(1));
 
         // After playing the character, the island is resolved (and is now owned bt Player 0), while mother nature hasn't moved
         assertDoesNotThrow(() -> pap.playCharacter(character, islands.get(0), null, null, null));
@@ -57,12 +54,9 @@ public class ResolveIslandCharacterTest {
 
     /**
      * Tests the effect of the {@code Character} called "resolveIsland"
-     *
-     * @throws ProfessorAlreadyPresentException if the {@code Professor} is already present in the {@code ProfessorRoom}
-     *                                          of the {@code Player} who is trying to get it
      */
     @Test
-    void testResolveIslandCharacter2() throws ProfessorAlreadyPresentException {
+    void testResolveIslandCharacter2() {
         ResolveIslandCharacter character = new ResolveIslandCharacter(CharacterName.resolveIsland, gb);
         PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
                 new Assistant(4, 8, game.getPlayers().get(0)), gb, true
@@ -81,10 +75,10 @@ public class ResolveIslandCharacterTest {
             islands.get(0).receiveStudent(new Student(Color.GREEN));
         }
         islands.get(0).receiveStudent(new Student(Color.BLUE));
-        game.getPlayers().get(0).getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.GREEN));
-        game.getPlayers().get(0).getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.BLUE));
-        game.getPlayers().get(1).getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.RED));
 
+        gb.setOwnerOfProfessor(Color.GREEN, game.getPlayers().get(0));
+        gb.setOwnerOfProfessor(Color.BLUE, game.getPlayers().get(0));
+        gb.setOwnerOfProfessor(Color.RED, game.getPlayers().get(1));
 
         assertDoesNotThrow(() -> pap.playCharacter(character, islands.get(0), null, null, null));
         assertEquals(game.getPlayers().get(0), islands.get(0).getOwner());

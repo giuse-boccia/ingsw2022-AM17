@@ -17,27 +17,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BagTest {
 
-    Game game = TestGameFactory.getNewGame();
-
     /**
      * Tests if the {@code Bag} has the correct number of students, and tests all the exceptions relative to the {@code Bag}
      */
     @Test
     void testBag() {
-        Bag bag = game.getGameBoard().getBag();
-        Player chosenPlayer = game.getPlayers().get(0);
+        // Does not use the Game
+        Bag bag = new Bag();    // new Bag contains 24 students of each color
+
+        Island fooIsland = new Island();
 
         for (int i = 0; i < 120; i++) {
-            assertDoesNotThrow(() -> bag.giveStudent(chosenPlayer.getDashboard().getEntrance(), bag.getRandStudent()));
+            assertDoesNotThrow(() -> bag.giveStudent(fooIsland, bag.getRandStudent()));
         }
 
-        assertThrows(EmptyBagException.class, () -> bag.giveStudent(chosenPlayer.getDashboard().getEntrance(), bag.getRandStudent()));
+        assertThrows(EmptyBagException.class, () -> bag.giveStudent(fooIsland, bag.getRandStudent()));
 
         Student newStudent = new Student(Color.GREEN);
         bag.receiveStudent(newStudent);
         assertDoesNotThrow(() -> assertEquals(newStudent, bag.getRandStudent()));
 
-        ArrayList<Student> students = chosenPlayer.getDashboard().getEntrance().getStudents();
+        ArrayList<Student> students = fooIsland.getStudents();
         assertEquals(120, students.size());
         for (Color color : Color.values()) {
             assertEquals(24, Students.countColor(students, color));

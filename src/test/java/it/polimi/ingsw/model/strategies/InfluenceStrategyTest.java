@@ -24,15 +24,15 @@ class InfluenceStrategyTest {
      * against another one
      */
     @Test
-    public void influenceDefaultTest1() throws ProfessorAlreadyPresentException {
+    public void influenceDefaultTest1() {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
         Player clod = g.getPlayers().get(1);        // Clod is player 1
 
         // Rick has green professor
-        rick.getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.GREEN));
+        gb.setOwnerOfProfessor(Color.GREEN, rick);
 
         // Clod has red professor
-        clod.getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.RED));
+        gb.setOwnerOfProfessor(Color.RED, clod);
 
         // island with 1 green student
         Island island = new Island();
@@ -67,15 +67,15 @@ class InfluenceStrategyTest {
      * against another one
      */
     @Test
-    public void influenceDefaultTest2() throws ProfessorAlreadyPresentException {
+    public void influenceDefaultTest2() {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
         Player clod = g.getPlayers().get(1);        // Clod is player 1
 
         // Rick has green professor
-        rick.getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.GREEN));
+        gb.setOwnerOfProfessor(Color.GREEN, rick);
 
         // Clod has red professor
-        clod.getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.RED));
+        gb.setOwnerOfProfessor(Color.RED, clod);
 
         // island with 1 red student and 1 green student
         Island island = new Island();
@@ -96,15 +96,15 @@ class InfluenceStrategyTest {
      * called "plus2Influence" is active
      */
     @Test
-    public void influenceBonusTest() throws ProfessorAlreadyPresentException {
+    public void influenceBonusTest() {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
         Player clod = g.getPlayers().get(1);        // Clod is player 1
 
         // Rick has green professor
-        rick.getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.GREEN));
+        gb.setOwnerOfProfessor(Color.GREEN, rick);
 
         // Clod has red professor
-        clod.getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.RED));
+        gb.setOwnerOfProfessor(Color.RED, clod);
 
         // island with 1 green student and 2 red students
         Island island = new Island();
@@ -130,15 +130,15 @@ class InfluenceStrategyTest {
      * called "ignoreColor" is active
      */
     @Test
-    public void influenceIgnoreColorTest() throws ProfessorAlreadyPresentException {
+    public void influenceIgnoreColorTest() {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
         Player clod = g.getPlayers().get(1);        // Clod is player 1
 
         // Rick has green professor
-        rick.getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.GREEN));
+        gb.setOwnerOfProfessor(Color.GREEN, rick);
 
         // Clod has red professor
-        clod.getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.RED));
+        gb.setOwnerOfProfessor(Color.RED, clod);
 
         // island with 3 green student and 2 red students
         Island island = new Island();
@@ -173,15 +173,15 @@ class InfluenceStrategyTest {
      * called "ignoreTowers" is active
      */
     @Test
-    public void influenceIgnoreTowersTest1() throws ProfessorAlreadyPresentException {
+    public void influenceIgnoreTowersTest1() {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
         Player clod = g.getPlayers().get(1);        // Clod is player 1
 
         // Rick has green professor
-        rick.getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.GREEN));
+        gb.setOwnerOfProfessor(Color.GREEN, rick);
 
         // Clod has red professor
-        clod.getDashboard().getProfessorRoom().takeProfessor(new Professor(Color.RED));
+        gb.setOwnerOfProfessor(Color.RED, clod);
 
         // island with 1 green student
         Island island = new Island();
