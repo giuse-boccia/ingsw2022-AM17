@@ -27,12 +27,12 @@ public class Cloud implements Place {
     }
 
     /**
-     * Fill the cloud taking students from the bag
+     * Fills the {@code Cloud} from the {@code Bag}
      *
      * @param bag Bag used in the game
      */
     public void fillFromBag(Bag bag) throws EmptyBagException {
-        for (int i = 0; i < maxStudents; i++) {
+        while (students.size() < maxStudents) {
             bag.giveStudent(this, bag.getRandStudent());
         }
     }
