@@ -281,7 +281,7 @@ public class GameTest {
     }
 
     /**
-     * Checks if the set up of the islands has been done correctly
+     * Checks if the set-up of the islands has been done correctly
      */
     private void checkIslands() {
         ArrayList<Island> islands = game.getGameBoard().getIslands();
@@ -309,7 +309,7 @@ public class GameTest {
                 assertEquals(i / 2 + i % 2, player.getHand()[i - 1].getNumSteps());
             }
             assertEquals(1, player.getNumCoins());
-            assertEquals(6, player.getNumberOfTowers(game));
+            assertEquals(6, player.getNumberOfTowers());
         }
     }
 

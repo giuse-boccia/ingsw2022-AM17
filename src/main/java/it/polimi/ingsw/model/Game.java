@@ -59,6 +59,10 @@ public class Game {
      * Starts the {@code Game} creating the first {@code Round}
      */
     public void start() {
+        for (Player player : players) {
+            player.addToGame(this);
+        }
+
         int nextFirstPlayerIndex = new Random().nextInt(players.size());
         currentRound = new Round(nextFirstPlayerIndex, this);
         currentRound.startPlanningPhase();

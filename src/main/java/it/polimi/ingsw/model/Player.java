@@ -13,6 +13,7 @@ public class Player {
     private final String name;
     private int numCoins;
     private Wizard wizard = null;
+    private Game game;
     private final int initialTowers;
 
     public Player(String name, int initialTowers) {
@@ -68,6 +69,10 @@ public class Player {
     public void pickWizard(Wizard wizard) {
         // TODO: check if wizard is not picked by others
         this.wizard = wizard;
+    }
+
+    public void addToGame(Game game) {
+        this.game = game;
     }
 
     private void checkProfessors(Color color) {
