@@ -17,6 +17,9 @@ class MNStrategyTest {
     Game g = TestGameFactory.getNewGame();
     GameBoard gb = g.getGameBoard();
 
+    /**
+     * Tests the default strategy to calculate the number of max steps MotherNature can do
+     */
     @Test
     public void mnDefaultTest() {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
@@ -35,6 +38,10 @@ class MNStrategyTest {
         assertEquals(5, pap.getMNMaxSteps());
     }
 
+    /**
+     * Tests the strategy to calculate the number of max steps MotherNature can do when the effect of the {@code Character}
+     * called "plus2MNMoves" is active
+     */
     @Test
     public void mnBonusTest1() {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
@@ -59,6 +66,10 @@ class MNStrategyTest {
         assertEquals(7, pap.getMNMaxSteps());       // 5+2 = 7 max moves
     }
 
+    /**
+     * Tests the strategy to calculate the number of max steps MotherNature can do when the effect of the {@code Character}
+     * called "plus2MNMoves" is active
+     */
     @Test
     public void MNBonusTest2() {
         Player rick = g.getPlayers().get(0);        // Rick is player 0

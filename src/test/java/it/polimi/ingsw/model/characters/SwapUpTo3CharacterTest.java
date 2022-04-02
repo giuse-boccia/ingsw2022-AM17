@@ -23,6 +23,12 @@ public class SwapUpTo3CharacterTest {
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
 
+    /**
+     * Private method to fill the {@code Entrance} for the tests:
+     * the {@code Entrance} receives 4 blue and 4 green students
+     *
+     * @param entrance the {@code Entrance} to fill
+     */
     private void fillEntrance(Entrance entrance) {
         entrance.receiveStudent(new Student(Color.RED));
         for (int i = 0; i < 4; i++) {
@@ -31,6 +37,11 @@ public class SwapUpTo3CharacterTest {
         }
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "swapUpTo3FromEntranceToCard"
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testCharacter() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo3FromEntranceToCard, gb, 6, 3);
@@ -71,6 +82,12 @@ public class SwapUpTo3CharacterTest {
         }
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "swapUpTo3FromEntranceToCard" and the exception thrown when
+     * the {@code Player} is trying to move at least a {@code Student} which is not in their {@code Entrance}
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testInvalidSource() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo3FromEntranceToCard, gb, 6, 3);
@@ -93,6 +110,12 @@ public class SwapUpTo3CharacterTest {
         );
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "swapUpTo3FromEntranceToCard" and the exception thrown when
+     * the {@code Player} is trying to move at least a {@code Student} which is not on the {@code Character}
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testInvalidDestination() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo3FromEntranceToCard, gb, 6, 3);
@@ -115,6 +138,12 @@ public class SwapUpTo3CharacterTest {
         );
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "swapUpTo3FromEntranceToCard" and the exception thrown when
+     * the {@code Player} is trying to swap students chosen in different quantities
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testInvalidSize1() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo3FromEntranceToCard, gb, 6, 3);
@@ -138,6 +167,12 @@ public class SwapUpTo3CharacterTest {
         );
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "swapUpTo3FromEntranceToCard" and the exception thrown when
+     * the {@code Player} is trying to move more than 3 students
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testInvalidSize2() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo3FromEntranceToCard, gb, 6, 3);
@@ -158,7 +193,7 @@ public class SwapUpTo3CharacterTest {
         assertThrows(
                 InvalidActionException.class,
                 () -> pap.playCharacter(character, null, null, srcStudents, dstStudents),
-                "You can move up to two students"
+                "You can move up to three students"
         );
     }
 

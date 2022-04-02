@@ -20,6 +20,12 @@ class StudentTest {
 
     Game game = TestGameFactory.getNewGame();
 
+    /**
+     * Tests the movement of the students from the {@code Entrance} of a {@code Player} to their {@code DiningRoom}
+     *
+     * @throws EmptyBagException       if the {@code Bag} is empty
+     * @throws InvalidStudentException if the {@code Student} is not valid
+     */
     @Test
     void testEntranceToDining() throws EmptyBagException, InvalidStudentException {
         Bag gameBag = game.getGameBoard().getBag();
@@ -47,6 +53,12 @@ class StudentTest {
         }
     }
 
+    /**
+     * Tests the movement of the students from the {@code Entrance} of a {@code Player} an {@code Island}
+     *
+     * @throws EmptyBagException       if the {@code Bag} is empty
+     * @throws InvalidStudentException if the {@code Student} is not valid
+     */
     @Test
     void testEntranceToIsland() throws EmptyBagException, InvalidStudentException {
         Bag bag = game.getGameBoard().getBag();

@@ -24,6 +24,11 @@ public class EveryOneMovesCharacterTest {
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
 
+    /**
+     * Helper method which fills the selected {@code Entrance} with 7 students from the {@code Bag}
+     *
+     * @param entrance the {@code Entrance} to fill
+     */
     private void fillEntrance(Entrance entrance) {
         for (int i = 0; i < 7; i++) {
             try {
@@ -34,6 +39,9 @@ public class EveryOneMovesCharacterTest {
         }
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "everyOneMove3FromDiningRoomToBag"
+     */
     @Test
     void testEveryOneMovesCharacter() {
         EveryOneMovesCharacter character = new EveryOneMovesCharacter(CharacterName.everyOneMove3FromDiningRoomToBag, gb);

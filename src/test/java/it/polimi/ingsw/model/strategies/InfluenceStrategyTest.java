@@ -17,6 +17,10 @@ class InfluenceStrategyTest {
     Game g = TestGameFactory.getNewGame();
     GameBoard gb = g.getGameBoard();
 
+    /**
+     * Tests the default strategy to calculate the influence on an {@code Island} when a {@code Player} has an advantage
+     * against another one
+     */
     @Test
     public void influenceDefaultTest1() throws ProfessorAlreadyPresentException {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
@@ -56,6 +60,10 @@ class InfluenceStrategyTest {
         assertSame(island.getOwner(), clod);
     }
 
+    /**
+     * Tests the default strategy to calculate the influence on an {@code Island} when no {@code Player} has an advantage
+     * against another one
+     */
     @Test
     public void influenceDefaultTest2() throws ProfessorAlreadyPresentException {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
@@ -81,6 +89,10 @@ class InfluenceStrategyTest {
         assertNull(island.getOwner());
     }
 
+    /**
+     * Tests the strategy to calculate the influence on an {@code Island} when the effect of the {@code Character}
+     * called "plus2Influence" is active
+     */
     @Test
     public void influenceBonusTest() throws ProfessorAlreadyPresentException {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
@@ -111,6 +123,10 @@ class InfluenceStrategyTest {
         assertSame(island.getOwner(), rick);
     }
 
+    /**
+     * Tests the strategy to calculate the influence on an {@code Island} when the effect of the {@code Character}
+     * called "ignoreColor" is active
+     */
     @Test
     public void influenceIgnoreColorTest() throws ProfessorAlreadyPresentException {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
@@ -150,6 +166,10 @@ class InfluenceStrategyTest {
         assertSame(island.getOwner(), clod);
     }
 
+    /**
+     * Tests the strategy to calculate the influence on an {@code Island} when the effect of the {@code Character}
+     * called "ignoreTowers" is active
+     */
     @Test
     public void influenceIgnoreTowersTest1() throws ProfessorAlreadyPresentException {
         Player rick = g.getPlayers().get(0);        // Rick is player 0

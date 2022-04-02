@@ -25,6 +25,12 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
 
+    /**
+     * Private method which makes the final assertions for the tests
+     *
+     * @param entrance the {@code Entrance} to check
+     * @param dining   the {@code DiningRoom} to check
+     */
     private void doFinalAssertions(Entrance entrance, DiningRoom dining) {
         assertEquals(1, Students.countColor(entrance.getStudents(), Color.PINK));
         assertEquals(3, Students.countColor(dining.getStudents(), Color.RED));
@@ -37,6 +43,14 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
         assertEquals(1, Students.countColor(dining.getStudents(), Color.YELLOW));
     }
 
+    /**
+     * Private method to fill the {@code Entrance} and the {@code DiningRoom} for the tests:
+     * the {@code Entrance} receives 3 pink and 3 green students
+     * the {@code DiningRoom} receives 5 red and 5 blue students
+     *
+     * @param entrance the {@code Entrance} to fill
+     * @param dining   the {@code DiningRoom} to fill
+     */
     private void fillEntranceAndDining(Entrance entrance, DiningRoom dining) {
         for (int i = 0; i < 3; i++) {
             entrance.receiveStudent(new Student(Color.PINK));
@@ -48,6 +62,11 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
         }
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "swapUpTo2FromEntranceToDiningRoom"
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testCharacter() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);
@@ -103,6 +122,12 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
         doFinalAssertions(entrance, dining);
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "swapUpTo2FromEntranceToDiningRoom" and the exception thrown when
+     * the {@code Player} is trying to move at least a {@code Student} which is not in their {@code Entrance}
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testInvalidSource() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);
@@ -126,6 +151,12 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
         );
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "swapUpTo2FromEntranceToDiningRoom" and the exception thrown when
+     * the {@code Player} is trying to move at least a {@code Student} which is not in their {@code DiningRoom}
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testInvalidDestination() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);
@@ -149,6 +180,12 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
         );
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "swapUpTo2FromEntranceToDiningRoom" and the exception thrown when
+     * the {@code Player} is trying to swap students chosen in different quantities
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testInvalidSize1() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);
@@ -173,6 +210,12 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
         );
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "swapUpTo2FromEntranceToDiningRoom" and the exception thrown when
+     * the {@code Player} is trying to move more than 2 students
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testInvalidSize2() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);

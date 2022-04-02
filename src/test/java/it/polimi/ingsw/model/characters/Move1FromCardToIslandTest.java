@@ -22,6 +22,12 @@ public class Move1FromCardToIslandTest {
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
 
+    /**
+     * Private method to find out if the array of Characters contains the one called "move1FromCardToIsland"
+     *
+     * @param characters the array of characters to check
+     * @return the index of the {@code Character} called "move1FromCardToIsland" in the array
+     */
     private int containsCard(Character[] characters) {
         for (int i = 0; i < characters.length; i++) {
             if (characters[i].getCardName() == CharacterName.move1FromCardToIsland)
@@ -30,6 +36,11 @@ public class Move1FromCardToIslandTest {
         return -1;
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "testMove1FromCardToIsland1"
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testMove1FromCardToIsland1() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToIsland, gb, 4, 1);
@@ -56,6 +67,11 @@ public class Move1FromCardToIslandTest {
         assertTrue(island.getStudents().contains(studentInCard.get(0)));
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "testMove1FromCardToIsland1"
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testMove1FromCardToIsland2() throws EmptyBagException {
         int index = containsCard(gb.getCharacters());
@@ -87,6 +103,11 @@ public class Move1FromCardToIslandTest {
         assertFalse(character.getStudents().contains(studentToGive));
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "testMove1FromCardToIsland1"
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testMove1FromCardToIsland3() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToIsland, gb, 4, 1);
@@ -106,6 +127,11 @@ public class Move1FromCardToIslandTest {
         );
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "testMove1FromCardToIsland1"
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testMove1FromCardToIsland4() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToIsland, gb, 4, 1);

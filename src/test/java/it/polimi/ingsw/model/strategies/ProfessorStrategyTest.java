@@ -21,6 +21,12 @@ class ProfessorStrategyTest {
     Game g = TestGameFactory.getNewGame();
     GameBoard gb = g.getGameBoard();
 
+    /**
+     * Tests the default strategy to check if a {@code Player} can steal a {@code Professor} from another {@code Player}
+     *
+     * @throws ProfessorAlreadyPresentException if the {@code Professor} is already in the {@code ProfessorRoom} of the {@code Player}
+     *                                          who is trying to steal it
+     */
     @Test
     public void professorDefaultTest() throws ProfessorAlreadyPresentException {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
@@ -63,6 +69,13 @@ class ProfessorStrategyTest {
         assertTrue(pap.canStealProfessor(Color.GREEN, dr0, dr1));
     }
 
+    /**
+     * Tests the strategy to check if a {@code Player} can steal a {@code Professor} from another {@code Player} when the
+     * effect of the {@code Player} called "takeProfWithEqualStudents" is active
+     *
+     * @throws ProfessorAlreadyPresentException if the {@code Professor} is already in the {@code ProfessorRoom} of the {@code Player}
+     *                                          who is trying to steal it
+     */
     @Test
     public void professorOnDrawTest() throws ProfessorAlreadyPresentException {
         Player rick = g.getPlayers().get(0);        // Rick is player 0

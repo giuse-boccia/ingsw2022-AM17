@@ -18,6 +18,12 @@ public class ResolveIslandCharacterTest {
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
 
+    /**
+     * Tests the effect of the {@code Character} called "resolveIsland"
+     *
+     * @throws ProfessorAlreadyPresentException if the {@code Professor} is already present in the {@code ProfessorRoom}
+     *                                          of the {@code Player} who is trying to get it
+     */
     @Test
     void testResolveIslandCharacter1() throws ProfessorAlreadyPresentException {
         ResolveIslandCharacter character = new ResolveIslandCharacter(CharacterName.noEntry, gb);
@@ -47,6 +53,12 @@ public class ResolveIslandCharacterTest {
 
     }
 
+    /**
+     * Tests the effect of the {@code Character} called "resolveIsland"
+     *
+     * @throws ProfessorAlreadyPresentException if the {@code Professor} is already present in the {@code ProfessorRoom}
+     *                                          of the {@code Player} who is trying to get it
+     */
     @Test
     void testResolveIslandCharacter2() throws ProfessorAlreadyPresentException {
         ResolveIslandCharacter character = new ResolveIslandCharacter(CharacterName.resolveIsland, gb);

@@ -15,9 +15,12 @@ public class GameBoardTest {
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
 
+    /**
+     * Tests MotherNature movement when its index does not exceed 11
+     */
     @Test
     public void moveMotherNature1() {
-        while(gb.getMotherNatureIndex() != 4){
+        while (gb.getMotherNatureIndex() != 4) {
             gb.moveMotherNature(1);
             assertFalse(gb.getMotherNatureIndex() < 0);
             assertFalse(gb.getMotherNatureIndex() >= 12);
@@ -26,13 +29,19 @@ public class GameBoardTest {
         assertEquals(gb.getMotherNatureIndex(), 7);
     }
 
+    /**
+     * Tests MotherNature movement when its index exceeds 11
+     */
     @Test
     public void moveMotherNature2() {
-        while(gb.getMotherNatureIndex() != 11) gb.moveMotherNature(1);
+        while (gb.getMotherNatureIndex() != 11) gb.moveMotherNature(1);
         gb.moveMotherNature(5);
-        assertEquals(gb.getMotherNatureIndex(), 4);
+        assertEquals(4, gb.getMotherNatureIndex());
     }
 
+    /**
+     * Tests the movement of MotherNature related to the island merging
+     */
     @Test
     public void moveMotherNature3() {
         while (gb.getMotherNatureIndex() != 5) gb.moveMotherNature(1);   // MN starts in island 5
@@ -61,9 +70,7 @@ public class GameBoardTest {
     }
 
     /**
-     * Test: merge multiple island
-     * FAIL? Double check we are calling gb.setIslandOwner(island, player)
-     * and not island.setOwner(player)
+     * Tests the merging of two islands
      */
     @Test
     public void mergeTwoIslands1() {
@@ -87,6 +94,9 @@ public class GameBoardTest {
 
     }
 
+    /**
+     * Tests the merging of two islands
+     */
     @Test
     public void mergeTwoIslands2() {
         ArrayList<Island> islands = gb.getIslands();
@@ -100,6 +110,9 @@ public class GameBoardTest {
         assertEquals(islands.get(11), gb.getIslands().get(10));
     }
 
+    /**
+     * Tests the merging of three islands
+     */
     @Test
     public void mergeThreeIslands() {
         ArrayList<Island> islands = gb.getIslands();

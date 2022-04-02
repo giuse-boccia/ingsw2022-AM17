@@ -17,6 +17,9 @@ public class ProfessorMovementTest {
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
 
+    /**
+     * Checks if the initialization of the {@code ProfessorRoom} has been done correctly
+     */
     @Test
     public void initProfessorTest() {
         assertEquals(5, gb.getStartingProfessors().getProfessors().size());
@@ -25,6 +28,12 @@ public class ProfessorMovementTest {
         }
     }
 
+    /**
+     * Tests the normal movement of the professors from one {@code ProfessorRoom} to another
+     *
+     * @throws ProfessorNotFoundException       if the {@code Professor} to be moved is not in the starting {@code ProfessorRoom}
+     * @throws ProfessorAlreadyPresentException if the {@code Professor} to be moved is already in the {@code ProfessorRoom} where it shold be moved
+     */
     @Test
     public void moveProfessorsNormal() throws ProfessorNotFoundException, ProfessorAlreadyPresentException {
         ProfessorRoom pr0 = game.getPlayers().get(0).getDashboard().getProfessorRoom();
@@ -74,6 +83,12 @@ public class ProfessorMovementTest {
 
     }
 
+    /**
+     * Tests the {@code ProfessorNotFoundException} exception
+     *
+     * @throws ProfessorNotFoundException       if the {@code Professor} to be moved is not in the starting {@code ProfessorRoom}
+     * @throws ProfessorAlreadyPresentException if the {@code Professor} to be moved is already in the {@code ProfessorRoom} where it shold be moved
+     */
     @Test
     public void moveProfessorNotPresent() throws ProfessorNotFoundException, ProfessorAlreadyPresentException {
         ProfessorRoom pr0 = game.getPlayers().get(0).getDashboard().getProfessorRoom();
@@ -91,6 +106,12 @@ public class ProfessorMovementTest {
 
     }
 
+    /**
+     * Tests the {@code ProfessorAlreadyPresentException} exception
+     *
+     * @throws ProfessorNotFoundException       if the {@code Professor} to be moved is not in the starting {@code ProfessorRoom}
+     * @throws ProfessorAlreadyPresentException if the {@code Professor} to be moved is already in the {@code ProfessorRoom} where it shold be moved
+     */
     @Test
     public void moveProfessorAlreadyPresent() throws ProfessorNotFoundException, ProfessorAlreadyPresentException {
         ProfessorRoom pr0 = game.getPlayers().get(0).getDashboard().getProfessorRoom();

@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
 
 public class ProfessorWithDraw implements ProfessorStrategy {
+
     /**
      * The method to check if the {@code Player} who owns myDiningRoom can steal the {@code Professor} of the
      * selected {@code Color} from the {@code Player} who owns otherDiningRoom when the effect of the {@code Character}

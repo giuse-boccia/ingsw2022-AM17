@@ -20,6 +20,9 @@ public class GameTest {
     Player clod = players.get(1);
     Player giuse = players.get(2);
 
+    /**
+     * Tests the first round of a non-expert {@code Game}
+     */
     @Test
     void testFullNonExpertGame() {
 
@@ -36,6 +39,9 @@ public class GameTest {
 
     }
 
+    /**
+     * Plays the first round of a non-expert {@code Game}
+     */
     private void playFirstRound() {
         game.start(0);
         Round firstRound = game.getCurrentRound();
@@ -192,7 +198,18 @@ public class GameTest {
         // Actions are the same as before, maybe test merging of two Islands
     }
 
-
+    /**
+     * Plays an {@code Assistant} from the hand of the {@code Player}
+     *
+     * @param player           the {@code Island} who plays the {@code Island}
+     * @param indexOfAssistant the index of the {@code Island} to play
+     * @throws InvalidActionException          if the player who is trying to play the {@code Assistant} is not the one actually
+     *                                         playing this turn
+     * @throws AlreadyPlayedAssistantException if the player who is trying to play the {@code Assistant} has already
+     *                                         played it
+     * @throws SameAssistantPlayedException    if the {@code Assistant} who is trying to be played has already been played
+     *                                         by someone else this turn
+     */
     private void playAssistant(Player player, int indexOfAssistant) throws InvalidActionException, AlreadyPlayedAssistantException, SameAssistantPlayedException {
         game.getCurrentRound().getPlanningPhase().addAssistant(player.getHand()[indexOfAssistant]);
 
@@ -200,6 +217,10 @@ public class GameTest {
         assertNull(player.getHand()[indexOfAssistant]);
     }
 
+    /**
+     * Sets up the game to start: in a game of three, every player has a {@code Wizard}, has 10 {@code Assistant} cards,
+     * has no students in their {@code DiningRoom} and has 9 students in their {@code Entrance}
+     */
     private void setupGame() {
 
         assertEquals(players.size(), game.getGameBoard().getClouds().size());
@@ -237,7 +258,11 @@ public class GameTest {
 
     }
 
-    // Every Island has a pink student - except Island0 and Island6
+    /**
+     * Puts a pink {@code Student} on every {@code Island} except the one where Mother Nature is and the opposite one
+     *
+     * @param mnIndex the index of the {@code Island} where MotherNature is
+     */
     private void prepareIslands(int mnIndex) {
         ArrayList<Island> islands = game.getGameBoard().getIslands();
         assertEquals(12, islands.size());
@@ -253,6 +278,9 @@ public class GameTest {
         checkIslands();
     }
 
+    /**
+     * Checks if the set up of the islands has been done correctly
+     */
     private void checkIslands() {
         ArrayList<Island> islands = game.getGameBoard().getIslands();
         assertEquals(12, islands.size());
@@ -268,6 +296,9 @@ public class GameTest {
         }
     }
 
+    /**
+     * Checks if the initial state of the {@code Dashboard} is correct
+     */
     private void checkInitialDashboard() {
         for (Player player : players) {
             assertEquals(10, player.getHand().length);

@@ -23,6 +23,11 @@ public class Move1FromCardToDiningCharacterTest {
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
 
+    /**
+     * Tests the effect of the {@code Character} called "move1FromCardToDining"
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testMove1FromCardToDining() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToDining, gb, 1, 1);
@@ -45,6 +50,11 @@ public class Move1FromCardToDiningCharacterTest {
         assertTrue(rick.getDashboard().getDiningRoom().getStudents().contains(studentOnTheCard));
     }
 
+    /**
+     * Tests the case when the {@code Student} to move is not on the {@code Character}
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testInvalidStudents1() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToDining, gb, 1, 1);
@@ -64,6 +74,11 @@ public class Move1FromCardToDiningCharacterTest {
         );
     }
 
+    /**
+     * Tests the case when the {@code Student} to move is not on the {@code Character}
+     *
+     * @throws EmptyBagException if the {@code Bag} is empty
+     */
     @Test
     void testInvalidStudents2() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToDining, gb, 1, 1);

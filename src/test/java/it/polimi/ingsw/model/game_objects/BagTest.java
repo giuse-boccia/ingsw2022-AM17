@@ -19,6 +19,9 @@ public class BagTest {
 
     Game game = TestGameFactory.getNewGame();
 
+    /**
+     * Tests if the {@code Bag} has the correct number of students, and tests all the exceptions relative to the {@code Bag}
+     */
     @Test
     void testBag() {
         Bag bag = game.getGameBoard().getBag();

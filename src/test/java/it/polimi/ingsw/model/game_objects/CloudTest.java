@@ -16,6 +16,9 @@ public class CloudTest {
 
     Game game = TestGameFactory.getNewGame();
 
+    /**
+     * Tests all the methods relative to the clouds
+     */
     @Test
     void testCloud() {
         ArrayList<Cloud> clouds = game.getGameBoard().getClouds();

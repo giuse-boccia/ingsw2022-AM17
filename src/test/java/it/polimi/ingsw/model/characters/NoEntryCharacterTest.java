@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.characters;
 
+import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidCharacterException;
 import it.polimi.ingsw.model.Game;
@@ -18,6 +19,9 @@ public class NoEntryCharacterTest {
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
 
+    /**
+     * Tests the effect of the {@code Character} called "noEntry"
+     */
     @Test
     void testNoEntryCharacter() {
         NoEntryCharacter character = new NoEntryCharacter(CharacterName.noEntry, gb);
