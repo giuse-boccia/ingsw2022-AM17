@@ -142,7 +142,10 @@ public class PlayerActionPhase {
      * @throws CharacterAlreadyPlayedException if a {@code Character} has already been used
      */
     public void playCharacter(Character character, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents)
-            throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException {
+            throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException, NotEnoughCoinsException {
+        if (!gb.getGame().isExpert()) {
+            throw new InvalidActionException("There are no characters in the non expert mode");
+        }
         if (this.playedCharacter != null)
             throw new CharacterAlreadyPlayedException("You already played a character this turn");
         this.playedCharacter = character;
