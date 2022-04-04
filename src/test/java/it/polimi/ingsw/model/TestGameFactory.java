@@ -10,6 +10,7 @@ public class TestGameFactory {
      * @return the created {@code Game}
      */
     public static Game getNewGame() {
+        // TODO create a custom game without start()
         Game res = new Game(createPlayers(), true);
         res.start(0);
         return res;
