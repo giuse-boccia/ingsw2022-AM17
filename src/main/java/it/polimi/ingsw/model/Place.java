@@ -1,6 +1,7 @@
-package it.polimi.ingsw.model.game_objects;
+package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.InvalidStudentException;
+import it.polimi.ingsw.model.game_objects.Student;
 
 public interface Place {
     /**

@@ -73,6 +73,11 @@ public class Player {
         this.wizard = wizard;
     }
 
+    /**
+     * Add the {@code Player} to the given {@code Game}
+     *
+     * @param game the {@code Game} to add the {@code Player} to
+     */
     public void addToGame(Game game) {
         this.game = game;
     }

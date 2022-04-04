@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.game_objects.dashboard_objects;
 
 import it.polimi.ingsw.model.game_objects.Color;
-import it.polimi.ingsw.model.game_objects.Place;
+import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.utils.Students;
 
