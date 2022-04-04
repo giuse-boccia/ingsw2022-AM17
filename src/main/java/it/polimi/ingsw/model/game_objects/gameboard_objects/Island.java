@@ -41,6 +41,10 @@ public class Island implements Place {
         noEntryNum++;
     }
 
+    public void decreaseNoEntryNum() {
+        noEntryNum--;
+    }
+
     /**
      * Sets a new owner and adds a tower if the island hase none.
      * Does NOT check if the island can be merged with adjacent islands
