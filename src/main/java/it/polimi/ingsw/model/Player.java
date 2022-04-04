@@ -30,37 +30,12 @@ public class Player {
     }
 
     /**
-     * Moves the selected {@code Student} from the from {@code Place} to the to {@code Place}
-     *
-     * @param from    the {@code Place} to move the selected {@code Student} from
-     * @param to      the {@code Place} to move the selected {@code Student} to
-     * @param student the {@code Student} to move
-     */
-    public void moveStudent(Place from, Place to, Student student) {
-        try {
-            from.giveStudent(to, student);
-        } catch (InvalidStudentException e) {
-            e.printStackTrace();
-        }
-        // TODO: If move TO my diningRoom check if can steal professor using playerActionPhase Strategy
-    }
-
-    /**
      * Plays an {@code Assistant} from the hand of the {@code Player}
      *
      * @param assistant the {@code Assistant} to play
      */
     public void playAssistant(Assistant assistant) {
         hand[assistant.getValue() - 1] = null;
-    }
-
-    /**
-     * Uses the effect of the selected {@code Character}
-     *
-     * @param character the {@code Character} to use the effect of
-     */
-    public void useCharacter(Character character) {
-        // chiama charachter.useEffect() e toglie monete e lancia eccezione se non ha abbastanza monete
     }
 
     /**
@@ -80,19 +55,6 @@ public class Player {
      */
     public void addToGame(Game game) {
         this.game = game;
-    }
-
-    private void checkProfessors(Color color) {
-        // Steal professor if possible
-    }
-
-    /**
-     * Fills the {@code Entrance} of the current {@code Player} with the students from the selected {@code Cloud}
-     *
-     * @param cloud the {@code Cloud} to be emptied to the {@code Player} {@code Entrance}
-     */
-    public void fillFromCloud(Cloud cloud) {
-
     }
 
     /**

@@ -178,12 +178,12 @@ public class PlayerActionPhase {
     /**
      * Moves a {@code Student} of the selected {@code Color} to the selected {@code Place}
      *
-     * @param color the {@code Colo} of the {@code Student} to move
-     * @param place the destination to move the {@code Student} to
+     * @param color       the {@code Colo} of the {@code Student} to move
+     * @param destination the destination to move the {@code Student} to
      * @throws InvalidActionException  if the action is not valid
      * @throws InvalidStudentException if the {@code Player} does not own a {@code Student} of the selected {@code Color}
      */
-    public void moveStudent(Color color, Place place) throws InvalidActionException, InvalidStudentException {
+    public void moveStudent(Color color, Place destination) throws InvalidActionException, InvalidStudentException {
         // TODO InvalidStudent - if I don't own a student of this color, InvalidPlace if I attempt to move it into
         // TODO the Entrance (it happens when entrance.getStudents() == 7-numStudPlayed
 
@@ -194,7 +194,7 @@ public class PlayerActionPhase {
         Entrance entrance = getCurrentPlayer().getDashboard().getEntrance();
 
         entrance.giveStudent(
-                place, Students.findFirstStudentOfColor(entrance.getStudents(), color)
+                destination, Students.findFirstStudentOfColor(entrance.getStudents(), color)
         );
 
         numStudentsMoved++;

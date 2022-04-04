@@ -50,7 +50,9 @@ class ProfessorStrategyTest {
         assertEquals(2, rick.getDashboard().getEntrance().getStudents().size());
 
         // Rick moves one of them to his dining room
-        rick.moveStudent(rick.getDashboard().getEntrance(), dr0, s1);
+        assertDoesNotThrow(() ->
+                pap.moveStudent(s1.getColor(), rick.getDashboard().getDiningRoom())
+        );
 
         // Rick can't steal the Green Professor from Clod
         assertEquals(1, dr0.getNumberOfStudentsOfColor(Color.GREEN));
@@ -58,7 +60,9 @@ class ProfessorStrategyTest {
         assertFalse(pap.canStealProfessor(Color.GREEN, dr0, dr1));
 
         // Rick moves another green student to his dining room
-        rick.moveStudent(rick.getDashboard().getEntrance(), dr0, s2);
+        assertDoesNotThrow(() ->
+                pap.moveStudent(s2.getColor(), rick.getDashboard().getDiningRoom())
+        );
 
         // Rick can now steal the Green Professor from Clod
         assertEquals(2, dr0.getNumberOfStudentsOfColor(Color.GREEN));
@@ -100,7 +104,9 @@ class ProfessorStrategyTest {
         assertEquals(2, rick.getDashboard().getEntrance().getStudents().size());
 
         // Rick moves one of them to his dining room
-        rick.moveStudent(rick.getDashboard().getEntrance(), dr0, s1);
+        assertDoesNotThrow(() ->
+                pap.moveStudent(Color.GREEN, rick.getDashboard().getDiningRoom())
+        );
 
         // Rick can steal the Green Professor from Clod (even with draw students)
         assertEquals(1, dr0.getNumberOfStudentsOfColor(Color.GREEN));
@@ -108,7 +114,9 @@ class ProfessorStrategyTest {
         assertTrue(pap.canStealProfessor(Color.GREEN, dr0, dr1));
 
         // Rick moves another green student to his dining room
-        rick.moveStudent(rick.getDashboard().getEntrance(), dr0, s2);
+        assertDoesNotThrow(() ->
+                pap.moveStudent(Color.GREEN, rick.getDashboard().getDiningRoom())
+        );
 
         // Rick can still steal the Green Professor from Clod
         assertEquals(2, dr0.getNumberOfStudentsOfColor(Color.GREEN));
