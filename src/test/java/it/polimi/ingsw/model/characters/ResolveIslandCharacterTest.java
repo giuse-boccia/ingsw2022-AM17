@@ -1,10 +1,8 @@
 package it.polimi.ingsw.model.characters;
 
-import it.polimi.ingsw.exceptions.ProfessorAlreadyPresentException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
@@ -26,8 +24,8 @@ public class ResolveIslandCharacterTest {
     @Test
     void testResolveIslandCharacter1() {
         ResolveIslandCharacter character = new ResolveIslandCharacter(CharacterName.noEntry, gb);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, game.getPlayers().get(0)), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
         ArrayList<Island> islands = game.getGameBoard().getIslands();
 
@@ -58,8 +56,8 @@ public class ResolveIslandCharacterTest {
     @Test
     void testResolveIslandCharacter2() {
         ResolveIslandCharacter character = new ResolveIslandCharacter(CharacterName.resolveIsland, gb);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, game.getPlayers().get(0)), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
         ArrayList<Island> islands = game.getGameBoard().getIslands();
 

@@ -4,7 +4,6 @@ import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
@@ -27,8 +26,8 @@ public class NoEntryCharacterTest {
         Island selectedIsland = game.getGameBoard().getIslands().get(0);
 
         for (int noEntriesOnIsland = 0; noEntriesOnIsland < 4; noEntriesOnIsland++) {
-            PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                    new Assistant(4, 8, game.getPlayers().get(0)), gb, true
+            PlayerActionPhase pap = new PlayerActionPhase(
+                    new Assistant(4, 8, game.getPlayers().get(0)), gb
             );
 
             assertEquals(noEntriesOnIsland, selectedIsland.getNoEntryNum());
@@ -37,8 +36,8 @@ public class NoEntryCharacterTest {
             assertEquals(noEntriesOnIsland + 1, selectedIsland.getNoEntryNum());
         }
 
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, game.getPlayers().get(0)), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
         assertThrows(InvalidActionException.class,
                 () -> pap.playCharacter(character, selectedIsland, null, null, null),

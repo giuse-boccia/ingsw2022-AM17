@@ -6,7 +6,6 @@ import it.polimi.ingsw.exceptions.StudentNotOnTheCardException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
@@ -46,8 +45,8 @@ public class Move1FromCardToIslandTest {
     @Test
     void testMove1FromCardToIsland1() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToIsland, gb, 4, 1);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, game.getPlayers().get(0)), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
         Island island = gb.getIslands().get(4);
         int initialStudentsOnIsland = island.getStudents().size();
@@ -90,8 +89,8 @@ public class Move1FromCardToIslandTest {
         Island island = gb.getIslands().get(3);
         int initialStudents = island.getStudents().size();
         island.receiveStudent(new Student(Color.GREEN));
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, game.getPlayers().get(0)), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
 
         Student studentToGive = character.getStudents().get(new Random().nextInt(4));
@@ -113,8 +112,8 @@ public class Move1FromCardToIslandTest {
     @Test
     void testMove1FromCardToIsland3() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToIsland, gb, 4, 1);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, game.getPlayers().get(0)), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
         Island island = gb.getIslands().get(6);
 
@@ -137,8 +136,8 @@ public class Move1FromCardToIslandTest {
     @Test
     void testMove1FromCardToIsland4() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToIsland, gb, 4, 1);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, game.getPlayers().get(0)), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
         Island island = gb.getIslands().get(6);
 

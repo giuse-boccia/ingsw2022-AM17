@@ -21,7 +21,7 @@ import it.polimi.ingsw.model.utils.Students;
 
 import java.util.ArrayList;
 
-public abstract class PlayerActionPhase {
+public class PlayerActionPhase {
     protected final Assistant assistant;
     protected final GameBoard gb;
     protected Character playedCharacter;
@@ -269,8 +269,6 @@ public abstract class PlayerActionPhase {
             throw new InvalidActionException("Move your students first");
         }
     }
-
-    public abstract void play();
 
     public Player getCurrentPlayer() {
         return assistant.getPlayer();

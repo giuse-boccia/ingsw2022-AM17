@@ -1,13 +1,11 @@
 package it.polimi.ingsw.model.strategies;
 
-import it.polimi.ingsw.exceptions.ProfessorAlreadyPresentException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.characters.PassiveCharacter;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
@@ -40,7 +38,7 @@ class InfluenceStrategyTest {
 
         //-----------------------Rick's turn--------------------------------------------
         Assistant a1 = new Assistant(1, 1, rick);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(a1, gb, true);
+        PlayerActionPhase pap = new PlayerActionPhase(a1, gb);
 
         // Island is resolved, rick should own the island
         pap.resolveIsland(island);
@@ -48,7 +46,7 @@ class InfluenceStrategyTest {
 
         //-----------------------Clod's turn--------------------------------------------
         Assistant a2 = new Assistant(1, 2, clod);
-        pap = PlayerActionPhaseFactory.createPlayerActionPhase(a2, gb, true);
+        pap = new PlayerActionPhase(a2, gb);
 
         // add 2 red to island and solve -> rick should still own the island
         island.receiveStudent(new Student(Color.RED));
@@ -84,7 +82,7 @@ class InfluenceStrategyTest {
 
         // Rick's turn
         Assistant lion = new Assistant(1, 1, rick);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(lion, gb, true);
+        PlayerActionPhase pap = new PlayerActionPhase(lion, gb);
 
         // Island is resolved, nobody should own the island
         pap.resolveIsland(island);
@@ -114,7 +112,7 @@ class InfluenceStrategyTest {
 
         //-----------------------Rick's turn--------------------------------------------
         Assistant a1 = new Assistant(1, 1, rick);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(a1, gb, true);
+        PlayerActionPhase pap = new PlayerActionPhase(a1, gb);
 
         // Rick plays plus2Influence character
         PassiveCharacter pc = new PassiveCharacter(CharacterName.plus2Influence);
@@ -150,7 +148,7 @@ class InfluenceStrategyTest {
 
         //-----------------------Rick's turn--------------------------------------------
         Assistant a1 = new Assistant(1, 1, rick);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(a1, gb, true);
+        PlayerActionPhase pap = new PlayerActionPhase(a1, gb);
 
         // Island is resolved, rick should own the island
         pap.resolveIsland(island);
@@ -158,7 +156,7 @@ class InfluenceStrategyTest {
 
         //-----------------------Clod's turn--------------------------------------------
         Assistant a2 = new Assistant(1, 2, clod);
-        pap = PlayerActionPhaseFactory.createPlayerActionPhase(a2, gb, true);
+        pap = new PlayerActionPhase(a2, gb);
 
         // Clod plays the ignoreColor character
         pap.playPassiveCharacterWithColor(Color.GREEN);
@@ -189,7 +187,7 @@ class InfluenceStrategyTest {
 
         //-----------------------Rick's turn--------------------------------------------
         Assistant a1 = new Assistant(1, 1, rick);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(a1, gb, true);
+        PlayerActionPhase pap = new PlayerActionPhase(a1, gb);
 
         // Island is resolved, rick should own the island
         pap.resolveIsland(island);
@@ -197,7 +195,7 @@ class InfluenceStrategyTest {
 
         //-----------------------Clod's turn--------------------------------------------
         Assistant a2 = new Assistant(1, 2, clod);
-        pap = PlayerActionPhaseFactory.createPlayerActionPhase(a2, gb, true);
+        pap = new PlayerActionPhase(a2, gb);
 
         // Clod plays the ignoreTowers character
         PassiveCharacter pc = new PassiveCharacter(CharacterName.ignoreTowers);
