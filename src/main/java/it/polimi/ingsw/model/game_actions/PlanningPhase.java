@@ -47,7 +47,7 @@ public class PlanningPhase {
         }
 
         if (player != playersInOrder.get(playedAssistants.size())) {
-            throw new InvalidActionException("You can't play an assistant now");
+            throw new InvalidActionException("It's not your turn");
         }
 
         if (!isAssistantPlayable(assistant)) {
