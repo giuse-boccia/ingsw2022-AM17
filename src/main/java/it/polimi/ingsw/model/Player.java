@@ -110,6 +110,15 @@ public class Player {
         return numCoins;
     }
 
+    /**
+     * Removes the selected amount of coins
+     *
+     * @param coins number of coins to be removed
+     */
+    public void removeCoins(int coins) {
+        numCoins -= numCoins - coins;
+    }
+
     public void addCoin() {
         numCoins++;
     }

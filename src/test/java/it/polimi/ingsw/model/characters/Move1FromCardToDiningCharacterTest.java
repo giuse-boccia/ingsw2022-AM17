@@ -32,6 +32,9 @@ public class Move1FromCardToDiningCharacterTest {
         MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToDining, gb, 1, 1);
         Player rick = game.getPlayers().get(0);
         PlayerActionPhase pap = new PlayerActionPhase(new Assistant(4, 8, rick), gb);
+        for (int i = 0; i < 4; i++) {
+            rick.addCoin();
+        }
 
         character.fillCardFromBag();
 
@@ -59,6 +62,9 @@ public class Move1FromCardToDiningCharacterTest {
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, rick), gb
         );
+        for (int i = 0; i < 4; i++) {
+            rick.addCoin();
+        }
 
         character.fillCardFromBag();
 
@@ -83,6 +89,9 @@ public class Move1FromCardToDiningCharacterTest {
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, rick), gb
         );
+        for (int i = 0; i < 4; i++) {
+            rick.addCoin();
+        }
 
         character.fillCardFromBag();
 

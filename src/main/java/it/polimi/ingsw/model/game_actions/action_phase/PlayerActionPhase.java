@@ -146,10 +146,15 @@ public class PlayerActionPhase {
         if (!gb.getGame().isExpert()) {
             throw new InvalidActionException("There are no characters in the non expert mode");
         }
-        if (this.playedCharacter != null)
+        if (getCurrentPlayer().getNumCoins() < character.getCost()) {
+            throw new NotEnoughCoinsException("You don't have enough coins to play this character");
+        }
+        if (this.playedCharacter != null) {
             throw new CharacterAlreadyPlayedException("You already played a character this turn");
+        }
         this.playedCharacter = character;
         character.useEffect(this, island, color, srcStudents, dstStudents);
+        getCurrentPlayer().removeCoins(character.getCost());
     }
 
     /**
@@ -200,8 +205,13 @@ public class PlayerActionPhase {
         numStudentsMoved++;
 
         stealProfessorIfPossible(color);
-    }
 
+        if (destination == getCurrentPlayer().getDashboard().getDiningRoom()) {
+            if (getCurrentPlayer().getDashboard().getDiningRoom().getNumberOfStudentsOfColor(color) % 3 == 0) {
+                getCurrentPlayer().addCoin();
+            }
+        }
+    }
 
     /**
      * Moves MotherNature of the selected number of steps (numSteps)

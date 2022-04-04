@@ -27,6 +27,9 @@ public class ResolveIslandCharacterTest {
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
+        for (int i = 0; i < 8; i++) {
+            game.getPlayers().get(0).addCoin();
+        }
         ArrayList<Island> islands = game.getGameBoard().getIslands();
 
         while (gb.getMotherNatureIndex() != 3)
@@ -59,6 +62,9 @@ public class ResolveIslandCharacterTest {
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
+        for (int i = 0; i < 8; i++) {
+            game.getPlayers().get(0).addCoin();
+        }
         ArrayList<Island> islands = game.getGameBoard().getIslands();
 
         while (gb.getMotherNatureIndex() != 11)

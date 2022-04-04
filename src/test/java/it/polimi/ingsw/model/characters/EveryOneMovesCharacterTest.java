@@ -55,6 +55,9 @@ public class EveryOneMovesCharacterTest {
                 initialMap.put(color, Students.countColor(entrance.getStudents(), color));
             }
             initialPlayerMaps.add(initialMap);
+            for (int i = 0; i < 10; i++) {
+                player.addCoin();
+            }
         }
 
         PlayerActionPhase pap = new PlayerActionPhase(new Assistant(4, 8, game.getPlayers().get(0)), gb);
