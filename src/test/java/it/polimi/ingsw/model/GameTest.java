@@ -71,28 +71,24 @@ public class GameTest {
         assertEquals(clod, pap.getCurrentPlayer());
 
         //Now several clients can call PlayerActionPhase
-        assertDoesNotThrow(() -> pap.moveStudent(clod, Color.GREEN, clod.getDashboard().getDiningRoom()));
+        assertDoesNotThrow(() -> pap.moveStudent(Color.GREEN, clod.getDashboard().getDiningRoom()));
         assertTrue(clod.hasProfessor(Color.GREEN));
-        assertDoesNotThrow(() -> pap.moveStudent(clod, Color.GREEN, clod.getDashboard().getDiningRoom()));
+        assertDoesNotThrow(() -> pap.moveStudent(Color.GREEN, clod.getDashboard().getDiningRoom()));
         assertThrows(InvalidActionException.class,
-                () -> pap.moveStudent(giuse, Color.PINK, clod.getDashboard().getDiningRoom()),
-                "It's not your turn"
-        );
-        assertThrows(InvalidActionException.class,
-                () -> pap.moveMotherNature(clod, 1),
+                () -> pap.moveMotherNature(1),
                 "Move your students first"
         );
         assertThrows(InvalidStudentException.class,
-                () -> pap.moveStudent(clod, Color.PINK, clod.getDashboard().getDiningRoom())
+                () -> pap.moveStudent(Color.PINK, clod.getDashboard().getDiningRoom())
         );
         assertThrows(InvalidActionException.class,
-                () -> pap.chooseCloud(clod, 1),
+                () -> pap.chooseCloud(1),
                 "Move your students first"
         );
 
-        assertDoesNotThrow(() -> pap.moveStudent(clod, Color.BLUE, clod.getDashboard().getDiningRoom()));
+        assertDoesNotThrow(() -> pap.moveStudent(Color.BLUE, clod.getDashboard().getDiningRoom()));
         assertTrue(clod.hasProfessor(Color.BLUE));
-        assertDoesNotThrow(() -> pap.moveStudent(clod, Color.BLUE, game.getGameBoard().getIslands().get(1)));
+        assertDoesNotThrow(() -> pap.moveStudent(Color.BLUE, game.getGameBoard().getIslands().get(1)));
 
         assertEquals(2, Students.countColor(clod.getDashboard().getDiningRoom().getStudents(), Color.GREEN));
         assertEquals(3, Students.countColor(clod.getDashboard().getEntrance().getStudents(), Color.GREEN));
@@ -100,31 +96,31 @@ public class GameTest {
         assertEquals(1, Students.countColor(clod.getDashboard().getDiningRoom().getStudents(), Color.BLUE));
 
         assertThrows(InvalidActionException.class,
-                () -> pap.moveStudent(clod, Color.BLUE, clod.getDashboard().getDiningRoom()),
+                () -> pap.moveStudent(Color.BLUE, clod.getDashboard().getDiningRoom()),
                 "You have already moved 4 students"
         );
         assertThrows(InvalidStepsForMotherNatureException.class,
-                () -> pap.moveMotherNature(clod, 4),
+                () -> pap.moveMotherNature(4),
                 "Invalid move for mother nature"
         );
         assertThrows(InvalidActionException.class,
-                () -> pap.chooseCloud(clod, 1),
+                () -> pap.chooseCloud(1),
                 "Move mother nature first"
         );
         assertThrows(InvalidStepsForMotherNatureException.class,
-                () -> pap.moveMotherNature(clod, -1),
+                () -> pap.moveMotherNature(-1),
                 "Invalid move for mother nature"
         );
-        assertDoesNotThrow(() -> pap.moveMotherNature(clod, 1));
+        assertDoesNotThrow(() -> pap.moveMotherNature(1));
         assertEquals(1, game.getGameBoard().getMotherNatureIndex());
         assertEquals(clod, game.getGameBoard().getIslands().get(1).getOwner());
         assertEquals(1, Students.countColor(game.getGameBoard().getIslands().get(1).getStudents(), Color.BLUE));
 
         assertThrows(InvalidCloudException.class,
-                () -> pap.chooseCloud(clod, 4),
+                () -> pap.chooseCloud(4),
                 "The selected cloud is not valid"
         );
-        assertDoesNotThrow(() -> pap.chooseCloud(clod, 1));
+        assertDoesNotThrow(() -> pap.chooseCloud(1));
         assertTrue(game.getGameBoard().getClouds().get(1).isEmpty());
         assertEquals(9, clod.getDashboard().getEntrance().getStudents().size());
 
@@ -133,21 +129,21 @@ public class GameTest {
         PlayerActionPhase pap2 = game.getCurrentRound().getCurrentPlayerActionPhase();
         // Check merging of islands
         for (int i = 0; i < 2; i++) {
-            assertDoesNotThrow(() -> pap2.moveStudent(giuse, Color.BLUE, giuse.getDashboard().getDiningRoom()));
-            assertDoesNotThrow(() -> pap2.moveStudent(giuse, Color.PINK, giuse.getDashboard().getDiningRoom()));
+            assertDoesNotThrow(() -> pap2.moveStudent(Color.BLUE, giuse.getDashboard().getDiningRoom()));
+            assertDoesNotThrow(() -> pap2.moveStudent(Color.PINK, giuse.getDashboard().getDiningRoom()));
         }
         assertTrue(giuse.hasProfessor(Color.BLUE));
         assertFalse(clod.hasProfessor(Color.BLUE));
-        assertDoesNotThrow(() -> pap2.moveMotherNature(giuse, 3));
+        assertDoesNotThrow(() -> pap2.moveMotherNature(3));
         assertEquals(4, game.getGameBoard().getMotherNatureIndex());
         assertEquals(giuse, game.getGameBoard().getIslands().get(4).getOwner());
         assertEquals(1, Students.countColor(game.getGameBoard().getIslands().get(4).getStudents(), Color.PINK));
         assertThrows(InvalidCloudException.class,
-                () -> pap2.chooseCloud(giuse, 1),
+                () -> pap2.chooseCloud(1),
                 "The selected cloud is not valid"
         );
         assertEquals(5, giuse.getDashboard().getEntrance().getStudents().size());
-        assertDoesNotThrow(() -> pap2.chooseCloud(giuse, 2));
+        assertDoesNotThrow(() -> pap2.chooseCloud(2));
         assertTrue(game.getGameBoard().getClouds().get(2).isEmpty());
         assertEquals(9, giuse.getDashboard().getEntrance().getStudents().size());
 
@@ -158,18 +154,18 @@ public class GameTest {
         assertThrows(InvalidActionException.class, () -> playAssistant(rick, 9));
 
         for (int i = 0; i < 2; i++) {
-            assertDoesNotThrow(() -> pap3.moveStudent(rick, Color.PINK, rick.getDashboard().getDiningRoom()));
+            assertDoesNotThrow(() -> pap3.moveStudent(Color.PINK, rick.getDashboard().getDiningRoom()));
         }
         assertFalse(rick.hasProfessor(Color.PINK));
-        assertDoesNotThrow(() -> pap3.moveStudent(rick, Color.PINK, rick.getDashboard().getDiningRoom()));
+        assertDoesNotThrow(() -> pap3.moveStudent(Color.PINK, rick.getDashboard().getDiningRoom()));
         assertTrue(rick.hasProfessor(Color.PINK));
-        assertDoesNotThrow(() -> pap3.moveStudent(rick, Color.GREEN, rick.getDashboard().getDiningRoom()));
+        assertDoesNotThrow(() -> pap3.moveStudent(Color.GREEN, rick.getDashboard().getDiningRoom()));
         assertFalse(rick.hasProfessor(Color.GREEN));
 
-        assertDoesNotThrow(() -> pap3.moveMotherNature(rick, 4));
+        assertDoesNotThrow(() -> pap3.moveMotherNature(4));
         assertEquals(rick, game.getGameBoard().getIslands().get(8).getOwner());
 
-        assertDoesNotThrow(() -> pap3.chooseCloud(rick, 0));
+        assertDoesNotThrow(() -> pap3.chooseCloud(0));
         assertEquals(9, rick.getDashboard().getEntrance().getStudents().size());
 
         Round secondRound = game.getCurrentRound();

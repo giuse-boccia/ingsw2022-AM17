@@ -10,7 +10,7 @@ public class TestGameFactory {
      * @return the created {@code Game}
      */
     public static Game getNewGame() {
-        Game res = new Game(createPlayers(), false);
+        Game res = new Game(createPlayers(), true);
         res.start(0);
         return res;
     }
