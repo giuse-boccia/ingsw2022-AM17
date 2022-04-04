@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
@@ -56,8 +55,8 @@ public class SwapUpTo3CharacterTest {
         fillEntrance(entrance);
 
         for (int i = 0; i < 3; i++) {
-            PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                    new Assistant(4, 8, rick), gb, true
+            PlayerActionPhase pap = new PlayerActionPhase(
+                    new Assistant(4, 8, rick), gb
             );
             ArrayList<Student> initialStudentsOnCard = character.getStudents();
             ArrayList<Student> initialStudentsInEntrance = entrance.getStudents();
@@ -93,8 +92,8 @@ public class SwapUpTo3CharacterTest {
     void testInvalidSource() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo3FromEntranceToCard, gb, 6, 3);
         Player rick = game.getPlayers().get(0);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, rick), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, rick), gb
         );
 
         character.fillCardFromBag();
@@ -121,8 +120,8 @@ public class SwapUpTo3CharacterTest {
     void testInvalidDestination() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo3FromEntranceToCard, gb, 6, 3);
         Player rick = game.getPlayers().get(0);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, rick), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, rick), gb
         );
 
         character.fillCardFromBag();
@@ -149,8 +148,8 @@ public class SwapUpTo3CharacterTest {
     void testInvalidSize1() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo3FromEntranceToCard, gb, 6, 3);
         Player rick = game.getPlayers().get(0);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, rick), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, rick), gb
         );
 
         character.fillCardFromBag();
@@ -178,8 +177,8 @@ public class SwapUpTo3CharacterTest {
     void testInvalidSize2() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo3FromEntranceToCard, gb, 6, 3);
         Player rick = game.getPlayers().get(0);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, rick), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, rick), gb
         );
 
         character.fillCardFromBag();

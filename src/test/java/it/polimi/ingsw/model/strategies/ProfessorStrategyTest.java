@@ -1,13 +1,11 @@
 package it.polimi.ingsw.model.strategies;
 
-import it.polimi.ingsw.exceptions.ProfessorAlreadyPresentException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.characters.PassiveCharacter;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
@@ -35,7 +33,7 @@ class ProfessorStrategyTest {
 
         // Rick's turn
         Assistant a = new Assistant(3, 6, rick);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(a, gb, true);
+        PlayerActionPhase pap = new PlayerActionPhase(a, gb);
 
         // Clod has green professor and 1 green student
         gb.setOwnerOfProfessor(Color.GREEN, clod);
@@ -81,7 +79,7 @@ class ProfessorStrategyTest {
 
         // Rick's turn
         Assistant a = new Assistant(3, 6, rick);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(a, gb, true);
+        PlayerActionPhase pap = new PlayerActionPhase(a, gb);
 
         // Rick plays the takeProfWithEqualStudents character
         PassiveCharacter pc = new PassiveCharacter(CharacterName.takeProfWithEqualStudents);

@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.characters.PassiveCharacter;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import org.junit.jupiter.api.Test;
@@ -27,13 +26,13 @@ class MNStrategyTest {
 
         // Rick's turn, he played the lion assistant
         Assistant lion = new Assistant(1, 1, rick);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(lion, gb, true);
+        PlayerActionPhase pap = new PlayerActionPhase(lion, gb);
 
         assertEquals(1, pap.getMNMaxSteps());
 
         // Clod's turn, he played the turtle assistant
         Assistant turtle = new Assistant(5, 10, clod);
-        pap = PlayerActionPhaseFactory.createPlayerActionPhase(turtle, gb, true);
+        pap = new PlayerActionPhase(turtle, gb);
 
         assertEquals(5, pap.getMNMaxSteps());
     }
@@ -49,13 +48,13 @@ class MNStrategyTest {
 
         // Rick's turn, he played the lion assistant
         Assistant lion = new Assistant(1, 1, rick);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(lion, gb, true);
+        PlayerActionPhase pap = new PlayerActionPhase(lion, gb);
 
         assertEquals(1, pap.getMNMaxSteps());
 
         // Clod's turn, he played the turtle assistant
         Assistant turtle = new Assistant(5, 10, clod);
-        pap = PlayerActionPhaseFactory.createPlayerActionPhase(turtle, gb, true);
+        pap = new PlayerActionPhase(turtle, gb);
 
         assertEquals(5, pap.getMNMaxSteps());
 
@@ -77,7 +76,7 @@ class MNStrategyTest {
 
         // Rick's turn, he played the lion assistant
         Assistant lion = new Assistant(1, 1, rick);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(lion, gb, true);
+        PlayerActionPhase pap = new PlayerActionPhase(lion, gb);
 
         assertEquals(1, pap.getMNMaxSteps());
 
@@ -89,7 +88,7 @@ class MNStrategyTest {
 
         // Clod's turn, he played the turtle assistant
         Assistant turtle = new Assistant(5, 10, clod);
-        pap = PlayerActionPhaseFactory.createPlayerActionPhase(turtle, gb, true);
+        pap = new PlayerActionPhase(turtle, gb);
 
         assertEquals(5, pap.getMNMaxSteps());   // Rick's bonus doesn't apply to Clod
     }

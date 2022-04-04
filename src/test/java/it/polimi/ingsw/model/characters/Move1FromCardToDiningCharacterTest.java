@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
@@ -32,9 +31,7 @@ public class Move1FromCardToDiningCharacterTest {
     void testMove1FromCardToDining() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToDining, gb, 1, 1);
         Player rick = game.getPlayers().get(0);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, rick), gb, true
-        );
+        PlayerActionPhase pap = new PlayerActionPhase(new Assistant(4, 8, rick), gb);
 
         character.fillCardFromBag();
 
@@ -59,8 +56,8 @@ public class Move1FromCardToDiningCharacterTest {
     void testInvalidStudents1() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToDining, gb, 1, 1);
         Player rick = game.getPlayers().get(0);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, rick), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, rick), gb
         );
 
         character.fillCardFromBag();
@@ -83,8 +80,8 @@ public class Move1FromCardToDiningCharacterTest {
     void testInvalidStudents2() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToDining, gb, 1, 1);
         Player rick = game.getPlayers().get(0);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, rick), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, rick), gb
         );
 
         character.fillCardFromBag();

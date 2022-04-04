@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
@@ -88,8 +87,8 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
         assertEquals(3, Students.countColor(entranceInitialStudents, Color.PINK));
 
         for (int i = 0; i <= character.getNumStudents(); i++) {
-            PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                    new Assistant(4, 8, rick), gb, true
+            PlayerActionPhase pap = new PlayerActionPhase(
+                    new Assistant(4, 8, rick), gb
             );
             int index = i;
             assertDoesNotThrow(() -> pap.playCharacter(
@@ -111,8 +110,8 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
             }
         }
 
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, rick), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, rick), gb
         );
 
         assertThrows(InvalidActionException.class, () -> pap.playCharacter(
@@ -132,8 +131,8 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
     void testInvalidSource() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);
         Player rick = game.getPlayers().get(0);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, rick), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, rick), gb
         );
 
         character.fillCardFromBag();
@@ -161,8 +160,8 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
     void testInvalidDestination() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);
         Player rick = game.getPlayers().get(0);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, rick), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, rick), gb
         );
 
         character.fillCardFromBag();
@@ -190,8 +189,8 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
     void testInvalidSize1() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);
         Player rick = game.getPlayers().get(0);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, rick), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, rick), gb
         );
 
         character.fillCardFromBag();
@@ -220,8 +219,8 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
     void testInvalidSize2() throws EmptyBagException {
         MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);
         Player rick = game.getPlayers().get(0);
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, rick), gb, true
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, rick), gb
         );
 
         character.fillCardFromBag();

@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhaseFactory;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
@@ -58,9 +57,7 @@ public class EveryOneMovesCharacterTest {
             initialPlayerMaps.add(initialMap);
         }
 
-        PlayerActionPhase pap = PlayerActionPhaseFactory.createPlayerActionPhase(
-                new Assistant(4, 8, game.getPlayers().get(0)), gb, true
-        );
+        PlayerActionPhase pap = new PlayerActionPhase(new Assistant(4, 8, game.getPlayers().get(0)), gb);
         assertDoesNotThrow(() -> pap.playCharacter(character, null, Color.GREEN, null, null));
 
         for (Player player : game.getPlayers()) {
