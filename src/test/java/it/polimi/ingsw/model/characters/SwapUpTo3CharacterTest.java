@@ -50,6 +50,9 @@ public class SwapUpTo3CharacterTest {
 
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         Player rick = game.getPlayers().get(0);
+        for (int i = 0; i < 100; i++) {
+            rick.addCoin();
+        }
 
         character.fillCardFromBag();
 
@@ -98,6 +101,10 @@ public class SwapUpTo3CharacterTest {
 
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         Player rick = game.getPlayers().get(0);
+        for (int i = 0; i < 100; i++) {
+            rick.addCoin();
+        }
+
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, rick), gb
         );
@@ -128,6 +135,10 @@ public class SwapUpTo3CharacterTest {
 
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         Player rick = game.getPlayers().get(0);
+        for (int i = 0; i < 100; i++) {
+            rick.addCoin();
+        }
+
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, rick), gb
         );
@@ -158,6 +169,10 @@ public class SwapUpTo3CharacterTest {
 
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         Player rick = game.getPlayers().get(0);
+        for (int i = 0; i < 100; i++) {
+            rick.addCoin();
+        }
+
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, rick), gb
         );
@@ -189,6 +204,10 @@ public class SwapUpTo3CharacterTest {
 
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         Player rick = game.getPlayers().get(0);
+        for (int i = 0; i < 100; i++) {
+            rick.addCoin();
+        }
+
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, rick), gb
         );

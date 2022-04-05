@@ -116,7 +116,7 @@ public class Player {
      * @param coins number of coins to be removed
      */
     public void removeCoins(int coins) {
-        numCoins -= numCoins - coins;
+        numCoins -= coins;
     }
 
     public void addCoin() {

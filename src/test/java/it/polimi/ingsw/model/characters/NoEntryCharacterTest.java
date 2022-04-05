@@ -32,7 +32,7 @@ public class NoEntryCharacterTest {
         // Island selected by the View
         Island selectedIsland = game.getGameBoard().getIslands().get(0);
         Player rick = game.getPlayers().get(0);
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 100; i++) {
             rick.addCoin();
         }
 
@@ -70,9 +70,10 @@ public class NoEntryCharacterTest {
 
         Island selectedIsland = game.getGameBoard().getIslands().get(0);
         Player rick = game.getPlayers().get(0);
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 100; i++) {
             rick.addCoin();
         }
+
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, rick), game.getGameBoard()
         );

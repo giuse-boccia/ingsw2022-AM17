@@ -2,9 +2,13 @@ package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
 import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidStudentException;
+import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
+import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.model.characters.CharacterName;
+import it.polimi.ingsw.model.characters.PassiveCharacter;
 import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
@@ -51,8 +55,45 @@ public class CoinTest {
 
     @Test
     void testDecreasingOfCoins() {
-        //TODO Give the Game some known players and test their decreasing
+        Player rick = game.getPlayers().get(0); // Rick is Player 0
 
+        Character[] c = {
+                new PassiveCharacter(CharacterName.takeProfWithEqualStudents),
+                new PassiveCharacter(CharacterName.ignoreTowers),
+                new PassiveCharacter(CharacterName.plus2MNMoves)
+        };
+
+        game.getGameBoard().setCharacters(c);
+
+        for (int i = 0; i < 7; i++) {
+            rick.addCoin();
+        }
+        // Rick now has 8 coins (the initial one + 7 added)
+
+        // Rick's turn, he played the lion assistant
+        Assistant lion = new Assistant(1, 1, rick);
+        PlayerActionPhase pap = new PlayerActionPhase(lion, game.getGameBoard());
+
+        // Rick plays first character, whose cost is 2
+        assertDoesNotThrow(() -> pap.playCharacter(c[0], null, null, null, null));
+        assertEquals(6, rick.getNumCoins());
+
+        // Rick plays again first character, whose cost is now 3
+        PlayerActionPhase pap2 = new PlayerActionPhase(lion, game.getGameBoard());
+        assertDoesNotThrow(() -> pap2.playCharacter(c[0], null, null, null, null));
+        assertEquals(3, rick.getNumCoins());
+
+        // Rick plays once again first character, whose cost is still 3
+        PlayerActionPhase pap3 = new PlayerActionPhase(lion, game.getGameBoard());
+        assertDoesNotThrow(() -> pap3.playCharacter(c[0], null, null, null, null));
+        assertEquals(0, rick.getNumCoins());
+
+        // Rick tries to play the second character, but he doesn't have enough coins
+        PlayerActionPhase pap4 = new PlayerActionPhase(lion, game.getGameBoard());
+        assertThrows(NotEnoughCoinsException.class,
+                () -> pap4.playCharacter(c[1], null, null, null, null));
+        assertEquals(0, rick.getNumCoins());
+        assertEquals(3, c[1].getCost());
     }
 
 }

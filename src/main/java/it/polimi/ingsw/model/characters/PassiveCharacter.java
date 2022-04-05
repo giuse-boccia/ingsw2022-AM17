@@ -24,23 +24,16 @@ public class PassiveCharacter extends Character {
      * @param srcStudents              the students to be moved to the destination
      * @param dstStudents              the students to be moved to the source (only if the effect is a "swap" effect)
      * @throws InvalidCharacterException       if the {@code Character} is not a {@code PassiveCharacter}
-     * @throws CharacterAlreadyPlayedException if the {@code Player} has already played a {@code Character} this turn
      */
     @Override
-    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidCharacterException, CharacterAlreadyPlayedException {
+    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidCharacterException {
 
         switch (this.getCardName()) {
-            case plus2MNMoves, takeProfWithEqualStudents, plus2Influence, ignoreTowers -> {
-                currentPlayerActionPhase.playPassiveCharacter(this);
-            }
-            case ignoreColor -> {
-                currentPlayerActionPhase.playPassiveCharacterWithColor(color);
-            }
-            default -> {
-                throw new InvalidCharacterException("This is not a passive character");
-            }
+            case plus2MNMoves, takeProfWithEqualStudents, plus2Influence, ignoreTowers -> currentPlayerActionPhase.playPassiveCharacter(this);
+            case ignoreColor -> currentPlayerActionPhase.playPassiveCharacterWithColor(color);
+            default -> throw new InvalidCharacterException("This is not a passive character");
+
         }
 
-        super.addCoinAfterFirstUse();
     }
 }

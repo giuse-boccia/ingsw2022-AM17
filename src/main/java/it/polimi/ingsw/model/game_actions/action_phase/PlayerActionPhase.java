@@ -155,6 +155,7 @@ public class PlayerActionPhase {
         this.playedCharacter = character;
         character.useEffect(this, island, color, srcStudents, dstStudents);
         getCurrentPlayer().removeCoins(character.getCost());
+        character.addCoinAfterFirstUse();
     }
 
     /**

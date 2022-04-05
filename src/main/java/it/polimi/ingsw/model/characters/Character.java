@@ -31,7 +31,7 @@ public abstract class Character {
     /**
      * Adds the coin on the {@code Character} after its first use
      */
-    protected void addCoinAfterFirstUse() {
+    public void addCoinAfterFirstUse() {
         hasCoin = true;
     }
 
