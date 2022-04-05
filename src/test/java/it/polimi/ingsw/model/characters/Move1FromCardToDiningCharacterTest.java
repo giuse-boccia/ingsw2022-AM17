@@ -21,6 +21,7 @@ public class Move1FromCardToDiningCharacterTest {
 
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
+    Character[] c = {new MovingCharacter(CharacterName.move1FromCardToDining, gb, 1, 1)};
 
     /**
      * Tests the effect of the {@code Character} called "move1FromCardToDining"
@@ -29,7 +30,10 @@ public class Move1FromCardToDiningCharacterTest {
      */
     @Test
     void testMove1FromCardToDining() throws EmptyBagException {
-        MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToDining, gb, 1, 1);
+
+        gb.setCharacters(c);
+
+        MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         Player rick = game.getPlayers().get(0);
         PlayerActionPhase pap = new PlayerActionPhase(new Assistant(4, 8, rick), gb);
 
@@ -54,7 +58,9 @@ public class Move1FromCardToDiningCharacterTest {
      */
     @Test
     void testInvalidStudents1() throws EmptyBagException {
-        MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToDining, gb, 1, 1);
+        gb.setCharacters(c);
+
+        MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         Player rick = game.getPlayers().get(0);
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, rick), gb
@@ -78,7 +84,9 @@ public class Move1FromCardToDiningCharacterTest {
      */
     @Test
     void testInvalidStudents2() throws EmptyBagException {
-        MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToDining, gb, 1, 1);
+        gb.setCharacters(c);
+
+        MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         Player rick = game.getPlayers().get(0);
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, rick), gb

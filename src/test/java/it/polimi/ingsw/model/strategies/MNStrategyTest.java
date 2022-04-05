@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.strategies;
 
+import it.polimi.ingsw.exceptions.InvalidCharacterException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
@@ -91,5 +92,20 @@ class MNStrategyTest {
         pap = new PlayerActionPhase(turtle, gb);
 
         assertEquals(5, pap.getMNMaxSteps());   // Rick's bonus doesn't apply to Clod
+    }
+
+    @Test
+    void testInvalidName() {
+        Player rick = g.getPlayers().get(0);        // Rick is player 0
+
+        PassiveCharacter character = new PassiveCharacter(CharacterName.move1FromCardToDining);
+
+        // Rick's turn, he played the lion assistant
+        Assistant lion = new Assistant(1, 1, rick);
+        PlayerActionPhase pap = new PlayerActionPhase(lion, gb);
+
+        assertThrows(InvalidCharacterException.class,
+                () -> character.useEffect(pap, null, null, null, null)
+        );
     }
 }

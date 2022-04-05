@@ -22,6 +22,8 @@ public class Move1FromCardToIslandTest {
 
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
+    Character[] c = {new MovingCharacter(CharacterName.move1FromCardToIsland, gb, 4, 1)};
+
 
     /**
      * Private method to find out if the array of Characters contains the one called "move1FromCardToIsland"
@@ -44,7 +46,10 @@ public class Move1FromCardToIslandTest {
      */
     @Test
     void testMove1FromCardToIsland1() throws EmptyBagException {
-        MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToIsland, gb, 4, 1);
+
+        gb.setCharacters(c);
+
+        MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
@@ -75,13 +80,8 @@ public class Move1FromCardToIslandTest {
      */
     @Test
     void testMove1FromCardToIsland2() throws EmptyBagException {
-        int index = containsCard(gb.getCharacters());
-        while (index == -1) {
-            gb = new GameBoard(game);
-            index = containsCard(gb.getCharacters());
-        }
-
-        MovingCharacter character = (MovingCharacter) gb.getCharacters()[index];
+        gb.setCharacters(c);
+        MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         character.fillCardFromBag();
         assertEquals(4, character.getInitialStudents());
         assertEquals(4, character.getStudents().size());
@@ -93,7 +93,7 @@ public class Move1FromCardToIslandTest {
                 new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
 
-        Student studentToGive = character.getStudents().get(new Random().nextInt(4));
+        Student studentToGive = character.getStudents().get(0);
         assertDoesNotThrow(() -> pap.playCharacter(
                 character, island, null, new ArrayList<>(List.of(studentToGive)), null
         ));
@@ -111,7 +111,9 @@ public class Move1FromCardToIslandTest {
      */
     @Test
     void testMove1FromCardToIsland3() throws EmptyBagException {
-        MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToIsland, gb, 4, 1);
+        gb.setCharacters(c);
+
+        MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
@@ -135,7 +137,9 @@ public class Move1FromCardToIslandTest {
      */
     @Test
     void testMove1FromCardToIsland4() throws EmptyBagException {
-        MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToIsland, gb, 4, 1);
+        gb.setCharacters(c);
+
+        MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, game.getPlayers().get(0)), gb
         );

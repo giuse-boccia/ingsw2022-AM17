@@ -69,10 +69,10 @@ class StudentTest {
                 bag.giveStudent(playerEntrance, bag.getRandStudent());
             }
 
-            Island randomIsland = game.getGameBoard().getIslands().get(new Random().nextInt(12));
+            Island randomIsland = game.getGameBoard().getIslands().get(0);
             int initialIslandStudents = randomIsland.getStudents().size();
 
-            int studentsToMove = new Random().nextInt(7) + 1;
+            int studentsToMove = 4;
             ArrayList<Student> studentsMoved = new ArrayList<>();
             for (int i = 0; i < initialIslandStudents; i++) {
                 studentsMoved.add(randomIsland.getStudents().get(i));
