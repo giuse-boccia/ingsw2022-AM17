@@ -18,13 +18,17 @@ public class NoEntryCharacterTest {
 
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
+    Character[] c = {new NoEntryCharacter(CharacterName.noEntry, gb)};
+
 
     /**
      * Tests the effect of the {@code Character} called "noEntry"
      */
     @Test
     void testNoEntryCharacter() {
-        NoEntryCharacter character = new NoEntryCharacter(CharacterName.noEntry, gb);
+        gb.setCharacters(c);
+
+        NoEntryCharacter character = (NoEntryCharacter) gb.getCharacters()[0];
         // Island selected by the View
         Island selectedIsland = game.getGameBoard().getIslands().get(0);
         Player rick = game.getPlayers().get(0);
@@ -60,15 +64,9 @@ public class NoEntryCharacterTest {
     @Test
     void testNoEntryCharacter2() {
 
-        Character noEntryCharacter = null;
-        do {
-            game = TestGameFactory.getNewGame();
-            for (Character c : game.getGameBoard().getCharacters()) {
-                if (c.getCardName() == CharacterName.noEntry) {
-                    noEntryCharacter = c;
-                }
-            }
-        } while (noEntryCharacter == null);
+        gb.setCharacters(c);
+
+        NoEntryCharacter character = (NoEntryCharacter) gb.getCharacters()[0];
 
         Island selectedIsland = game.getGameBoard().getIslands().get(0);
         Player rick = game.getPlayers().get(0);
@@ -87,8 +85,7 @@ public class NoEntryCharacterTest {
         // Rick now owns blue professor
         assertDoesNotThrow(() -> pap.moveStudent(Color.BLUE, rick.getDashboard().getDiningRoom()));
 
-        NoEntryCharacter finalNoEntryCharacter = (NoEntryCharacter) noEntryCharacter;
-        assertDoesNotThrow(() -> pap.playCharacter(finalNoEntryCharacter, selectedIsland, null, null, null));
+        assertDoesNotThrow(() -> pap.playCharacter(character, selectedIsland, null, null, null));
         assertEquals(1, selectedIsland.getNoEntryNum());
 
         pap.resolveIsland(selectedIsland);

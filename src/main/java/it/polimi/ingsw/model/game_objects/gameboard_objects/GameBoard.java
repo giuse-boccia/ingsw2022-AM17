@@ -12,18 +12,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GameBoard {
-    private final ArrayList<Island> islands;
-    private final ArrayList<Cloud> clouds;
-    private final Character[] characters;
     private final Game game;
     private final Bag bag;
-    private final Map<Color, Player> professors;
+    private ArrayList<Island> islands;
+    private ArrayList<Cloud> clouds;
+    private Character[] characters;
+    private Map<Color, Player> professors;
     private int motherNatureIndex;
 
     public GameBoard(Game game) {
         this.game = game;
         bag = new Bag();
-        motherNatureIndex = new Random().nextInt(12);
+    }
+
+    public void initGameBoard(int motherNatureIndex) {
+        this.motherNatureIndex = motherNatureIndex;
         this.professors = initProfessorMap();
         this.clouds = initClouds();
         this.islands = initIslands();
@@ -211,8 +214,16 @@ public class GameBoard {
         return Arrays.copyOf(characters, characters.length);
     }
 
+    public void setCharacters(Character[] characters) {
+        this.characters = characters;
+    }
+
     public int getMotherNatureIndex() {
         return motherNatureIndex;
+    }
+
+    public void setMotherNatureIndex(int motherNatureIndex) {
+        this.motherNatureIndex = motherNatureIndex;
     }
 
     public Game getGame() {

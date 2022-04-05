@@ -23,6 +23,8 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
 
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
+    Character[] c = {new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2)};
+
 
     /**
      * Private method which makes the final assertions for the tests
@@ -68,7 +70,9 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
      */
     @Test
     void testCharacter() throws EmptyBagException {
-        MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);
+        gb.setCharacters(c);
+
+        MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         Player rick = game.getPlayers().get(0);
 
         character.fillCardFromBag();
@@ -129,7 +133,9 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
      */
     @Test
     void testInvalidSource() throws EmptyBagException {
-        MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);
+        gb.setCharacters(c);
+
+        MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         Player rick = game.getPlayers().get(0);
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, rick), gb
@@ -158,7 +164,9 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
      */
     @Test
     void testInvalidDestination() throws EmptyBagException {
-        MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);
+        gb.setCharacters(c);
+
+        MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         Player rick = game.getPlayers().get(0);
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, rick), gb
@@ -187,7 +195,9 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
      */
     @Test
     void testInvalidSize1() throws EmptyBagException {
-        MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);
+        gb.setCharacters(c);
+
+        MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         Player rick = game.getPlayers().get(0);
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, rick), gb
@@ -217,7 +227,9 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
      */
     @Test
     void testInvalidSize2() throws EmptyBagException {
-        MovingCharacter character = new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, gb, 0, 2);
+        gb.setCharacters(c);
+
+        MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         Player rick = game.getPlayers().get(0);
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, rick), gb

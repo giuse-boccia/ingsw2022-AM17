@@ -17,13 +17,16 @@ public class ResolveIslandCharacterTest {
 
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
+    Character[] c = {new ResolveIslandCharacter(CharacterName.resolveIsland, gb)};
 
     /**
      * Tests the effect of the {@code Character} called "resolveIsland"
      */
     @Test
     void testResolveIslandCharacter1() {
-        ResolveIslandCharacter character = new ResolveIslandCharacter(CharacterName.noEntry, gb);
+        gb.setCharacters(c);
+
+        ResolveIslandCharacter character = (ResolveIslandCharacter) gb.getCharacters()[0];
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
@@ -32,8 +35,7 @@ public class ResolveIslandCharacterTest {
         }
         ArrayList<Island> islands = game.getGameBoard().getIslands();
 
-        while (gb.getMotherNatureIndex() != 3)
-            gb.moveMotherNature(1);
+        gb.setMotherNatureIndex(3);
 
         // Initially the selected island is owned by Player 2
         islands.get(0).setOwner(game.getPlayers().get(2));
@@ -58,7 +60,9 @@ public class ResolveIslandCharacterTest {
      */
     @Test
     void testResolveIslandCharacter2() {
-        ResolveIslandCharacter character = new ResolveIslandCharacter(CharacterName.resolveIsland, gb);
+        gb.setCharacters(c);
+
+        ResolveIslandCharacter character = (ResolveIslandCharacter) gb.getCharacters()[0];
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
@@ -67,8 +71,7 @@ public class ResolveIslandCharacterTest {
         }
         ArrayList<Island> islands = game.getGameBoard().getIslands();
 
-        while (gb.getMotherNatureIndex() != 11)
-            gb.moveMotherNature(1);
+        gb.setMotherNatureIndex(11);
 
         // Initially the selected island is owned by Player 2, while Player 0 owns the two island on the left and on the right
         islands.get(0).setOwner(game.getPlayers().get(2));

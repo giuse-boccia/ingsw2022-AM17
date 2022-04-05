@@ -21,6 +21,7 @@ public class GameBoardTest {
      */
     @Test
     public void moveMotherNature1() {
+        gb.setMotherNatureIndex(8);
         while (gb.getMotherNatureIndex() != 4) {
             gb.moveMotherNature(1);
             assertFalse(gb.getMotherNatureIndex() < 0);
@@ -35,7 +36,7 @@ public class GameBoardTest {
      */
     @Test
     public void moveMotherNature2() {
-        while (gb.getMotherNatureIndex() != 11) gb.moveMotherNature(1);
+        gb.setMotherNatureIndex(11);
         gb.moveMotherNature(5);
         assertEquals(4, gb.getMotherNatureIndex());
     }
@@ -45,7 +46,7 @@ public class GameBoardTest {
      */
     @Test
     public void moveMotherNature3() {
-        while (gb.getMotherNatureIndex() != 5) gb.moveMotherNature(1);   // MN starts in island 5
+        gb.setMotherNatureIndex(5);   // MN starts in island 5
         ArrayList<Island> islands = gb.getIslands();
 
         // Merge island 7 and island 8
@@ -123,8 +124,7 @@ public class GameBoardTest {
         assertEquals(1, gb.getIslands().get(11).getNumOfTowers());
 
         // Move mother nature to island 1
-        while (gb.getMotherNatureIndex() != 1)
-            gb.moveMotherNature(1);
+        gb.setMotherNatureIndex(1);
 
         // Rick conquers island 1
         gb.setIslandOwner(islands.get(1), game.getPlayers().get(0));

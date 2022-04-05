@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.characters.Character;
+
 import java.util.ArrayList;
 
 public class TestGameFactory {
@@ -10,6 +12,7 @@ public class TestGameFactory {
      * @return the created {@code Game}
      */
     public static Game getNewGame() {
+        // TODO create a custom game without start()
         Game res = new Game(createPlayers(), true);
         res.start(0);
         return res;

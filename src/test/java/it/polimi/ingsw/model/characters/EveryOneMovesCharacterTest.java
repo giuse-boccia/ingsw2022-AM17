@@ -13,7 +13,9 @@ import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
 import it.polimi.ingsw.model.utils.Students;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,6 +24,7 @@ public class EveryOneMovesCharacterTest {
 
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
+    Character[] c = {new EveryOneMovesCharacter(CharacterName.everyOneMove3FromDiningRoomToBag, gb)};
 
     /**
      * Helper method which fills the selected {@code Entrance} with 7 students from the {@code Bag}
@@ -43,7 +46,10 @@ public class EveryOneMovesCharacterTest {
      */
     @Test
     void testEveryOneMovesCharacter() {
-        EveryOneMovesCharacter character = new EveryOneMovesCharacter(CharacterName.everyOneMove3FromDiningRoomToBag, gb);
+
+        gb.setCharacters(c);
+
+        EveryOneMovesCharacter character = (EveryOneMovesCharacter) gb.getCharacters()[0];
         ArrayList<HashMap<Color, Integer>> initialPlayerMaps = new ArrayList<>();
         ArrayList<HashMap<Color, Integer>> finalPlayerMaps = new ArrayList<>();
 
