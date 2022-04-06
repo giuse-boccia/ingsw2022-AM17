@@ -8,18 +8,18 @@ Every message has a **type** field which is either *ping/pong*, *login* or *acti
 
 Every time a new client connects to the server, the latter sends a ping message and awaits a pong response. This also happens every x seconds, to ensure the client is still up.
 
-```json
+```
 +--------+                                         +--------+
 | Client |                                         | Server |	
 +--------+                                         +--------+
-	|                                                  	|
-	|					{ "type": "ping" }           	|
-	|				<-------------------------         	|
-	|	                                              	|
+    |                                                  	|
+    |					{ "type": "ping" }           	|
+    |				<-------------------------         	|
+    |	                                              	|
     |                                                  	|
     |					{ "type": "pong" }             	|
     |				------------------------->			|
-	|	                                              	|
+    |	                                              	|
 
 ```
 
@@ -41,39 +41,42 @@ When a new client connects to the server, the latter sends a message which:
 +--------+                                         +--------+
 | Client |                                         | Server |	
 +--------+                                         +--------+
-	|                                                  	|
-	|					{ "type": "ping" }           	|
-	|				<------------------------         	|
+    |                                                  	|
+    |					{ "type": "ping" }           	|
+    |				<------------------------         	|
     |                                                  	|
     |					{ "type": "pong" }             	|
     |				------------------------>			|
-	|	                                              	|
+    |	                                              	|
     |                     message L.1.1               	|
-	|				<-----------------------			|
-	|	                                          		|
+    |				<-----------------------			|
+    |	                                          		|
     |                     message L.1.2              	| 
-	|				----------------------->			|
-	|	                                               	|
+    |				----------------------->			|
+    |	                                               	|
     |                 	[OK] message L.B.1              | 
-	|              <-------------------------          	|
+    |              <-------------------------          	|
     |                  [ERR] message L.E.*              |
-	|              <-------------------------          	|
-	|	                                                |
+    |              <-------------------------          	|
+    |	                                                |
 ```
 
+
+#### message L.1.1
 ```json
-// message L.1.1
 {
-	"type": "login",
-	"action": "create game",
-	"message": "insert username and desired number of players"
+    "type": "login",
+    "action": "create game",
+    "message": "insert username and desired number of players"
 }
-// message L.1.2
+```
+#### message L.1.2
+```json
 {
-	"type": "login",
-	"action": "create game",
-	"username": "Rick",
-	"num players": 3
+    "type": "login",
+    "action": "create game",
+    "username": "Rick",
+    "num players": 3
 }
 ```
 
@@ -83,104 +86,117 @@ When a new client connects to the server, the latter sends a message which:
 +--------+                                         +--------+
 | Client |                                         | Server |	
 +--------+                                         +--------+
-	|                                                  	|
-	|					{ "type": "ping" }           	|
-	|				<------------------------         	|
+    |                                                  	|
+    |					{ "type": "ping" }           	|
+    |				<------------------------         	|
     |                                                  	|
     |					{ "type": "pong" }             	|
     |				------------------------>			|
-	|	                                              	|
+    |	                                              	|
     |                     message L.2.1               	|
-	|				<-----------------------			|
-	|	                                          		|
+    |				<-----------------------			|
+    |	                                          		|
     |                     message L.2.2              	| 
-	|				----------------------->			|
-	|	                                               	|
+    |				----------------------->			|
+    |	                                               	|
     |                 	[OK] message L.B.2              | 
-	|              <-------------------------          	|
+    |              <-------------------------          	|
     |                  [ERR] message L.E.*              |
-	|              <-------------------------          	|
-	|	                                                |
+    |              <-------------------------          	|
+    |	                                                |
 ```
 
-```json
-// message L.2.1
-{
-	"type": "login",
-	"message": "insert username",
-	"action": "join game",
-	"game": {
-		"players": ["Clod"],
-		"num players": 3,
-	}
-}
 
-// message L.2.2
+#### message L.2.1
+```json
 {
-	"type": "login",
-	"action": "join game",
-	"username": "Rick"
+    "type": "login",
+    "message": "insert username",
+    "action": "join game",
+    "game": {
+        "players": ["Clod"],
+        "num players": 3,
+    }
+}
+```
+
+#### message L.2.2
+```json
+{
+    "type": "login",
+    "action": "join game",
+    "username": "Rick"
 }
 ```
 
 ### L.E - Login errors
 
+#### message L.E.1
 ```json
-// message L.E.1
 {
-	"type" : "login",
-	"error" : {
-		"code" : 1,
-		"message" : "A game is already in progress. The connection will be closed"
-	}
+    "type" : "login",
+    "error" : {
+        "code" : 1,
+        "message" : "A game is already in progress. The connection will be closed"
+    }
 }
-// message L.E.2
+```
+#### message L.E.2
+```json
 {
-	"type" : "login",
-	"error" : {
-		"code" : 2,
-		"message" : "An user with this username is already logged in. Please select another username"
-	}
+    "type" : "login",
+    "error" : {
+        "code" : 2,
+        "message" : "An user with this username is already logged in. Please select another username"
+    }
 }
-// message L.E.3
+```
+
+#### message L.E.3
+```json
 {
-	"type" : "login",
-	"error" : {
-		"code" : 3,
-		"message" : "Invalid action"
-	}
+    "type" : "login",
+    "error" : {
+        "code" : 3,
+        "message" : "Invalid action"
+    }
 }
 ```
 
 ### L.B - Login Broadcast messages
 
+
+#### message L.B.1
 ```json
-// message L.B.1
 {
-	"type": "login",
-	"message": "game created",
-	"game": {
-		"players": ["Rick"],
-		"num players": 3,
-	}
+    "type": "login",
+    "message": "game created",
+    "game": {
+        "players": ["Rick"],
+        "num players": 3,
+    }
 }
-// message L.B.2
+```
+#### message L.B.2
+```json
 {
-	"type": "login",
-	"message": "player has joined",
-	"game": {
-		"players": ["Clod", "Rick"],
-		"num layers": 3,
-	}
+    "type": "login",
+    "message": "player has joined",
+    "game": {
+        "players": ["Clod", "Rick"],
+        "num layers": 3,
+    }
 }
-// message L.B.3
+```
+#### message L.B.3
+```json
 {
-	"type" : "login",
-	"message" : "A new game is starting",
-	"game": {
-		"players": ["Clod", "Rick", "Giuse"],
-		"numPlayers": 3,
-	}
+    "type" : "login",
+    "message" : "A new game is starting",
+    "game": {
+        "players": ["Clod", "Rick", "Giuse"],
+        "numPlayers": 3,
+    }
 }
 ```
 
@@ -199,39 +215,42 @@ Every player has to play an assistant.
 +--------+                                        +--------+
 | Client |                                        | Server |	
 +--------+                                        +--------+
-	|	                                          		|
+    |	                                          		|
     |                   message A.0.1                  	|
-	|             <-------------------------           	|
-	|	                                               	|
+    |             <-------------------------           	|
+    |	                                               	|
     |                   message A.1.1                  	|
     |             ------------------------->           	|
-	|	                                                |
+    |	                                                |
     |                 [OK] message A.B.1               	| 
-	|             <-------------------------           	|
+    |             <-------------------------           	|
     |                [ERR] message A.E.*               	|       
-	|             <-------------------------           	|
-	|	                                       			|
+    |             <-------------------------           	|
+    |	                                       			|
 ```
 
+
+#### message A.0.1
 ```json
-// message A.0.1
 {
-	"type": "action",
-	"player": "Rick",
-	"actions": {
-		["play assistant"]
-	}
+    "type": "action",
+    "player": "Rick",
+    "actions": {
+        ["play assistant"]
+    }
 }
-// message A.1.1
+```
+#### message A.1.1
+```json
 {
-	"type": "action",
-	"player": "Rick",
-	"action": {
-		"name": "play assistant",
-		"args": {
-			"value": 5
-		}
-	}
+    "type": "action",
+    "player": "Rick",
+    "action": {
+        "name": "play assistant",
+        "args": {
+            "value": 5
+        }
+    }
 }
 ```
 
@@ -243,201 +262,221 @@ Example of a player action phase
 +--------+                                        +--------+
 | Client |                                        | Server |	
 +--------+                                        +--------+
-	|	                                          		|
+    |	                                          		|
     |                   message A.0.2                  	|
-	|             <-------------------------           	|
-	|	                                                |
+    |             <-------------------------           	|
+    |	                                                |
     |                   [PLAYER CHOICE]                	|
     |                   message A.2.1a                 	|
     |             ------------------------->           	|
     |                   message A.2.1b                 	|
     |             ------------------------->           	|
-	|	                                                |
-	|                 [OK] message A.B.2           		| 
-	|             <-------------------------           	|
+    |	                                                |
+    |                 [OK] message A.B.2           		| 
+    |             <-------------------------           	|
     |                [ERR] message A.E.*               	|       
-	|             <-------------------------           	|
-	|	                                                |
-	|	                                               	|
-	|	                    [ ... ]                   	|
-	|	                                                |
-	|	                                                |
+    |             <-------------------------           	|
+    |	                                                |
+    |	                                               	|
+    |	                    [ ... ]                   	|
+    |	                                                |
+    |	                                                |
     |                   message A.0.3                  	|
-	|             <-------------------------           	|
-	|	                                                |
+    |             <-------------------------           	|
+    |	                                                |
     |                   message A.2.2                  	|
     |             ------------------------->           	|
-	|	                                                |
+    |	                                                |
     |                 (OK) message A.B.3              	| 
-	|             <-------------------------           	|
+    |             <-------------------------           	|
     |                (ERR) message A.E.*               	|       
-	|             <-------------------------           	|
-	|	                                                |
-	|	                                                |
+    |             <-------------------------           	|
+    |	                                                |
+    |	                                                |
     |                   message A.0.4                  	|
-	|             <-------------------------           	|
-	|	                                               	|
+    |             <-------------------------           	|
+    |	                                               	|
     |                   message A.2.3                  	|
     |             ------------------------->           	|
-	|	                                               	|
+    |	                                               	|
     |                 (OK) message A.B.4               	| 
-	|             <-------------------------           	|
+    |             <-------------------------           	|
     |                (ERR) message A.E.*               	|
-	|             <-------------------------           	|
+    |             <-------------------------           	|
     |                                                  	|
 ```
 
+
+#### message A.0.2
 ```json
-// message A.0.2
 {
-	"type": "action",
-	"player": "Rick",
-	"actions": {
-		["move student", "play character"]
-	}
+    "type": "action",
+    "player": "Rick",
+    "actions": {
+        ["move student", "play character"]
+    }
 }
+```
 
-// message A.2.1a
+#### message A.2.1a
+```json
 {
-	"type": "action",
-	"player": "Rick",
-	"action": {
-		"name": "move student to dining",
-		"args": {
-			"color": "GREEN",
-		}
-	}
+    "type": "action",
+    "player": "Rick",
+    "action": {
+        "name": "move student to dining",
+        "args": {
+            "color": "GREEN",
+        }
+    }
 }
+```
 
-// message A.2.1b
+#### message A.2.1b
+```json
 {
-	"type": "action",
-	"player": "Rick",
-	"action": {
-		"name": "move student to island",
-		"args": {
-			"color": "GREEN",
-			"island": 3,
-		}
-	}
+    "type": "action",
+    "player": "Rick",
+    "action": {
+        "name": "move student to island",
+        "args": {
+            "color": "GREEN",
+            "island": 3,
+        }
+    }
+}
+```
+#### message A.0.3
+```json
+{
+    "type": "action",
+    "player": "Rick",
+    "actions": {
+        ["move mother nature", "play character"]
+    }
+}
+```
+#### message A.2.2
+```json
+{
+    "type": "action",
+    "player": "Rick",
+    "action": {
+        "name": "move mother nature",
+        "args": {
+            "num_steps": 5
+        }
+    }
+}
+```
 
-}
-// message A.0.3
+#### message A.0.4
+```json
 {
-	"type": "action",
-	"player": "Rick",
-	"actions": {
-		["move mother nature", "play character"]
-	}
+    "type": "action",
+    "player": "Rick",
+    "actions": {
+        ["fill from cloud", "play character"]
+    }
 }
-// message A.2.2
+```
+#### message A.2.3
+```json
 {
-	"type": "action",
-	"player": "Rick",
-	"action": {
-		"name": "move mother nature",
-		"args": {
-			"num_steps": 5
-		}
-	}
-}
-
-// message A.0.4
-{
-	"type": "action",
-	"player": "Rick",
-	"actions": {
-		["fill from cloud", "play character"]
-	}
-}
-// message A.2.3
-{
-	"type": "action",
-	"player": "Rick",
-	"action": {
-		"name": "fill from cloud",
-		"args": {
-			"cloud": 0
-		}
-	}
+    "type": "action",
+    "player": "Rick",
+    "action": {
+        "name": "fill from cloud",
+        "args": {
+            "cloud": 0
+        }
+    }
 }
 ```
 
 ### A.B - Action Broadcast messages
 
+
+#### message A.B.1
 ```json
-// message A.B.1
 {
-	"type": "action",
-	"player": "Rick",
-	"message": "Rick played assistant 5",
-	"action": {
-		"name": "play assistant",
-		"args": {
-			"value": 5
-		}
-	}
+    "type": "action",
+    "player": "Rick",
+    "message": "Rick played assistant 5",
+    "action": {
+        "name": "play assistant",
+        "args": {
+            "value": 5
+        }
+    }
 }
+```
 
-// message A.B.2
+#### message A.B.2
+```json
 {
-	"type": "action",
-	"player": "Rick",
-	"message": "Rick moved...",
-	"action": {
-		"name": "move student [to dining | to island]",
-		"args": {
-			"color": "GREEN",
-			["island": 3]
-		}
-	}
+    "type": "action",
+    "player": "Rick",
+    "message": "Rick moved...",
+    "action": {
+        "name": "move student [to dining | to island]",
+        "args": {
+            "color": "GREEN",
+            ["island": 3]
+        }
+    }
 }
+```
 
-// message A.B.3
+#### message A.B.3
+```json
 {
-	"type": "action",
-	"player": "Rick",
-	"message": "Rick moved mother nature by 5 steps",
-	"action": {
-		"name": "move mother nature",
-		"args": {
-			"num_steps": 5
-		}
-	}
+    "type": "action",
+    "player": "Rick",
+    "message": "Rick moved mother nature by 5 steps",
+    "action": {
+        "name": "move mother nature",
+        "args": {
+            "num_steps": 5
+        }
+    }
 }
+```
 
-// message A.B.4
+#### message A.B.4
+```json
 {
-	"type": "action",
-	"player": "Rick",
-	"message": "Rick picked cloud 1",
-	"action": {
-		"name": "fill from cloud",
-		"args": {
-			"cloud": 1
-		}
-	}
+    "type": "action",
+    "player": "Rick",
+    "message": "Rick picked cloud 1",
+    "action": {
+        "name": "fill from cloud",
+        "args": {
+            "cloud": 1
+        }
+    }
 }
 ```
 
 ### A.E - Action Error messages
 
+#### message A.E.1
 ```json
-
-// message A.E.1
 {
-	"type" : "action",
-	"error" : {
-		"status" : 1,
-		"message" : "Wait for your turn"
-	}
+    "type" : "action",
+    "error" : {
+        "status" : 1,
+        "message" : "Wait for your turn"
+    }
 }
-// message A.E.2
+```
+#### message A.E.2
+```json
 {
-	"type" : "action",
-	"error" : {
-		"status" : 2,
-		"message" : "This action is not valid"
-	}
+    "type" : "action",
+    "error" : {
+        "status" : 2,
+        "message" : "This action is not valid"
+    }
 }
 ```
