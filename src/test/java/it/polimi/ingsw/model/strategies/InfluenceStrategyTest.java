@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InfluenceStrategyTest {
     Game g = TestGameFactory.getNewGame();
+    Game g2 = TestGameFactory.getNewFourPlayersGame();
     GameBoard gb = g.getGameBoard();
 
     /**
@@ -206,6 +207,73 @@ class InfluenceStrategyTest {
         island.receiveStudent(new Student(Color.RED));
         pap.resolveIsland(island);
         assertSame(island.getTowerColor(), clod.getTowerColor());
-
     }
+
+    /**
+     * Tests the default strategy to calculate the influence on an {@code Island} when on a 4 player game (two teams)
+     */
+    @Test
+    public void fourPlayerGameDefault() {
+        Player rick = g2.getPlayers().get(0);        // Rick is player 0
+        Player clod = g2.getPlayers().get(1);        // Clod is player 1
+        Player giuse = g2.getPlayers().get(2);        // Clod is player 1
+        Player fabio = g2.getPlayers().get(3);        // Clod is player 1
+
+        gb = g2.getGameBoard();
+
+        assertSame(rick.getTowerColor(), TowerColor.WHITE);
+        assertSame(giuse.getTowerColor(), TowerColor.WHITE);
+        assertSame(clod.getTowerColor(), TowerColor.BLACK);
+        assertSame(fabio.getTowerColor(), TowerColor.BLACK);
+
+        // Rick has green professor
+        gb.setOwnerOfProfessor(Color.GREEN, rick);
+
+        // Clod has red and blue professor
+        gb.setOwnerOfProfessor(Color.RED, clod);
+        gb.setOwnerOfProfessor(Color.BLUE, fabio);
+
+        // Giuse has pink professor
+        gb.setOwnerOfProfessor(Color.PINK, giuse);
+
+        // Fabio has yellow professor
+        gb.setOwnerOfProfessor(Color.YELLOW, fabio);
+
+        // island with 2 green student, 2 pink and 3 reds
+        Island island = new Island();
+        island.receiveStudent(new Student(Color.GREEN));
+        island.receiveStudent(new Student(Color.GREEN));
+        island.receiveStudent(new Student(Color.PINK));
+        island.receiveStudent(new Student(Color.PINK));
+        island.receiveStudent(new Student(Color.RED));
+        island.receiveStudent(new Student(Color.RED));
+        island.receiveStudent(new Student(Color.RED));
+
+        //-----------------------Rick's turn--------------------------------------------
+        Assistant a1 = new Assistant(1, 1, rick);
+        PlayerActionPhase pap = new PlayerActionPhase(a1, gb);
+
+        // Island is resolved, island tower should be white
+        pap.resolveIsland(island);
+        assertSame(island.getTowerColor(), TowerColor.WHITE);
+
+        //-----------------------Clod's turn--------------------------------------------
+        Assistant a2 = new Assistant(1, 2, clod);
+        pap = new PlayerActionPhase(a2, gb);
+
+        // add 2 yellow to island and solve -> island tower should remain white
+        island.receiveStudent(new Student(Color.YELLOW));
+        island.receiveStudent(new Student(Color.YELLOW));
+        pap.resolveIsland(island);
+        assertSame(island.getTowerColor(), TowerColor.WHITE);
+
+        //-----------------------Fabio's turn--------------------------------------------
+        Assistant a3 = new Assistant(1, 3, fabio);
+        pap = new PlayerActionPhase(a3, gb);
+        // add a blue and solve -> island tower is now black
+        island.receiveStudent(new Student(Color.BLUE));
+        pap.resolveIsland(island);
+        assertSame(island.getTowerColor(), TowerColor.BLACK);
+    }
+
 }

@@ -18,7 +18,7 @@ public class InfluenceIgnoreTowers implements InfluenceStrategy {
     public int computeInfluence(Island island, ArrayList<Player> team) {
         int difference = 0;
 
-        if (island.getTowerColor() == team.get(0).getTowerColor()) {
+        if (team.size() > 0 && island.getTowerColor() == team.get(0).getTowerColor()) {
             difference = island.getNumOfTowers();
         }
 

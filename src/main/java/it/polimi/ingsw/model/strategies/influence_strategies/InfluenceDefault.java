@@ -16,6 +16,7 @@ public class InfluenceDefault implements InfluenceStrategy {
      * @return an int representing the influence of the player on the island
      */
     public static int computeDefaultInfluence(Island island, ArrayList<Player> players) {
+        if (players.size() == 0) return 0;
         int influence = 0;
 
         for (Player player : players) {
