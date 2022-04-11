@@ -4,11 +4,19 @@ import com.google.gson.Gson;
 import it.polimi.ingsw.Settings;
 
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
-
     private static int port;
+
+    private Server() {
+
+    }
 
     public static void main(String[] args) {
         if (args.length == 0) {
@@ -24,7 +32,7 @@ public class Server {
             try {
                 port = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                gracefulTermination("Invalid server_port argument in settings.json");
+                gracefulTermination("Invalid server_port");
             }
         }
 
@@ -32,7 +40,28 @@ public class Server {
             gracefulTermination("Invalid server_port argument. The port number has to be between 1024 and 65535");
         }
 
-        // Now starts ServerSocket
+        Server server = new Server();
+    }
+
+    private void startServer() {
+        ExecutorService executor = Executors.newCachedThreadPool();
+
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(port);
+        } catch (IOException e) {
+            gracefulTermination("The selected port is not available at the moment");
+        }
+        System.out.println("Server ready");
+        while (true) {
+            try {
+                Socket socket = serverSocket.accept();
+                executor.submit(new ClientHandler(socket));
+            } catch (IOException e) {
+                break;
+            }
+        }
+        executor.shutdown();
     }
 
     private static void gracefulTermination(String message) {
