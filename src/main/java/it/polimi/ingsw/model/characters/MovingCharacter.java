@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.Place;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
+import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
@@ -40,16 +40,13 @@ public class MovingCharacter extends GameboardCharacter implements Place {
      * @throws InvalidStudentException      if the {@code Student} is not valid
      */
     @Override
-    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents)
-            throws InvalidCharacterException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException {
+    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidCharacterException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException {
 
         switch (this.getCardName()) {
-            case move1FromCardToIsland -> {
-                moveStudentAwayFromCard(island, srcStudents);
-            }
-            case move1FromCardToDining -> {
-                moveStudentAwayFromCard(currentPlayerActionPhase.getCurrentPlayer().getDashboard().getDiningRoom(), srcStudents);
-            }
+            case move1FromCardToIsland -> moveStudentAwayFromCard(island, srcStudents);
+            
+            case move1FromCardToDining -> moveStudentAwayFromCard(currentPlayerActionPhase.getCurrentPlayer().getDashboard().getDiningRoom(), srcStudents);
+
             case swapUpTo3FromEntranceToCard -> {
                 Entrance curEntrance = currentPlayerActionPhase.getCurrentPlayer().getDashboard().getEntrance();
                 if (!this.students.containsAll(dstStudents)) {
@@ -70,9 +67,8 @@ public class MovingCharacter extends GameboardCharacter implements Place {
                 }
                 swapStudents(curDashBoard.getEntrance(), curDashBoard.getDiningRoom(), srcStudents, dstStudents);
             }
-            default -> {
-                throw new InvalidCharacterException("This is not a valid character");
-            }
+            default -> throw new InvalidCharacterException("This is not a valid character");
+
         }
 
         super.addCoinAfterFirstUse();
@@ -110,8 +106,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         for (int i = 0; i < srcStudents.size(); i++) {
             Student firstStudentToSwap = srcStudents.get(i);
             Student secondStudentToSwap = dstStudents.get(i);
-            if (firstStudentToSwap == null || secondStudentToSwap == null)
-                break;
+            if (firstStudentToSwap == null || secondStudentToSwap == null) break;
             src.giveStudent(dst, firstStudentToSwap);
             dst.giveStudent(src, secondStudentToSwap);
         }

@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.TestGameFactory;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
+import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
@@ -38,7 +38,7 @@ public class ResolveIslandCharacterTest {
         gb.setMotherNatureIndex(3);
 
         // Initially the selected island is owned by Player 2
-        islands.get(0).setOwner(game.getPlayers().get(2));
+        islands.get(0).setTowerColor(game.getPlayers().get(2).getTowerColor());
 
         for (int i = 0; i < 3; i++) {
             islands.get(0).receiveStudent(new Student(Color.GREEN));
@@ -50,7 +50,7 @@ public class ResolveIslandCharacterTest {
 
         // After playing the character, the island is resolved (and is now owned bt Player 0), while mother nature hasn't moved
         assertDoesNotThrow(() -> pap.playCharacter(character, islands.get(0), null, null, null));
-        assertEquals(game.getPlayers().get(0), islands.get(0).getOwner());
+        assertEquals(game.getPlayers().get(0).getTowerColor(), islands.get(0).getTowerColor());
         assertEquals(3, gb.getMotherNatureIndex());
 
     }
@@ -74,9 +74,9 @@ public class ResolveIslandCharacterTest {
         gb.setMotherNatureIndex(11);
 
         // Initially the selected island is owned by Player 2, while Player 0 owns the two island on the left and on the right
-        islands.get(0).setOwner(game.getPlayers().get(2));
-        islands.get(1).setOwner(game.getPlayers().get(0));
-        islands.get(11).setOwner(game.getPlayers().get(0));
+        islands.get(0).setTowerColor(game.getPlayers().get(2).getTowerColor());
+        islands.get(1).setTowerColor(game.getPlayers().get(0).getTowerColor());
+        islands.get(11).setTowerColor(game.getPlayers().get(0).getTowerColor());
 
         for (int i = 0; i < 3; i++) {
             islands.get(0).receiveStudent(new Student(Color.GREEN));
@@ -88,9 +88,9 @@ public class ResolveIslandCharacterTest {
         gb.setOwnerOfProfessor(Color.RED, game.getPlayers().get(1));
 
         assertDoesNotThrow(() -> pap.playCharacter(character, islands.get(0), null, null, null));
-        assertEquals(game.getPlayers().get(0), islands.get(0).getOwner());
+        assertEquals(game.getPlayers().get(0).getTowerColor(), islands.get(0).getTowerColor());
         assertEquals(10, game.getGameBoard().getIslands().size());
-        assertEquals(islands.get(0).getOwner(), game.getGameBoard().getIslands().get(9).getOwner());
+        assertEquals(islands.get(0).getTowerColor(), game.getGameBoard().getIslands().get(9).getTowerColor());
         assertTrue(3 <= Students.countColor(game.getGameBoard().getIslands().get(9).getStudents(), Color.GREEN));
         assertTrue(1 <= Students.countColor(game.getGameBoard().getIslands().get(9).getStudents(), Color.BLUE));
         assertEquals(9, gb.getMotherNatureIndex());

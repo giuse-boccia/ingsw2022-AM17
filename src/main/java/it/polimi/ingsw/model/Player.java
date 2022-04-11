@@ -15,6 +15,7 @@ public class Player {
     private final String name;
     private int numCoins;
     private Wizard wizard = null;
+    private TowerColor towerColor = null;
     private Game game;
     private final int initialTowers;
 
@@ -65,7 +66,7 @@ public class Player {
     public int getNumberOfTowers() {
         int res = initialTowers;
         for (Island island : game.getGameBoard().getIslands()) {
-            if (island.getOwner() == this) {
+            if (island.getTowerColor() == towerColor) {
                 res -= island.getNumOfTowers();
             }
         }
@@ -125,5 +126,13 @@ public class Player {
 
     public Wizard getWizard() {
         return wizard;
+    }
+
+    public TowerColor getTowerColor() {
+        return towerColor;
+    }
+
+    public void setTowerColor(TowerColor towerColor) {
+        this.towerColor = towerColor;
     }
 }

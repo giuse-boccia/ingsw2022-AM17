@@ -15,7 +15,7 @@
 | GUI              | No       | 🔴 |
 | CLI              | No       | 🔴 |
 | 12 Characters    | Yes      | 🟢 |
-| 4 Players Game   | Yes      | 🟡 |
+| 4 Players Game   | Yes      | 🟢 |
 | Multiple Games   | Yes      | ⚫ |
 | Persistence      | Yes      | 🟡 |
 | Disconnection resilience      | Yes      | ⚫ |

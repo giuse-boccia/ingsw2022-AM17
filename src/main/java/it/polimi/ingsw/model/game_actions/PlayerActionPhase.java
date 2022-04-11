@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.game_actions.action_phase;
+package it.polimi.ingsw.model.game_actions;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
@@ -20,6 +20,9 @@ import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorWithDraw;
 import it.polimi.ingsw.model.utils.Students;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PlayerActionPhase {
     protected final Assistant assistant;
@@ -60,25 +63,45 @@ public class PlayerActionPhase {
             }
         }
 
-        ArrayList<Player> players = gb.getGame().getPlayers();
+        Map<TowerColor, ArrayList<Player>> teamMap = getTeams(gb.getGame().getPlayers());
 
-        Player newOwner = null;
+        TowerColor newOwner = null;
         int maxInfluence = 0;
 
-        for (Player player : players) {
-            int influence = influenceStrategy.computeInfluence(islandToResolve, player);
+        for (TowerColor team : teamMap.keySet()) {
+            int influence = influenceStrategy.computeInfluence(islandToResolve, teamMap.get(team));
 
             if (influence == maxInfluence) {
                 newOwner = null;
             } else if (influence > maxInfluence) {
                 maxInfluence = influence;
-                newOwner = player;
+                newOwner = team;
             }
         }
 
         if (newOwner != null) {
             gb.setIslandOwner(islandToResolve, newOwner);
         }
+    }
+
+    /**
+     * Given an ArrayList of players, return a map from a tower color to the players who have that tower color
+     *
+     * @param players the players to map into tower colors
+     * @return a map from a tower color to the players who have that tower color
+     */
+    private Map<TowerColor, ArrayList<Player>> getTeams(ArrayList<Player> players) {
+        Map<TowerColor, ArrayList<Player>> res = new HashMap<>();
+
+        for (TowerColor tc : TowerColor.values()) {
+            ArrayList<Player> team = new ArrayList<>(players.stream()
+                    .filter((player -> player.getTowerColor() == tc))
+                    .toList());
+
+            res.put(tc, team);
+        }
+
+        return res;
     }
 
     /**

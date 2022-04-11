@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.game_actions.Round;
+import it.polimi.ingsw.model.game_objects.TowerColor;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.utils.RandomGenerator;
 
@@ -85,10 +86,27 @@ public class Game {
             player.addToGame(this);
         }
 
+        setTeams();
+
         gameBoard.initGameBoard(motherNatureIndex);
 
         currentRound = new Round(nextFirstPlayerIndex, this);
         currentRound.startPlanningPhase();
+    }
+
+    /**
+     * Sets the {@code TowerColor} attribute for every player depending on how many players are in the game
+     */
+    private void setTeams() {
+        players.get(0).setTowerColor(TowerColor.WHITE);
+        players.get(1).setTowerColor(TowerColor.BLACK);
+        if (players.size() == 3) {
+            players.get(2).setTowerColor(TowerColor.GREY);
+        } else if (players.size() == 4) {
+            players.get(2).setTowerColor(TowerColor.WHITE);
+            players.get(3).setTowerColor(TowerColor.BLACK);
+        }
+
     }
 
     public ArrayList<Player> getPlayers() {

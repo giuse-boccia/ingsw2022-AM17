@@ -2,7 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.game_actions.Round;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
+import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Bag;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
@@ -24,6 +24,7 @@ public class GameTest {
 
     /**
      * Tests the first round of a non-expert {@code Game}
+     * Tries to play wrong moves and asserts proper exceptions are thrown
      */
     @Test
     void testFullNonExpertGame() {
@@ -48,7 +49,7 @@ public class GameTest {
         Round firstRound = game.getCurrentRound();
 
         assertFalse(firstRound.isLastRound());
-        //Now clouds are full and there are 93 students
+        // Now clouds are full and there are 93 students
 
         // We are in planning phase
         // Now every player plays an Assistant, starting from Player0
@@ -113,7 +114,7 @@ public class GameTest {
         );
         assertDoesNotThrow(() -> pap.moveMotherNature(1));
         assertEquals(1, game.getGameBoard().getMotherNatureIndex());
-        assertEquals(clod, game.getGameBoard().getIslands().get(1).getOwner());
+        assertEquals(clod.getTowerColor(), game.getGameBoard().getIslands().get(1).getTowerColor());
         assertEquals(1, Students.countColor(game.getGameBoard().getIslands().get(1).getStudents(), Color.BLUE));
 
         assertThrows(InvalidCloudException.class,
@@ -136,7 +137,7 @@ public class GameTest {
         assertFalse(clod.hasProfessor(Color.BLUE));
         assertDoesNotThrow(() -> pap2.moveMotherNature(3));
         assertEquals(4, game.getGameBoard().getMotherNatureIndex());
-        assertEquals(giuse, game.getGameBoard().getIslands().get(4).getOwner());
+        assertEquals(giuse.getTowerColor(), game.getGameBoard().getIslands().get(4).getTowerColor());
         assertEquals(1, Students.countColor(game.getGameBoard().getIslands().get(4).getStudents(), Color.PINK));
         assertThrows(InvalidCloudException.class,
                 () -> pap2.chooseCloud(1),
@@ -163,7 +164,7 @@ public class GameTest {
         assertFalse(rick.hasProfessor(Color.GREEN));
 
         assertDoesNotThrow(() -> pap3.moveMotherNature(4));
-        assertEquals(rick, game.getGameBoard().getIslands().get(8).getOwner());
+        assertEquals(rick.getTowerColor(), game.getGameBoard().getIslands().get(8).getTowerColor());
 
         assertDoesNotThrow(() -> pap3.chooseCloud(0));
         assertEquals(9, rick.getDashboard().getEntrance().getStudents().size());
@@ -219,6 +220,10 @@ public class GameTest {
     private void setupGame() {
 
         assertEquals(players.size(), game.getGameBoard().getClouds().size());
+
+        assertSame(players.get(0).getTowerColor(), TowerColor.WHITE);
+        assertSame(players.get(1).getTowerColor(), TowerColor.BLACK);
+        assertSame(players.get(2).getTowerColor(), TowerColor.GREY);
 
         checkInitialDashboard();
 
@@ -287,7 +292,7 @@ public class GameTest {
                 assertEquals(1, island.getStudents().size());
             }
             assertEquals(0, island.getNoEntryNum());
-            assertNull(island.getOwner());
+            assertNull(island.getTowerColor());
         }
     }
 

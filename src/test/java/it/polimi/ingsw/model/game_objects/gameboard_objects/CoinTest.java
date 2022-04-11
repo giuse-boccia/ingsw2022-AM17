@@ -9,7 +9,7 @@ import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.characters.PassiveCharacter;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
+import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;

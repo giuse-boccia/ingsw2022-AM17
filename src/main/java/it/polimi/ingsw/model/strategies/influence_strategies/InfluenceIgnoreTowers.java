@@ -1,7 +1,9 @@
 package it.polimi.ingsw.model.strategies.influence_strategies;
 
-import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
+
+import java.util.ArrayList;
 
 public class InfluenceIgnoreTowers implements InfluenceStrategy {
     /**
@@ -9,17 +11,17 @@ public class InfluenceIgnoreTowers implements InfluenceStrategy {
      * {@code Character} called "ignoreTowers" is active
      *
      * @param island the {@code Island} to be considered
-     * @param player the {@code Player} to calculate the influence of
+     * @param team   the {@code Player} to calculate the influence of
      * @return an int representing the influence of the player on the island
      */
     @Override
-    public int computeInfluence(Island island, Player player) {
+    public int computeInfluence(Island island, ArrayList<Player> team) {
         int difference = 0;
 
-        if (island.getOwner() == player) {
+        if (island.getTowerColor() == team.get(0).getTowerColor()) {
             difference = island.getNumOfTowers();
         }
 
-        return InfluenceDefault.computeDefaultInfluence(island, player) - difference;
+        return InfluenceDefault.computeDefaultInfluence(island, team) - difference;
     }
 }

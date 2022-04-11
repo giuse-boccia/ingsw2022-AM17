@@ -4,7 +4,7 @@ import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
+import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
@@ -78,8 +78,8 @@ public class NoEntryCharacterTest {
                 new Assistant(4, 8, rick), game.getGameBoard()
         );
 
-        game.getGameBoard().getIslands().get(1).setOwner(rick);
-        game.getGameBoard().getIslands().get(11).setOwner(rick);
+        game.getGameBoard().getIslands().get(1).setTowerColor(rick.getTowerColor());
+        game.getGameBoard().getIslands().get(11).setTowerColor(rick.getTowerColor());
 
         selectedIsland.receiveStudent(new Student(Color.BLUE));
         rick.getDashboard().getEntrance().receiveStudent(new Student(Color.BLUE));
@@ -91,7 +91,7 @@ public class NoEntryCharacterTest {
 
         pap.resolveIsland(selectedIsland);
 
-        assertNull(selectedIsland.getOwner());
+        assertNull(selectedIsland.getTowerColor());
         assertEquals(12, game.getGameBoard().getIslands().size());
         assertEquals(1, rick.getDashboard().getDiningRoom().getNumberOfStudentsOfColor(Color.BLUE));
         assertEquals(0, selectedIsland.getNoEntryNum());

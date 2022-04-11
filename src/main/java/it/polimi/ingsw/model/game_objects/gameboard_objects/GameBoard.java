@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
+import it.polimi.ingsw.model.game_objects.TowerColor;
 import it.polimi.ingsw.model.utils.Students;
 
 import java.util.*;
@@ -125,13 +126,13 @@ public class GameBoard {
     }
 
     /**
-     * Sets a new owner for the given {@code Island} and checks if that island can now be merged with adjacent ones
+     * Sets a new {@code towerColor} for the given {@code Island} and checks if that island can now be merged with adjacent ones
      *
-     * @param island   the {@code Island} which owner has to be changed
-     * @param newOwner the {@code Player} which will own the Island
+     * @param island        the {@code Island} which owner has to be changed
+     * @param newTowerColor the {@code TowerColor} of the team which will own the Island
      */
-    public void setIslandOwner(Island island, Player newOwner) {
-        island.setOwner(newOwner);
+    public void setIslandOwner(Island island, TowerColor newTowerColor) {
+        island.setTowerColor(newTowerColor);
         mergeIfPossible(island);
     }
 
@@ -144,13 +145,13 @@ public class GameBoard {
         int indexOfIsland = islands.indexOf(island);
         Island right = islands.get((indexOfIsland + 1) % islands.size());
         Island left = islands.get((indexOfIsland + islands.size() - 1) % islands.size());
-        if (left.getOwner() != null && left.getOwner() == island.getOwner()) {
-            if (right.getOwner() != null && right.getOwner() == island.getOwner()) {
+        if (left.getTowerColor() != null && left.getTowerColor() == island.getTowerColor()) {
+            if (right.getTowerColor() != null && right.getTowerColor() == island.getTowerColor()) {
                 mergeIslands(left, island, right);
             } else {
                 mergeIslands(left, island);
             }
-        } else if (right.getOwner() != null && right.getOwner() == island.getOwner())
+        } else if (right.getTowerColor() != null && right.getTowerColor() == island.getTowerColor())
             mergeIslands(island, right);
 
     }

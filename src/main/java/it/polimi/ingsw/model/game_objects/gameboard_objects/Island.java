@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.game_objects.gameboard_objects;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
+import it.polimi.ingsw.model.game_objects.TowerColor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,19 +11,19 @@ import java.util.Collection;
 public class Island implements Place {
 
     private final Collection<Student> students;
-    private Player owner;
+    private TowerColor towerColor;
     private int noEntryNum;
     private int numOfTowers;
 
     public Island() {
-        owner = null;
+        towerColor = null;
         students = new ArrayList<>();
         noEntryNum = 0;
         numOfTowers = 0;
     }
 
-    public Player getOwner() {
-        return owner;
+    public TowerColor getTowerColor() {
+        return towerColor;
     }
 
     public ArrayList<Student> getStudents() {
@@ -46,14 +47,14 @@ public class Island implements Place {
     }
 
     /**
-     * Sets a new owner and adds a tower if the island hase none.
+     * Sets a new {@code TowerColor} and adds a tower if the island has none.
      * Does NOT check if the island can be merged with adjacent islands
      *
-     * @param owner the {@code Player} which will own the Island
+     * @param towerColor the {@code TowerColor} which will own the Island
      */
-    public void setOwner(Player owner) {
-        if (owner == this.owner) return;
-        this.owner = owner;
+    public void setTowerColor(TowerColor towerColor) {
+        if (towerColor == this.towerColor) return;
+        this.towerColor = towerColor;
         if (numOfTowers == 0) {
             numOfTowers = 1;
         }

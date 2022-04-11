@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.characters.PassiveCharacter;
-import it.polimi.ingsw.model.game_actions.action_phase.PlayerActionPhase;
+import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
@@ -42,7 +42,7 @@ class InfluenceStrategyTest {
 
         // Island is resolved, rick should own the island
         pap.resolveIsland(island);
-        assertSame(island.getOwner(), rick);
+        assertSame(island.getTowerColor(), rick.getTowerColor());
 
         //-----------------------Clod's turn--------------------------------------------
         Assistant a2 = new Assistant(1, 2, clod);
@@ -52,12 +52,12 @@ class InfluenceStrategyTest {
         island.receiveStudent(new Student(Color.RED));
         island.receiveStudent(new Student(Color.RED));
         pap.resolveIsland(island);
-        assertSame(island.getOwner(), rick);
+        assertSame(island.getTowerColor(), rick.getTowerColor());
 
         // add a third red student and solve -> clod now owns the island
         island.receiveStudent(new Student(Color.RED));
         pap.resolveIsland(island);
-        assertSame(island.getOwner(), clod);
+        assertSame(island.getTowerColor(), clod.getTowerColor());
     }
 
     /**
@@ -86,7 +86,7 @@ class InfluenceStrategyTest {
 
         // Island is resolved, nobody should own the island
         pap.resolveIsland(island);
-        assertNull(island.getOwner());
+        assertNull(island.getTowerColor());
     }
 
     /**
@@ -120,7 +120,7 @@ class InfluenceStrategyTest {
 
         // Island is resolved, rick should own the island
         pap.resolveIsland(island);
-        assertSame(island.getOwner(), rick);
+        assertSame(island.getTowerColor(), rick.getTowerColor());
     }
 
     /**
@@ -152,7 +152,7 @@ class InfluenceStrategyTest {
 
         // Island is resolved, rick should own the island
         pap.resolveIsland(island);
-        assertSame(island.getOwner(), rick);
+        assertSame(island.getTowerColor(), rick.getTowerColor());
 
         //-----------------------Clod's turn--------------------------------------------
         Assistant a2 = new Assistant(1, 2, clod);
@@ -163,7 +163,7 @@ class InfluenceStrategyTest {
 
         // solve island again -> clod will now own the island
         pap.resolveIsland(island);
-        assertSame(island.getOwner(), clod);
+        assertSame(island.getTowerColor(), clod.getTowerColor());
     }
 
     /**
@@ -191,7 +191,7 @@ class InfluenceStrategyTest {
 
         // Island is resolved, rick should own the island
         pap.resolveIsland(island);
-        assertSame(island.getOwner(), rick);
+        assertSame(island.getTowerColor(), rick.getTowerColor());
 
         //-----------------------Clod's turn--------------------------------------------
         Assistant a2 = new Assistant(1, 2, clod);
@@ -205,7 +205,7 @@ class InfluenceStrategyTest {
         island.receiveStudent(new Student(Color.RED));
         island.receiveStudent(new Student(Color.RED));
         pap.resolveIsland(island);
-        assertSame(island.getOwner(), clod);
+        assertSame(island.getTowerColor(), clod.getTowerColor());
 
     }
 }
