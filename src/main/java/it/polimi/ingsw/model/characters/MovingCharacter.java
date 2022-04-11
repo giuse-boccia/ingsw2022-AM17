@@ -40,12 +40,20 @@ public class MovingCharacter extends GameboardCharacter implements Place {
      * @throws InvalidStudentException      if the {@code Student} is not valid
      */
     @Override
-    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidCharacterException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException {
+    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidCharacterException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException, EmptyBagException {
 
         switch (this.getCardName()) {
-            case move1FromCardToIsland -> moveStudentAwayFromCard(island, srcStudents);
-            
-            case move1FromCardToDining -> moveStudentAwayFromCard(currentPlayerActionPhase.getCurrentPlayer().getDashboard().getDiningRoom(), srcStudents);
+            case move1FromCardToIsland -> {
+                moveStudentAwayFromCard(island, srcStudents);
+                Bag bag = getGameBoard().getBag();
+                bag.giveStudent(this, bag.getRandStudent());
+            }
+
+            case move1FromCardToDining -> {
+                moveStudentAwayFromCard(currentPlayerActionPhase.getCurrentPlayer().getDashboard().getDiningRoom(), srcStudents);
+                Bag bag = getGameBoard().getBag();
+                bag.giveStudent(this, bag.getRandStudent());
+            }
 
             case swapUpTo3FromEntranceToCard -> {
                 Entrance curEntrance = currentPlayerActionPhase.getCurrentPlayer().getDashboard().getEntrance();

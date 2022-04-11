@@ -37,7 +37,7 @@ public class Round {
         try {
             fillClouds();
         } catch (EmptyBagException e) {
-            isLastRound = true;
+            setLastRound();
         }
 
         planningPhase = new PlanningPhase(createPlayersArray(), this);
@@ -83,6 +83,10 @@ public class Round {
      */
     public boolean isLastRound() {
         return isLastRound;
+    }
+
+    public void setLastRound() {
+        isLastRound = true;
     }
 
     /**

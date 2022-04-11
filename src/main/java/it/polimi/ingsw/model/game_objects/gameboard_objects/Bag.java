@@ -23,8 +23,12 @@ public class Bag implements Place {
      * @return a random {@code Student} of the collection
      */
     public Student getRandStudent() throws EmptyBagException {
-        if (students.size() == 0) throw new EmptyBagException("The bag is empty!");
+        if (isEmpty()) throw new EmptyBagException("The bag is empty!");
         return students.get(0);
+    }
+
+    public boolean isEmpty() {
+        return students.size() == 0;
     }
 
     @Override

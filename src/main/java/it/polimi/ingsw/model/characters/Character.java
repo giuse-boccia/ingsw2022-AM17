@@ -48,9 +48,10 @@ public abstract class Character {
      * @throws StudentNotOnTheCardException    if the {@code Character} has not the selected {@code Student} on it
      * @throws InvalidActionException          if the action is not valid
      * @throws InvalidStudentException         if the {@code Student} is not valid
+     * @throws EmptyBagException               if the {@code Bag} is empty
      */
     public abstract void useEffect(
             PlayerActionPhase currentPlayerActionPhase, Island island, Color color,
             ArrayList<Student> srcStudents, ArrayList<Student> dstStudents
-    ) throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException;
+    ) throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException, EmptyBagException;
 }

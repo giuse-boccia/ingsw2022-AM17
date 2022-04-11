@@ -176,7 +176,11 @@ public class PlayerActionPhase {
             throw new CharacterAlreadyPlayedException("You already played a character this turn");
         }
         this.playedCharacter = character;
-        character.useEffect(this, island, color, srcStudents, dstStudents);
+        try {
+            character.useEffect(this, island, color, srcStudents, dstStudents);
+        } catch (EmptyBagException e) {
+            gb.getGame().getCurrentRound().setLastRound();
+        }
         getCurrentPlayer().removeCoins(character.getCost());
         character.addCoinAfterFirstUse();
     }
@@ -255,6 +259,16 @@ public class PlayerActionPhase {
 
         gb.moveMotherNature(numSteps);
         resolveIsland();
+
+        for (Player player : gb.getGame().getPlayers()) {
+            if (player.getNumberOfTowers() <= 0) {
+                gb.getGame().end();
+            }
+        }
+
+        if (gb.getIslands().size() <= 3) {
+            gb.getGame().end();
+        }
 
         mnMoved = true;
     }

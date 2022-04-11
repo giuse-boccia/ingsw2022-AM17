@@ -243,18 +243,7 @@ public class GameTest {
         players.get(1).pickWizard(Wizard.MAGE);
         players.get(2).pickWizard(Wizard.MONK);
 
-        // Can't take students from bag because it adds randomness
-        // Clod has 5 Green & 4 Blue, Rick 5 Pink & 4 Green, G 5 Blue & 4 Pink
-        for (int i = 0; i < 5; i++) {
-            clod.getDashboard().getEntrance().receiveStudent(new Student(Color.GREEN));
-            rick.getDashboard().getEntrance().receiveStudent(new Student(Color.PINK));
-            giuse.getDashboard().getEntrance().receiveStudent(new Student(Color.BLUE));
-        }
-        for (int i = 0; i < 4; i++) {
-            rick.getDashboard().getEntrance().receiveStudent(new Student(Color.GREEN));
-            giuse.getDashboard().getEntrance().receiveStudent(new Student(Color.PINK));
-            clod.getDashboard().getEntrance().receiveStudent(new Student(Color.BLUE));
-        }
+        TestGameFactory.fillThreeEntrances(rick, clod, giuse);
 
     }
 

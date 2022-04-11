@@ -1,6 +1,10 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_objects.Student;
+import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
 
 import java.util.ArrayList;
 
@@ -12,8 +16,19 @@ public class TestGameFactory {
      * @return the created {@code Game}
      */
     public static Game getNewGame() {
-        Game res = new Game(createPlayers(), true);
+        ArrayList<Player> players = createPlayers();
+        Game res = new Game(players, true);
         res.start(0);
+        for (Player player : players) {
+            Entrance entrance = player.getDashboard().getEntrance();
+            for (int i = 0; i < 9; i++) {
+                try {
+                    entrance.giveStudent(res.getGameBoard().getBag(), entrance.getStudents().get(0));
+                } catch (InvalidStudentException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         return res;
     }
 
@@ -53,6 +68,20 @@ public class TestGameFactory {
         players.add(new Player("Giuse", 8));
         players.add(new Player("Fabio", 8));
         return players;
+    }
+
+    public static void fillThreeEntrances(Player p1, Player p2, Player p3) {
+        // Can't take students from bag because it adds randomness
+        for (int i = 0; i < 5; i++) {
+            p2.getDashboard().getEntrance().receiveStudent(new Student(Color.GREEN));
+            p1.getDashboard().getEntrance().receiveStudent(new Student(Color.PINK));
+            p3.getDashboard().getEntrance().receiveStudent(new Student(Color.BLUE));
+        }
+        for (int i = 0; i < 4; i++) {
+            p1.getDashboard().getEntrance().receiveStudent(new Student(Color.GREEN));
+            p3.getDashboard().getEntrance().receiveStudent(new Student(Color.PINK));
+            p2.getDashboard().getEntrance().receiveStudent(new Student(Color.BLUE));
+        }
     }
 
 }

@@ -67,7 +67,7 @@ public class Move1FromCardToIslandTest {
 
         assertDoesNotThrow(() -> pap.playCharacter(character, island, null, studentInCard, null));
 
-        assertEquals(3, character.getStudents().size());
+        assertEquals(4, character.getStudents().size());
         assertEquals(3 + initialStudentsOnIsland, island.getStudents().size());
         assertTrue(island.getStudents().contains(studentInCard.get(0)));
     }
@@ -98,7 +98,7 @@ public class Move1FromCardToIslandTest {
         ));
 
         assertEquals(initialStudents + 2, island.getStudents().size());
-        assertEquals(3, character.getStudents().size());
+        assertEquals(4, character.getStudents().size());
         assertTrue(island.getStudents().contains(studentToGive));
         assertFalse(character.getStudents().contains(studentToGive));
     }

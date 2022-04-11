@@ -240,7 +240,11 @@ class InfluenceStrategyTest {
         gb.setOwnerOfProfessor(Color.YELLOW, fabio);
 
         // island with 2 green student, 2 pink and 3 reds
-        Island island = new Island();
+        Island island = gb.getIslands().get(0);
+        if (island.getStudents().size() != 0) {
+            island.giveStudent(gb.getBag(), island.getStudents().get(0));
+        }
+
         island.receiveStudent(new Student(Color.GREEN));
         island.receiveStudent(new Student(Color.GREEN));
         island.receiveStudent(new Student(Color.PINK));
@@ -256,6 +260,8 @@ class InfluenceStrategyTest {
         // Island is resolved, island tower should be white
         pap.resolveIsland(island);
         assertSame(island.getTowerColor(), TowerColor.WHITE);
+        assertEquals(7, rick.getNumberOfTowers());
+        assertEquals(7, giuse.getNumberOfTowers());
 
         //-----------------------Clod's turn--------------------------------------------
         Assistant a2 = new Assistant(1, 2, clod);

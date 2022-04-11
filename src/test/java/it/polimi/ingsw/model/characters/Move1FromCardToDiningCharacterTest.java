@@ -49,7 +49,7 @@ public class Move1FromCardToDiningCharacterTest {
 
         assertDoesNotThrow(() -> pap.playCharacter(character, null, null, character.getStudents(), null));
 
-        assertEquals(0, character.getStudents().size());
+        assertEquals(1, character.getStudents().size());
         assertEquals(1, rick.getDashboard().getDiningRoom().getStudents().size());
         assertTrue(rick.getDashboard().getDiningRoom().getStudents().contains(studentOnTheCard));
     }

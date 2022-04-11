@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.characters.*;
-import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.model.game_actions.Round;
 import it.polimi.ingsw.model.game_objects.TowerColor;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
@@ -9,7 +8,9 @@ import it.polimi.ingsw.model.utils.RandomGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class Game {
     private final ArrayList<Player> players;
@@ -19,6 +20,7 @@ public class Game {
     private int roundsPlayed;
     private boolean isEnded;
     private final RandomGenerator rng;
+    private ArrayList<Player> winners;
 
     public Game(ArrayList<Player> players, boolean isExpert, int seed) {
         this.players = players;
@@ -27,6 +29,7 @@ public class Game {
         roundsPlayed = 0;
         isEnded = false;
         this.rng = new RandomGenerator(seed);
+        winners = null;
     }
 
     public Game(ArrayList<Player> players, boolean isExpert) {
@@ -40,7 +43,7 @@ public class Game {
      * @param nextFirstPlayerIndex the index of the player starting in the next {@code Round}
      */
     public void nextRound(int nextFirstPlayerIndex) {
-        if (currentRound.isLastRound()) {
+        if (currentRound.isLastRound() || gameBoard.getBag().isEmpty()) {
             end();
         } else {
             roundsPlayed++;
@@ -52,9 +55,79 @@ public class Game {
     /**
      * Ends the {@code Game}
      */
-    private void end() {
+    public void end() {
         isEnded = true;
-        // check winner etc...
+        computeWinners();
+    }
+
+    /**
+     * Creates the winners {@code ArrayList}
+     */
+    private void computeWinners() {
+        winners = new ArrayList<>();
+
+        HashMap<TowerColor, Integer> towerColorMapNumTowers = new HashMap<>();
+
+        // The HashMap maps every TowerColor to number of towers of that color
+        for (TowerColor color : TowerColor.values()) {
+
+            // Array containing the number of towers of each color in the gameboard - the array has length 0
+            // if there's no Player/Team who has the considered TowerColor
+            int[] towersOfColor = players
+                    .stream()
+                    .filter(player -> player.getTowerColor() == color)
+                    .mapToInt(Player::getNumberOfTowers)
+                    .toArray();
+
+            if (towersOfColor.length != 0) {
+                towerColorMapNumTowers.put(color, towersOfColor[0]);
+            }
+        }
+
+        // Find the minimum number of towers in the HashMap
+        int min = 100;
+        for (TowerColor color : towerColorMapNumTowers.keySet()) {
+            if (towerColorMapNumTowers.get(color) < min) {
+                min = towerColorMapNumTowers.get(color);
+            }
+        }
+
+        HashMap<TowerColor, Integer> towerColorMapNumProfessors = new HashMap<>();
+        for (TowerColor tc : towerColorMapNumTowers.keySet()) {
+            if (towerColorMapNumTowers.get(tc) == min)
+                towerColorMapNumProfessors.put(tc, null);
+        }
+
+        for (TowerColor tc : towerColorMapNumProfessors.keySet()) {
+            int numProfessors = players
+                    .stream()
+                    .filter(player -> player.getTowerColor() == tc)
+                    .mapToInt(player -> player.getColorsOfOwnedProfessors().size())
+                    .sum();
+            towerColorMapNumProfessors.put(tc, numProfessors);
+        }
+
+        int max = -100;
+        for (TowerColor tc : towerColorMapNumProfessors.keySet()) {
+            if (towerColorMapNumProfessors.get(tc) > max) {
+                max = towerColorMapNumProfessors.get(tc);
+            }
+        }
+
+        ArrayList<TowerColor> winningColors = new ArrayList<>();
+        for (TowerColor tc : towerColorMapNumProfessors.keySet()) {
+            if (towerColorMapNumProfessors.get(tc) == max) {
+                winningColors.add(tc);
+            }
+        }
+
+        for (TowerColor tc : winningColors) {
+            for (Player player : players) {
+                if (player.getTowerColor() == tc) {
+                    winners.add(player);
+                }
+            }
+        }
     }
 
     /**
@@ -90,6 +163,19 @@ public class Game {
 
         gameBoard.initGameBoard(motherNatureIndex);
 
+        for (Player player : players) {
+            try {
+                int times = ((players.size() % 2) == 0) ? 7 : 9;
+                for (int i = 0; i < times; i++) {
+                    gameBoard.getBag().giveStudent(
+                            player.getDashboard().getEntrance(),
+                            gameBoard.getBag().getRandStudent());
+                }
+            } catch (EmptyBagException e) {
+                e.printStackTrace();
+            }
+        }
+
         currentRound = new Round(nextFirstPlayerIndex, this);
         currentRound.startPlanningPhase();
     }
@@ -123,5 +209,9 @@ public class Game {
 
     public boolean isExpert() {
         return isExpert;
+    }
+
+    public ArrayList<Player> getWinners() {
+        return winners;
     }
 }
