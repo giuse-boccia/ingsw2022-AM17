@@ -40,15 +40,34 @@ public class Controller {
         switch (map.get("type")) {
             case "login" -> handleLoginMessage(map, ch);
             case "action" -> handleActionMessage(map, ch);
-            default -> handleUnrecognisedTypeError(ch);
+            default -> sendErrorMessage(ch, "unrecognised type");
         }
     }
 
+    /**
+     * Handles a login message
+     *
+     * @param map deserialized message
+     * @param ch  the {@code ClientHandler} of the client who sent the message
+     */
     private void handleLoginMessage(Map<String, String> map, ClientHandler ch) {
-        try {
-            ch.sendResponse("You sent a login message");
-        } catch (IOException e) {
-            e.printStackTrace();
+        // TODO: check if game is already started
+        if (chMapPlayer.isEmpty()) {
+            if (map.get("action").equals("create game")) {
+                String username = map.get("username");
+                if (username == null || username.equals("")) {
+                    sendErrorMessage(ch, "empty username field");
+                }
+                try {
+                    int numPlayers = Integer.parseInt(map.get("num players"));
+                    if (numPlayers < 2 || numPlayers > 4) {
+                        sendErrorMessage(ch, "num players must be between 2 and 4");
+                    }
+                } catch (NumberFormatException e) {
+                    sendErrorMessage(ch, "invalid num players");
+                }
+                // TODO: create game and send broadcast message
+            }
         }
     }
 
@@ -65,9 +84,9 @@ public class Controller {
      *
      * @param ch The {@code ClientHandler} of the client which caused the error
      */
-    private void handleUnrecognisedTypeError(ClientHandler ch) {
+    private void sendErrorMessage(ClientHandler ch, String errorMessage) {
         try {
-            ch.sendResponse("[ERROR] unrecognised type");
+            ch.sendResponse("[ERROR] " + errorMessage);
         } catch (IOException e) {
             e.printStackTrace();
         }
