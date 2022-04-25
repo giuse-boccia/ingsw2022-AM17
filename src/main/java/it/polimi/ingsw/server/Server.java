@@ -1,21 +1,20 @@
 package it.polimi.ingsw.server;
 
-import com.google.gson.Gson;
 import it.polimi.ingsw.Settings;
+import it.polimi.ingsw.controller.Controller;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server {
     private static int port;
+    private Controller controller;
 
     private Server() {
-
+        this.controller = new Controller();
     }
 
     public static void main(String[] args) {
@@ -41,6 +40,7 @@ public class Server {
         }
 
         Server server = new Server();
+        server.startServer();
     }
 
     private void startServer() {
@@ -54,9 +54,11 @@ public class Server {
         }
         System.out.println("Server ready");
         while (true) {
+            System.out.println("Waiting...");
             try {
                 Socket socket = serverSocket.accept();
-                executor.submit(new ClientHandler(socket));
+                System.out.println("Accepted from " + socket.getRemoteSocketAddress());
+                executor.submit(new ClientHandler(socket, controller));
             } catch (IOException e) {
                 break;
             }
