@@ -6,6 +6,7 @@ import it.polimi.ingsw.controller.Controller;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -58,7 +59,9 @@ public class Server {
             try {
                 Socket socket = serverSocket.accept();
                 System.out.println("Accepted from " + socket.getRemoteSocketAddress());
-                executor.submit(new ClientHandler(socket, controller));
+                ClientHandler ch = new ClientHandler(socket, controller);
+                controller.addClientHandler(ch);
+                executor.submit(ch);
             } catch (IOException e) {
                 break;
             }

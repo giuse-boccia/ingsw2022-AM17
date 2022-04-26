@@ -3,7 +3,6 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.exceptions.GameLoginException;
 
-import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -13,6 +12,8 @@ public class ClientHandler implements Runnable {
 
     private final Socket socket;
     private final Controller controller;
+    private Scanner in;
+    private PrintWriter out;
 
     public ClientHandler(Socket socket, Controller controller) {
         this.socket = socket;
@@ -25,8 +26,7 @@ public class ClientHandler implements Runnable {
      * @param res the response to send to the client
      * @throws IOException if the exception is thrown by the Socket
      */
-    public void sendResponse(String res) throws IOException {
-        PrintWriter out = new PrintWriter(socket.getOutputStream());
+    public void sendMessageToClient(String res) throws IOException {
         out.println(res);
         out.flush();
     }
@@ -34,8 +34,8 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
-            Scanner in = new Scanner(socket.getInputStream());
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
+            in = new Scanner(socket.getInputStream());
+            out = new PrintWriter(socket.getOutputStream());
 
             controller.sendWelcomeMessage(this);
 
