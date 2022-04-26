@@ -134,20 +134,16 @@ When a new client connects to the server, the latter sends a message which:
 ```json
 {
     "type" : "login",
-    "error" : {
-        "code" : 1,
-        "message" : "A game is already in progress. The connection will be closed"
-    }
+    "error" : 1,
+    "message" : "A game is already in progress. The connection will be closed"
 }
 ```
 #### message L.E.2
 ```json
 {
     "type" : "login",
-    "error" : {
-        "code" : 2,
-        "message" : "An user with this username is already logged in. Please select another username"
-    }
+    "error" : 2,
+    "message" : "An user with this username is already logged in. Please select another username"
 }
 ```
 
@@ -155,10 +151,8 @@ When a new client connects to the server, the latter sends a message which:
 ```json
 {
     "type" : "login",
-    "error" : {
-        "code" : 3,
-        "message" : "Invalid action"
-    }
+    "error" : 3,
+    "message" : "Invalid action"
 }
 ```
 
@@ -463,19 +457,15 @@ Example of a player action phase
 ```json
 {
     "type" : "action",
-    "error" : {
-        "status" : 1,
-        "message" : "Wait for your turn"
-    }
+    "error" : 1,
+    "message" : "Wait for your turn"
 }
 ```
 #### message A.E.2
 ```json
 {
     "type" : "action",
-    "error" : {
-        "status" : 2,
-        "message" : "This action is not valid"
-    }
+    "error" : 2,
+    "message" : "This action is not valid"
 }
 ```
