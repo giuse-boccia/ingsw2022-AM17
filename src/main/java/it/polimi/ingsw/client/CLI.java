@@ -20,6 +20,8 @@ public class CLI {
     private BufferedReader stdIn;
     private BufferedReader in;
     private PrintWriter out;
+    private boolean isInInsertUsername = false;
+    private boolean isInInsertNumPlayers = false;
 
     public static void main(String[] args) {
         if (args.length < 2) {
@@ -82,6 +84,10 @@ public class CLI {
 
             listenToBroadcastMessages();
 
+            if (message.getError() == 1) {
+                gracefulTermination(message.getMessage());
+            }
+
             switch (message.getAction()) {
                 case "join game" -> {
                     printCurrentLobby(message.getGameLobby());
@@ -109,14 +115,30 @@ public class CLI {
                     String message = in.readLine();
                     ServerLoginMessage loginMessage = ServerLoginMessage.getMessageFromJSON(message);
                     if (loginMessage != null && "login".equals(loginMessage.getType())) {
+                        int error = loginMessage.getError();
+                        if (error != 0) {
+                            switch (error) {
+                                case 1, 3 -> gracefulTermination(loginMessage.getMessage());
+                                case 2 -> {
+                                    System.out.println(loginMessage.getMessage());
+                                    clearCommandWindow();
+                                    joinGame();
+                                }
+                            }
+                        }
                         String description = loginMessage.getMessage();
-                        if (description != null &&
-                                (description.equals("game created") ||
-                                        description.equals("player has joined") ||
-                                        description.equals("a new game is starting"))
-                        ) {
+                        if (description != null && error != 2) {
+                            switch (description) {
+                                case "game created", "player has joined", "Lobby completed. A new game is starting..." -> {
+                                    printCurrentLobby(loginMessage.getGameLobby());
+                                }
+                                case "a new game is starting" -> {
+                                    System.out.println("A new game is starting, you will be logged out...");
+                                    System.exit(-1);
+                                }
+                            }
                             clearCommandWindow();
-                            printCurrentLobby(loginMessage.getGameLobby());
+                            System.out.println(description);
                         }
                     }
                 } catch (IOException e) {
@@ -128,8 +150,8 @@ public class CLI {
     }
 
     private void clearCommandWindow() {
-        for (int i = 0; i < 35; i++) {
-            System.out.println("");
+        for (int i = 0; i < 1; i++) {
+            System.out.println("------------------------------------------------------------");
         }
     }
 
@@ -153,10 +175,12 @@ public class CLI {
     private void createGame() {
         System.out.print("Insert username: ");
         try {
+            isInInsertUsername = true;
             String username = stdIn.readLine();
             ClientLoginMessage message = new ClientLoginMessage();
             message.setUsername(username);
             System.out.print("Insert desired number of players: ");
+            isInInsertNumPlayers = true;
             int numberOfPlayers = Integer.parseInt(stdIn.readLine());
             message.setNumPlayers(numberOfPlayers);
             message.setAction("create game");
@@ -180,7 +204,6 @@ public class CLI {
         } catch (IOException e) {
             gracefulTermination("Invalid username");
         }
-        System.out.println("Successfully joined game");
     }
 
     private void handleIOException() {

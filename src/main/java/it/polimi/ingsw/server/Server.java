@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 public class Server {
     private static int port;
-    private Controller controller;
+    private final Controller controller;
 
     private Server() {
         this.controller = new Controller();

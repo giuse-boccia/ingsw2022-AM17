@@ -46,8 +46,6 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             System.err.println(e.getMessage());
 
-        } catch (GameLoginException e) {
-            System.err.println("Game full, kicking client " + socket.getRemoteSocketAddress());
         } finally {
             try {
                 socket.close();

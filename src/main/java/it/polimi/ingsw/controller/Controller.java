@@ -15,14 +15,14 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Controller {
     private final Gson gson;
 
     private final Map<ClientHandler, String> chMapPlayer;
-    private ArrayList<ClientHandler> clientHandlers;
+    private final ArrayList<ClientHandler> clientHandlers;
     private int desiredNumberOfPlayers;
-
     private GameController gameController;
 
     public Controller() {
@@ -48,7 +48,7 @@ public class Controller {
                 ClientActionMessage actionMessage = ClientActionMessage.getMessageFromJSON(jsonMessage);
                 handleActionMessage(actionMessage, ch);
             }
-            default -> sendErrorMessage(ch, "Unrecognised type");
+            default -> sendErrorMessage(ch, "Unrecognised type", 3);
         }
     }
 
@@ -73,17 +73,17 @@ public class Controller {
                 String username = loginMessage.getUsername();
                 int numPlayers = 2;
                 if (username == null || username.equals("")) {
-                    sendErrorMessage(ch, "Empty username field");
+                    sendErrorMessage(ch, "Empty username field", 3);
                 }
 
                 try {
                     numPlayers = loginMessage.getNumPlayers();
                     if (numPlayers < 2 || numPlayers > 4) {
-                        sendErrorMessage(ch, "Num players must be between 2 and 4");
+                        sendErrorMessage(ch, "Num players must be between 2 and 4", 3);
                         return;
                     }
                 } catch (NumberFormatException e) {
-                    sendErrorMessage(ch, "Invalid num players");
+                    sendErrorMessage(ch, "Invalid num players", 3);
                 }
                 chMapPlayer.put(ch, username);
                 desiredNumberOfPlayers = numPlayers;
@@ -92,9 +92,10 @@ public class Controller {
         } else if (gameController == null) {
             String username = loginMessage.getUsername();
             if (username == null || username.equals("")) {
-                sendErrorMessage(ch, "Empty username field");
+                sendErrorMessage(ch, "Empty username field", 3);
             } else if (chMapPlayer.containsValue(username)) {
-                sendErrorMessage(ch, "Username already taken");
+                sendErrorMessage(ch, "Username already taken", 2);
+                return;
             }
             chMapPlayer.put(ch, username);
             msgToSend.setMessage("player has joined");
@@ -102,11 +103,22 @@ public class Controller {
             if (chMapPlayer.size() == desiredNumberOfPlayers) {
                 gameController = new GameController();
                 // TODO start new game
-                msgToSend.setMessage("a new game is starting");
+                GameLobby lobby = new GameLobby(chMapPlayer.values().toArray(String[]::new), desiredNumberOfPlayers);
+                msgToSend.setGameLobby(lobby);
+                msgToSend.setMessage("Lobby completed. A new game is starting...");
+                for (ClientHandler clientHandler : chMapPlayer.keySet()) {
+                    try {
+                        clientHandler.sendMessageToClient(msgToSend.getJson());
+                    } catch (IOException e) {
+                        System.err.println("Couldn't get I/O, connection will be closed...");
+                        System.exit(-1);
+                    }
+                }
+                return;
             }
 
         } else {
-            sendErrorMessage(ch, "A game is already in progress");
+            sendErrorMessage(ch, "A game is already in progress", 1);
             return;
         }
 
@@ -135,9 +147,12 @@ public class Controller {
      *
      * @param ch The {@code ClientHandler} of the client which caused the error
      */
-    private void sendErrorMessage(ClientHandler ch, String errorMessage) {
+    private void sendErrorMessage(ClientHandler ch, String errorMessage, int errorCode) {
         try {
-            ch.sendMessageToClient("[ERROR] " + errorMessage);
+            ServerLoginMessage message = new ServerLoginMessage();
+            message.setError(errorCode);
+            message.setMessage("[ERROR] " + errorMessage);
+            ch.sendMessageToClient(message.getJson());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -146,14 +161,12 @@ public class Controller {
     /**
      * Creates a welcome message based on how many players have already joined the game
      */
-    public synchronized void sendWelcomeMessage(ClientHandler ch) throws IOException, GameLoginException {
+    public synchronized void sendWelcomeMessage(ClientHandler ch) throws IOException {
         ServerLoginMessage res = new ServerLoginMessage();
         if (gameController != null) {
             res.setError(1);
             res.setMessage("A game is already in progress. The connection will be closed");
-            throw new GameLoginException();
-        }
-        if (chMapPlayer.isEmpty()) {
+        } else if (chMapPlayer.isEmpty()) {
             res.setAction("create game");
             res.setMessage("Insert username and desired number of players");
         } else {
