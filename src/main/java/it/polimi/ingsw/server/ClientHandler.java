@@ -6,6 +6,7 @@ import it.polimi.ingsw.exceptions.GameLoginException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Scanner;
 
 public class ClientHandler implements Runnable {
@@ -15,9 +16,20 @@ public class ClientHandler implements Runnable {
     private Scanner in;
     private PrintWriter out;
 
+    private boolean stop;
+
     public ClientHandler(Socket socket, Controller controller) {
         this.socket = socket;
         this.controller = controller;
+        this.stop = false;
+    }
+
+    /**
+     * Closes the socket connection with the client
+     */
+    public void closeConnection() throws IOException {
+        stop = true;
+        socket.close();
     }
 
     /**
@@ -37,21 +49,16 @@ public class ClientHandler implements Runnable {
             in = new Scanner(socket.getInputStream());
             out = new PrintWriter(socket.getOutputStream());
 
-            while (true) {
+            while (!stop) {
                 String message = in.nextLine();
                 controller.handleMessage(message, this);
             }
+        } catch (SocketException e) {
+            // Socket closed by another method
         } catch (IOException e) {
-            // Server has crashed
-            System.err.println("Connection to server lost, the program will now close...");
-            System.exit(-1);
-        } finally {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            // Client connection error
+            System.err.println("Connection to client lost, alerting other clients...");
+            // TODO: broadcast message to everyone indicating that someone has disconnected and the game will end
         }
-
     }
 }
