@@ -44,28 +44,29 @@ public class Server {
         server.startServer();
     }
 
+    /**
+     * Starts the server and listens for incoming connections
+     */
     private void startServer() {
         ExecutorService executor = Executors.newCachedThreadPool();
 
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(port);
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            System.out.println("Server ready");
+            while (true) {
+                System.out.println("Waiting...");
+                try {
+                    Socket socket = serverSocket.accept();
+                    System.out.println("Accepted from " + socket.getRemoteSocketAddress());
+                    ClientHandler ch = new ClientHandler(socket, controller);
+                    executor.submit(ch);
+                } catch (IOException e) {
+                    break;
+                }
+            }
+            executor.shutdown();
         } catch (IOException e) {
             gracefulTermination("The selected port is not available at the moment");
         }
-        System.out.println("Server ready");
-        while (true) {
-            System.out.println("Waiting...");
-            try {
-                Socket socket = serverSocket.accept();
-                System.out.println("Accepted from " + socket.getRemoteSocketAddress());
-                ClientHandler ch = new ClientHandler(socket, controller);
-                executor.submit(ch);
-            } catch (IOException e) {
-                break;
-            }
-        }
-        executor.shutdown();
     }
 
     private static void gracefulTermination(String message) {

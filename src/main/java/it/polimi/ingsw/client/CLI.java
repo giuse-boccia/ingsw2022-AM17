@@ -59,7 +59,7 @@ public class CLI {
         String username = in.nextLine();
 
         CLI cli = new CLI(username);
-        cli.connectToServer();
+        cli.connectToServer();      // TODO: we changed some messages, this needs some changes
 
     }
 
