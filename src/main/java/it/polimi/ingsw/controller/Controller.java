@@ -94,6 +94,7 @@ public class Controller {
         } else {
             desiredNumberOfPlayers = numPlayers;
         }
+        checkGameReady();
     }
 
     /**
@@ -110,7 +111,7 @@ public class Controller {
             sendErrorMessage(ch, "Username is too long (max 32 characters)", 3);
         } else if (loggedUsers.stream().anyMatch(u -> u.getUsername().equals(username))) {
             sendErrorMessage(ch, "Username already taken", 2);
-        } else if (desiredNumberOfPlayers != -1 && loggedUsers.size() >= desiredNumberOfPlayers) {
+        } else if ((desiredNumberOfPlayers != -1 && loggedUsers.size() >= desiredNumberOfPlayers) || loggedUsers.size() >= 4) {
             sendErrorMessage(ch, "The lobby is full", 1);
         } else {
             PlayerClient newUser = new PlayerClient(ch, username);
@@ -119,17 +120,40 @@ public class Controller {
                 askDesiredNumberOfPlayers(ch);
             }
             sendBroadcastMessage();     // signals everyone that a new player has joined
+            checkGameReady();
         }
     }
+
+    /**
+     * Checks if a game can be started; if so, every client in the lobby is notified
+     */
+    private void checkGameReady() throws IOException {
+        if (desiredNumberOfPlayers == -1 || loggedUsers.size() < desiredNumberOfPlayers) return;
+
+        ServerLoginMessage toSend = getServerLoginMessage("A new game is starting");
+
+        for (int i = 0; i < loggedUsers.size(); i++) {
+            ClientHandler clientHandler = loggedUsers.get(i).getClientHandler();
+
+            if (i < desiredNumberOfPlayers) {
+                // Alert player that game is starting
+                clientHandler.sendMessageToClient(toSend.toJson());
+            } else {
+                // Alert player that game is full
+                String errorMessage = "A new game for " + desiredNumberOfPlayers + " is starting. Your connection will be closed";
+                sendErrorMessage(clientHandler, errorMessage, 1);
+            }
+        }
+    }
+
 
     /**
      * Sends a message to every logged user containing the usernames of all logged users and the desired number of players
      * of the game, which can be -1 (not specified yet), 2, 3 or 4
      */
     private void sendBroadcastMessage() throws IOException {
-        ServerLoginMessage res = new ServerLoginMessage();
-        res.setMessage("A new player has joined");
-        res.setGameLobby(new GameLobby((String[]) loggedUsers.stream().map(PlayerClient::getUsername).toArray(), desiredNumberOfPlayers));
+
+        ServerLoginMessage res = getServerLoginMessage("A new player has joined");
 
         if (desiredNumberOfPlayers != -1) {
             loggedUsers.get(0).getClientHandler().sendMessageToClient(res.toJson());
@@ -138,6 +162,19 @@ public class Controller {
         for (int i = 1; i < loggedUsers.size(); i++) {
             loggedUsers.get(i).getClientHandler().sendMessageToClient(res.toJson());
         }
+    }
+
+    /**
+     * Returns a {@code ServerLoginMessage} with the current {@code GameLobby} and number of players and a custom message
+     *
+     * @param message the {@code String} to put in the field displayText of the message
+     * @return a {@code ServerLoginMessage} object
+     */
+    private ServerLoginMessage getServerLoginMessage(String message) {
+        ServerLoginMessage res = new ServerLoginMessage();
+        res.setMessage(message);
+        res.setGameLobby(new GameLobby((String[]) loggedUsers.stream().map(PlayerClient::getUsername).toArray(), desiredNumberOfPlayers));
+        return res;
     }
 
     /**
