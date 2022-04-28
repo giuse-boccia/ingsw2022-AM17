@@ -11,20 +11,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class CLI {
 
     private static int serverPort;
     private static String serverAddress;
+    private final BufferedReader stdIn;
     private Socket server;
-    private BufferedReader stdIn;
     private BufferedReader in;
     private PrintWriter out;
     private String username;
 
-    private CLI(String username) {
-        this.username = username;
+    public CLI() {
+        stdIn = new BufferedReader(new InputStreamReader(System.in));
     }
 
     public static void main(String[] args) {
@@ -54,13 +53,13 @@ public class CLI {
             gracefulTermination("Invalid server_port argument. The port number has to be between 1024 and 65535");
         }
 
-        Scanner in = new Scanner(System.in);
-        System.out.print("Insert username: ");
-        String username = in.nextLine();
+        CLI cli = new CLI();
 
-        CLI cli = new CLI(username);
-        cli.connectToServer();      // TODO: we changed some messages, this needs some changes
-
+        try {
+            cli.login();
+        } catch (IOException e) {
+            gracefulTermination("Error connecting to server...");
+        }
     }
 
     /**
@@ -75,25 +74,117 @@ public class CLI {
     }
 
     /**
-     * Connects the client to the server
+     * Performs all the operation needed before the game can start
+     */
+    public void login() throws IOException {
+        ServerLoginMessage message;
+        do {
+            askForUsername();
+            connectToServer();
+            String messageJson = in.readLine();
+            message = ServerLoginMessage.getMessageFromJSON(messageJson);
+        } while (message.getError() == 2);
+
+        if (message.getError() != 0) {
+            gracefulTermination(message.getMessage());
+        }
+
+        if (message.getAction() != null && message.getAction().equals("CREATE_GAME")) {
+            int numPlayers = askForNumberOfPlayers();
+            sendNumPlayers(numPlayers);
+        }
+
+        waitForOtherPlayers();
+    }
+
+    /**
+     * Sends a message to the server containing the desired number of players
+     *
+     * @param numPlayers the desired number of players to be included in the message
+     */
+    private void sendNumPlayers(int numPlayers) {
+        ClientLoginMessage msg = new ClientLoginMessage();
+        msg.setAction("CREATE_GAME");
+        msg.setNumPlayers(numPlayers);
+        out.println(msg);
+    }
+
+    /**
+     * Asks the user for his username and saves it in this.username
+     */
+    private void askForUsername() throws IOException {
+        System.out.print("Insert username: ");
+        username = stdIn.readLine();
+    }
+
+    /**
+     * Asks the user for the desired number of players until it is correct
+     *
+     * @return the number of players chosen by the user
+     */
+    private int askForNumberOfPlayers() throws IOException {
+        int res = -1;
+
+        do {
+            System.out.print("Insert desired number of players (2, 3 or 4): ");
+            String string = stdIn.readLine();
+            try {
+                res = Integer.parseInt(string);
+            } catch (NumberFormatException e) {
+                res = -1;
+                System.out.println("Number of players must be a number!");
+            }
+        } while (res < 2 || res > 4);
+
+        return res;
+    }
+
+    /**
+     * Connects to server and listens for broadcast messages
      */
     private void connectToServer() {
-        // ClientSocket now will try to connect to serverAddress:serverPort
         try {
             server = new Socket(serverAddress, serverPort);
-            stdIn = new BufferedReader(new InputStreamReader(System.in));
             in = new BufferedReader(new InputStreamReader(server.getInputStream()));
             out = new PrintWriter(server.getOutputStream(), true);
 
             ClientLoginMessage usernameMessage = new ClientLoginMessage();
+            usernameMessage.setAction("SET_USERNAME");
             usernameMessage.setUsername(username);
-            usernameMessage.setAction("set username");
-            out.println(usernameMessage.getJSON());
+            out.println(usernameMessage.toJson());
 
             System.out.println("Connecting to server...");
-            String welcomeMessage = in.readLine();
-            ServerLoginMessage message = ServerLoginMessage.getMessageFromJSON(welcomeMessage);
+
+        } catch (IOException e) {
+            gracefulTermination("Cannot connect to server, check server_address argument");
+        }
+    }
+
+
+    private void waitForOtherPlayers() {
+
+    }
+
+    @Deprecated
+    private void OLD_login() {
+        try {
+
+            String messageJson = in.readLine();
+            ServerLoginMessage message = ServerLoginMessage.getMessageFromJSON(messageJson);
+            if (message.getError() != 0) {
+                switch (message.getError()) {
+                    case 1, 3 -> gracefulTermination(message.getMessage());
+                    case 2 -> {
+
+                    }
+                }
+            }
+
             System.out.println("Successfully connected to server!");
+
+            String welcomeMessage = in.readLine();
+            message = ServerLoginMessage.getMessageFromJSON(welcomeMessage);
+
 
             listenToBroadcastMessages();
 
@@ -107,20 +198,20 @@ public class CLI {
                     joinGame();
                 }
                 case "create game" -> createGame();
-                default -> gracefulTermination(message.getError() != 0 ? message.getMessage() : "Error connecting to server");
+                default ->
+                        gracefulTermination(message.getError() != 0 ? message.getMessage() : "Error connecting to server");
             }
 
             waitForOtherPlayers();
-
         } catch (IOException e) {
-            gracefulTermination("Invalid server_address argument");
+            gracefulTermination("Connection to server lost");
         } catch (JsonSyntaxException e) {
-            e.printStackTrace();
+            gracefulTermination("Error parsing message from server");
         }
+
     }
 
-    // TODO ping all clients to detect if they're alive
-    // Delete client from map when CTRL+C is pressed
+    @Deprecated
     private void listenToBroadcastMessages() {
         new Thread(() -> {
             while (true) {
@@ -155,22 +246,20 @@ public class CLI {
                         }
                     }
                 } catch (IOException e) {
-                    handleIOException();
+                    e.printStackTrace();
                 }
             }
         }).start();
 
     }
 
+    /**
+     * Prints a line containing only "-" characters
+     */
     private void clearCommandWindow() {
-        for (int i = 0; i < 1; i++) {
-            System.out.println("------------------------------------------------------------");
-        }
+        System.out.println("------------------------------------------------------------");
     }
 
-    private void waitForOtherPlayers() {
-
-    }
 
     /**
      * Prints the current state of the {@code GameLobby}
@@ -190,6 +279,7 @@ public class CLI {
         System.out.println("");
     }
 
+    @Deprecated
     private void createGame() {
         System.out.print("Insert username: ");
         try {
@@ -200,7 +290,7 @@ public class CLI {
             int numberOfPlayers = Integer.parseInt(stdIn.readLine());
             message.setNumPlayers(numberOfPlayers);
             message.setAction("create game");
-            out.println(message.getJSON());
+            out.println(message.toJson());
         } catch (IOException e) {
             gracefulTermination("Invalid username");
         } catch (NumberFormatException e) {
@@ -209,6 +299,7 @@ public class CLI {
         System.out.println("Game created, waiting for other players...");
     }
 
+    @Deprecated
     private void joinGame() {
         System.out.print("Insert username: ");
         try {
@@ -216,15 +307,10 @@ public class CLI {
             ClientLoginMessage message = new ClientLoginMessage();
             message.setUsername(username);
             message.setAction("join game");
-            out.println(message.getJSON());
+            out.println(message.toJson());
         } catch (IOException e) {
             gracefulTermination("Invalid username");
         }
-    }
-
-    private void handleIOException() {
-        System.err.println("Couldn't get I/O, connection will be closed...");
-        System.exit(-1);
     }
 
 }
