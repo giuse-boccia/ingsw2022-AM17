@@ -6,7 +6,7 @@ Every message has a **type** field which is either *ping/pong*, *login* or *acti
 
 # Ping / pong
 
-Every time a new client connects to the server, the latter sends a ping message and awaits a pong response. This also happens every x seconds, to ensure the client is still up.
+Every time a new client connects to the server, the latter sends a ping message and awaits a pong response. This also happens every x seconds, to ensure the client is still up. If a client connection is lost during the game, all other clients are notified and the application is closed gracefully.
 
 ```
 +--------+                                         +--------+
@@ -27,13 +27,18 @@ Every time a new client connects to the server, the latter sends a ping message 
 
 Login messages are used to communicate information regarding the login phase of the game
 
+### Fields
+- The *action* field indicates the required action if the message is sent from the server, or the intended action if the message is sent from the client. If this field is not present, then the message is either an error message (error ≠ 0) or a brodcast message (error=0).
+- The *username* and *num players* fields are arguments for the SET_USERNAME and CREATE_GAME message.
+- The *error* field is a number. It indicates the error code an error occurred, or zero otherwise. This field is always present (it is omitted in this document in non-error messages for simplicity).
+- The *displayText* field is not necessary for the functioning of the application, but can be printed in case of errors and makes the messages more human-readable
+
 ## After new client connection
+When a new client connects to the server, the former sends a message containing his nickname. If the username is empty or already taken the server responds with an error and the connection is closed. If the username is correct, then:
 
-When a new client connects to the server, the latter sends a message which:
-
-- If there is no game → asks for username and num of players
-- If there is a game not full and not started → asks for username
-- If there is already started → send *message L.E.1* and closes the connection
+- if a game is already in progress, the server responds with an error and the connection is closed
+- if a game is present but not started the server adds him to the lobby and sends a broadcast message to everyone with the new players list
+- if no game is present, one is automatically created and the server asks for the number of players
 
 ### L.1 - Creating a new game
 
@@ -42,19 +47,16 @@ When a new client connects to the server, the latter sends a message which:
 | Client |                                         | Server |    
 +--------+                                         +--------+
     |                                                   |
-    |                    { "type": "ping" }             |
-    |                <------------------------          |
+    |                     message L.1.1                 | 
+    |                ----------------------->           | 
     |                                                   |
-    |                    { "type": "pong" }             |
-    |                ------------------------>          |
-    |                                                   |
-    |                     message L.1.1                 |
+    |                     message L.1.2                 |
     |                <-----------------------           |
     |                                                   |
-    |                     message L.1.2                 | 
+    |                     message L.1.3                 | 
     |                ----------------------->           |
     |                                                   |
-    |                     [OK] message L.B.1            | 
+    |                   [OK] message L.B.1              | 
     |              <-------------------------           |
     |                  [ERR] message L.E.*              |
     |              <-------------------------           |
@@ -64,18 +66,25 @@ When a new client connects to the server, the latter sends a message which:
 #### message L.1.1
 ```json
 {
-    "type": "login",
-    "action": "create game",
-    "message": "insert username and desired number of players"
+    "status": "LOGIN",
+    "action": "SET_USERNAME",
+	"username": "Rick"
 }
 ```
 #### message L.1.2
 ```json
 {
-    "type": "login",
-    "action": "create game",
-    "username": "Rick",
-    "num players": 3
+	"status": "LOGIN",
+	"action": "CREATE_GAME",
+	"displayText": "Insert desired number of players"
+}
+```
+#### message L.1.3
+```json
+{
+	"status": "LOGIN",
+	"action": "CREATE_GAME",
+	"num players": 3
 }
 ```
 
@@ -86,123 +95,93 @@ When a new client connects to the server, the latter sends a message which:
 | Client |                                         | Server |    
 +--------+                                         +--------+
     |                                                   |
-    |                    { "type": "ping" }             |
-    |                <------------------------          |
+    |                     message L.2.1                 | 
+    |               ------------------------>           |
     |                                                   |
-    |                    { "type": "pong" }             |
-    |                ------------------------>          |
-    |                                                   |
-    |                     message L.2.1                 |
-    |                <-----------------------           |
-    |                                                   |
-    |                     message L.2.2                 | 
-    |                ----------------------->           |
-    |                                                   |
-    |                     [OK] message L.B.2            | 
+    |                   [OK] message L.B.2              | 
     |              <-------------------------           |
     |                  [ERR] message L.E.*              |
     |              <-------------------------           |
     |                                                   |
 ```
 
-
 #### message L.2.1
 ```json
 {
-    "type": "login",
-    "message": "insert username",
-    "action": "join game",
-    "game": {
-        "players": ["Clod"],
-        "num players": 3,
-    }
-}
-```
-
-#### message L.2.2
-```json
-{
-    "type": "login",
-    "action": "join game",
+    "status": "LOGIN",
+    "action": "SET_USERNAME",
     "username": "Rick"
 }
 ```
 
 ### L.E - Login errors
-
+Every message contains an “error” number field. If this field in not 0, then the message is an error message and the client must act accordingly (retry, gracefull termination, ...)
 #### message L.E.1
 ```json
 {
-    "type" : "login",
-    "error" : 1,
-    "message" : "A game is already in progress. The connection will be closed"
+	"status" : "LOGIN",
+	"error" : 1,
+	"displayText" : "A game is already in progress. The connection will be closed"
 }
 ```
 #### message L.E.2
 ```json
 {
-    "type" : "login",
-    "error" : 2,
-    "message" : "An user with this username is already logged in. Please select another username"
+	"status" : "LOGIN",
+	"error" : 2,
+	"displayText" : "An user with this username is already logged in. Please select another username"
 }
 ```
 
 #### message L.E.3
 ```json
 {
-    "type" : "login",
-    "error" : 3,
-    "message" : "Invalid action"
+	"status" : "LOGIN",
+	"error" : 3,
+	"displayText" : "Bad request"
 }
 ```
 
 ### L.B - Login Broadcast messages
-
-
 #### message L.B.1
 ```json
 {
-    "type": "login",
-    "message": "game created",
-    "game": {
-        "players": ["Rick"],
-        "num players": 3,
-    }
+	"status": "LOGIN",
+	"displayText": "A new player has joined",
+	"game": {
+		"players": ["Clod", "Rick"],
+		"num layers": 3,
+	}
 }
 ```
 #### message L.B.2
 ```json
 {
-    "type": "login",
-    "message": "player has joined",
-    "game": {
-        "players": ["Clod", "Rick"],
-        "num layers": 3,
-    }
-}
-```
-#### message L.B.3
-```json
-{
-    "type" : "login",
-    "message" : "A new game is starting",
-    "game": {
-        "players": ["Clod", "Rick", "Giuse"],
-        "numPlayers": 3,
-    }
+	"status" : "LOGIN",
+	"displayText" : "A new game is starting",
+	"game": {
+		"players": ["Clod", "Rick", "Giuse"],
+		"numPlayers": 3,
+	}
 }
 ```
 
 # Action
+Action messages are used to communicate player choices from each client to the server. Every time a player performs a move a broadcast message is sent to every player. This functions as a confirmation message for the player who made the move and as an update for the other players.
 
-Action messages are used to communicate player choices from each client to the server, with a broadcast response from it.
+### Fields
 
-Here are some example of possible moves:
+- The *player* field indicates which player is performing the move. A player is identified by his username.
+- Messages from the server contain an *actions* field, which is an array of all the possible actions the player can perform
+- Messages from the client and broadcast messages from the server contain a *action* field, which describes the action which has to made (or has been made in case of a broadcast message):
+    - *action.name* indicates the type of the action to be performed (es: move mother nature)
+    - *action.args* indicates the arguments of the action (es: a color and/or an island)
+- The *error* field is a number. It indicates the error code an error occurred, or zero otherwise. This field is always present (it is omitted in this document in non-error messages for simplicity).
+- The *displayText* field is not necessary for the functioning of the application, but can be printed in case of errors and makes the messages more human-readable
 
 ## Planning Phase
 
 Every player has to play an assistant.
-> NOTE: ping/pong is omitted for brevity
 
 ```
 +--------+                                        +--------+
@@ -226,30 +205,28 @@ Every player has to play an assistant.
 #### message A.0.1
 ```json
 {
-    "type": "action",
-    "player": "Rick",
-    "actions": {
-        ["play assistant"]
-    }
+	"status": "ACTION",
+	"player": "Rick",
+	"actions": {
+		["PLAY_ASSISTANT"]
+	}
 }
 ```
 #### message A.1.1
 ```json
 {
-    "type": "action",
-    "player": "Rick",
-    "action": {
-        "name": "play assistant",
-        "args": {
-            "value": 5
-        }
-    }
+	"status": "ACTION",
+	"player": "Rick",
+	"action": {
+		"name": "PLAY_ASSISTANT",
+		"args": {
+			"value": 5
+		}
+	}
 }
 ```
 
 ## Action Phase
-Example of a player action phase
-> NOTE: ping/pong is omitted for brevity
 
 ```
 +--------+                                        +--------+
@@ -303,151 +280,151 @@ Example of a player action phase
 #### message A.0.2
 ```json
 {
-    "type": "action",
-    "player": "Rick",
-    "actions": {
-        ["move student", "play character"]
-    }
+	"status": "ACTION",
+	"player": "Rick",
+	"actions": {
+		["MOVE_STUDENT", "PLAY_CHARACTER"]
+	}
 }
 ```
 
 #### message A.2.1a
 ```json
 {
-    "type": "action",
-    "player": "Rick",
-    "action": {
-        "name": "move student to dining",
-        "args": {
-            "color": "GREEN",
-        }
-    }
+	"status": "ACTION",
+	"player": "Rick",
+	"action": {
+		"name": "MOVE_STUDENT_TO_DINING",
+		"args": {
+			"color": "GREEN",
+		}
+	}
 }
 ```
 
 #### message A.2.1b
 ```json
 {
-    "type": "action",
-    "player": "Rick",
-    "action": {
-        "name": "move student to island",
-        "args": {
-            "color": "GREEN",
-            "island": 3,
-        }
-    }
+	"status": "ACTION",
+	"player": "Rick",
+	"action": {
+		"name": "MOVE_STUDENT_TO_ISLAND",
+		"args": {
+			"color": "GREEN",
+			"island": 3,
+		}
+	}
 }
 ```
 #### message A.0.3
 ```json
 {
-    "type": "action",
-    "player": "Rick",
-    "actions": {
-        ["move mother nature", "play character"]
-    }
+	"status": "ACTION",
+	"player": "Rick",
+	"actions": {
+		["MOVE_MN", "PLAY_CHARACTER"]
+	}
 }
 ```
 #### message A.2.2
 ```json
 {
-    "type": "action",
-    "player": "Rick",
-    "action": {
-        "name": "move mother nature",
-        "args": {
-            "num_steps": 5
-        }
-    }
+	"status": "ACTION",
+	"player": "Rick",
+	"action": {
+		"name": "MOVE_MN",
+		"args": {
+			"num_steps": 5
+		}
+	}
 }
 ```
 
 #### message A.0.4
 ```json
 {
-    "type": "action",
-    "player": "Rick",
-    "actions": {
-        ["fill from cloud", "play character"]
-    }
+	"status": "ACTION",
+	"player": "Rick",
+	"actions": {
+		["FILL_FROM_CLOUD", "PLAY_CHARACTER"]
+	}
 }
 ```
 #### message A.2.3
 ```json
 {
-    "type": "action",
-    "player": "Rick",
-    "action": {
-        "name": "fill from cloud",
-        "args": {
-            "cloud": 0
-        }
-    }
+	"status": "ACTION",
+	"player": "Rick",
+	"action": {
+		"name": "FILL_FROM_CLOUD",
+		"args": {
+			"cloud": 0
+		}
+	}
 }
 ```
 
 ### A.B - Action Broadcast messages
 
-
 #### message A.B.1
 ```json
 {
-    "type": "action",
-    "player": "Rick",
-    "message": "Rick played assistant 5",
-    "action": {
-        "name": "play assistant",
-        "args": {
-            "value": 5
-        }
-    }
+	"status": "ACTION",
+	"player": "Rick",
+	"displayText": "Rick played assistant 5",
+	"action": {
+		"name": "PLAY_ASSISTANT",
+		"args": {
+			"value": 5
+		}
+	}
 }
 ```
 
 #### message A.B.2
 ```json
 {
-    "type": "action",
-    "player": "Rick",
-    "message": "Rick moved...",
-    "action": {
-        "name": "move student [to dining | to island]",
-        "args": {
-            "color": "GREEN",
-            ["island": 3]
-        }
-    }
+	"status": "ACTION",
+	"player": "Rick",
+	"displayText": "Rick moved...",
+	"action": {
+		"name": "MOVE_STUDENT_TO_ISLAND",
+		"args": {
+			"color": "GREEN"
+			"island": 0
+		}
+	}
 }
 ```
 
 #### message A.B.3
 ```json
 {
-    "type": "action",
-    "player": "Rick",
-    "message": "Rick moved mother nature by 5 steps",
-    "action": {
-        "name": "move mother nature",
-        "args": {
-            "num_steps": 5
-        }
-    }
+	"status": "ACTION",
+	"player": "Rick",
+	"displayText": "Rick moved mother nature by 5 steps",
+	"action": {
+		"name": "MOVE_MN",
+		"args": {
+			"num_steps": 5
+		}
+	}
 }
+
 ```
 
 #### message A.B.4
 ```json
 {
-    "type": "action",
-    "player": "Rick",
-    "message": "Rick picked cloud 1",
-    "action": {
-        "name": "fill from cloud",
-        "args": {
-            "cloud": 1
-        }
-    }
+	"status": "ACTION",
+	"player": "Rick",
+	"displayText": "Rick picked cloud 1",
+	"action": {
+		"name": "FILL_FROM_CLOUD",
+		"args": {
+			"cloud": 1
+		}
+	}
 }
 ```
 
@@ -456,16 +433,16 @@ Example of a player action phase
 #### message A.E.1
 ```json
 {
-    "type" : "action",
-    "error" : 1,
-    "message" : "Wait for your turn"
+	"status" : "ACTION",
+	"error" : 1,
+	"displayText" : "Invalid action name"
 }
 ```
 #### message A.E.2
 ```json
 {
-    "type" : "action",
-    "error" : 2,
-    "message" : "This action is not valid"
+	"status" : "ACTION",
+	"error" : 2,
+	"displayText" : "Bad args"	
 }
 ```
