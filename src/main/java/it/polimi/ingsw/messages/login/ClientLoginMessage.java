@@ -12,7 +12,7 @@ public class ClientLoginMessage extends Message {
 
     public ClientLoginMessage() {
         super();
-        setType("login");
+        setStatus("login");
     }
 
     public String getUsername() {

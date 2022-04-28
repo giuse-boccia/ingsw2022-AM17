@@ -37,15 +37,14 @@ public class ClientHandler implements Runnable {
             in = new Scanner(socket.getInputStream());
             out = new PrintWriter(socket.getOutputStream());
 
-            controller.sendWelcomeMessage(this);
-
             while (true) {
                 String message = in.nextLine();
                 controller.handleMessage(message, this);
             }
         } catch (IOException e) {
-            System.err.println(e.getMessage());
-
+            // Server has crashed
+            System.err.println("Connection to server lost, the program will now close...");
+            System.exit(-1);
         } finally {
             try {
                 socket.close();

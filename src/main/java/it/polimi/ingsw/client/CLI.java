@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class CLI {
 
@@ -20,8 +21,11 @@ public class CLI {
     private BufferedReader stdIn;
     private BufferedReader in;
     private PrintWriter out;
-    private boolean isInInsertUsername = false;
-    private boolean isInInsertNumPlayers = false;
+    private String username;
+
+    private CLI(String username) {
+        this.username = username;
+    }
 
     public static void main(String[] args) {
         if (args.length < 2) {
@@ -50,7 +54,11 @@ public class CLI {
             gracefulTermination("Invalid server_port argument. The port number has to be between 1024 and 65535");
         }
 
-        CLI cli = new CLI();
+        Scanner in = new Scanner(System.in);
+        System.out.print("Insert username: ");
+        String username = in.nextLine();
+
+        CLI cli = new CLI(username);
         cli.connectToServer();
 
     }
@@ -76,6 +84,11 @@ public class CLI {
             stdIn = new BufferedReader(new InputStreamReader(System.in));
             in = new BufferedReader(new InputStreamReader(server.getInputStream()));
             out = new PrintWriter(server.getOutputStream(), true);
+
+            ClientLoginMessage usernameMessage = new ClientLoginMessage();
+            usernameMessage.setUsername(username);
+            usernameMessage.setAction("set username");
+            out.println(usernameMessage.getJSON());
 
             System.out.println("Connecting to server...");
             String welcomeMessage = in.readLine();
@@ -114,7 +127,7 @@ public class CLI {
                 try {
                     String message = in.readLine();
                     ServerLoginMessage loginMessage = ServerLoginMessage.getMessageFromJSON(message);
-                    if (loginMessage != null && "login".equals(loginMessage.getType())) {
+                    if (loginMessage != null && "login".equals(loginMessage.getStatus())) {
                         int error = loginMessage.getError();
                         if (error != 0) {
                             switch (error) {
@@ -165,7 +178,12 @@ public class CLI {
      * @param lobby the {@code GameLobby} to print
      */
     private void printCurrentLobby(GameLobby lobby) {
-        System.out.println("GAME: " + lobby.getPlayers().length + "/" + lobby.getNumPlayers());
+        String message = "GAME: " + lobby.getPlayers().length;
+        if (lobby.getNumPlayers() != -1) {
+            message += "/" + lobby.getNumPlayers();
+        }
+        message += " players";
+        System.out.println(message);
         for (String name : lobby.getPlayers()) {
             System.out.println("  - " + name);
         }
@@ -175,12 +193,10 @@ public class CLI {
     private void createGame() {
         System.out.print("Insert username: ");
         try {
-            isInInsertUsername = true;
             String username = stdIn.readLine();
             ClientLoginMessage message = new ClientLoginMessage();
             message.setUsername(username);
             System.out.print("Insert desired number of players: ");
-            isInInsertNumPlayers = true;
             int numberOfPlayers = Integer.parseInt(stdIn.readLine());
             message.setNumPlayers(numberOfPlayers);
             message.setAction("create game");

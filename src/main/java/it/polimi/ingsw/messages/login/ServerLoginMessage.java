@@ -12,7 +12,7 @@ public class ServerLoginMessage extends Message {
 
     public ServerLoginMessage() {
         super();
-        super.setType("login");
+        super.setStatus("login");
     }
 
     public String getMessage() {

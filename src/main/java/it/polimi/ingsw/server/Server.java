@@ -60,7 +60,6 @@ public class Server {
                 Socket socket = serverSocket.accept();
                 System.out.println("Accepted from " + socket.getRemoteSocketAddress());
                 ClientHandler ch = new ClientHandler(socket, controller);
-                controller.addClientHandler(ch);
                 executor.submit(ch);
             } catch (IOException e) {
                 break;

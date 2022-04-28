@@ -1,19 +1,19 @@
 package it.polimi.ingsw.messages;
 
 public class Message {
-    private String type;
+    private String status;
     private int error;
 
     public Message() {
         this.error = 0;
     }
 
-    public String getType() {
-        return type;
+    public String getStatus() {
+        return status;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getError() {
