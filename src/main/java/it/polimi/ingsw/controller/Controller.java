@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.login.ClientActionMessage;
@@ -8,26 +9,24 @@ import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import it.polimi.ingsw.server.ClientHandler;
+import it.polimi.ingsw.server.PlayerClient;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class Controller {
     private final Gson gson;
 
-    private final Map<ClientHandler, String> loggedUsers;
+    private final ArrayList<PlayerClient> loggedUsers;
     private int desiredNumberOfPlayers;
     private GameController gameController;
-    private ClientHandler firstPlayerConnected;
 
     public Controller() {
-        loggedUsers = new HashMap<>();
+        loggedUsers = new ArrayList<>();
         gson = new Gson();
         gameController = null;
         desiredNumberOfPlayers = -1;
-        firstPlayerConnected = null;
     }
 
     /**
@@ -37,20 +36,20 @@ public class Controller {
      * @param ch          the {@code ClientHandler} of the client which sent the message
      */
     public void handleMessage(String jsonMessage, ClientHandler ch) throws IOException {
-        switch (getMessageType(jsonMessage)) {
-            case "login" -> {
-                ClientLoginMessage loginMessage = ClientLoginMessage.getMessageFromJSON(jsonMessage);
-                handleLoginMessage(loginMessage, ch);
-            }
-            case "action" -> {
-                ClientActionMessage actionMessage = ClientActionMessage.getMessageFromJSON(jsonMessage);
-                handleActionMessage(actionMessage, ch);
-            }
+        switch (getMessageStatus(jsonMessage)) {
+            case "LOGIN" -> handleLoginMessage(jsonMessage, ch);
+            case "ACTION" -> handleActionMessage(jsonMessage, ch);
             default -> sendErrorMessage(ch, "Unrecognised type", 3);
         }
     }
 
-    private String getMessageType(String json) {
+    /**
+     * Return the status field of the given json message
+     *
+     * @param json a JSON string containing the message to get the status of
+     * @return the status field of the given json message
+     */
+    private String getMessageStatus(String json) {
         Type type = new TypeToken<Message>() {
         }.getType();
         Message msg = gson.fromJson(json, type);
@@ -58,109 +57,114 @@ public class Controller {
     }
 
     /**
-     * Handles a login message
+     * Deserializes and handles a login message
      *
-     * @param loginMessage deserialized message
-     * @param ch           the {@code ClientHandler} of the client who sent the message
+     * @param jsonMessage Json string which contains a login message
+     * @param ch          the {@code ClientHandler} of the client who sent the message
      */
-    private synchronized void handleLoginMessage(ClientLoginMessage loginMessage, ClientHandler ch) throws IOException {
-        ServerLoginMessage msgToSend = new ServerLoginMessage();
+    private synchronized void handleLoginMessage(String jsonMessage, ClientHandler ch) throws IOException {
+        try {
+            ClientLoginMessage loginMessage = ClientLoginMessage.getMessageFromJSON(jsonMessage);
 
-        if (loginMessage.getAction() == null) {
-            sendErrorMessage(ch, "Bad request", 3);
-            return;
-        }
-
-        switch (loginMessage.getAction()) {
-            case "set username" -> {
-                if (loginMessage.getUsername() == null || loginMessage.getUsername().trim().equals("") || loginMessage.getUsername().length() > 32) {
-                    sendErrorMessage(ch, "Invalid username field", 3);
-                } else if (loggedUsers.containsValue(loginMessage.getUsername())) {
-                    sendErrorMessage(ch, "Username already taken", 2);
-                } else {
-                    sendFirstResponse(ch);
-                }
-            }
-
-            case "create game" -> {
-
-            }
-
-        }
-
-
-        // TODO: check if game is already started
-        if (loggedUsers.isEmpty()) {
-            if (loginMessage.getAction().equals("create game")) {
-                String username = loginMessage.getUsername();
-                int numPlayers = 2;
-                if (username == null || username.equals("")) {
-                    sendErrorMessage(ch, "Empty username field", 3);
-                }
-
-                try {
-                    numPlayers = loginMessage.getNumPlayers();
-                    if (numPlayers < 2 || numPlayers > 4) {
-                        sendErrorMessage(ch, "Num players must be between 2 and 4", 3);
-                        return;
-                    }
-                } catch (NumberFormatException e) {
-                    sendErrorMessage(ch, "Invalid num players", 3);
-                }
-                loggedUsers.put(ch, username);
-                desiredNumberOfPlayers = numPlayers;
-                msgToSend.setMessage("game created");
-            }
-        } else if (gameController == null) {
-            String username = loginMessage.getUsername();
-            if (username == null || username.equals("")) {
-                sendErrorMessage(ch, "Empty username field", 3);
-            } else if (loggedUsers.containsValue(username)) {
-                sendErrorMessage(ch, "Username already taken", 2);
-                return;
-            }
-            loggedUsers.put(ch, username);
-            msgToSend.setMessage("player has joined");
-
-            if (loggedUsers.size() == desiredNumberOfPlayers) {
-                gameController = new GameController();
-                // TODO start new game
-                GameLobby lobby = new GameLobby(loggedUsers.values().toArray(String[]::new), desiredNumberOfPlayers);
-                msgToSend.setGameLobby(lobby);
-                msgToSend.setMessage("Lobby completed. A new game is starting...");
-                for (ClientHandler clientHandler : loggedUsers.keySet()) {
-                    try {
-                        clientHandler.sendMessageToClient(msgToSend.getJson());
-                    } catch (IOException e) {
-                        System.err.println("Couldn't get I/O, connection will be closed...");
-                        System.exit(-1);
-                    }
-                }
+            if (loginMessage.getAction() == null) {
+                sendErrorMessage(ch, "Bad request", 3);
                 return;
             }
 
-        } else {
-            sendErrorMessage(ch, "A game is already in progress", 1);
-            return;
-        }
+            switch (loginMessage.getAction()) {
+                case "SET_USERNAME" -> addUser(ch, loginMessage.getUsername());
+                case "CREATE_GAME" -> setDesiredNumberOfPlayers(ch, loginMessage.getNumPlayers());
+                default -> sendErrorMessage(ch, "Bad request", 3);
 
-        GameLobby lobby = new GameLobby(loggedUsers.values().toArray(String[]::new), desiredNumberOfPlayers);
-        msgToSend.setGameLobby(lobby);
-        for (ClientHandler clientHandler : loggedUsers.keySet()) {
-            try {
-                clientHandler.sendMessageToClient(msgToSend.getJson());
-            } catch (IOException e) {
-                System.err.println("Couldn't get I/O, connection will be closed...");
-                System.exit(-1);
             }
+        } catch (JsonSyntaxException e) {
+            sendErrorMessage(ch, "Num players must be a number", 3);
         }
     }
 
-    private void handleActionMessage(ClientActionMessage map, ClientHandler ch) {
+    /**
+     * Sets the desired number of players of the game if possible
+     *
+     * @param ch         the {@code ClientHandler} of the client who sent the message
+     * @param numPlayers the value contained in the message received
+     */
+    private void setDesiredNumberOfPlayers(ClientHandler ch, int numPlayers) throws IOException {
+        if (numPlayers < 2 || numPlayers > 4) {
+            sendErrorMessage(ch, "Num players must be between 2 and 4", 3);
+        } else {
+            desiredNumberOfPlayers = numPlayers;
+        }
+    }
+
+    /**
+     * Adds the user who sent the message to the loggedUsers {@code ArrayList} if possible
+     *
+     * @param ch       the {@code ClientHandler} of the client who sent the message
+     * @param username the username of the user to be added
+     */
+    private void addUser(ClientHandler ch, String username) throws IOException {
+
+        if (username == null || username.trim().equals("")) {
+            sendErrorMessage(ch, "Invalid username field", 3);
+        } else if (username.length() > 32) {
+            sendErrorMessage(ch, "Username is too long (max 32 characters)", 3);
+        } else if (loggedUsers.stream().anyMatch(u -> u.getUsername().equals(username))) {
+            sendErrorMessage(ch, "Username already taken", 2);
+        } else if (desiredNumberOfPlayers != -1 && loggedUsers.size() >= desiredNumberOfPlayers) {
+            sendErrorMessage(ch, "The lobby is full", 1);
+        } else {
+            PlayerClient newUser = new PlayerClient(ch, username);
+            loggedUsers.add(newUser);
+            if (newUser == loggedUsers.get(0)) {
+                askDesiredNumberOfPlayers(ch);
+            }
+            sendBroadcastMessage();     // signals everyone that a new player has joined
+        }
+    }
+
+    /**
+     * Sends a message to every logged user containing the usernames of all logged users and the desired number of players
+     * of the game, which can be -1 (not specified yet), 2, 3 or 4
+     */
+    private void sendBroadcastMessage() throws IOException {
+        ServerLoginMessage res = new ServerLoginMessage();
+        res.setMessage("A new player has joined");
+        res.setGameLobby(new GameLobby((String[]) loggedUsers.stream().map(PlayerClient::getUsername).toArray(), desiredNumberOfPlayers));
+
+        if (desiredNumberOfPlayers != -1) {
+            loggedUsers.get(0).getClientHandler().sendMessageToClient(res.toJson());
+        }
+
+        for (int i = 1; i < loggedUsers.size(); i++) {
+            loggedUsers.get(i).getClientHandler().sendMessageToClient(res.toJson());
+        }
+    }
+
+    /**
+     * Sends a message asking for the desired number of players
+     *
+     * @param ch the {@code ClientHandler} of the player to send the message to
+     */
+    private void askDesiredNumberOfPlayers(ClientHandler ch) throws IOException {
+        ServerLoginMessage res = new ServerLoginMessage();
+        res.setAction("CREATE_GAME");
+        res.setMessage("Insert desired number of players");
+
+        ch.sendMessageToClient(res.toJson());
+    }
+
+    /**
+     * Deserializes and handles an action message
+     *
+     * @param jsonMessage Json string which contains an action message
+     * @param ch          the {@code ClientHandler} of the client who sent the message
+     */
+    private void handleActionMessage(String jsonMessage, ClientHandler ch) throws IOException {
         try {
+            ClientActionMessage actionMessage = ClientActionMessage.getMessageFromJSON(jsonMessage);
             ch.sendMessageToClient("You sent an action message");
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (JsonSyntaxException e) {
+            sendErrorMessage(ch, "Bad request (syntax error)", 3);
         }
     }
 
@@ -173,33 +177,6 @@ public class Controller {
         ServerLoginMessage message = new ServerLoginMessage();
         message.setError(errorCode);
         message.setMessage("[ERROR] " + errorMessage);
-        ch.sendMessageToClient(message.getJson());
+        ch.sendMessageToClient(message.toJson());
     }
-
-    /**
-     * Creates a welcome message based on how many players have already joined the game
-     */
-    public synchronized void sendFirstResponse(ClientHandler ch) throws IOException {
-        ServerLoginMessage res = new ServerLoginMessage();
-        if (gameController != null) {
-            res.setError(1);
-            res.setMessage("A game is already in progress. The connection will be closed");
-        } else if (loggedUsers.isEmpty()) {
-            res.setAction("create game");
-            res.setMessage("Insert desired number of players");
-            firstPlayerConnected = ch;
-        } else {
-            res.setMessage("player has joined");
-            res.setGameLobby(new GameLobby(loggedUsers.values().toArray(String[]::new), desiredNumberOfPlayers));
-            for (ClientHandler clientHandler : loggedUsers.keySet()) {
-                if (clientHandler != firstPlayerConnected) {
-                    clientHandler.sendMessageToClient(res.getJson());
-                }
-            }
-            return;
-        }
-        ch.sendMessageToClient(res.getJson());
-    }
-
-
 }

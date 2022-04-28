@@ -51,7 +51,7 @@ public class ServerLoginMessage extends Message {
         }.getType());
     }
 
-    public String getJson() {
+    public String toJson() {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
