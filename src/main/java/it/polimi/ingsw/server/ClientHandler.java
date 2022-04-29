@@ -36,9 +36,8 @@ public class ClientHandler implements Runnable {
      * Sends a response to the client
      *
      * @param res the response to send to the client
-     * @throws IOException if the exception is thrown by the Socket
      */
-    public void sendMessageToClient(String res) throws IOException {
+    public void sendMessageToClient(String res) {
         out.println(res);
         out.flush();
     }
@@ -59,6 +58,7 @@ public class ClientHandler implements Runnable {
             // Client connection error
             System.err.println("Connection to client lost, alerting other clients...");
             // TODO: broadcast message to everyone indicating that someone has disconnected and the game will end
+
         }
     }
 }

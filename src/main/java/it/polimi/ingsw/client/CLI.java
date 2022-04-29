@@ -104,8 +104,6 @@ public class CLI {
             checkIfGameReady(message);
         }
 
-        // TODO this message could be L.B.1 and L.B.2 and it's not caught!
-
         waitForOtherPlayers();
     }
 
@@ -172,7 +170,9 @@ public class CLI {
         }
     }
 
-
+    /**
+     * Waits until the lobby is full and a game is ready to start
+     */
     private void waitForOtherPlayers() throws IOException {
         while (!isLobbyCompleted) {
             String jsonMessage = in.readLine();
@@ -184,6 +184,11 @@ public class CLI {
 
     }
 
+    /**
+     * Checks if a match is ready to start analyzing the provided {@code ServerLoginMessage}
+     *
+     * @param loginMessage the {@code ServerLoginMessage} to be checked
+     */
     private void checkIfGameReady(ServerLoginMessage loginMessage) {
         clearCommandWindow();
         if (loginMessage.getError() != 0) {
@@ -193,92 +198,6 @@ public class CLI {
         GameLobby lobby = loginMessage.getGameLobby();
         printCurrentLobby(lobby);
         isLobbyCompleted = lobby.getPlayers().length == lobby.getNumPlayers();
-    }
-
-    @Deprecated
-    private void OLD_login() {
-        try {
-
-            String messageJson = in.readLine();
-            ServerLoginMessage message = ServerLoginMessage.getMessageFromJSON(messageJson);
-            if (message.getError() != 0) {
-                switch (message.getError()) {
-                    case 1, 3 -> gracefulTermination(message.getMessage());
-                    case 2 -> {
-
-                    }
-                }
-            }
-
-            System.out.println("Successfully connected to server!");
-
-            String welcomeMessage = in.readLine();
-            message = ServerLoginMessage.getMessageFromJSON(welcomeMessage);
-
-
-            listenToBroadcastMessages();
-
-            if (message.getError() == 1) {
-                gracefulTermination(message.getMessage());
-            }
-
-            switch (message.getAction()) {
-                case "join game" -> {
-                    printCurrentLobby(message.getGameLobby());
-                    joinGame();
-                }
-                case "create game" -> createGame();
-                default ->
-                        gracefulTermination(message.getError() != 0 ? message.getMessage() : "Error connecting to server");
-            }
-
-            waitForOtherPlayers();
-        } catch (IOException e) {
-            gracefulTermination("Connection to server lost");
-        } catch (JsonSyntaxException e) {
-            gracefulTermination("Error parsing message from server");
-        }
-
-    }
-
-    @Deprecated
-    private void listenToBroadcastMessages() {
-        new Thread(() -> {
-            while (true) {
-                try {
-                    String message = in.readLine();
-                    ServerLoginMessage loginMessage = ServerLoginMessage.getMessageFromJSON(message);
-                    if (loginMessage != null && "login".equals(loginMessage.getStatus())) {
-                        int error = loginMessage.getError();
-                        if (error != 0) {
-                            switch (error) {
-                                case 1, 3 -> gracefulTermination(loginMessage.getMessage());
-                                case 2 -> {
-                                    System.out.println(loginMessage.getMessage());
-                                    clearCommandWindow();
-                                    joinGame();
-                                }
-                            }
-                        }
-                        String description = loginMessage.getMessage();
-                        if (description != null && error != 2) {
-                            switch (description) {
-                                case "game created", "player has joined", "Lobby completed. A new game is starting..." -> printCurrentLobby(loginMessage.getGameLobby());
-                                case "a new game is starting" -> {
-                                    System.out.println("A new game is starting, you will be logged out...");
-                                    System.exit(-1);
-                                }
-                            }
-                            clearCommandWindow();
-                            System.out.println(description);
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
     }
 
     /**
@@ -305,40 +224,6 @@ public class CLI {
             System.out.println("  - " + name);
         }
         System.out.println("");
-    }
-
-    @Deprecated
-    private void createGame() {
-        System.out.print("Insert username: ");
-        try {
-            String username = stdIn.readLine();
-            ClientLoginMessage message = new ClientLoginMessage();
-            message.setUsername(username);
-            System.out.print("Insert desired number of players: ");
-            int numberOfPlayers = Integer.parseInt(stdIn.readLine());
-            message.setNumPlayers(numberOfPlayers);
-            message.setAction("create game");
-            out.println(message.toJson());
-        } catch (IOException e) {
-            gracefulTermination("Invalid username");
-        } catch (NumberFormatException e) {
-            gracefulTermination("Invalid number of players");
-        }
-        System.out.println("Game created, waiting for other players...");
-    }
-
-    @Deprecated
-    private void joinGame() {
-        System.out.print("Insert username: ");
-        try {
-            String username = stdIn.readLine();
-            ClientLoginMessage message = new ClientLoginMessage();
-            message.setUsername(username);
-            message.setAction("join game");
-            out.println(message.toJson());
-        } catch (IOException e) {
-            gracefulTermination("Invalid username");
-        }
     }
 
 }

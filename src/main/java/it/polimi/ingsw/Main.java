@@ -5,12 +5,8 @@ import it.polimi.ingsw.client.CLI;
 import it.polimi.ingsw.client.GUI;
 import it.polimi.ingsw.server.Server;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.Map;
 
 public class Main {
 
