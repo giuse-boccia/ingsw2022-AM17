@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client;
 
-import com.google.gson.JsonSyntaxException;
 import it.polimi.ingsw.Settings;
+import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Arrays;
+import java.util.Objects;
 
 public class CLI {
 
@@ -65,6 +65,17 @@ public class CLI {
         }
     }
 
+    // TODO use this code for ping-pong
+    private boolean isPing(Message message) {
+        if (Objects.equals(message.getStatus(), "PING")) {
+            Message pong = new Message();
+            pong.setStatus("PONG");
+            out.println(pong.toJson());
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Closes the connection printing the provided message
      *
@@ -89,7 +100,7 @@ public class CLI {
             askForUsername();
             connectToServer();
             String messageJson = in.readLine();
-            message = ServerLoginMessage.getMessageFromJSON(messageJson);
+            message = ServerLoginMessage.fromJson(messageJson);
             isErrorBeenPrinted = true;
         } while (message.getError() == 2);
 
@@ -176,7 +187,7 @@ public class CLI {
     private void waitForOtherPlayers() throws IOException {
         while (!isLobbyCompleted) {
             String jsonMessage = in.readLine();
-            ServerLoginMessage loginMessage = ServerLoginMessage.getMessageFromJSON(jsonMessage);
+            ServerLoginMessage loginMessage = ServerLoginMessage.fromJson(jsonMessage);
             checkIfGameReady(loginMessage);
         }
 

@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Controller {
     private final Gson gson;
@@ -22,6 +24,7 @@ public class Controller {
     private final ArrayList<PlayerClient> loggedUsers;
     private int desiredNumberOfPlayers;
     private GameController gameController;
+    private int pongCount;
 
     public Controller() {
         loggedUsers = new ArrayList<>();
@@ -36,10 +39,11 @@ public class Controller {
      * @param jsonMessage the message received from the client
      * @param ch          the {@code ClientHandler} of the client which sent the message
      */
-    public void handleMessage(String jsonMessage, ClientHandler ch) throws IOException {
+    public void handleMessage(String jsonMessage, ClientHandler ch) {
         switch (getMessageStatus(jsonMessage)) {
             case "LOGIN" -> handleLoginMessage(jsonMessage, ch);
             case "ACTION" -> handleActionMessage(jsonMessage, ch);
+            case "PONG" -> pongCount++;
             default -> sendErrorMessage(ch, "Unrecognised type", 3);
         }
     }
@@ -63,7 +67,7 @@ public class Controller {
      * @param jsonMessage Json string which contains a login message
      * @param ch          the {@code ClientHandler} of the client who sent the message
      */
-    private synchronized void handleLoginMessage(String jsonMessage, ClientHandler ch) throws IOException {
+    private synchronized void handleLoginMessage(String jsonMessage, ClientHandler ch) {
         try {
             ClientLoginMessage loginMessage = ClientLoginMessage.getMessageFromJSON(jsonMessage);
 
@@ -89,7 +93,7 @@ public class Controller {
      * @param ch         the {@code ClientHandler} of the client who sent the message
      * @param numPlayers the value contained in the message received
      */
-    private void setDesiredNumberOfPlayers(ClientHandler ch, int numPlayers) throws IOException {
+    private void setDesiredNumberOfPlayers(ClientHandler ch, int numPlayers) {
         if (numPlayers < 2 || numPlayers > 4) {
             sendErrorMessage(ch, "Num players must be between 2 and 4", 3);
         } else {
@@ -109,7 +113,7 @@ public class Controller {
      * @param ch       the {@code ClientHandler} of the client who sent the message
      * @param username the username of the user to be added
      */
-    private void addUser(ClientHandler ch, String username) throws IOException {
+    private void addUser(ClientHandler ch, String username) {
 
         if (username == null || username.trim().equals("")) {
             sendErrorMessage(ch, "Invalid username field", 3);
@@ -122,6 +126,7 @@ public class Controller {
         } else {
             PlayerClient newUser = new PlayerClient(ch, username);
             loggedUsers.add(newUser);
+
             if (newUser == loggedUsers.get(0)) {
                 askDesiredNumberOfPlayers(ch);
                 return;
@@ -135,7 +140,7 @@ public class Controller {
     /**
      * Checks if a game can be started; if so, every client in the lobby is notified
      */
-    private boolean isGameReady() throws IOException {
+    private boolean isGameReady() {
         if (desiredNumberOfPlayers == -1 || loggedUsers.size() < desiredNumberOfPlayers) return false;
 
         for (int i = desiredNumberOfPlayers; i < loggedUsers.size(); ) {
@@ -161,7 +166,7 @@ public class Controller {
      * Sends a message to every logged user containing the usernames of all logged users and the desired number of players
      * of the game, which can be -1 (not specified yet), 2, 3 or 4
      */
-    private void sendBroadcastMessage() throws IOException {
+    private void sendBroadcastMessage() {
 
         ServerLoginMessage res = getServerLoginMessage("A new player has joined");
 
@@ -194,12 +199,14 @@ public class Controller {
      *
      * @param ch the {@code ClientHandler} of the player to send the message to
      */
-    private void askDesiredNumberOfPlayers(ClientHandler ch) throws IOException {
+    private void askDesiredNumberOfPlayers(ClientHandler ch) {
         ServerLoginMessage res = new ServerLoginMessage();
         res.setAction("CREATE_GAME");
         res.setMessage("Insert desired number of players");
 
         ch.sendMessageToClient(res.toJson());
+
+        startPingPong();
     }
 
     /**
@@ -208,7 +215,7 @@ public class Controller {
      * @param jsonMessage Json string which contains an action message
      * @param ch          the {@code ClientHandler} of the client who sent the message
      */
-    private void handleActionMessage(String jsonMessage, ClientHandler ch) throws IOException {
+    private void handleActionMessage(String jsonMessage, ClientHandler ch) {
         try {
             ClientActionMessage actionMessage = ClientActionMessage.getMessageFromJSON(jsonMessage);
             ch.sendMessageToClient("You sent an action message");
@@ -222,10 +229,37 @@ public class Controller {
      *
      * @param ch The {@code ClientHandler} of the client which caused the error
      */
-    private void sendErrorMessage(ClientHandler ch, String errorMessage, int errorCode) throws IOException {
+    private void sendErrorMessage(ClientHandler ch, String errorMessage, int errorCode) {
         ServerLoginMessage message = new ServerLoginMessage();
         message.setError(errorCode);
         message.setMessage("[ERROR] " + errorMessage);
         ch.sendMessageToClient(message.toJson());
+    }
+
+    public void startPingPong() {
+        new Thread(() -> {
+            while (true) {
+                pongCount = 0;
+                Message ping = new Message();
+                ping.setStatus("PING");
+                int bound = 0;
+                for (PlayerClient user : loggedUsers) {
+                    user.getClientHandler().sendMessageToClient(ping.toJson());
+                    bound++;
+                }
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                if (pongCount < bound) {
+                    for (PlayerClient user : loggedUsers) {
+                        sendErrorMessage(user.getClientHandler(), "Connection with one client lost", 3);
+                    }
+                    loggedUsers.clear();
+                }
+            }
+        }).start();
     }
 }
