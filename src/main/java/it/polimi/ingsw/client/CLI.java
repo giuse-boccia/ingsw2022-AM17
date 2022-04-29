@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class CLI {
 
@@ -21,9 +22,11 @@ public class CLI {
     private BufferedReader in;
     private PrintWriter out;
     private String username;
+    private boolean isLobbyCompleted;
 
     public CLI() {
         stdIn = new BufferedReader(new InputStreamReader(System.in));
+        isLobbyCompleted = false;
     }
 
     public static void main(String[] args) {
@@ -74,15 +77,20 @@ public class CLI {
     }
 
     /**
-     * Performs all the operation needed before the game can start
+     * Performs all the operations needed before the game can start
      */
     public void login() throws IOException {
         ServerLoginMessage message;
+        boolean isErrorBeenPrinted = false;
         do {
+            if (isErrorBeenPrinted) {
+                System.out.println("Username already taken");
+            }
             askForUsername();
             connectToServer();
             String messageJson = in.readLine();
             message = ServerLoginMessage.getMessageFromJSON(messageJson);
+            isErrorBeenPrinted = true;
         } while (message.getError() == 2);
 
         if (message.getError() != 0) {
@@ -92,7 +100,11 @@ public class CLI {
         if (message.getAction() != null && message.getAction().equals("CREATE_GAME")) {
             int numPlayers = askForNumberOfPlayers();
             sendNumPlayers(numPlayers);
+        } else {
+            checkIfGameReady(message);
         }
+
+        // TODO this message could be L.B.1 and L.B.2 and it's not caught!
 
         waitForOtherPlayers();
     }
@@ -106,7 +118,7 @@ public class CLI {
         ClientLoginMessage msg = new ClientLoginMessage();
         msg.setAction("CREATE_GAME");
         msg.setNumPlayers(numPlayers);
-        out.println(msg);
+        out.println(msg.toJson());
     }
 
     /**
@@ -123,7 +135,7 @@ public class CLI {
      * @return the number of players chosen by the user
      */
     private int askForNumberOfPlayers() throws IOException {
-        int res = -1;
+        int res;
 
         do {
             System.out.print("Insert desired number of players (2, 3 or 4): ");
@@ -161,8 +173,26 @@ public class CLI {
     }
 
 
-    private void waitForOtherPlayers() {
+    private void waitForOtherPlayers() throws IOException {
+        while (!isLobbyCompleted) {
+            String jsonMessage = in.readLine();
+            ServerLoginMessage loginMessage = ServerLoginMessage.getMessageFromJSON(jsonMessage);
+            checkIfGameReady(loginMessage);
+        }
 
+        System.out.println("Now I'm waiting for the game to start");
+
+    }
+
+    private void checkIfGameReady(ServerLoginMessage loginMessage) {
+        clearCommandWindow();
+        if (loginMessage.getError() != 0) {
+            gracefulTermination(loginMessage.getMessage());
+        }
+        System.out.println(loginMessage.getMessage());
+        GameLobby lobby = loginMessage.getGameLobby();
+        printCurrentLobby(lobby);
+        isLobbyCompleted = lobby.getPlayers().length == lobby.getNumPlayers();
     }
 
     @Deprecated
@@ -233,9 +263,7 @@ public class CLI {
                         String description = loginMessage.getMessage();
                         if (description != null && error != 2) {
                             switch (description) {
-                                case "game created", "player has joined", "Lobby completed. A new game is starting..." -> {
-                                    printCurrentLobby(loginMessage.getGameLobby());
-                                }
+                                case "game created", "player has joined", "Lobby completed. A new game is starting..." -> printCurrentLobby(loginMessage.getGameLobby());
                                 case "a new game is starting" -> {
                                     System.out.println("A new game is starting, you will be logged out...");
                                     System.exit(-1);

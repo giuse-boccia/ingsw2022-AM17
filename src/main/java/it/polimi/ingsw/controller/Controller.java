@@ -14,6 +14,7 @@ import it.polimi.ingsw.server.PlayerClient;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class Controller {
     private final Gson gson;
@@ -94,7 +95,12 @@ public class Controller {
         } else {
             desiredNumberOfPlayers = numPlayers;
         }
-        checkGameReady();
+        if (!isGameReady()) {
+            ServerLoginMessage message = getServerLoginMessage("A new game was created!");
+            for (PlayerClient player : loggedUsers) {
+                player.getClientHandler().sendMessageToClient(message.toJson());
+            }
+        }
     }
 
     /**
@@ -118,32 +124,36 @@ public class Controller {
             loggedUsers.add(newUser);
             if (newUser == loggedUsers.get(0)) {
                 askDesiredNumberOfPlayers(ch);
+                return;
             }
-            sendBroadcastMessage();     // signals everyone that a new player has joined
-            checkGameReady();
+            if (!isGameReady()) {
+                sendBroadcastMessage();     // signals everyone that a new player has joined
+            }
         }
     }
 
     /**
      * Checks if a game can be started; if so, every client in the lobby is notified
      */
-    private void checkGameReady() throws IOException {
-        if (desiredNumberOfPlayers == -1 || loggedUsers.size() < desiredNumberOfPlayers) return;
+    private boolean isGameReady() throws IOException {
+        if (desiredNumberOfPlayers == -1 || loggedUsers.size() < desiredNumberOfPlayers) return false;
+
+        for (int i = desiredNumberOfPlayers; i < loggedUsers.size(); ) {
+            // Alert player that game is full
+            PlayerClient toRemove = loggedUsers.get(i);
+            String errorMessage = "A new game for " + desiredNumberOfPlayers + " players is starting. Your connection will be closed";
+            sendErrorMessage(toRemove.getClientHandler(), errorMessage, 1);
+            loggedUsers.remove(toRemove);
+        }
 
         ServerLoginMessage toSend = getServerLoginMessage("A new game is starting");
 
-        for (int i = 0; i < loggedUsers.size(); i++) {
-            ClientHandler clientHandler = loggedUsers.get(i).getClientHandler();
-
-            if (i < desiredNumberOfPlayers) {
-                // Alert player that game is starting
-                clientHandler.sendMessageToClient(toSend.toJson());
-            } else {
-                // Alert player that game is full
-                String errorMessage = "A new game for " + desiredNumberOfPlayers + " is starting. Your connection will be closed";
-                sendErrorMessage(clientHandler, errorMessage, 1);
-            }
+        for (PlayerClient playerClient : loggedUsers) {
+            // Alert player that game is starting
+            playerClient.getClientHandler().sendMessageToClient(toSend.toJson());
         }
+
+        return true;
     }
 
 
@@ -173,7 +183,9 @@ public class Controller {
     private ServerLoginMessage getServerLoginMessage(String message) {
         ServerLoginMessage res = new ServerLoginMessage();
         res.setMessage(message);
-        res.setGameLobby(new GameLobby((String[]) loggedUsers.stream().map(PlayerClient::getUsername).toArray(), desiredNumberOfPlayers));
+        Collection<String> playersList = loggedUsers.stream().map(PlayerClient::getUsername).toList();
+        String[] playersArray = playersList.toArray(new String[0]);
+        res.setGameLobby(new GameLobby(playersArray, desiredNumberOfPlayers));
         return res;
     }
 
