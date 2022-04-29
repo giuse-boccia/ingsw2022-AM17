@@ -45,8 +45,4 @@ public class ClientLoginMessage extends Message {
         this.action = action;
     }
 
-    public String toJson() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
-    }
 }

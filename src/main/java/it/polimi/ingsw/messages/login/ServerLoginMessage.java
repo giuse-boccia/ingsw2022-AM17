@@ -45,16 +45,12 @@ public class ServerLoginMessage extends Message {
      * @param json a json {@code String}
      * @return a {@code LoginMessage} object
      */
-    public static ServerLoginMessage getMessageFromJSON(String json) throws JsonSyntaxException {
+    public static ServerLoginMessage fromJson(String json) throws JsonSyntaxException {
         Gson gson = new Gson();
         return gson.fromJson(json, new TypeToken<ServerLoginMessage>() {
         }.getType());
     }
 
-    public String toJson() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
-    }
 }
 
 
