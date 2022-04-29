@@ -271,6 +271,11 @@ public class PlayerActionPhase {
         }
 
         mnMoved = true;
+
+        if (gb.getGame().getCurrentRound().isLastRound()) {
+            // The PlayerActionPhase is finished
+            gb.getGame().getCurrentRound().nextPlayerActionPhase();
+        }
     }
 
     /**

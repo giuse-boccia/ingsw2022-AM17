@@ -13,7 +13,7 @@
 | Complete rules   | No       | 🟢 |
 | Socket           | No       | 🟡 |
 | GUI              | No       | 🔴 |
-| CLI              | No       | 🔴 |
+| CLI              | No       | 🟡 |
 | 12 Characters    | Yes      | 🟢 |
 | 4 Players Game   | Yes      | 🟢 |
 | Multiple Games   | Yes      | ⚫ |
