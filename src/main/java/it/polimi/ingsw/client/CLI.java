@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Objects;
 
 public class CLI {
@@ -23,10 +24,15 @@ public class CLI {
     private PrintWriter out;
     private String username;
     private boolean isLobbyCompleted;
+    private boolean isFirstPlayer;
+    private boolean isInsideInsertNumPlayers;
+    private String lastMessageOfThread;
 
     public CLI() {
         stdIn = new BufferedReader(new InputStreamReader(System.in));
         isLobbyCompleted = false;
+        isFirstPlayer = false;
+        isInsideInsertNumPlayers = false;
     }
 
     public static void main(String[] args) {
@@ -92,6 +98,8 @@ public class CLI {
      */
     public void login() throws IOException {
         ServerLoginMessage message;
+        Message msg;
+        String messageJson;
         boolean isErrorBeenPrinted = false;
         do {
             if (isErrorBeenPrinted) {
@@ -99,7 +107,10 @@ public class CLI {
             }
             askForUsername();
             connectToServer();
-            String messageJson = in.readLine();
+            do {
+                messageJson = in.readLine();
+                msg = Message.fromJson(messageJson);
+            } while (isPing(msg));
             message = ServerLoginMessage.fromJson(messageJson);
             isErrorBeenPrinted = true;
         } while (message.getError() == 2);
@@ -109,8 +120,20 @@ public class CLI {
         }
 
         if (message.getAction() != null && message.getAction().equals("CREATE_GAME")) {
+            isFirstPlayer = true;
+
+            Thread thread = createNewPingThread();
+            thread.start();
+
             int numPlayers = askForNumberOfPlayers();
             sendNumPlayers(numPlayers);
+
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                gracefulTermination("Error while connecting to server");
+            }
+
         } else {
             checkIfGameReady(message);
         }
@@ -146,6 +169,8 @@ public class CLI {
     private int askForNumberOfPlayers() throws IOException {
         int res;
 
+        isInsideInsertNumPlayers = true;
+
         do {
             System.out.print("Insert desired number of players (2, 3 or 4): ");
             String string = stdIn.readLine();
@@ -156,6 +181,8 @@ public class CLI {
                 System.out.println("Number of players must be a number!");
             }
         } while (res < 2 || res > 4);
+
+        isInsideInsertNumPlayers = false;
 
         return res;
     }
@@ -185,9 +212,21 @@ public class CLI {
      * Waits until the lobby is full and a game is ready to start
      */
     private void waitForOtherPlayers() throws IOException {
+        String jsonMessage;
+        Message msg;
+        ServerLoginMessage loginMessage;
+
+        if (isFirstPlayer) {
+            loginMessage = ServerLoginMessage.fromJson(lastMessageOfThread);
+            checkIfGameReady(loginMessage);
+        }
+
         while (!isLobbyCompleted) {
-            String jsonMessage = in.readLine();
-            ServerLoginMessage loginMessage = ServerLoginMessage.fromJson(jsonMessage);
+            do {
+                jsonMessage = in.readLine();
+                msg = Message.fromJson(jsonMessage);
+            } while (isPing(msg));
+            loginMessage = ServerLoginMessage.fromJson(jsonMessage);
             checkIfGameReady(loginMessage);
         }
 
@@ -235,6 +274,29 @@ public class CLI {
             System.out.println("  - " + name);
         }
         System.out.println("");
+    }
+
+    private Thread createNewPingThread() {
+        return new Thread(() -> {
+            while (true) {
+                try {
+                    String json = in.readLine();
+                    Message message = Message.fromJson(json);
+                    if (message.getError() != 0) {
+                        System.out.println("");
+                        gracefulTermination("Another player disconnected");
+                    }
+                    if (!isPing(message) && !isInsideInsertNumPlayers) {
+                        lastMessageOfThread = json;
+                        break;
+                    }
+                } catch (SocketException e) {
+                    gracefulTermination("Error");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 }

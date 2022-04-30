@@ -48,7 +48,7 @@ public class ClientHandler implements Runnable {
             in = new Scanner(socket.getInputStream());
             out = new PrintWriter(socket.getOutputStream());
 
-            while (!stop) {
+            while (Thread.currentThread().isAlive()) {
                 String message = in.nextLine();
                 controller.handleMessage(message, this);
             }
