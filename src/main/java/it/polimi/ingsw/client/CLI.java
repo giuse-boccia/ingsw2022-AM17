@@ -89,7 +89,7 @@ public class CLI {
             askForUsername();
             connectToServer();
             String messageJson = in.readLine();
-            message = ServerLoginMessage.getMessageFromJSON(messageJson);
+            message = ServerLoginMessage.fromJson(messageJson);
             isErrorBeenPrinted = true;
         } while (message.getError() == 2);
 
@@ -176,7 +176,7 @@ public class CLI {
     private void waitForOtherPlayers() throws IOException {
         while (!isLobbyCompleted) {
             String jsonMessage = in.readLine();
-            ServerLoginMessage loginMessage = ServerLoginMessage.getMessageFromJSON(jsonMessage);
+            ServerLoginMessage loginMessage = ServerLoginMessage.fromJson(jsonMessage);
             checkIfGameReady(loginMessage);
         }
 
