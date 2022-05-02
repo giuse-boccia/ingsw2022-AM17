@@ -96,6 +96,11 @@ public class CLI {
     private static void gracefulTermination(String message) {
         System.out.println(message);
         System.out.println("Application will now close...");
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         System.exit(-1);
     }
 
@@ -313,6 +318,7 @@ public class CLI {
                     if (message.getError() != 0) {
                         System.out.println("");
                         ServerLoginMessage loginMsg = ServerLoginMessage.fromJson(json);
+                        clearCommandWindow();
                         gracefulTermination(loginMsg.getDisplayText());
                     }
                     if (!isPing(message) && !isWaitingForStdin) {

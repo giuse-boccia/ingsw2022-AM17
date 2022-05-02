@@ -4,19 +4,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.messages.Message;
-import it.polimi.ingsw.messages.login.ClientActionMessage;
+import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import it.polimi.ingsw.server.ClientHandler;
 import it.polimi.ingsw.server.PlayerClient;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Controller {
     private final Gson gson;
@@ -25,6 +23,8 @@ public class Controller {
     private int desiredNumberOfPlayers;
     private GameController gameController;
     private int pongCount;
+    private final Object boundLock = new Object();
+    private boolean isExpert;
 
     public Controller() {
         loggedUsers = new ArrayList<>();
@@ -39,11 +39,15 @@ public class Controller {
      * @param jsonMessage the message received from the client
      * @param ch          the {@code ClientHandler} of the client which sent the message
      */
-    public void handleMessage(String jsonMessage, ClientHandler ch) {
+    public synchronized void handleMessage(String jsonMessage, ClientHandler ch) {
         switch (getMessageStatus(jsonMessage)) {
             case "LOGIN" -> handleLoginMessage(jsonMessage, ch);
             case "ACTION" -> handleActionMessage(jsonMessage, ch);
-            case "PONG" -> pongCount++;
+            case "PONG" -> {
+                synchronized (boundLock) {
+                    pongCount++;
+                }
+            }
             default -> sendErrorMessage(ch, "Unrecognised type", 3);
         }
     }
@@ -67,7 +71,7 @@ public class Controller {
      * @param jsonMessage Json string which contains a login message
      * @param ch          the {@code ClientHandler} of the client who sent the message
      */
-    private synchronized void handleLoginMessage(String jsonMessage, ClientHandler ch) {
+    private void handleLoginMessage(String jsonMessage, ClientHandler ch) {
         try {
             ClientLoginMessage loginMessage = ClientLoginMessage.getMessageFromJSON(jsonMessage);
 
@@ -78,7 +82,7 @@ public class Controller {
 
             switch (loginMessage.getAction()) {
                 case "SET_USERNAME" -> addUser(ch, loginMessage.getUsername());
-                case "CREATE_GAME" -> setDesiredNumberOfPlayers(ch, loginMessage.getNumPlayers());
+                case "CREATE_GAME" -> setGameParameters(ch, loginMessage.getNumPlayers(), loginMessage.isExpert());
                 default -> sendErrorMessage(ch, "Bad request", 3);
 
             }
@@ -93,11 +97,12 @@ public class Controller {
      * @param ch         the {@code ClientHandler} of the client who sent the message
      * @param numPlayers the value contained in the message received
      */
-    private void setDesiredNumberOfPlayers(ClientHandler ch, int numPlayers) {
+    private void setGameParameters(ClientHandler ch, int numPlayers, boolean isExpert) {
         if (numPlayers < 2 || numPlayers > 4) {
             sendErrorMessage(ch, "Num players must be between 2 and 4", 3);
         } else {
             desiredNumberOfPlayers = numPlayers;
+            this.isExpert = isExpert;
         }
         if (!isGameReady()) {
             ServerLoginMessage message = getServerLoginMessage("A new game was created!");
@@ -117,12 +122,12 @@ public class Controller {
 
         if (username == null || username.trim().equals("")) {
             sendErrorMessage(ch, "Invalid username field", 3);
+        } else if ((desiredNumberOfPlayers != -1 && loggedUsers.size() >= desiredNumberOfPlayers) || loggedUsers.size() >= 4 || gameController != null) {
+            sendErrorMessage(ch, "The lobby is full", 1);
         } else if (username.length() > 32) {
             sendErrorMessage(ch, "Username is too long (max 32 characters)", 3);
         } else if (loggedUsers.stream().anyMatch(u -> u.getUsername().equals(username))) {
             sendErrorMessage(ch, "Username already taken", 2);
-        } else if ((desiredNumberOfPlayers != -1 && loggedUsers.size() >= desiredNumberOfPlayers) || loggedUsers.size() >= 4) {
-            sendErrorMessage(ch, "The lobby is full", 1);
         } else {
             PlayerClient newUser = new PlayerClient(ch, username);
             loggedUsers.add(newUser);
@@ -158,6 +163,9 @@ public class Controller {
             playerClient.getClientHandler().sendMessageToClient(toSend.toJson());
         }
 
+        //Start a new Game
+        gameController = new GameController(loggedUsers, isExpert);
+
         return true;
     }
 
@@ -187,7 +195,7 @@ public class Controller {
      */
     private ServerLoginMessage getServerLoginMessage(String message) {
         ServerLoginMessage res = new ServerLoginMessage();
-        res.setMessage(message);
+        res.setDisplayText(message);
         Collection<String> playersList = loggedUsers.stream().map(PlayerClient::getUsername).toList();
         String[] playersArray = playersList.toArray(new String[0]);
         res.setGameLobby(new GameLobby(playersArray, desiredNumberOfPlayers));
@@ -195,18 +203,17 @@ public class Controller {
     }
 
     /**
-     * Sends a message asking for the desired number of players
+     * Sends a message asking for the desired number of players and the mode of the game
      *
      * @param ch the {@code ClientHandler} of the player to send the message to
      */
     private void askDesiredNumberOfPlayers(ClientHandler ch) {
         ServerLoginMessage res = new ServerLoginMessage();
         res.setAction("CREATE_GAME");
-        res.setMessage("Insert desired number of players");
+        res.setDisplayText("You are the first player. Set game parameters");
 
         ch.sendMessageToClient(res.toJson());
 
-        startPingPong();
     }
 
     /**
@@ -232,14 +239,16 @@ public class Controller {
     private void sendErrorMessage(ClientHandler ch, String errorMessage, int errorCode) {
         ServerLoginMessage message = new ServerLoginMessage();
         message.setError(errorCode);
-        message.setMessage("[ERROR] " + errorMessage);
+        message.setDisplayText("[ERROR] " + errorMessage);
         ch.sendMessageToClient(message.toJson());
     }
 
     public void startPingPong() {
         new Thread(() -> {
             while (true) {
-                pongCount = 0;
+                synchronized (boundLock) {
+                    pongCount = 0;
+                }
                 Message ping = new Message();
                 ping.setStatus("PING");
                 int bound = 0;
@@ -248,16 +257,23 @@ public class Controller {
                     bound++;
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     return;
                 }
-                if (pongCount < bound) {
-                    for (PlayerClient user : loggedUsers) {
-                        sendErrorMessage(user.getClientHandler(), "Connection with one client lost", 3);
+                synchronized (boundLock) {
+                    if (pongCount < bound) {
+                        for (PlayerClient user : loggedUsers) {
+                            sendErrorMessage(user.getClientHandler(), "Connection with one client lost", 3);
+                        }
+                        loggedUsers.clear();
+                        System.out.println("id thread: " + Thread.currentThread().getId());
+                        System.out.println("Ho tolto tutti i socket " + Arrays.toString(loggedUsers.toArray()));
+                        desiredNumberOfPlayers = -1;
+                        System.out.println("Numero di giocatori: " + desiredNumberOfPlayers);
+
                     }
-                    loggedUsers.clear();
                 }
             }
         }).start();
