@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Locale;
 import java.util.Objects;
 
 public class CLI {
@@ -25,14 +26,14 @@ public class CLI {
     private String username;
     private boolean isLobbyCompleted;
     private boolean isFirstPlayer;
-    private boolean isInsideInsertNumPlayers;
+    private boolean isWaitingForStdin;
     private String lastMessageOfThread;
 
     public CLI() {
         stdIn = new BufferedReader(new InputStreamReader(System.in));
         isLobbyCompleted = false;
         isFirstPlayer = false;
-        isInsideInsertNumPlayers = false;
+        isWaitingForStdin = false;
     }
 
     public static void main(String[] args) {
@@ -66,9 +67,14 @@ public class CLI {
 
         try {
             cli.login();
+            cli.startNewGame();
         } catch (IOException e) {
             gracefulTermination("Error connecting to server...");
         }
+    }
+
+    private void startNewGame() {
+        clearCommandWindow();
     }
 
     // TODO use this code for ping-pong
@@ -116,7 +122,7 @@ public class CLI {
         } while (message.getError() == 2);
 
         if (message.getError() != 0) {
-            gracefulTermination(message.getMessage());
+            gracefulTermination(message.getDisplayText());
         }
 
         if (message.getAction() != null && message.getAction().equals("CREATE_GAME")) {
@@ -125,8 +131,11 @@ public class CLI {
             Thread thread = createNewPingThread();
             thread.start();
 
+            System.out.println(message.getDisplayText());
+
             int numPlayers = askForNumberOfPlayers();
-            sendNumPlayers(numPlayers);
+            boolean isExpert = askForExpert();
+            sendNumPlayers(numPlayers, isExpert);
 
             try {
                 thread.join();
@@ -146,10 +155,11 @@ public class CLI {
      *
      * @param numPlayers the desired number of players to be included in the message
      */
-    private void sendNumPlayers(int numPlayers) {
+    private void sendNumPlayers(int numPlayers, boolean isExpert) {
         ClientLoginMessage msg = new ClientLoginMessage();
         msg.setAction("CREATE_GAME");
         msg.setNumPlayers(numPlayers);
+        msg.setExpert(isExpert);
         out.println(msg.toJson());
     }
 
@@ -169,7 +179,7 @@ public class CLI {
     private int askForNumberOfPlayers() throws IOException {
         int res;
 
-        isInsideInsertNumPlayers = true;
+        isWaitingForStdin = true;
 
         do {
             System.out.print("Insert desired number of players (2, 3 or 4): ");
@@ -182,9 +192,27 @@ public class CLI {
             }
         } while (res < 2 || res > 4);
 
-        isInsideInsertNumPlayers = false;
-
         return res;
+    }
+
+    /**
+     * Asks the user for the desired playing mode - expert or not - until it is correct
+     *
+     * @return the number of players chosen by the user
+     */
+    private boolean askForExpert() throws IOException {
+
+        String res;
+
+        do {
+            System.out.print("Do you want to play in expert mode? [Y/N] ");
+            res = stdIn.readLine();
+            res = res.toLowerCase(Locale.ROOT);
+        } while (!res.equals("y") && !res.equals("n"));
+
+        isWaitingForStdin = false;
+
+        return res.equals("y");
     }
 
     /**
@@ -242,9 +270,9 @@ public class CLI {
     private void checkIfGameReady(ServerLoginMessage loginMessage) {
         clearCommandWindow();
         if (loginMessage.getError() != 0) {
-            gracefulTermination(loginMessage.getMessage());
+            gracefulTermination(loginMessage.getDisplayText());
         }
-        System.out.println(loginMessage.getMessage());
+        System.out.println(loginMessage.getDisplayText());
         GameLobby lobby = loginMessage.getGameLobby();
         printCurrentLobby(lobby);
         isLobbyCompleted = lobby.getPlayers().length == lobby.getNumPlayers();
@@ -284,9 +312,10 @@ public class CLI {
                     Message message = Message.fromJson(json);
                     if (message.getError() != 0) {
                         System.out.println("");
-                        gracefulTermination("Another player disconnected");
+                        ServerLoginMessage loginMsg = ServerLoginMessage.fromJson(json);
+                        gracefulTermination(loginMsg.getDisplayText());
                     }
-                    if (!isPing(message) && !isInsideInsertNumPlayers) {
+                    if (!isPing(message) && !isWaitingForStdin) {
                         lastMessageOfThread = json;
                         break;
                     }
