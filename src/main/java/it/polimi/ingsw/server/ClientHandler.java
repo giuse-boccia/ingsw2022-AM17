@@ -57,8 +57,6 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             // Client connection error
             System.err.println("Connection to client lost, alerting other clients...");
-            // TODO: broadcast message to everyone indicating that someone has disconnected and the game will end
-
         }
     }
 }

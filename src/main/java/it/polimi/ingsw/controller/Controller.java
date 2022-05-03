@@ -199,7 +199,7 @@ public class Controller {
         res.setDisplayText(message);
         Collection<String> playersList = loggedUsers.stream().map(PlayerClient::getUsername).toList();
         String[] playersArray = playersList.toArray(new String[0]);
-        res.setGameLobby(new GameLobby(playersArray, desiredNumberOfPlayers));
+        res.setGameLobby(new GameLobby(playersArray, desiredNumberOfPlayers, isExpert));
         return res;
     }
 
@@ -244,6 +244,10 @@ public class Controller {
         ch.sendMessageToClient(message.toJson());
     }
 
+    /**
+     * Periodically sends a "ping" message to every client and awaits for a "pong" response.
+     * This is done on a parallel thread
+     */
     public void startPingPong() {
         new Thread(() -> {
             while (true) {
@@ -269,7 +273,9 @@ public class Controller {
                             sendErrorMessage(user.getClientHandler(), "Connection with one client lost", 3);
                         }
                         loggedUsers.clear();
+                        gameController = null;
                         desiredNumberOfPlayers = -1;
+                        System.out.println("Connection with one client lost, clearing the game...");
                     }
                 }
             }

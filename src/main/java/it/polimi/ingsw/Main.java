@@ -1,7 +1,6 @@
 package it.polimi.ingsw;
 
-import com.google.gson.Gson;
-import it.polimi.ingsw.client.CLI;
+import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.GUI;
 import it.polimi.ingsw.server.Server;
 
@@ -24,8 +23,7 @@ public class Main {
 
         switch (args[0].toLowerCase(Locale.ROOT)) {
             case "server" -> Server.main(config);
-            case "cli" -> CLI.main(config);
-            case "gui" -> GUI.main(config);
+            case "cli", "gui" -> Client.main(args);
             default -> {
                 System.out.println("Usage: java -jar eriantys.jar [SERVER | CLI | GUI] [<PORT_NUMBER>] [<HOST_ADDRESS>]");
                 System.exit(-1);
