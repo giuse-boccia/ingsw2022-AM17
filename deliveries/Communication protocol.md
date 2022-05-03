@@ -76,7 +76,7 @@ When a new client connects to the server, the former sends a message containing 
 {
 	"status": "LOGIN",
 	"action": "CREATE_GAME",
-	"displayText": "Insert desired number of players"
+	"displayText": "You are the first player. Set the game parameters"
 }
 ```
 #### message L.1.3
@@ -84,7 +84,8 @@ When a new client connects to the server, the former sends a message containing 
 {
 	"status": "LOGIN",
 	"action": "CREATE_GAME",
-	"num players": 3
+	"num players": 3,
+	"expert": true
 }
 ```
 
