@@ -64,12 +64,11 @@ public class Server {
         controller.startPingPong();
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server ready");
+            System.out.println("Server ready, waiting for clients...");
             while (true) {
-                System.out.println("Waiting...");
                 try {
                     Socket socket = serverSocket.accept();
-                    System.out.println("Accepted from " + socket.getRemoteSocketAddress());
+                    System.out.println("New socket: " + socket.getRemoteSocketAddress());
                     ClientHandler ch = new ClientHandler(socket, controller);
                     executor.submit(ch);
                 } catch (IOException e) {
