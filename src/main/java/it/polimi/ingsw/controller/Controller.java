@@ -268,11 +268,7 @@ public class Controller {
                             sendErrorMessage(user.getClientHandler(), "Connection with one client lost", 3);
                         }
                         loggedUsers.clear();
-                        System.out.println("id thread: " + Thread.currentThread().getId());
-                        System.out.println("Ho tolto tutti i socket " + Arrays.toString(loggedUsers.toArray()));
                         desiredNumberOfPlayers = -1;
-                        System.out.println("Numero di giocatori: " + desiredNumberOfPlayers);
-
                     }
                 }
             }
