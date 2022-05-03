@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.messages.Message;
 
 public class ServerLoginMessage extends Message {
-    private String message;
+    private String displayText;
     private String action;
     private GameLobby gameLobby;
 
@@ -15,12 +15,12 @@ public class ServerLoginMessage extends Message {
         super.setStatus("LOGIN");
     }
 
-    public String getMessage() {
-        return message;
+    public String getDisplayText() {
+        return displayText;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setDisplayText(String displayText) {
+        this.displayText = displayText;
     }
 
     public String getAction() {

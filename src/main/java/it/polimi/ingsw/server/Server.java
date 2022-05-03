@@ -44,19 +44,31 @@ public class Server {
         server.startServer();
     }
 
+    private static void gracefulTermination(String message) {
+        System.out.println(message);
+        System.out.println("Application will now close...");
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.exit(-1);
+    }
+
     /**
      * Starts the server and listens for incoming connections
      */
     private void startServer() {
         ExecutorService executor = Executors.newCachedThreadPool();
 
+        controller.startPingPong();
+
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server ready");
+            System.out.println("Server ready, waiting for clients...");
             while (true) {
-                System.out.println("Waiting...");
                 try {
                     Socket socket = serverSocket.accept();
-                    System.out.println("Accepted from " + socket.getRemoteSocketAddress());
+                    System.out.println("New socket: " + socket.getRemoteSocketAddress());
                     ClientHandler ch = new ClientHandler(socket, controller);
                     executor.submit(ch);
                 } catch (IOException e) {
@@ -67,12 +79,6 @@ public class Server {
         } catch (IOException e) {
             gracefulTermination("The selected port is not available at the moment");
         }
-    }
-
-    private static void gracefulTermination(String message) {
-        System.out.println(message);
-        System.out.println("Application will now close...");
-        System.exit(-1);
     }
 
 }

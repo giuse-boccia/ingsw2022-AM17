@@ -9,6 +9,7 @@ public class ClientLoginMessage extends Message {
     private String username;
     private int numPlayers;
     private String action;
+    private boolean expert;
 
     public ClientLoginMessage() {
         super();
@@ -45,4 +46,11 @@ public class ClientLoginMessage extends Message {
         this.action = action;
     }
 
+    public boolean isExpert() {
+        return expert;
+    }
+
+    public void setExpert(boolean expert) {
+        this.expert = expert;
+    }
 }

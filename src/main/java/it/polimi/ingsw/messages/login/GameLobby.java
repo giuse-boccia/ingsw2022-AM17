@@ -2,11 +2,13 @@ package it.polimi.ingsw.messages.login;
 
 public class GameLobby {
     private String[] players;
-    private int numPlayers;
+    private final int numPlayers;
+    private final boolean isExpert;
 
-    public GameLobby(String[] players, int numPlayers) {
+    public GameLobby(String[] players, int numPlayers, boolean isExpert) {
         this.players = players;
         this.numPlayers = numPlayers;
+        this.isExpert = isExpert;
     }
 
     public String[] getPlayers() {
@@ -21,7 +23,7 @@ public class GameLobby {
         return numPlayers;
     }
 
-    public void setNumPlayers(int numPlayers) {
-        this.numPlayers = numPlayers;
+    public boolean isExpert() {
+        return isExpert;
     }
 }

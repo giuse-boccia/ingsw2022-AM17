@@ -1,138 +1,28 @@
 package it.polimi.ingsw.client;
 
-import com.google.gson.JsonSyntaxException;
-import it.polimi.ingsw.Settings;
-import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.GameLobby;
-import it.polimi.ingsw.messages.login.ServerLoginMessage;
+import it.polimi.ingsw.model.game_objects.Color;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.Arrays;
+import java.util.Locale;
 
-public class CLI {
-
-    private static int serverPort;
-    private static String serverAddress;
+public class CLI extends Client {
     private final BufferedReader stdIn;
-    private Socket server;
-    private BufferedReader in;
-    private PrintWriter out;
-    private String username;
-    private boolean isLobbyCompleted;
 
     public CLI() {
         stdIn = new BufferedReader(new InputStreamReader(System.in));
-        isLobbyCompleted = false;
     }
 
-    public static void main(String[] args) {
-        if (args.length < 2) {
-            try {
-                Settings settings = Settings.readPrefsFromFile();
-                if (settings.getAddress() == null) {
-                    gracefulTermination("Invalid server_address argument in settings.json");
-                }
-                serverPort = settings.getPort();
-                serverAddress = settings.getAddress();
-            } catch (IOException e) {
-                gracefulTermination("File settings.json not found. Please check documentation");
-            } catch (NumberFormatException e) {
-                gracefulTermination("Invalid server_port argument in settings.json");
-            }
-        } else {
-            try {
-                serverPort = Integer.parseInt(args[0]);
-                serverAddress = args[1];
-            } catch (NumberFormatException e) {
-                gracefulTermination("Invalid server_port argument in settings.json");
-            }
-        }
-
-        if (serverPort < 1024 || serverPort > 65535) {
-            gracefulTermination("Invalid server_port argument. The port number has to be between 1024 and 65535");
-        }
-
-        CLI cli = new CLI();
-
-        try {
-            cli.login();
-        } catch (IOException e) {
-            gracefulTermination("Error connecting to server...");
-        }
-    }
-
-    /**
-     * Closes the connection printing the provided message
-     *
-     * @param message the {@code String} to be printed
-     */
-    private static void gracefulTermination(String message) {
-        System.out.println(message);
-        System.out.println("Application will now close...");
-        System.exit(-1);
-    }
-
-    /**
-     * Performs all the operations needed before the game can start
-     */
-    public void login() throws IOException {
-        ServerLoginMessage message;
-        boolean isErrorBeenPrinted = false;
-        do {
-            if (isErrorBeenPrinted) {
-                System.out.println("Username already taken");
-            }
-            askForUsername();
-            connectToServer();
-            String messageJson = in.readLine();
-            message = ServerLoginMessage.fromJson(messageJson);
-            isErrorBeenPrinted = true;
-        } while (message.getError() == 2);
-
-        if (message.getError() != 0) {
-            gracefulTermination(message.getMessage());
-        }
-
-        if (message.getAction() != null && message.getAction().equals("CREATE_GAME")) {
-            int numPlayers = askForNumberOfPlayers();
-            sendNumPlayers(numPlayers);
-        } else {
-            checkIfGameReady(message);
-        }
-
-        waitForOtherPlayers();
-    }
-
-    /**
-     * Sends a message to the server containing the desired number of players
-     *
-     * @param numPlayers the desired number of players to be included in the message
-     */
-    private void sendNumPlayers(int numPlayers) {
-        ClientLoginMessage msg = new ClientLoginMessage();
-        msg.setAction("CREATE_GAME");
-        msg.setNumPlayers(numPlayers);
-        out.println(msg.toJson());
-    }
-
-    /**
-     * Asks the user for his username and saves it in this.username
-     */
-    private void askForUsername() throws IOException {
+    @Override
+    public String askUsername() throws IOException {
         System.out.print("Insert username: ");
-        username = stdIn.readLine();
+        return stdIn.readLine();
     }
 
-    /**
-     * Asks the user for the desired number of players until it is correct
-     *
-     * @return the number of players chosen by the user
-     */
-    private int askForNumberOfPlayers() throws IOException {
+    @Override
+    public int askNumPlayers() throws IOException {
         int res;
 
         do {
@@ -141,7 +31,7 @@ public class CLI {
             try {
                 res = Integer.parseInt(string);
             } catch (NumberFormatException e) {
-                res = -1;
+                res = -1;       // remains in the do-while cycle
                 System.out.println("Number of players must be a number!");
             }
         } while (res < 2 || res > 4);
@@ -149,55 +39,64 @@ public class CLI {
         return res;
     }
 
-    /**
-     * Connects to server and listens for broadcast messages
-     */
-    private void connectToServer() {
-        try {
-            server = new Socket(serverAddress, serverPort);
-            in = new BufferedReader(new InputStreamReader(server.getInputStream()));
-            out = new PrintWriter(server.getOutputStream(), true);
+    @Override
+    public boolean askExpertMode() throws IOException {
+        String res = null;
 
-            ClientLoginMessage usernameMessage = new ClientLoginMessage();
-            usernameMessage.setAction("SET_USERNAME");
-            usernameMessage.setUsername(username);
-            out.println(usernameMessage.toJson());
+        do {
+            System.out.print("Do you want to play in expert mode? [Y/n] ");
+            res = stdIn.readLine();
+            res = res.toLowerCase(Locale.ROOT);
+        } while (!res.equals("y") && !res.equals("n") && !res.equals(""));
 
-            System.out.println("Connecting to server...");
-
-        } catch (IOException e) {
-            gracefulTermination("Cannot connect to server, check server_address argument");
-        }
+        return res.equals("y") || res.equals("");
     }
 
-    /**
-     * Waits until the lobby is full and a game is ready to start
-     */
-    private void waitForOtherPlayers() throws IOException {
-        while (!isLobbyCompleted) {
-            String jsonMessage = in.readLine();
-            ServerLoginMessage loginMessage = ServerLoginMessage.fromJson(jsonMessage);
-            checkIfGameReady(loginMessage);
-        }
-
-        System.out.println("Now I'm waiting for the game to start");
-
-    }
-
-    /**
-     * Checks if a match is ready to start analyzing the provided {@code ServerLoginMessage}
-     *
-     * @param loginMessage the {@code ServerLoginMessage} to be checked
-     */
-    private void checkIfGameReady(ServerLoginMessage loginMessage) {
+    @Override
+    public void showCurrentLobby(GameLobby lobby) {
         clearCommandWindow();
-        if (loginMessage.getError() != 0) {
-            gracefulTermination(loginMessage.getMessage());
+        String message = "GAME: " + lobby.getPlayers().length;
+        if (lobby.getNumPlayers() != -1) {
+            message += "/" + lobby.getNumPlayers();
         }
-        System.out.println(loginMessage.getMessage());
-        GameLobby lobby = loginMessage.getGameLobby();
-        printCurrentLobby(lobby);
-        isLobbyCompleted = lobby.getPlayers().length == lobby.getNumPlayers();
+        message += " players | ";
+        if (lobby.getNumPlayers() != -1) {
+            message += "Expert mode: " + (lobby.isExpert() ? "Active" : "Not active");
+        }
+        System.out.println(message);
+        for (String name : lobby.getPlayers()) {
+            System.out.println("  - " + name);
+        }
+        System.out.println("");
+    }
+
+    @Override
+    public Color pickColor() {
+        return null;
+    }
+
+    @Override
+    public void gracefulTermination(String message) {
+        clearCommandWindow();
+        System.out.println(message);
+        System.out.println("Application will now close...");
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.exit(-1);
+    }
+
+    /**
+     * Shows the message to the user
+     *
+     * @param message the message to be shown
+     */
+    @Override
+    public void showMessage(String message) {
+        clearCommandWindow();
+        System.out.println(message);
     }
 
     /**
@@ -206,24 +105,4 @@ public class CLI {
     private void clearCommandWindow() {
         System.out.println("------------------------------------------------------------");
     }
-
-
-    /**
-     * Prints the current state of the {@code GameLobby}
-     *
-     * @param lobby the {@code GameLobby} to print
-     */
-    private void printCurrentLobby(GameLobby lobby) {
-        String message = "GAME: " + lobby.getPlayers().length;
-        if (lobby.getNumPlayers() != -1) {
-            message += "/" + lobby.getNumPlayers();
-        }
-        message += " players";
-        System.out.println(message);
-        for (String name : lobby.getPlayers()) {
-            System.out.println("  - " + name);
-        }
-        System.out.println("");
-    }
-
 }
