@@ -13,7 +13,6 @@ import it.polimi.ingsw.server.PlayerClient;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 public class Controller {
@@ -103,6 +102,7 @@ public class Controller {
         } else {
             desiredNumberOfPlayers = numPlayers;
             this.isExpert = isExpert;
+            System.out.println("GAME CREATED | " + numPlayers + " players | " + (isExpert ? "expert" : "non expert") + " mode");
         }
         if (!isGameReady()) {
             ServerLoginMessage message = getServerLoginMessage("A new game was created!");
@@ -131,6 +131,7 @@ public class Controller {
         } else {
             PlayerClient newUser = new PlayerClient(ch, username);
             loggedUsers.add(newUser);
+            System.out.println("Added player " + newUser.getUsername());
 
             if (newUser == loggedUsers.get(0)) {
                 askDesiredNumberOfPlayers(ch);
@@ -148,13 +149,16 @@ public class Controller {
     private boolean isGameReady() {
         if (desiredNumberOfPlayers == -1 || loggedUsers.size() < desiredNumberOfPlayers) return false;
 
-        for (int i = desiredNumberOfPlayers; i < loggedUsers.size(); ) {
-            // Alert player that game is full
-            PlayerClient toRemove = loggedUsers.get(i);
+        while (desiredNumberOfPlayers < loggedUsers.size()) {
+            // Alert player that game is full and removes him
+            PlayerClient toRemove = loggedUsers.get(desiredNumberOfPlayers);
             String errorMessage = "A new game for " + desiredNumberOfPlayers + " players is starting. Your connection will be closed";
             sendErrorMessage(toRemove.getClientHandler(), errorMessage, 1);
             loggedUsers.remove(toRemove);
         }
+
+        //Start a new Game
+        gameController = new GameController(loggedUsers, isExpert);
 
         ServerLoginMessage toSend = getServerLoginMessage("A new game is starting");
 
@@ -162,9 +166,6 @@ public class Controller {
             // Alert player that game is starting
             playerClient.getClientHandler().sendMessageToClient(toSend.toJson());
         }
-
-        //Start a new Game
-        gameController = new GameController(loggedUsers, isExpert);
 
         return true;
     }
