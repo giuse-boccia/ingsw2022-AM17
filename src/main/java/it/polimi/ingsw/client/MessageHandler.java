@@ -1,6 +1,8 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.controller.ActionHandler;
 import it.polimi.ingsw.messages.Message;
+import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
 
@@ -40,7 +42,7 @@ public class MessageHandler implements Runnable {
         switch (message.getStatus()) {
             case "PING" -> handlePing();
             case "LOGIN" -> handleLogin();
-            case "ACTION" -> handleAction();
+            case "ACTION" -> parseAction();
             default -> client.gracefulTermination("Invalid response from server");
         }
     }
@@ -99,8 +101,57 @@ public class MessageHandler implements Runnable {
     /**
      * Handles an action message
      */
-    private void handleAction() {
+    private void parseAction() throws IOException {
+        // Action broadcast messages does not have to have an Action field: it
+        // should receive the whole model
+        ServerActionMessage actionMessage = ServerActionMessage.fromJson(jsonMessage);
+
+        if (actionMessage.getMessage() != null) {
+            client.showMessage(actionMessage.getMessage());
+        }
+
+        switch (actionMessage.getError()) {
+            case 1 -> {
+                return;
+            }
+            case 2 -> {
+                handleAction(actionMessage.getActions().get(0));
+                return;
+            }
+            case 3 -> client.gracefulTermination("");
+        }
+
+        if (actionMessage.getActions() != null && !actionMessage.getActions().isEmpty()) {
+
+            int index = 0;
+            if (actionMessage.getActions().size() > 1) {
+                client.showPossibleActions(actionMessage.getActions());
+                index = client.chooseAction(actionMessage.getActions().size());
+            } else {
+                client.showMessage("Now you have to: " + actionMessage.getActions().get(0));
+            }
+
+            String chosenAction = actionMessage.getActions().get(index);
+            handleAction(chosenAction);
+        }
+
     }
 
+
+    private void handleAction(String chosenAction) throws IOException {
+        switch (chosenAction) {
+            case "PLAY_ASSISTANT" -> ActionHandler.handlePlayAssistant(nc);
+            case "MOVE_STUDENT_TO_DINING" -> {
+            }
+            case "MOVE_STUDENT_TO_ISLAND" -> {
+            }
+            case "MOVE_MN" -> {
+            }
+            case "FILL_FROM_CLOUD" -> {
+            }
+            case "PLAY_CHARACTER" -> {
+            }
+        }
+    }
 
 }

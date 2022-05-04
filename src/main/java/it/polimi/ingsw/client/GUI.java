@@ -4,11 +4,27 @@ import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
 
 import java.io.IOException;
+import java.util.List;
 
 public class GUI extends Client {
 
     public static void main(String[] args) {
 
+    }
+
+    @Override
+    public void showPossibleActions(List<String> actions) {
+
+    }
+
+    @Override
+    public int getAssistantValue() throws IOException {
+        return 0;
+    }
+
+    @Override
+    public int chooseAction(int bound) throws IOException {
+        return 0;
     }
 
     /**

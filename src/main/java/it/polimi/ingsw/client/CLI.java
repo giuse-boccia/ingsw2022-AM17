@@ -1,11 +1,13 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Locale;
 
 public class CLI extends Client {
@@ -16,9 +18,28 @@ public class CLI extends Client {
     }
 
     @Override
+    public int getAssistantValue() throws IOException {
+        int assistantValue = 0;
+
+        while (assistantValue < 1 || assistantValue > 10) {
+            System.out.print("Insert value of the selected assistant [1-12]: ");
+            try {
+                assistantValue = Integer.parseInt(stdIn.readLine());
+            } catch (NumberFormatException e) {
+                assistantValue = 0;
+                System.out.println("Please insert a valid number");
+            }
+        }
+
+        return assistantValue;
+    }
+
+    @Override
     public String askUsername() throws IOException {
         System.out.print("Insert username: ");
-        return stdIn.readLine();
+        String username = stdIn.readLine();
+        setUsername(username);
+        return username;
     }
 
     @Override
@@ -87,6 +108,35 @@ public class CLI extends Client {
         }
         System.exit(-1);
     }
+
+
+    @Override
+    public int chooseAction(int bound) throws IOException {
+        int res;
+
+        do {
+            System.out.print("Select the corresponding number: ");
+            String string = stdIn.readLine();
+            try {
+                res = Integer.parseInt(string);
+            } catch (NumberFormatException e) {
+                res = -1;       // remains in the do-while cycle
+                System.out.println("Action identifier must be a number!");
+            }
+
+        } while (res < 1 || res > bound);
+
+        return res - 1;
+    }
+
+    @Override
+    public void showPossibleActions(List<String> actions) {
+        showMessage("You have the following actions: ");
+        for (int i = 0; i < actions.size(); i++) {
+            System.out.println((i + 1) + ". " + actions.get(i));
+        }
+    }
+
 
     /**
      * Shows the message to the user

@@ -5,9 +5,11 @@ import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
 
 import java.io.IOException;
+import java.util.List;
 
 public abstract class Client {
     private static NetworkClient nc;
+    private String username;
 
     public static void main(String[] args) {
         Client client;
@@ -98,4 +100,18 @@ public abstract class Client {
      * @param message the message to be shown
      */
     public abstract void showMessage(String message);
+
+    public abstract int getAssistantValue() throws IOException;
+
+    public abstract void showPossibleActions(List<String> actions);
+
+    public abstract int chooseAction(int bound) throws IOException;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

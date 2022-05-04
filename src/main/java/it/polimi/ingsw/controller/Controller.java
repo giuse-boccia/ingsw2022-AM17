@@ -8,6 +8,7 @@ import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.server.ClientHandler;
 import it.polimi.ingsw.server.PlayerClient;
 
@@ -157,15 +158,18 @@ public class Controller {
             loggedUsers.remove(toRemove);
         }
 
-        //Start a new Game
-        gameController = new GameController(loggedUsers, isExpert);
-
         ServerLoginMessage toSend = getServerLoginMessage("A new game is starting");
 
         for (PlayerClient playerClient : loggedUsers) {
             // Alert player that game is starting
             playerClient.getClientHandler().sendMessageToClient(toSend.toJson());
+            playerClient.setPlayer(new Player(playerClient.getUsername(), desiredNumberOfPlayers % 2 == 0 ? 8 : 6));
         }
+
+        //Start a new Game
+        gameController = new GameController(loggedUsers, isExpert);
+        gameController.start();
+
 
         return true;
     }
@@ -226,7 +230,7 @@ public class Controller {
     private void handleActionMessage(String jsonMessage, ClientHandler ch) {
         try {
             ClientActionMessage actionMessage = ClientActionMessage.getMessageFromJSON(jsonMessage);
-            ch.sendMessageToClient("You sent an action message");
+            gameController.handleActionMessage(actionMessage, ch);
         } catch (JsonSyntaxException e) {
             sendErrorMessage(ch, "Bad request (syntax error)", 3);
         }
@@ -262,7 +266,7 @@ public class Controller {
                     bound++;
                 }
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(120000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     return;

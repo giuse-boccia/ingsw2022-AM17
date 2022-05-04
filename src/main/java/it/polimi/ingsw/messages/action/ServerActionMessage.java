@@ -1,5 +1,7 @@
 package it.polimi.ingsw.messages.action;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.messages.Message;
 
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ public class ServerActionMessage extends Message {
 
     private String message;
     private String player;
-    private List<String> actions;
+    private final List<String> actions;
 
     public ServerActionMessage() {
         super();
@@ -39,5 +41,11 @@ public class ServerActionMessage extends Message {
 
     public void addAction(String action) {
         actions.add(action);
+    }
+
+    public static ServerActionMessage fromJson(String json) {
+        Gson gson = new Gson();
+        return gson.fromJson(json, new TypeToken<ServerActionMessage>() {
+        }.getType());
     }
 }
