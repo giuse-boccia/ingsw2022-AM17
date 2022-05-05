@@ -22,7 +22,7 @@ public class CLI extends Client {
         int assistantValue = 0;
 
         while (assistantValue < 1 || assistantValue > 10) {
-            System.out.print("Insert value of the selected assistant [1-12]: ");
+            System.out.print("Insert value of the selected assistant [1-10]: ");
             try {
                 assistantValue = Integer.parseInt(stdIn.readLine());
             } catch (NumberFormatException e) {
