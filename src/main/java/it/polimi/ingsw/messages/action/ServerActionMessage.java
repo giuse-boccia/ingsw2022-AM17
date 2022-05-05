@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ServerActionMessage extends Message {
 
-    private String message;
+    private String displayText;
     private String player;
     private final List<String> actions;
 
@@ -19,12 +19,12 @@ public class ServerActionMessage extends Message {
         actions = new ArrayList<>();
     }
 
-    public String getMessage() {
-        return message;
+    public String getDisplayText() {
+        return displayText;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setDisplayText(String displayText) {
+        this.displayText = displayText;
     }
 
     public String getPlayer() {

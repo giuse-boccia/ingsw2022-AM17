@@ -6,7 +6,6 @@ import it.polimi.ingsw.exceptions.SameAssistantPlayedException;
 import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
-import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.game_objects.Assistant;
@@ -102,7 +101,7 @@ public class GameController {
     private void sendErrorMessage(ClientHandler ch, String errorMessage, int errorCode, String action) {
         ServerActionMessage message = new ServerActionMessage();
         message.setError(errorCode);
-        message.setMessage("[ERROR] " + errorMessage);
+        message.setDisplayText("[ERROR] " + errorMessage);
         message.addAction(action);
         ch.sendMessageToClient(message.toJson());
     }

@@ -106,8 +106,8 @@ public class MessageHandler implements Runnable {
         // should receive the whole model
         ServerActionMessage actionMessage = ServerActionMessage.fromJson(jsonMessage);
 
-        if (actionMessage.getMessage() != null) {
-            client.showMessage(actionMessage.getMessage());
+        if (actionMessage.getDisplayText() != null) {
+            client.showMessage(actionMessage.getDisplayText());
         }
 
         switch (actionMessage.getError()) {
