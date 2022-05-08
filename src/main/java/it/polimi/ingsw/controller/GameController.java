@@ -103,7 +103,7 @@ public class GameController {
         Color color = action.getArgs().getColor();
         DiningRoom dining = player.getPlayer().getDashboard().getDiningRoom();
 
-        moveStudent(color, dining, player);
+        moveStudent(color, dining, player, "MOVE_STUDENT_TO_DINING");
     }
 
     private void handleStudentMovedToIsland(Action action, PlayerClient player) {
@@ -111,18 +111,18 @@ public class GameController {
         Integer islandIndex = action.getArgs().getIsland();
 
         if (islandIndex < 0 || islandIndex >= game.getGameBoard().getIslands().size()) {
-            sendErrorMessage(player.getClientHandler(), "Invalid island index", 2, "MOVE_STUDENT");
+            sendErrorMessage(player.getClientHandler(), "Invalid island index", 2, "MOVE_STUDENT_TO_ISLAND");
             return;
         }
 
-        moveStudent(color, game.getGameBoard().getIslands().get(islandIndex), player);
+        moveStudent(color, game.getGameBoard().getIslands().get(islandIndex), player, "MOVE_STUDENT_TO_ISLAND");
     }
 
-    private void moveStudent(Color color, Place destination, PlayerClient player) {
+    private void moveStudent(Color color, Place destination, PlayerClient player, String actionName) {
         try {
             game.getCurrentRound().getCurrentPlayerActionPhase().moveStudent(color, destination);
         } catch (InvalidActionException | InvalidStudentException e) {
-            sendErrorMessage(player.getClientHandler(), e.getMessage(), 1, "MOVE_STUDENT");
+            sendErrorMessage(player.getClientHandler(), e.getMessage(), 1, actionName);
             return;
         }
 
@@ -193,17 +193,7 @@ public class GameController {
         ServerActionMessage message = new ServerActionMessage();
         message.setError(errorCode);
         message.setDisplayText("[ERROR] " + errorMessage);
-        if (action.equals("MOVE_STUDENT")) {
-            message.addAction(action + "_TO_DINING");
-            message.addAction(action + "_TO_ISLAND");
-        } else {
-            message.addAction(action);
-        }
-        if (game.isExpert() && game.getCurrentRound().getCurrentPlayerActionPhase() != null
-                && game.getCurrentRound().getCurrentPlayerActionPhase().canPlayCharacter()
-        ) {
-            message.addAction("PLAY_CHARACTER");
-        }
+        message.addAction(action);
         System.out.println("In PAP I sent " + message.toJson());
         ch.sendMessageToClient(message.toJson());
     }
