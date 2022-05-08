@@ -27,6 +27,26 @@ public class GUI extends Client {
         return 0;
     }
 
+    @Override
+    public Color askStudentColor() throws IOException {
+        return null;
+    }
+
+    @Override
+    public int askIslandIndex() throws IOException {
+        return 0;
+    }
+
+    @Override
+    public int askNumStepsOfMotherNature() throws IOException {
+        return 0;
+    }
+
+    @Override
+    public int askCloudIndex() throws IOException {
+        return 0;
+    }
+
     /**
      * Asks the player to input a username
      *

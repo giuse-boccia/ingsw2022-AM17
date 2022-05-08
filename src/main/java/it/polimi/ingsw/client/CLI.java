@@ -1,6 +1,5 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
 
@@ -62,7 +61,7 @@ public class CLI extends Client {
 
     @Override
     public boolean askExpertMode() throws IOException {
-        String res = null;
+        String res;
 
         do {
             System.out.print("Do you want to play in expert mode? [Y/n] ");
@@ -130,6 +129,38 @@ public class CLI extends Client {
     }
 
     @Override
+    public Color askStudentColor() throws IOException {
+        String res;
+        Color color;
+        do {
+            System.out.print("Select the color of the student you want to move: ");
+            res = stdIn.readLine();
+            try {
+                color = Color.valueOf(res.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                color = null;
+            }
+        } while (color == null);
+
+        return color;
+    }
+
+    @Override
+    public int askIslandIndex() throws IOException {
+        return askForInteger(1, 12, "Insert number of the selected island: ", "Island index");
+    }
+
+    @Override
+    public int askNumStepsOfMotherNature() throws IOException {
+        return askForInteger(0, 15, "Insert number of steps of mother nature: ", "Number of steps");
+    }
+
+    @Override
+    public int askCloudIndex() throws IOException {
+        return askForInteger(1, 4, "Insert number of the cloud you want to pick: ", "Cloud index");
+    }
+
+    @Override
     public void showPossibleActions(List<String> actions) {
         showMessage("You have the following actions: ");
         for (int i = 0; i < actions.size(); i++) {
@@ -154,5 +185,23 @@ public class CLI extends Client {
      */
     private void clearCommandWindow() {
         System.out.println("------------------------------------------------------------");
+    }
+
+    // TODO finish this method
+    private int askForInteger(int lowerBound, int upperBound, String messageToShow, String numberFormatErrMsgBeginning) throws IOException {
+        int res;
+
+        do {
+            System.out.print(messageToShow);
+            String string = stdIn.readLine();
+            try {
+                res = Integer.parseInt(string);
+            } catch (NumberFormatException e) {
+                res = -1;       // remains in the do-while cycle
+                System.out.println(numberFormatErrMsgBeginning + " must be a number!");
+            }
+        } while (res < lowerBound || res > upperBound);
+
+        return res;
     }
 }

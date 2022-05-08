@@ -107,6 +107,14 @@ public abstract class Client {
 
     public abstract int chooseAction(int bound) throws IOException;
 
+    public abstract Color askStudentColor() throws IOException;
+
+    public abstract int askIslandIndex() throws IOException;
+
+    public abstract int askNumStepsOfMotherNature() throws IOException;
+
+    public abstract int askCloudIndex() throws IOException;
+
     public String getUsername() {
         return username;
     }
@@ -114,4 +122,5 @@ public abstract class Client {
     public void setUsername(String username) {
         this.username = username;
     }
+
 }
