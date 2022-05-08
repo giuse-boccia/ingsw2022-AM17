@@ -80,12 +80,17 @@ public class Controller {
         switch (getMessageStatus(jsonMessage)) {
             case "LOGIN" -> handleLoginMessage(jsonMessage, ch);
             case "ACTION" -> handleActionMessage(jsonMessage, ch);
-            case "PONG" -> {
-                synchronized (boundLock) {
-                    pongCount++;
-                }
-            }
+            case "PONG" -> handlePong();
             default -> sendErrorMessage(ch, "LOGIN", "Unrecognised type", 3);
+        }
+    }
+
+    /**
+     * Handles a pong message
+     */
+    private void handlePong() {
+        synchronized (boundLock) {
+            pongCount++;
         }
     }
 
