@@ -26,9 +26,11 @@ public class ActionHandler {
     }
 
     public static void handleMoveStudentToIsland(NetworkClient nc) throws IOException {
+        Color chosenColor = Color.GREEN;
         int islandIndex = 2;
         ActionArgs args = new ActionArgs();
         args.setIsland(islandIndex);
+        args.setColor(chosenColor);
         sendMessageToServer(nc, new Action("MOVE_STUDENT_TO_ISLAND", args));
     }
 

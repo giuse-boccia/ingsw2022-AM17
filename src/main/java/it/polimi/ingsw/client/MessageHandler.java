@@ -142,10 +142,9 @@ public class MessageHandler implements Runnable {
             case "MOVE_STUDENT_TO_DINING" -> ActionHandler.handleMoveStudentToDining(nc);
             case "MOVE_STUDENT_TO_ISLAND" -> ActionHandler.handleMoveStudentToIsland(nc);
             case "MOVE_MN" -> ActionHandler.handleMoveMotherNature(nc);
-            case "FILL_FROM_CLOUD" -> {
-            }
-            case "PLAY_CHARACTER" -> {
-            }
+            case "FILL_FROM_CLOUD" -> ActionHandler.handleFillFromCloud(nc);
+            case "PLAY_CHARACTER" -> ActionHandler.handlePlayCharacter(nc);
+            default -> client.gracefulTermination("Invalid message coming from server");
         }
     }
 
