@@ -19,6 +19,7 @@ public class NetworkClient extends Thread {
     private Socket server;
     private BufferedReader socketIn;
     private PrintWriter socketOut;
+    private String username;
 
     public NetworkClient(Client client, String serverAddress, int serverPort) {
         this.client = client;
@@ -50,7 +51,7 @@ public class NetworkClient extends Thread {
      * Asks for a username and sends a login message to the server
      */
     public void askUsernameAndSend() throws IOException {
-        String username = client.askUsername();
+        username = client.askUsername();
         client.showMessage("Connecting to server...");
 
         ClientLoginMessage loginMessage = new ClientLoginMessage();
@@ -82,5 +83,9 @@ public class NetworkClient extends Thread {
             // Server connection error
             client.gracefulTermination("Connection to server lost");
         }
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

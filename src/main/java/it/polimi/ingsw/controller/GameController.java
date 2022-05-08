@@ -1,14 +1,16 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.exceptions.AlreadyPlayedAssistantException;
-import it.polimi.ingsw.exceptions.InvalidActionException;
-import it.polimi.ingsw.exceptions.SameAssistantPlayedException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Assistant;
+import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
 import it.polimi.ingsw.server.ClientHandler;
 import it.polimi.ingsw.server.PlayerClient;
 
@@ -34,13 +36,13 @@ public class GameController {
     public void start() {
         game.start();
         currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
-        PlayerClient firstPlayer = players.get(game.getCurrentRound().getFirstPlayerIndex());
+        PlayerClient firstPlayer = players.get(currentPlayerIndex);
         askForAssistant(firstPlayer);
     }
 
     public void handleActionMessage(ClientActionMessage message, ClientHandler ch) {
         if (message.getAction() == null) {
-            sendErrorMessage(ch, "Invalid request", 3, null);
+            sendErrorMessage(ch, "Invalid request", 3, "");
         }
 
         PlayerClient player = players.stream().filter(user -> ch.equals(user.getClientHandler())).toList().get(0);
@@ -50,19 +52,17 @@ public class GameController {
             return;
         }
 
-        // TODO check if the message was sent by the correct player ONLY IN PAP
+        if (game.getCurrentRound().getCurrentPlayerActionPhase() != null && !isCorrectSender(message.getPlayer())) {
+            sendErrorMessage(ch, "It's not your turn!", 1, "");
+        }
 
-        switch (message.getAction().getName()) {
-            case "MOVE_STUDENT_TO_DINING" -> {
-            }
-            case "MOVE_STUDENT_TO_ISLAND" -> {
-            }
-            case "MOVE_MN" -> {
-            }
-            case "FILL_FROM_CLOUD" -> {
-            }
-            case "PLAY_CHARACTER" -> {
-            }
+        Action action = message.getAction();
+        switch (action.getName()) {
+            case "MOVE_STUDENT_TO_DINING" -> handleStudentMovedToDining(action, player);
+            case "MOVE_STUDENT_TO_ISLAND" -> handleStudentMovedToIsland(action, player);
+            case "MOVE_MN" -> handleMotherNatureMoved(action, player);
+            case "FILL_FROM_CLOUD" -> handleFillFromCloud(action, player);
+            case "PLAY_CHARACTER" -> handlePlayCharacter(action, player);
         }
     }
 
@@ -77,21 +77,112 @@ public class GameController {
             game.getCurrentRound().getPlanningPhase().addAssistant(assistant);
         } catch (AlreadyPlayedAssistantException | SameAssistantPlayedException e) {
             sendErrorMessage(player.getClientHandler(), e.getMessage(), 2, action.getName());
+            return;
         } catch (InvalidActionException e) {
             sendErrorMessage(player.getClientHandler(), e.getMessage(), 1, action.getName());
+            return;
         }
 
+        currentPlayerIndex = (currentPlayerIndex + 1) % game.getPlayers().size();
+        PlayerClient curPlayer = players.get(currentPlayerIndex);
+
         if (game.getCurrentRound().getPlanningPhase().isEnded()) {
-            // I am in PlayerActionPhase, send message to first user
-            System.out.println("I am waiting for PAP to start");
+            // When I send the message to the nextPlayer, I just have to call currentPap - it's already the pap of the current player
+            // When pap.currentPlayer == null I have to start another planning phase
+            curPlayer = getPlayerClientFromPlayer(game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer());
+            askForMoveInPAP(curPlayer);
         } else {
-            currentPlayerIndex = (currentPlayerIndex + 1) % game.getPlayers().size();
-            PlayerClient curPlayer = players.get(currentPlayerIndex);
             askForAssistant(curPlayer);
         }
 
+        //sendBroadcastWaitingMessage(curPlayer);
+
     }
 
+    private void handleStudentMovedToDining(Action action, PlayerClient player) {
+        Color color = action.getArgs().getColor();
+        DiningRoom dining = player.getPlayer().getDashboard().getDiningRoom();
+
+        moveStudent(color, dining, player);
+    }
+
+    private void handleStudentMovedToIsland(Action action, PlayerClient player) {
+        Color color = action.getArgs().getColor();
+        Integer islandIndex = action.getArgs().getIsland();
+
+        if (islandIndex < 0 || islandIndex >= game.getGameBoard().getIslands().size()) {
+            sendErrorMessage(player.getClientHandler(), "Invalid island index", 2, "MOVE_STUDENT");
+            return;
+        }
+
+        moveStudent(color, game.getGameBoard().getIslands().get(islandIndex), player);
+    }
+
+    private void moveStudent(Color color, Place destination, PlayerClient player) {
+        try {
+            game.getCurrentRound().getCurrentPlayerActionPhase().moveStudent(color, destination);
+        } catch (InvalidActionException | InvalidStudentException e) {
+            sendErrorMessage(player.getClientHandler(), e.getMessage(), 1, "MOVE_STUDENT");
+            return;
+        }
+
+        sendMessagesInPAP();
+    }
+
+    private void handleMotherNatureMoved(Action action, PlayerClient player) {
+        Integer steps = action.getArgs().getNum_steps();
+
+        try {
+            game.getCurrentRound().getCurrentPlayerActionPhase().moveMotherNature(steps);
+        } catch (InvalidActionException | InvalidStepsForMotherNatureException e) {
+            sendErrorMessage(player.getClientHandler(), e.getMessage(), 1, "MOVE_MN");
+            return;
+        }
+
+        sendMessagesInPAP();
+    }
+
+    private void handleFillFromCloud(Action action, PlayerClient player) {
+        Integer cloudNumber = action.getArgs().getIsland();
+
+        try {
+            game.getCurrentRound().getCurrentPlayerActionPhase().chooseCloud(cloudNumber);
+        } catch (InvalidActionException | InvalidCloudException e) {
+            sendErrorMessage(player.getClientHandler(), e.getMessage(), 1, "FILL_FROM_CLOUD");
+            return;
+        }
+
+        if (game.getCurrentRound().getCurrentPlayerActionPhase() != null) {
+            sendMessagesInPAP();
+        } else {
+            currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
+            PlayerClient nextPlayer = players.get(currentPlayerIndex);
+            askForAssistant(nextPlayer);
+            //sendBroadcastWaitingMessage(nextPlayer);
+        }
+    }
+
+    private void handlePlayCharacter(Action action, PlayerClient player) {
+        // TODO handle this move and their parameters
+    }
+
+    private void askForMoveInPAP(PlayerClient player) {
+        PlayerActionPhase currentPAP = game.getCurrentRound().getCurrentPlayerActionPhase();
+        ServerActionMessage message = new ServerActionMessage();
+        String action = currentPAP.getExpectedAction();
+        if (action.equals("MOVE_STUDENT")) {
+            message.addAction(action + "_TO_DINING");
+            message.addAction(action + "_TO_ISLAND");
+        } else {
+            message.addAction(action);
+        }
+        if (game.isExpert() && currentPAP.canPlayCharacter()) {
+            message.addAction("PLAY_CHARACTER");
+        }
+        message.setPlayer(player.getUsername());
+        System.out.println("In PAP I sent " + message.toJson());
+        player.getClientHandler().sendMessageToClient(message.toJson());
+    }
 
     /**
      * Sends an error message to the client
@@ -102,7 +193,18 @@ public class GameController {
         ServerActionMessage message = new ServerActionMessage();
         message.setError(errorCode);
         message.setDisplayText("[ERROR] " + errorMessage);
-        message.addAction(action);
+        if (action.equals("MOVE_STUDENT")) {
+            message.addAction(action + "_TO_DINING");
+            message.addAction(action + "_TO_ISLAND");
+        } else {
+            message.addAction(action);
+        }
+        if (game.isExpert() && game.getCurrentRound().getCurrentPlayerActionPhase() != null
+                && game.getCurrentRound().getCurrentPlayerActionPhase().canPlayCharacter()
+        ) {
+            message.addAction("PLAY_CHARACTER");
+        }
+        System.out.println("In PAP I sent " + message.toJson());
         ch.sendMessageToClient(message.toJson());
     }
 
@@ -110,9 +212,44 @@ public class GameController {
         ServerActionMessage actionMessage = new ServerActionMessage();
         actionMessage.addAction("PLAY_ASSISTANT");
         actionMessage.setPlayer(player.getUsername());
-        System.out.println("I sent " + actionMessage.toJson());
         player.getClientHandler().sendMessageToClient(actionMessage.toJson());
     }
 
+    private void sendBroadcastWaitingMessage(PlayerClient curPlayer) {
+        ServerActionMessage message = new ServerActionMessage();
+        message.setPlayer(curPlayer.getUsername());
+        message.setDisplayText(curPlayer.getUsername() + " is playing...");
+        for (PlayerClient player : players) {
+            if (player != curPlayer) {
+                player.getClientHandler().sendMessageToClient(message.toJson());
+            }
+        }
+    }
+
+    private void sendMessagesInPAP() {
+        PlayerClient nextPlayer = getPlayerClientFromPlayer(
+                game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer()
+        );
+
+        askForMoveInPAP(nextPlayer);
+
+        //sendBroadcastWaitingMessage(nextPlayer);
+    }
+
+    private boolean isCorrectSender(String username) {
+        return getPlayerFromUsername(username).equals(game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer());
+    }
+
+    private PlayerClient getPlayerClientFromPlayer(Player player) {
+        return players.stream().filter(
+                (p) -> p.getPlayer() == player
+        ).findAny().get();
+    }
+
+    private Player getPlayerFromUsername(String username) {
+        return players.stream().filter(
+                (p) -> p.getUsername().equals(username)
+        ).findAny().get().getPlayer();
+    }
 
 }

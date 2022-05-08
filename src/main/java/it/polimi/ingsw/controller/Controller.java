@@ -256,6 +256,8 @@ public class Controller {
             sendErrorMessage(ch, "ACTION", "Game is not started yet", 1);
         }
 
+        System.out.println(jsonMessage);
+
         try {
             ClientActionMessage actionMessage = ClientActionMessage.getMessageFromJSON(jsonMessage);
             gameController.handleActionMessage(actionMessage, ch);
@@ -282,7 +284,7 @@ public class Controller {
                     bound++;
                 }
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(2000000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     return;

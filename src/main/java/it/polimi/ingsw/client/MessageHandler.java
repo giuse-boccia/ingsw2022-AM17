@@ -105,16 +105,14 @@ public class MessageHandler implements Runnable {
         // Action broadcast messages does not have to have an Action field: it
         // should receive the whole model
         ServerActionMessage actionMessage = ServerActionMessage.fromJson(jsonMessage);
+        System.out.println(jsonMessage);
 
         if (actionMessage.getDisplayText() != null) {
             client.showMessage(actionMessage.getDisplayText());
         }
 
         switch (actionMessage.getError()) {
-            case 1 -> {
-                return;
-            }
-            case 2 -> {
+            case 1, 2 -> {
                 handleAction(actionMessage.getActions().get(0));
                 return;
             }
@@ -141,12 +139,9 @@ public class MessageHandler implements Runnable {
     private void handleAction(String chosenAction) throws IOException {
         switch (chosenAction) {
             case "PLAY_ASSISTANT" -> ActionHandler.handlePlayAssistant(nc);
-            case "MOVE_STUDENT_TO_DINING" -> {
-            }
-            case "MOVE_STUDENT_TO_ISLAND" -> {
-            }
-            case "MOVE_MN" -> {
-            }
+            case "MOVE_STUDENT_TO_DINING" -> ActionHandler.handleMoveStudentToDining(nc);
+            case "MOVE_STUDENT_TO_ISLAND" -> ActionHandler.handleMoveStudentToIsland(nc);
+            case "MOVE_MN" -> ActionHandler.handleMoveMotherNature(nc);
             case "FILL_FROM_CLOUD" -> {
             }
             case "PLAY_CHARACTER" -> {

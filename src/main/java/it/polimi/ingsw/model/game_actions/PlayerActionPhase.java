@@ -21,7 +21,6 @@ import it.polimi.ingsw.model.utils.Students;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PlayerActionPhase {
@@ -31,8 +30,9 @@ public class PlayerActionPhase {
     protected InfluenceStrategy influenceStrategy;
     protected ProfessorStrategy professorStrategy;
     protected MNStrategy mnStrategy;
-    int numStudentsMoved = 0;
-    boolean mnMoved = false;
+    protected int numStudentsMoved = 0;
+    protected boolean mnMoved = false;
+    protected String expectedMove = "MOVE_STUDENT";
 
 
     public PlayerActionPhase(Assistant assistant, GameBoard gb) {
@@ -172,7 +172,7 @@ public class PlayerActionPhase {
         if (getCurrentPlayer().getNumCoins() < character.getCost()) {
             throw new NotEnoughCoinsException("You don't have enough coins to play this character");
         }
-        if (this.playedCharacter != null) {
+        if (!canPlayCharacter()) {
             throw new CharacterAlreadyPlayedException("You already played a character this turn");
         }
         this.playedCharacter = character;
@@ -219,7 +219,10 @@ public class PlayerActionPhase {
     public void moveStudent(Color color, Place destination) throws InvalidActionException, InvalidStudentException {
         // TODO InvalidPlace if I attempt to move a student into the Entrance (it happens when entrance.getStudents() == 7-numStudPlayed
 
-        if (numStudentsMoved == gb.getGame().getPlayers().size() + 1) {
+        int numPlayers = gb.getGame().getPlayers().size();
+        int studentsToMove = numPlayers % 2 == 0 ? 3 : 4;
+
+        if (numStudentsMoved == studentsToMove) {
             throw new InvalidActionException("You have already moved " + numStudentsMoved + " students");
         }
 
@@ -230,6 +233,10 @@ public class PlayerActionPhase {
         );
 
         numStudentsMoved++;
+
+        if (numStudentsMoved == studentsToMove) {
+            expectedMove = "MOVE_MN";
+        }
 
         stealProfessorIfPossible(color);
 
@@ -270,6 +277,7 @@ public class PlayerActionPhase {
         }
 
         mnMoved = true;
+        expectedMove = "FILL_FROM_CLOUD";
 
         if (gb.getGame().getCurrentRound().isLastRound()) {
             // The PlayerActionPhase is finished
@@ -318,6 +326,14 @@ public class PlayerActionPhase {
 
     public Player getCurrentPlayer() {
         return assistant.getPlayer();
+    }
+
+    public String getExpectedAction() {
+        return expectedMove;
+    }
+
+    public boolean canPlayCharacter() {
+        return playedCharacter == null;
     }
 
 }
