@@ -18,19 +18,7 @@ public class CLI extends Client {
 
     @Override
     public int getAssistantValue() throws IOException {
-        int assistantValue = 0;
-
-        while (assistantValue < 1 || assistantValue > 10) {
-            System.out.print("Insert value of the selected assistant [1-10]: ");
-            try {
-                assistantValue = Integer.parseInt(stdIn.readLine());
-            } catch (NumberFormatException e) {
-                assistantValue = 0;
-                System.out.println("Please insert a valid number");
-            }
-        }
-
-        return assistantValue;
+        return askForInteger(1, 10, "Insert value of the selected assistant [1-10]: ", "Assistant value");
     }
 
     @Override
@@ -43,20 +31,7 @@ public class CLI extends Client {
 
     @Override
     public int askNumPlayers() throws IOException {
-        int res;
-
-        do {
-            System.out.print("Insert desired number of players (2, 3 or 4): ");
-            String string = stdIn.readLine();
-            try {
-                res = Integer.parseInt(string);
-            } catch (NumberFormatException e) {
-                res = -1;       // remains in the do-while cycle
-                System.out.println("Number of players must be a number!");
-            }
-        } while (res < 2 || res > 4);
-
-        return res;
+        return askForInteger(2, 4, "Insert desired number of players (2, 3 or 4): ", "Number of players");
     }
 
     @Override
@@ -187,7 +162,6 @@ public class CLI extends Client {
         System.out.println("------------------------------------------------------------");
     }
 
-    // TODO finish this method
     private int askForInteger(int lowerBound, int upperBound, String messageToShow, String numberFormatErrMsgBeginning) throws IOException {
         int res;
 
