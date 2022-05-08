@@ -19,15 +19,15 @@ public class ActionHandler {
     }
 
     public static void handleMoveStudentToDining(NetworkClient nc) throws IOException {
-        Color chosenColor = Color.GREEN;
+        Color chosenColor = nc.getClient().askStudentColor();
         ActionArgs args = new ActionArgs();
         args.setColor(chosenColor);
         sendMessageToServer(nc, new Action("MOVE_STUDENT_TO_DINING", args));
     }
 
     public static void handleMoveStudentToIsland(NetworkClient nc) throws IOException {
-        Color chosenColor = Color.GREEN;
-        int islandIndex = 2;
+        Color chosenColor = nc.getClient().askStudentColor();
+        int islandIndex = nc.getClient().askIslandIndex() - 1;
         ActionArgs args = new ActionArgs();
         args.setIsland(islandIndex);
         args.setColor(chosenColor);
@@ -35,14 +35,14 @@ public class ActionHandler {
     }
 
     public static void handleMoveMotherNature(NetworkClient nc) throws IOException {
-        int numSteps = 1;
+        int numSteps = nc.getClient().askNumStepsOfMotherNature();
         ActionArgs args = new ActionArgs();
         args.setNum_steps(numSteps);
         sendMessageToServer(nc, new Action("MOVE_MN", args));
     }
 
     public static void handleFillFromCloud(NetworkClient nc) throws IOException {
-        int cloudNumber = 1;
+        int cloudNumber = nc.getClient().askCloudIndex() - 1;
         ActionArgs args = new ActionArgs();
         args.setCloud(cloudNumber);
         sendMessageToServer(nc, new Action("FILL_FROM_CLOUD", args));

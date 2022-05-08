@@ -143,7 +143,7 @@ public class GameController {
     }
 
     private void handleFillFromCloud(Action action, PlayerClient player) {
-        Integer cloudNumber = action.getArgs().getIsland();
+        Integer cloudNumber = action.getArgs().getCloud();
 
         try {
             game.getCurrentRound().getCurrentPlayerActionPhase().chooseCloud(cloudNumber);
@@ -180,7 +180,6 @@ public class GameController {
             message.addAction("PLAY_CHARACTER");
         }
         message.setPlayer(player.getUsername());
-        System.out.println("In PAP I sent " + message.toJson());
         player.getClientHandler().sendMessageToClient(message.toJson());
     }
 
@@ -194,7 +193,6 @@ public class GameController {
         message.setError(errorCode);
         message.setDisplayText("[ERROR] " + errorMessage);
         message.addAction(action);
-        System.out.println("In PAP I sent " + message.toJson());
         ch.sendMessageToClient(message.toJson());
     }
 
