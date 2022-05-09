@@ -13,6 +13,7 @@ public class Entrance implements Place {
         students = new ArrayList<>();
     }
 
+    @Override
     public ArrayList<Student> getStudents() {
         return new ArrayList<>(students);
     }

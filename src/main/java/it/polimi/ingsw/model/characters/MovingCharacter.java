@@ -9,8 +9,10 @@ import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Bag;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
+import it.polimi.ingsw.model.utils.Students;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MovingCharacter extends GameboardCharacter implements Place {
 
@@ -126,7 +128,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
      * @throws StudentNotOnTheCardException if the {@code Student} is not on the {@code Character}
      * @throws InvalidActionException       if the action is not valid
      */
-    private void moveStudentAwayFromCard(Place destination, ArrayList<Student> srcStudents) throws StudentNotOnTheCardException, InvalidActionException {
+    private void moveStudentAwayFromCard(Place destination, ArrayList<Student> srcStudents) throws StudentNotOnTheCardException, InvalidActionException, InvalidStudentException {
         if (!students.containsAll(srcStudents)) {
             throw new StudentNotOnTheCardException("The student is not on the card");
         }
@@ -138,8 +140,20 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         }
     }
 
+    private ArrayList<Student> getStudentListFromColorList(List<Color> colors, Place source) throws InvalidStudentException {
+        ArrayList<Student> res = new ArrayList<>();
+        for (Color color : colors) {
+            Student toAdd = Students.findFirstStudentOfColor(source.getStudents(), color);
+            if (toAdd == null) throw new InvalidStudentException("You don't own this student");
+        }
+        return res;
+    }
+
     @Override
-    public void giveStudent(Place destination, Student student) {
+    public void giveStudent(Place destination, Student student) throws InvalidStudentException {
+        if (student == null || !students.contains(student)) {
+            throw new InvalidStudentException("The character doesn't contain this student");
+        }
         students.remove(student);
         destination.receiveStudent(student);
     }
@@ -149,6 +163,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         students.add(student);
     }
 
+    @Override
     public ArrayList<Student> getStudents() {
         return students;
     }

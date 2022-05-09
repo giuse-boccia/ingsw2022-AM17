@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.characters;
 
+import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Color;
@@ -27,7 +28,7 @@ public class EveryOneMovesCharacter extends GameboardCharacter {
      * @param dstStudents              the students to be moved to the source (only if the effect is a "swap" effect)
      */
     @Override
-    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) {
+    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidStudentException {
         for (Player player : getGameBoard().getGame().getPlayers()) {
             int studentsToMove = Math.max(player.getDashboard().getDiningRoom().getNumberOfStudentsOfColor(color), 3);
             for (int i = 0; i < studentsToMove; i++) {

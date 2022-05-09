@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.game_objects.dashboard_objects;
 
+import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
@@ -22,12 +23,16 @@ public class DiningRoom implements Place {
         return Students.countColor(students, color);
     }
 
+    @Override
     public ArrayList<Student> getStudents() {
         return new ArrayList<>(students);
     }
 
     @Override
-    public void giveStudent(Place destination, Student student) {
+    public void giveStudent(Place destination, Student student) throws InvalidStudentException {
+        if (student == null || !students.contains(student)) {
+            throw new InvalidStudentException("The dining room doesn't contain this student");
+        }
         students.remove(student);
         destination.receiveStudent(student);
     }

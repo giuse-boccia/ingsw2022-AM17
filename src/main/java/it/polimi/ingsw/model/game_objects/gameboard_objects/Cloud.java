@@ -56,4 +56,9 @@ public class Cloud implements Place {
     public void receiveStudent(Student student) {
         students.add(student);
     }
+
+    @Override
+    public ArrayList<Student> getStudents() {
+        return new ArrayList<>(students);
+    }
 }
