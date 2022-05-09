@@ -118,7 +118,7 @@ public abstract class Client {
 
     public abstract int askCharacterIndex() throws IOException;
 
-    public abstract void showAllCharactersWithIndex(String[] characters) throws IOException;
+    public abstract void showAllCharactersWithIndex() throws IOException;
 
     public String getUsername() {
         return username;

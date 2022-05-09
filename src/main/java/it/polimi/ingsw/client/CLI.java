@@ -109,9 +109,9 @@ public class CLI extends Client {
     }
 
     @Override
-    public void showAllCharactersWithIndex(String[] characters) {
-        for (int i = 0; i < characters.length; i++) {
-            System.out.println((i + 1) + ". " + characters[i]);
+    public void showAllCharactersWithIndex() {
+        for (int i = 0; i < getCharacters().length; i++) {
+            System.out.println((i + 1) + ". " + getCharacters()[i]);
         }
     }
 

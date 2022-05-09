@@ -53,7 +53,7 @@ public class GUI extends Client {
     }
 
     @Override
-    public void showAllCharactersWithIndex(String[] characters) throws IOException {
+    public void showAllCharactersWithIndex() throws IOException {
 
     }
 
