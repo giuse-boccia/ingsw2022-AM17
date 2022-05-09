@@ -61,7 +61,7 @@ public class MessageHandler {
     /**
      * Handles a login message
      */
-    private void handleLogin(String jsonMessage) throws IOException {
+    private void handleLogin(String jsonMessage) {
         ServerLoginMessage message = ServerLoginMessage.fromJson(jsonMessage);
 
         if (message.getError() == 2) {
@@ -76,9 +76,15 @@ public class MessageHandler {
         } else if (message.getError() != 0) {
             client.gracefulTermination(message.getDisplayText());
         } else if (message.getAction() != null && message.getAction().equals("CREATE_GAME")) {
-            int numPlayers = client.askNumPlayers();
-            boolean isExpert = client.askExpertMode();
-            new Thread(() -> sendGameParameters(numPlayers, isExpert)).start();
+            new Thread(() -> {
+                try {
+                    int numPlayers = client.askNumPlayers();
+                    boolean isExpert = client.askExpertMode();
+                    sendGameParameters(numPlayers, isExpert);
+                } catch (IOException e) {
+                    client.gracefulTermination("Connection to server went down");
+                }
+            }).start();
 
         } else {    // action = null & error = 0 ----> this is a broadcast message
             client.showMessage(message.getDisplayText());
@@ -140,7 +146,7 @@ public class MessageHandler {
     }
 
 
-    private void handleAction(String chosenAction) throws IOException {
+    private void handleAction(String chosenAction) {
         new Thread(() -> {
             try {
                 switch (chosenAction) {
