@@ -11,40 +11,35 @@ import java.io.IOException;
 /**
  * Class which handles a single message from the server within a separate thread
  */
-public class MessageHandler implements Runnable {
-    private final String jsonMessage;
+public class MessageHandler {
     private final NetworkClient nc;
     private final Client client;
 
-    public MessageHandler(String jsonMessage, NetworkClient nc) {
-        this.jsonMessage = jsonMessage;
+    public MessageHandler(NetworkClient nc) {
         this.nc = nc;
         this.client = nc.getClient();
-    }
-
-    @Override
-    public void run() {
-
-        try {
-            handleMessage();
-        } catch (IOException e) {
-            client.gracefulTermination("Lost connection to server");
-        }
-
     }
 
     /**
      * Handles a message from the server
      */
-    private void handleMessage() throws IOException {
+    public synchronized void handleMessage(String jsonMessage) throws IOException {
         Message message = Message.fromJson(jsonMessage);
 
         switch (message.getStatus()) {
             case "PING" -> handlePing();
-            case "LOGIN" -> handleLogin();
-            case "ACTION" -> parseAction();
+            case "LOGIN" -> handleLogin(jsonMessage);
+            case "ACTION" -> parseAction(jsonMessage);
+            case "UPDATE" -> handleUpdate(jsonMessage);
             default -> client.gracefulTermination("Invalid response from server");
         }
+    }
+
+    /**
+     * Handles an update message and updates the client interface
+     */
+    private void handleUpdate(String jsonMessage) {
+        // to be implemented
     }
 
     /**
@@ -66,18 +61,25 @@ public class MessageHandler implements Runnable {
     /**
      * Handles a login message
      */
-    private void handleLogin() throws IOException {
+    private void handleLogin(String jsonMessage) throws IOException {
         ServerLoginMessage message = ServerLoginMessage.fromJson(jsonMessage);
 
         if (message.getError() == 2) {
             client.showMessage("Username already taken");
-            nc.askUsernameAndSend();
+            new Thread(() -> {
+                try {
+                    nc.askUsernameAndSend();
+                } catch (IOException e) {
+                    client.gracefulTermination("Connection to server went down");
+                }
+            }).start();
         } else if (message.getError() != 0) {
             client.gracefulTermination(message.getDisplayText());
         } else if (message.getAction() != null && message.getAction().equals("CREATE_GAME")) {
             int numPlayers = client.askNumPlayers();
             boolean isExpert = client.askExpertMode();
-            sendGameParameters(numPlayers, isExpert);
+            new Thread(() -> sendGameParameters(numPlayers, isExpert)).start();
+
         } else {    // action = null & error = 0 ----> this is a broadcast message
             client.showMessage(message.getDisplayText());
             client.showCurrentLobby(message.getGameLobby());
@@ -101,7 +103,7 @@ public class MessageHandler implements Runnable {
     /**
      * Handles an action message
      */
-    private void parseAction() throws IOException {
+    private void parseAction(String jsonMessage) throws IOException {
         // Action broadcast messages does not have to have an Action field: it
         // should receive the whole model
         ServerActionMessage actionMessage = ServerActionMessage.fromJson(jsonMessage);
@@ -111,6 +113,8 @@ public class MessageHandler implements Runnable {
             client.showMessage(actionMessage.getDisplayText());
         }
 
+        // TODO: launch handleAction in a separate thread
+        // TODO: REFACTOR switch+if in if+else if
         switch (actionMessage.getError()) {
             case 1, 2 -> {
                 handleAction(actionMessage.getActions().get(0));
@@ -137,15 +141,23 @@ public class MessageHandler implements Runnable {
 
 
     private void handleAction(String chosenAction) throws IOException {
-        switch (chosenAction) {
-            case "PLAY_ASSISTANT" -> ActionHandler.handlePlayAssistant(nc);
-            case "MOVE_STUDENT_TO_DINING" -> ActionHandler.handleMoveStudentToDining(nc);
-            case "MOVE_STUDENT_TO_ISLAND" -> ActionHandler.handleMoveStudentToIsland(nc);
-            case "MOVE_MN" -> ActionHandler.handleMoveMotherNature(nc);
-            case "FILL_FROM_CLOUD" -> ActionHandler.handleFillFromCloud(nc);
-            case "PLAY_CHARACTER" -> ActionHandler.handlePlayCharacter(nc);
-            default -> client.gracefulTermination("Invalid message coming from server");
-        }
+        new Thread(() -> {
+            try {
+                switch (chosenAction) {
+                    case "PLAY_ASSISTANT" -> ActionHandler.handlePlayAssistant(nc);
+                    case "MOVE_STUDENT_TO_DINING" -> ActionHandler.handleMoveStudentToDining(nc);
+                    case "MOVE_STUDENT_TO_ISLAND" -> ActionHandler.handleMoveStudentToIsland(nc);
+                    case "MOVE_MN" -> ActionHandler.handleMoveMotherNature(nc);
+                    case "FILL_FROM_CLOUD" -> ActionHandler.handleFillFromCloud(nc);
+                    case "PLAY_CHARACTER" -> ActionHandler.handlePlayCharacter(nc);
+                    default -> client.gracefulTermination("Invalid message coming from server");
+                }
+            } catch (IOException e) {
+                client.gracefulTermination("Connection lost");
+            }
+
+
+        }).start();
     }
 
 }

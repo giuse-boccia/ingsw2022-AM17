@@ -72,12 +72,11 @@ public class NetworkClient extends Thread {
 
     @Override
     public void run() {
-        ExecutorService executorPool = Executors.newCachedThreadPool();
-
+        MessageHandler mh = new MessageHandler(NetworkClient.this);
         try {
             while (true) {
                 String jsonMessage = socketIn.readLine();
-                executorPool.submit(new MessageHandler(jsonMessage, NetworkClient.this));  // handles message in a new thread
+                mh.handleMessage(jsonMessage);
             }
         } catch (IOException e) {
             // Server connection error
