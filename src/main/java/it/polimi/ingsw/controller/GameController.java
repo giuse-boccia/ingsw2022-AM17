@@ -2,15 +2,20 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.messages.action.Action;
+import it.polimi.ingsw.messages.action.ActionArgs;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
+import it.polimi.ingsw.model.utils.Students;
 import it.polimi.ingsw.server.ClientHandler;
 import it.polimi.ingsw.server.PlayerClient;
 
@@ -164,6 +169,15 @@ public class GameController {
 
     private void handlePlayCharacter(Action action, PlayerClient player) {
         // TODO handle this move and their parameters
+        ActionArgs args = action.getArgs();
+        Character selectedCharacter;
+        for (Character character : game.getGameBoard().getCharacters()) {
+            if (character.getCardName() == args.getCharacterName())
+                selectedCharacter = character;
+        }
+        if (args.getSourceStudents() != null) {
+
+        }
     }
 
     private void askForMoveInPAP(PlayerClient player) {
@@ -238,6 +252,14 @@ public class GameController {
         return players.stream().filter(
                 (p) -> p.getUsername().equals(username)
         ).findAny().get().getPlayer();
+    }
+
+    private ArrayList<Student> getStudentListFromColorList(List<Color> colors, Place source) {
+        ArrayList<Student> res = new ArrayList<>();
+        for (Color color : colors) {
+
+        }
+        return null;
     }
 
 }
