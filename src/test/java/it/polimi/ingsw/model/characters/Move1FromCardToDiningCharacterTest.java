@@ -21,7 +21,7 @@ public class Move1FromCardToDiningCharacterTest {
 
     Game game = TestGameFactory.getNewGame();
     GameBoard gb = game.getGameBoard();
-    Character[] c = {new MovingCharacter(CharacterName.move1FromCardToDining, gb, 1, 1)};
+    Character[] c = {new MovingCharacter(CharacterName.move1FromCardToDining, gb, 4, 1)};
 
     /**
      * Tests the effect of the {@code Character} called "move1FromCardToDining"
@@ -43,15 +43,15 @@ public class Move1FromCardToDiningCharacterTest {
         character.fillCardFromBag();
 
         assertEquals(0, rick.getDashboard().getDiningRoom().getStudents().size());
-        assertEquals(1, character.getStudents().size());
+        assertEquals(4, character.getStudents().size());
 
-        Student studentOnTheCard = character.getStudents().get(0);
+        Student firstStudentOnTheCard = character.getStudents().get(0);
 
-        assertDoesNotThrow(() -> pap.playCharacter(character, null, null, character.getStudents(), null));
+        assertDoesNotThrow(() -> pap.playCharacter(character, null, null, new ArrayList<>(List.of(firstStudentOnTheCard)), null));
 
-        assertEquals(1, character.getStudents().size());
+        assertEquals(4, character.getStudents().size());
         assertEquals(1, rick.getDashboard().getDiningRoom().getStudents().size());
-        assertTrue(rick.getDashboard().getDiningRoom().getStudents().contains(studentOnTheCard));
+        assertTrue(rick.getDashboard().getDiningRoom().getStudents().contains(firstStudentOnTheCard));
     }
 
     /**
