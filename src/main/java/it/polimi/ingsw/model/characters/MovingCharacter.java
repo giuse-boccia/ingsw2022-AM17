@@ -45,14 +45,12 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         switch (this.getCardName()) {
             case move1FromCardToIsland -> {
                 moveStudentAwayFromCard(island, srcStudents);
-                Bag bag = getGameBoard().getBag();
-                bag.giveStudent(this, bag.getRandStudent());
+                fillCardFromBag();
             }
 
             case move1FromCardToDining -> {
                 moveStudentAwayFromCard(currentPlayerActionPhase.getCurrentPlayer().getDashboard().getDiningRoom(), srcStudents);
-                Bag bag = getGameBoard().getBag();
-                bag.giveStudent(this, bag.getRandStudent());
+                fillCardFromBag();
             }
 
             case swapUpTo3FromEntranceToCard -> {
