@@ -5,6 +5,7 @@ import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Client {
@@ -119,6 +120,8 @@ public abstract class Client {
     public abstract int askCharacterIndex() throws IOException;
 
     public abstract void showAllCharactersWithIndex() throws IOException;
+
+    public abstract ArrayList<Color> askColorListForSwapCharacters(int maxBound, String secondElement) throws IOException;
 
     public String getUsername() {
         return username;

@@ -4,6 +4,7 @@ import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GUI extends Client {
@@ -50,6 +51,11 @@ public class GUI extends Client {
     @Override
     public int askCharacterIndex() throws IOException {
         return 0;
+    }
+
+    @Override
+    public ArrayList<Color> askColorListForSwapCharacters(int maxBound, String secondElement) throws IOException {
+        return null;
     }
 
     @Override
