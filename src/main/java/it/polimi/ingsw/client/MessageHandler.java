@@ -113,7 +113,6 @@ public class MessageHandler {
         // Action broadcast messages does not have to have an Action field: it
         // should receive the whole model
         ServerActionMessage actionMessage = ServerActionMessage.fromJson(jsonMessage);
-        System.out.println(jsonMessage);
 
         if (actionMessage.getDisplayText() != null) {
             client.showMessage(actionMessage.getDisplayText());
