@@ -120,7 +120,7 @@ public class CLI extends Client {
         String res;
         Color color;
         do {
-            System.out.print("Select the color of the student you want to move: ");
+            System.out.print("Write the color of the student you want to move: ");
             res = stdIn.readLine();
             try {
                 color = Color.valueOf(res.toUpperCase());
