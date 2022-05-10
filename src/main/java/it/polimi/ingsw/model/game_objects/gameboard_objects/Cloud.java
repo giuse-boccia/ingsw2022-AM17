@@ -56,4 +56,12 @@ public class Cloud implements Place {
     public void receiveStudent(Student student) {
         students.add(student);
     }
+
+    public ArrayList<Student> getStudents() {
+        return students;
+    }
+
+    public int getMaxStudents() {
+        return maxStudents;
+    }
 }

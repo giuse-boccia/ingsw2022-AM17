@@ -24,6 +24,10 @@ public abstract class Character {
         return hasCoin ? cost + 1 : cost;
     }
 
+    public boolean hasCoin() {
+        return hasCoin;
+    }
+
     public CharacterName getCardName() {
         return characterName;
     }
