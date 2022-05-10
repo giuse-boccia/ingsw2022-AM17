@@ -4,6 +4,7 @@ import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.game_objects.Student;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface Place {
     /**
@@ -23,4 +24,6 @@ public interface Place {
     void receiveStudent(Student student);
 
     ArrayList<Student> getStudents();
+
+    void setStudents(ArrayList<Student> students);
 }

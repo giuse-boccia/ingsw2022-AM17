@@ -19,6 +19,12 @@ public class Entrance implements Place {
     }
 
     @Override
+    public void setStudents(ArrayList<Student> students) {
+        this.students.clear();
+        this.students.addAll(students);
+    }
+
+    @Override
     public void giveStudent(Place destination, Student student) throws InvalidStudentException {
         if (student == null || !students.contains(student)) {
             throw new InvalidStudentException("The entrance doesn't contain this student");

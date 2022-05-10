@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
+import it.polimi.ingsw.exceptions.InvalidActionException;
+import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.exceptions.StudentNotOnTheCardException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
@@ -10,6 +12,7 @@ import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.game_objects.Student;
+import it.polimi.ingsw.model.utils.Students;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -41,17 +44,18 @@ public class Move1FromCardToDiningCharacterTest {
         }
 
         character.fillCardFromBag();
+        ArrayList<Student> listOfStudents = createListOfStudents();
+        character.setStudents(listOfStudents);
 
         assertEquals(0, rick.getDashboard().getDiningRoom().getStudents().size());
         assertEquals(4, character.getStudents().size());
 
-        Student firstStudentOnTheCard = character.getStudents().get(0);
 
-        assertDoesNotThrow(() -> pap.playCharacter(character, null, null, new ArrayList<>(List.of(firstStudentOnTheCard)), null));
+        assertDoesNotThrow(() -> pap.playCharacter(character, null, null, List.of(Color.PINK), null));
 
         assertEquals(4, character.getStudents().size());
         assertEquals(1, rick.getDashboard().getDiningRoom().getStudents().size());
-        assertTrue(rick.getDashboard().getDiningRoom().getStudents().contains(firstStudentOnTheCard));
+        assertEquals(1, Students.countColor(rick.getDashboard().getDiningRoom().getStudents(), Color.PINK));
     }
 
     /**
@@ -73,18 +77,17 @@ public class Move1FromCardToDiningCharacterTest {
         }
 
         character.fillCardFromBag();
-
-        ArrayList<Student> invalidStudents = new ArrayList<>(List.of(character.getStudents().get(0), new Student(Color.PINK)));
+        ArrayList<Student> listOfStudents = createListOfStudents();
+        character.setStudents(listOfStudents);
 
         assertThrows(
                 StudentNotOnTheCardException.class,
-                () -> pap.playCharacter(character, null, null, invalidStudents, null),
-                "The student is not on the card"
+                () -> pap.playCharacter(character, null, null, List.of(Color.GREEN), null)
         );
     }
 
     /**
-     * Tests the case when the {@code Student} to move is not on the {@code Character}
+     * Tests the case when the player tries to move more than one {@code Student}
      *
      * @throws EmptyBagException if the {@code Bag} is empty
      */
@@ -102,13 +105,26 @@ public class Move1FromCardToDiningCharacterTest {
         }
 
         character.fillCardFromBag();
-
-        ArrayList<Student> invalidStudents = new ArrayList<>(List.of(new Student(Color.PINK)));
+        ArrayList<Student> listOfStudents = createListOfStudents();
+        character.setStudents(listOfStudents);
 
         assertThrows(
-                StudentNotOnTheCardException.class,
-                () -> pap.playCharacter(character, null, null, invalidStudents, null),
-                "The student is not on the card"
+                InvalidActionException.class,
+                () -> pap.playCharacter(character, null, null, List.of(Color.BLUE, Color.PINK), null)
         );
+    }
+
+    /**
+     * Creates a list of students containing 3 BLUE students and 1 PINK student
+     *
+     * @return a list of students containing 3 BLUE students and 1 PINK student
+     */
+    private ArrayList<Student> createListOfStudents() {
+        ArrayList<Student> listOfStudents = new ArrayList<>();
+        listOfStudents.add(new Student(Color.BLUE));
+        listOfStudents.add(new Student(Color.BLUE));
+        listOfStudents.add(new Student(Color.BLUE));
+        listOfStudents.add(new Student(Color.PINK));
+        return listOfStudents;
     }
 }

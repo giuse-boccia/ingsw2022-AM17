@@ -32,6 +32,12 @@ public class Island implements Place {
         return new ArrayList<>(students);
     }
 
+    @Override
+    public void setStudents(ArrayList<Student> students) {
+        this.students.clear();
+        this.students.addAll(students);
+    }
+
     public int getNoEntryNum() {
         return noEntryNum;
     }

@@ -2,6 +2,8 @@ package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.exceptions.InvalidActionException;
+import it.polimi.ingsw.exceptions.InvalidStudentException;
+import it.polimi.ingsw.exceptions.StudentNotOnTheCardException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
@@ -10,6 +12,7 @@ import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
+import it.polimi.ingsw.model.utils.Students;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -55,9 +58,9 @@ public class SwapUpTo3CharacterTest {
         }
 
         character.fillCardFromBag();
-
         assertEquals(6, character.getStudents().size());
 
+        character.setStudents(createListOfStudents());
         Entrance entrance = rick.getDashboard().getEntrance();
         fillEntrance(entrance);
 
@@ -71,7 +74,9 @@ public class SwapUpTo3CharacterTest {
             ArrayList<Student> studentsInEntranceToMove = new ArrayList<>(entrance.getStudents().subList(0, i));
 
             assertDoesNotThrow(
-                    () -> pap.playCharacter(character, null, null, studentsInEntranceToMove, studentsOnCardToMove)
+                    () -> pap.playCharacter(character, null, null,
+                            TestGameFactory.fromListOfStudentToListOfColor(studentsInEntranceToMove),
+                            TestGameFactory.fromListOfStudentToListOfColor(studentsOnCardToMove))
             );
 
             // Edit the expected Students
@@ -114,11 +119,11 @@ public class SwapUpTo3CharacterTest {
         Entrance entrance = rick.getDashboard().getEntrance();
         fillEntrance(entrance);
 
-        ArrayList<Student> invalidStudents = new ArrayList<>(List.of(new Student(Color.PINK), new Student(Color.GREEN)));
-
         assertThrows(
-                InvalidActionException.class,
-                () -> pap.playCharacter(character, null, null, invalidStudents, new ArrayList<>()),
+                StudentNotOnTheCardException.class,
+                () -> pap.playCharacter(character, null, null,
+                        List.of(Color.PINK, Color.GREEN),
+                        new ArrayList<>()),
                 "One or more students are not on the entrance"
         );
     }
@@ -144,16 +149,14 @@ public class SwapUpTo3CharacterTest {
         );
 
         character.fillCardFromBag();
+        character.setStudents(createListOfStudents());
 
         Entrance entrance = rick.getDashboard().getEntrance();
         fillEntrance(entrance);
 
-        ArrayList<Student> invalidStudents = new ArrayList<>(List.of(new Student(Color.PINK), new Student(Color.GREEN)));
-
         assertThrows(
-                InvalidActionException.class,
-                () -> pap.playCharacter(character, null, null, new ArrayList<>(), invalidStudents),
-                "One or more students are not on the card"
+                StudentNotOnTheCardException.class,
+                () -> pap.playCharacter(character, null, null, new ArrayList<>(), List.of(Color.GREEN))
         );
     }
 
@@ -178,17 +181,16 @@ public class SwapUpTo3CharacterTest {
         );
 
         character.fillCardFromBag();
+        character.setStudents(createListOfStudents());
 
         Entrance entrance = rick.getDashboard().getEntrance();
         fillEntrance(entrance);
 
-        ArrayList<Student> srcStudents = new ArrayList<>(entrance.getStudents().subList(0, 2));
-        ArrayList<Student> dstStudents = new ArrayList<>(character.getStudents().subList(0, 1));
-
         assertThrows(
                 InvalidActionException.class,
-                () -> pap.playCharacter(character, null, null, srcStudents, dstStudents),
-                "This is not a valid swap"
+                () -> pap.playCharacter(character, null, null,
+                        List.of(Color.BLUE),
+                        new ArrayList<>())
         );
     }
 
@@ -208,24 +210,34 @@ public class SwapUpTo3CharacterTest {
             rick.addCoin();
         }
 
-        PlayerActionPhase pap = new PlayerActionPhase(
-                new Assistant(4, 8, rick), gb
-        );
+        PlayerActionPhase pap = new PlayerActionPhase(new Assistant(4, 8, rick), gb);
 
         character.fillCardFromBag();
+        character.setStudents(createListOfStudents());
 
         Entrance entrance = rick.getDashboard().getEntrance();
-        DiningRoom diningRoom = rick.getDashboard().getDiningRoom();
         fillEntrance(entrance);
-
-        ArrayList<Student> srcStudents = new ArrayList<>(entrance.getStudents().subList(0, 4));
-        ArrayList<Student> dstStudents = new ArrayList<>(character.getStudents().subList(0, 4));
 
         assertThrows(
                 InvalidActionException.class,
-                () -> pap.playCharacter(character, null, null, srcStudents, dstStudents),
-                "You can move up to three students"
-        );
+                () -> pap.playCharacter(character, null, null,
+                        List.of(Color.GREEN, Color.BLUE, Color.BLUE, Color.BLUE),
+                        List.of(Color.BLUE, Color.PINK, Color.PINK, Color.PINK)
+                ));
+    }
+
+    /**
+     * Creates a list of students containing 3 BLUE students and 3 PINK student
+     *
+     * @return a list of students containing 3 BLUE students and 3 PINK student
+     */
+    private ArrayList<Student> createListOfStudents() {
+        ArrayList<Student> listOfStudents = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            listOfStudents.add(new Student(Color.BLUE));
+            listOfStudents.add(new Student(Color.PINK));
+        }
+        return listOfStudents;
     }
 
 }

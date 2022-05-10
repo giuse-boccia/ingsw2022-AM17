@@ -60,7 +60,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
                 ArrayList<Student> srcStudents = getStudentListFromColorList(srcColors, curEntrance);
                 ArrayList<Student> dstStudents = getStudentListFromColorList(dstColors, this);
                 if (!this.students.containsAll(dstStudents)) {
-                    throw new InvalidActionException("One or more students are not yet on the card");
+                    throw new StudentNotOnTheCardException("One or more students are not yet on the card");
                 }
                 if (!curEntrance.getStudents().containsAll(srcStudents)) {
                     throw new InvalidActionException("One or more students are not yet in the entrance");
@@ -145,11 +145,11 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         }
     }
 
-    private ArrayList<Student> getStudentListFromColorList(List<Color> colors, Place source) throws InvalidStudentException {
+    private ArrayList<Student> getStudentListFromColorList(List<Color> colors, Place source) throws StudentNotOnTheCardException {
         ArrayList<Student> res = new ArrayList<>();
         for (Color color : colors) {
             Student toAdd = Students.findFirstStudentOfColor(source.getStudents(), color);
-            if (toAdd == null) throw new InvalidStudentException("This student is not present");
+            if (toAdd == null) throw new StudentNotOnTheCardException("This student is not present");
             res.add(toAdd);
         }
         return res;
@@ -172,6 +172,12 @@ public class MovingCharacter extends GameboardCharacter implements Place {
     @Override
     public ArrayList<Student> getStudents() {
         return students;
+    }
+
+    @Override
+    public void setStudents(ArrayList<Student> students) {
+        this.students.clear();
+        this.students.addAll(students);
     }
 
     public int getNumStudents() {

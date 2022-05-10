@@ -29,6 +29,11 @@ public class DiningRoom implements Place {
     }
 
     @Override
+    public void setStudents(ArrayList<Student> students) {
+
+    }
+
+    @Override
     public void giveStudent(Place destination, Student student) throws InvalidStudentException {
         if (student == null || !students.contains(student)) {
             throw new InvalidStudentException("The dining room doesn't contain this student");
