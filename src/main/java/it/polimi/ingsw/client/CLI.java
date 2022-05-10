@@ -104,6 +104,18 @@ public class CLI extends Client {
     }
 
     @Override
+    public int askCharacterIndex() throws IOException {
+        return askForInteger(1, 3, "Insert the number of the character you want to play [1-3]: ", "Character index");
+    }
+
+    @Override
+    public void showAllCharactersWithIndex() {
+        for (int i = 0; i < getCharacters().length; i++) {
+            System.out.println((i + 1) + ". " + getCharacters()[i]);
+        }
+    }
+
+    @Override
     public Color askStudentColor() throws IOException {
         String res;
         Color color;

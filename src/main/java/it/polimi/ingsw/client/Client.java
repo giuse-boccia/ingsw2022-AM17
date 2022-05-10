@@ -10,6 +10,7 @@ import java.util.List;
 public abstract class Client {
     private static NetworkClient nc;
     private String username;
+    private String[] characters;
 
     public static void main(String[] args) {
         Client client;
@@ -115,6 +116,10 @@ public abstract class Client {
 
     public abstract int askCloudIndex() throws IOException;
 
+    public abstract int askCharacterIndex() throws IOException;
+
+    public abstract void showAllCharactersWithIndex() throws IOException;
+
     public String getUsername() {
         return username;
     }
@@ -123,4 +128,11 @@ public abstract class Client {
         this.username = username;
     }
 
+    public String[] getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(String[] characters) {
+        this.characters = characters;
+    }
 }

@@ -47,6 +47,16 @@ public class GUI extends Client {
         return 0;
     }
 
+    @Override
+    public int askCharacterIndex() throws IOException {
+        return 0;
+    }
+
+    @Override
+    public void showAllCharactersWithIndex() throws IOException {
+
+    }
+
     /**
      * Asks the player to input a username
      *
