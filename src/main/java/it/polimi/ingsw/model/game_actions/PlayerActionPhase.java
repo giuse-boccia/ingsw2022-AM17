@@ -21,6 +21,7 @@ import it.polimi.ingsw.model.utils.Students;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PlayerActionPhase {
@@ -161,10 +162,12 @@ public class PlayerActionPhase {
      * Method to use the effect of a character and to check if one had already been used this turn
      *
      * @param character The character which we want to use the effect of
+     * @param srcColors list of the color of the students of the source
+     * @param dstColors list of the color of the students of the destination
      * @throws InvalidCharacterException       if the {@code Character} is not valid
      * @throws CharacterAlreadyPlayedException if a {@code Character} has already been used
      */
-    public void playCharacter(Character character, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents)
+    public void playCharacter(Character character, Island island, Color color, List<Color> srcColors, List<Color> dstColors)
             throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException, NotEnoughCoinsException {
         if (!gb.getGame().isExpert()) {
             throw new InvalidActionException("There are no characters in the non expert mode");
@@ -175,12 +178,15 @@ public class PlayerActionPhase {
         if (!canPlayCharacter()) {
             throw new CharacterAlreadyPlayedException("You already played a character this turn");
         }
-        this.playedCharacter = character;
         try {
-            character.useEffect(this, island, color, srcStudents, dstStudents);
+            character.useEffect(this, island, color, srcColors, dstColors);
         } catch (EmptyBagException e) {
             gb.getGame().getCurrentRound().setLastRound();
+            return;
         }
+
+        this.playedCharacter = character;
+
         getCurrentPlayer().removeCoins(character.getCost());
         character.addCoinAfterFirstUse();
     }
