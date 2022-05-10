@@ -169,7 +169,6 @@ public class GameController {
     }
 
     private void handlePlayCharacter(Action action, PlayerClient player) {
-        // TODO handle this move and their parameters
         ActionArgs args = action.getArgs();
         Character selectedCharacter = null;
         Island selectedIsland = null;

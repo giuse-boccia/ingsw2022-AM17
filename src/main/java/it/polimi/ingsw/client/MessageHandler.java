@@ -118,18 +118,25 @@ public class MessageHandler {
             client.showMessage(actionMessage.getDisplayText());
         }
 
-        if (actionMessage.getError() == 3)
+        if (actionMessage.getError() == 3) {
             client.gracefulTermination("");
-        else if (actionMessage.getError() == 2 || actionMessage.getError() == 1) {
+            return;
+        }
+
+        if (actionMessage.getError() == 2 || actionMessage.getError() == 1) {
             handleAction(actionMessage.getActions().get(0));
-        } else if (actionMessage.getActions() != null && !actionMessage.getActions().isEmpty()) {
+            return;
+        }
+
+        if (actionMessage.getActions() != null && !actionMessage.getActions().isEmpty()) {
             int index = 0;
             if (actionMessage.getActions().size() > 1) {
                 client.showPossibleActions(actionMessage.getActions());
-                index = client.chooseAction(actionMessage.getActions().size());
+                index = client.chooseAction(actionMessage.getActions().size()); // FIXME do it in a new thread
             } else {
                 client.showMessage("Now you have to: " + actionMessage.getActions().get(0));
             }
+
             String chosenAction = actionMessage.getActions().get(index);
             handleAction(chosenAction);
         }
