@@ -197,10 +197,7 @@ public class GameController {
             return;
         }
 
-        ServerActionMessage message = new ServerActionMessage();
-        message.addAction("PLAY_CHARACTER");
-        message.setPlayer(player.getUsername());
-        player.getClientHandler().sendMessageToClient(message.toJson());
+        askForMoveInPAP(player);
     }
 
     private void askForMoveInPAP(PlayerClient player) {

@@ -7,6 +7,7 @@ import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Class which handles a single message from the server within a separate thread
@@ -129,15 +130,13 @@ public class MessageHandler {
         }
 
         if (actionMessage.getActions() != null && !actionMessage.getActions().isEmpty()) {
-            int index = 0;
             if (actionMessage.getActions().size() > 1) {
-                client.showPossibleActions(actionMessage.getActions());
-                index = client.chooseAction(actionMessage.getActions().size()); // FIXME do it in a new thread
-            } else {
-                client.showMessage("Now you have to: " + actionMessage.getActions().get(0));
+                handleMultipleActions(actionMessage.getActions());
+                return;
             }
 
-            String chosenAction = actionMessage.getActions().get(index);
+            client.showMessage("Now you have to: " + actionMessage.getActions().get(0));
+            String chosenAction = actionMessage.getActions().get(0);
             handleAction(chosenAction);
         }
     }
@@ -159,7 +158,18 @@ public class MessageHandler {
                 client.gracefulTermination("Connection lost");
             }
 
+        }).start();
+    }
 
+    private void handleMultipleActions(List<String> actions) {
+        new Thread(() -> {
+            try {
+                client.showPossibleActions(actions);
+                int index = client.chooseAction(actions.size());
+                handleAction(actions.get(index));
+            } catch (IOException e) {
+                client.gracefulTermination("Connection lost");
+            }
         }).start();
     }
 
