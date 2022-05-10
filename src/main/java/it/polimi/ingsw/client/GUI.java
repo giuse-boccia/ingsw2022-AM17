@@ -54,6 +54,11 @@ public class GUI extends Client {
     }
 
     @Override
+    public void endGame(String message) {
+
+    }
+
+    @Override
     public ArrayList<Color> askColorListForSwapCharacters(int maxBound, String secondElement) throws IOException {
         return null;
     }

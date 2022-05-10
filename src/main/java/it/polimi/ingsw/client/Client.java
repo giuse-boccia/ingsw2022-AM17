@@ -123,6 +123,8 @@ public abstract class Client {
 
     public abstract ArrayList<Color> askColorListForSwapCharacters(int maxBound, String secondElement) throws IOException;
 
+    public abstract void endGame(String message);
+
     public String getUsername() {
         return username;
     }

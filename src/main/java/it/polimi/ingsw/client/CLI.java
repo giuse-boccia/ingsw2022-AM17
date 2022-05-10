@@ -117,6 +117,12 @@ public class CLI extends Client {
     }
 
     @Override
+    public void endGame(String message) {
+        showMessage(message);
+        System.exit(0);
+    }
+
+    @Override
     public ArrayList<Color> askColorListForSwapCharacters(int maxBound, String secondElement) throws IOException {
         int size = askForInteger(0, maxBound, "Choose how many students you want to swap: ", "Number of students");
         System.out.println("Select " + size + " students from your entrance");
