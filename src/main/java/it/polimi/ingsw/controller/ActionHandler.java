@@ -55,7 +55,6 @@ public class ActionHandler {
         // FIXME change this line
         nc.getClient().setCharacters(new String[]{"move1FromCardToIsland", "noEntry", "swapUpTo2FromEntranceToDiningRoom"});
         nc.getClient().showAllCharactersWithIndex();
-        // Show all possible characters
         int characterIndex = nc.getClient().askCharacterIndex() - 1;
         handleCharacterPlayed(nc.getClient().getCharacters()[characterIndex], nc);
     }
@@ -67,12 +66,12 @@ public class ActionHandler {
         switch (name) {
             case move1FromCardToIsland -> {
                 Color color = nc.getClient().askStudentColor();
-                int islandIndex = nc.getClient().askIslandIndex();
+                int islandIndex = nc.getClient().askIslandIndex() - 1;
                 args.setSourceStudents(new ArrayList<>(List.of(color)));
                 args.setIsland(islandIndex);
             }
             case resolveIsland, noEntry -> {
-                int islandIndex = nc.getClient().askIslandIndex();
+                int islandIndex = nc.getClient().askIslandIndex() - 1;
                 args.setIsland(islandIndex);
             }
             case swapUpTo3FromEntranceToCard -> {

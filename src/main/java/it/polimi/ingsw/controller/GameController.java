@@ -15,6 +15,7 @@ import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.model.utils.Students;
 import it.polimi.ingsw.server.ClientHandler;
 import it.polimi.ingsw.server.PlayerClient;
@@ -170,14 +171,37 @@ public class GameController {
     private void handlePlayCharacter(Action action, PlayerClient player) {
         // TODO handle this move and their parameters
         ActionArgs args = action.getArgs();
-        Character selectedCharacter;
+        Character selectedCharacter = null;
+        Island selectedIsland = null;
         for (Character character : game.getGameBoard().getCharacters()) {
             if (character.getCardName() == args.getCharacterName())
                 selectedCharacter = character;
         }
-        if (args.getSourceStudents() != null) {
 
+        if (selectedCharacter == null) {
+            sendErrorMessage(player.getClientHandler(), "This character is not in the game", 1, "PLAY_CHARACTER");
+            return;
         }
+
+        if (args.getIsland() != null) {
+            selectedIsland = game.getGameBoard().getIslands().get(args.getIsland());
+        }
+        try {
+            game.getCurrentRound().getCurrentPlayerActionPhase().playCharacter(
+                    selectedCharacter, selectedIsland, args.getColor(), args.getSourceStudents(), args.getDstStudents()
+            );
+        } catch (InvalidCharacterException | CharacterAlreadyPlayedException | StudentNotOnTheCardException | InvalidStudentException | NotEnoughCoinsException e) {
+            sendErrorMessage(player.getClientHandler(), e.getMessage(), 2, "PLAY_CHARACTER");
+            return;
+        } catch (InvalidActionException e) {
+            sendErrorMessage(player.getClientHandler(), e.getMessage(), 1, "PLAY_CHARACTER");
+            return;
+        }
+
+        ServerActionMessage message = new ServerActionMessage();
+        message.addAction("PLAY_CHARACTER");
+        message.setPlayer(player.getUsername());
+        player.getClientHandler().sendMessageToClient(message.toJson());
     }
 
     private void askForMoveInPAP(PlayerClient player) {
@@ -254,12 +278,5 @@ public class GameController {
         ).findAny().get().getPlayer();
     }
 
-    private ArrayList<Student> getStudentListFromColorList(List<Color> colors, Place source) {
-        ArrayList<Student> res = new ArrayList<>();
-        for (Color color : colors) {
-
-        }
-        return null;
-    }
 
 }
