@@ -113,24 +113,16 @@ public class MessageHandler {
         // Action broadcast messages does not have to have an Action field: it
         // should receive the whole model
         ServerActionMessage actionMessage = ServerActionMessage.fromJson(jsonMessage);
-        System.out.println(jsonMessage);
 
         if (actionMessage.getDisplayText() != null) {
             client.showMessage(actionMessage.getDisplayText());
         }
 
-        // TODO: launch handleAction in a separate thread
-        // TODO: REFACTOR switch+if in if+else if
-        switch (actionMessage.getError()) {
-            case 1, 2 -> {
-                handleAction(actionMessage.getActions().get(0));
-                return;
-            }
-            case 3 -> client.gracefulTermination("");
-        }
-
-        if (actionMessage.getActions() != null && !actionMessage.getActions().isEmpty()) {
-
+        if (actionMessage.getError() == 3)
+            client.gracefulTermination("");
+        else if (actionMessage.getError() == 2 || actionMessage.getError() == 1) {
+            handleAction(actionMessage.getActions().get(0));
+        } else if (actionMessage.getActions() != null && !actionMessage.getActions().isEmpty()) {
             int index = 0;
             if (actionMessage.getActions().size() > 1) {
                 client.showPossibleActions(actionMessage.getActions());
@@ -138,11 +130,9 @@ public class MessageHandler {
             } else {
                 client.showMessage("Now you have to: " + actionMessage.getActions().get(0));
             }
-
             String chosenAction = actionMessage.getActions().get(index);
             handleAction(chosenAction);
         }
-
     }
 
 
