@@ -14,7 +14,7 @@ public abstract class Client {
         String serverAddress = null;
         int serverPort = -1;
 
-        if (args[0].equals("cli")) {
+        if (args[0].equalsIgnoreCase("cli")) {
             client = new CLI();
         } else {
             client = new GUI();
