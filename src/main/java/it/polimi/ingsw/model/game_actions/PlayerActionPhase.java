@@ -25,15 +25,15 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayerActionPhase {
-    protected final Assistant assistant;
-    protected final GameBoard gb;
-    protected Character playedCharacter;
-    protected InfluenceStrategy influenceStrategy;
-    protected ProfessorStrategy professorStrategy;
-    protected MNStrategy mnStrategy;
-    protected int numStudentsMoved = 0;
-    protected boolean mnMoved = false;
-    protected String expectedMove = "MOVE_STUDENT";
+    private final Assistant assistant;
+    private final GameBoard gb;
+    private Character playedCharacter;
+    private InfluenceStrategy influenceStrategy;
+    private ProfessorStrategy professorStrategy;
+    private MNStrategy mnStrategy;
+    private int numStudentsMoved = 0;
+    private boolean mnMoved = false;
+    private String expectedMove = "MOVE_STUDENT";
 
 
     public PlayerActionPhase(Assistant assistant, GameBoard gb) {
@@ -103,6 +103,18 @@ public class PlayerActionPhase {
         }
 
         return res;
+    }
+
+    public Character getPlayedCharacter() {
+        return playedCharacter;
+    }
+
+    public int getNumStudentsMoved() {
+        return numStudentsMoved;
+    }
+
+    public boolean isMnMoved() {
+        return mnMoved;
     }
 
     /**

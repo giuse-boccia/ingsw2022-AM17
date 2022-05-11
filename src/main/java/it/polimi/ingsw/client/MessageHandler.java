@@ -5,6 +5,7 @@ import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
+import it.polimi.ingsw.messages.update.UpdateMessage;
 
 import java.io.IOException;
 import java.util.List;
@@ -58,9 +59,9 @@ public class MessageHandler {
      * Handles an update message and updates the client interface
      */
     private void handleUpdate(String jsonMessage) {
-        // to be implemented
-        ServerActionMessage message = ServerActionMessage.fromJson(jsonMessage);
-        client.showMessage(message.getDisplayText());
+        // TODO: to be implemented, for now prints the JSON
+        // UpdateMessage message = UpdateMessage.fromJson(jsonMessage);
+        client.showMessage(jsonMessage);
     }
 
     /**

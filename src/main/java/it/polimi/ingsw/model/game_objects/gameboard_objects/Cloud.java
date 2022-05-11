@@ -67,4 +67,8 @@ public class Cloud implements Place {
         this.students.clear();
         this.students.addAll(students);
     }
+
+    public int getMaxStudents() {
+        return maxStudents;
+    }
 }
