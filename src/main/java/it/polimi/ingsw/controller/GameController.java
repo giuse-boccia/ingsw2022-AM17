@@ -248,7 +248,7 @@ public class GameController {
 
     private void sendBroadcastUpdateMessage(PlayerClient curPlayer) {
         UpdateMessage message = new UpdateMessage();
-        message.setGameStatus(new GameState(game));
+        message.setGameState(new GameState(game));
         message.setDisplayText(curPlayer.getUsername() + " is playing...");
         for (PlayerClient player : players) {
             player.getClientHandler().sendMessageToClient(message.toJson());

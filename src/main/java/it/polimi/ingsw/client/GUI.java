@@ -2,6 +2,7 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_state.GameState;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,6 +56,11 @@ public class GUI extends Client {
 
     @Override
     public void endGame(String message) {
+
+    }
+
+    @Override
+    public void updateGameState(GameState gameState) {
 
     }
 

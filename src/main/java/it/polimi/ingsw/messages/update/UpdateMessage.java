@@ -3,7 +3,6 @@ package it.polimi.ingsw.messages.update;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.messages.Message;
-import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.model.game_state.GameState;
 
 public class UpdateMessage extends Message {
@@ -15,11 +14,11 @@ public class UpdateMessage extends Message {
         setStatus("UPDATE");
     }
 
-    public GameState getGameStatus() {
+    public GameState getGameState() {
         return gameState;
     }
 
-    public void setGameStatus(GameState gameState) {
+    public void setGameState(GameState gameState) {
         this.gameState = gameState;
     }
 
