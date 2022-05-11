@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
@@ -16,7 +17,7 @@ public class Bag implements Place {
     private final ArrayList<Student> students;
 
     public Bag(){
-        this.students = Students.getSomeStudents(24);
+        this.students = Students.getSomeStudents(Constants.INITIAL_STUDENTS_IN_BAG);
     }
 
     /**

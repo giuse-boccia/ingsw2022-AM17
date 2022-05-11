@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.constants.ConsoleColors;
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
 
@@ -24,7 +26,7 @@ public class CLI extends Client {
 
     @Override
     public String askUsername() throws IOException {
-        System.out.print("Insert username: ");
+        System.out.print(Messages.ASK_USERNAME);
         String username = stdIn.readLine();
         setUsername(username);
         return username;
@@ -75,7 +77,7 @@ public class CLI extends Client {
     public void gracefulTermination(String message) {
         clearCommandWindow();
         System.out.println(message);
-        System.out.println("Application will now close...");
+        System.out.println(Messages.GRACEFUL_TERM);
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
