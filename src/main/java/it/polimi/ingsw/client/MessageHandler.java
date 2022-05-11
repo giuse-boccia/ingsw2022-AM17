@@ -5,7 +5,6 @@ import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
-import it.polimi.ingsw.messages.update.UpdateMessage;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.TimerTask;
 public class MessageHandler {
     private final NetworkClient nc;
     private final Client client;
-    private boolean isOkay = false;
+    private boolean isServerUp = false;
 
     public MessageHandler(NetworkClient nc) {
         this.nc = nc;
@@ -30,10 +29,10 @@ public class MessageHandler {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                if (!isOkay) {
+                if (!isServerUp) {
                     client.gracefulTermination("Server crashed");
                 }
-                isOkay = false;
+                isServerUp = false;
             }
         };
         timer.schedule(task, 3000, 3000);
@@ -69,7 +68,7 @@ public class MessageHandler {
      */
     private void handlePing() {
         sendPong();
-        isOkay = true;
+        isServerUp = true;
     }
 
     /**
