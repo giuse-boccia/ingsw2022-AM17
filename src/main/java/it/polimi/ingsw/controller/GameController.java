@@ -41,6 +41,7 @@ public class GameController {
 
     public void start() {
         game.start();
+        game.getCurrentRound().setLastRound();
         currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
         PlayerClient firstPlayer = players.get(currentPlayerIndex);
         askForAssistant(firstPlayer);
@@ -95,6 +96,11 @@ public class GameController {
         if (game.getCurrentRound().getPlanningPhase().isEnded()) {
             // When I send the message to the nextPlayer, I just have to call currentPap - it's already the pap of the current player
             // When pap.currentPlayer == null I have to start another planning phase
+
+            if (game.getCurrentRound().isLastRound()) {
+                alertLastRound();
+            }
+
             curPlayer = getPlayerClientFromPlayer(game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer());
             askForMoveInPAP(curPlayer);
         } else {
@@ -262,6 +268,15 @@ public class GameController {
         askForMoveInPAP(nextPlayer);
 
         //sendBroadcastWaitingMessage(nextPlayer);
+    }
+
+    private void alertLastRound() {
+        ServerActionMessage actionMessage = new ServerActionMessage();
+        actionMessage.setStatus("UPDATE");
+        actionMessage.setDisplayText("Be aware! This is the last round");
+        for (PlayerClient player : players) {
+            player.getClientHandler().sendMessageToClient(actionMessage.toJson());
+        }
     }
 
     private void alertGameEnded() {
