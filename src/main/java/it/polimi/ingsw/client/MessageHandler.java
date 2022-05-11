@@ -42,6 +42,8 @@ public class MessageHandler {
      */
     private void handleUpdate(String jsonMessage) {
         // to be implemented
+        ServerActionMessage message = ServerActionMessage.fromJson(jsonMessage);
+        client.showMessage(message.getDisplayText());
     }
 
     /**

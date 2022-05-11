@@ -41,10 +41,10 @@ public class GameController {
 
     public void start() {
         game.start();
-        game.getCurrentRound().setLastRound();
         currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
         PlayerClient firstPlayer = players.get(currentPlayerIndex);
         askForAssistant(firstPlayer);
+        sendBroadcastWaitingMessage(firstPlayer);
     }
 
     public void handleActionMessage(ClientActionMessage message, ClientHandler ch) throws GameEndedException {
@@ -107,7 +107,7 @@ public class GameController {
             askForAssistant(curPlayer);
         }
 
-        //sendBroadcastWaitingMessage(curPlayer);
+        sendBroadcastWaitingMessage(curPlayer);
 
     }
 
@@ -245,7 +245,7 @@ public class GameController {
 
     private void sendBroadcastWaitingMessage(PlayerClient curPlayer) {
         ServerActionMessage message = new ServerActionMessage();
-        message.setPlayer(curPlayer.getUsername());
+        message.setStatus("UPDATE");
         message.setDisplayText(curPlayer.getUsername() + " is playing...");
         for (PlayerClient player : players) {
             if (player != curPlayer) {
@@ -267,7 +267,7 @@ public class GameController {
 
         askForMoveInPAP(nextPlayer);
 
-        //sendBroadcastWaitingMessage(nextPlayer);
+        sendBroadcastWaitingMessage(nextPlayer);
     }
 
     private void alertLastRound() {
