@@ -105,6 +105,18 @@ public class PlayerActionPhase {
         return res;
     }
 
+    public Character getPlayedCharacter() {
+        return playedCharacter;
+    }
+
+    public int getNumStudentsMoved() {
+        return numStudentsMoved;
+    }
+
+    public boolean isMnMoved() {
+        return mnMoved;
+    }
+
     /**
      * Resolves the island where mother nature is and eventually changes that island's owner.
      * In case of tie between two or more players, the owner of the island is not changed

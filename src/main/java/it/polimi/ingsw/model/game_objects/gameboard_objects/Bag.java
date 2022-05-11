@@ -27,10 +27,6 @@ public class Bag implements Place {
         return students.get(0);
     }
 
-    public ArrayList<Student> getStudents() {
-        return students;
-    }
-
     public boolean isEmpty() {
         return students.size() == 0;
     }
