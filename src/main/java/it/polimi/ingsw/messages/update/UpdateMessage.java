@@ -1,6 +1,9 @@
 package it.polimi.ingsw.messages.update;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.messages.Message;
+import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.model.game_state.GameState;
 
 public class UpdateMessage extends Message {
@@ -9,7 +12,7 @@ public class UpdateMessage extends Message {
 
     public UpdateMessage() {
         super();
-        setStatus("Update");
+        setStatus("UPDATE");
     }
 
     public GameState getGameStatus() {
@@ -26,5 +29,11 @@ public class UpdateMessage extends Message {
 
     public void setDisplayText(String displayText) {
         this.displayText = displayText;
+    }
+
+    public static UpdateMessage fromJson(String json) {
+        Gson gson = new Gson();
+        return gson.fromJson(json, new TypeToken<UpdateMessage>() {
+        }.getType());
     }
 }

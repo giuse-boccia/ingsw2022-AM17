@@ -5,18 +5,17 @@ import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.action.ActionArgs;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
+import it.polimi.ingsw.messages.update.UpdateMessage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.characters.Character;
-import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
-import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
-import it.polimi.ingsw.model.utils.Students;
+import it.polimi.ingsw.model.game_state.GameState;
 import it.polimi.ingsw.server.ClientHandler;
 import it.polimi.ingsw.server.PlayerClient;
 
@@ -43,8 +42,8 @@ public class GameController {
         game.start();
         currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
         PlayerClient firstPlayer = players.get(currentPlayerIndex);
+        sendBroadcastUpdateMessage(firstPlayer);
         askForAssistant(firstPlayer);
-        sendBroadcastWaitingMessage(firstPlayer);
     }
 
     public void handleActionMessage(ClientActionMessage message, ClientHandler ch) throws GameEndedException {
@@ -93,6 +92,8 @@ public class GameController {
         currentPlayerIndex = (currentPlayerIndex + 1) % game.getPlayers().size();
         PlayerClient curPlayer = players.get(currentPlayerIndex);
 
+        sendBroadcastUpdateMessage(curPlayer);
+
         if (game.getCurrentRound().getPlanningPhase().isEnded()) {
             // When I send the message to the nextPlayer, I just have to call currentPap - it's already the pap of the current player
             // When pap.currentPlayer == null I have to start another planning phase
@@ -107,7 +108,7 @@ public class GameController {
             askForAssistant(curPlayer);
         }
 
-        sendBroadcastWaitingMessage(curPlayer);
+
 
     }
 
@@ -243,14 +244,12 @@ public class GameController {
         player.getClientHandler().sendMessageToClient(actionMessage.toJson());
     }
 
-    private void sendBroadcastWaitingMessage(PlayerClient curPlayer) {
-        ServerActionMessage message = new ServerActionMessage();
-        message.setStatus("UPDATE");
+    private void sendBroadcastUpdateMessage(PlayerClient curPlayer) {
+        UpdateMessage message = new UpdateMessage();
+        message.setGameStatus(new GameState(game));
         message.setDisplayText(curPlayer.getUsername() + " is playing...");
         for (PlayerClient player : players) {
-            if (player != curPlayer) {
-                player.getClientHandler().sendMessageToClient(message.toJson());
-            }
+            player.getClientHandler().sendMessageToClient(message.toJson());
         }
     }
 
@@ -265,9 +264,10 @@ public class GameController {
                 game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer()
         );
 
+        sendBroadcastUpdateMessage(nextPlayer);
+
         askForMoveInPAP(nextPlayer);
 
-        sendBroadcastWaitingMessage(nextPlayer);
     }
 
     private void alertLastRound() {
