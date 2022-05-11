@@ -60,9 +60,9 @@ public class MessageHandler {
      * Handles an update message and updates the client interface
      */
     private void handleUpdate(String jsonMessage) {
-        // TODO: to be implemented, for now prints the JSON
-        // UpdateMessage message = UpdateMessage.fromJson(jsonMessage);
-        client.showMessage(jsonMessage);
+        UpdateMessage updateMessage = UpdateMessage.fromJson(jsonMessage);
+        client.updateGameState(updateMessage.getGameState());
+        client.showMessage(updateMessage.getDisplayText());
     }
 
     /**

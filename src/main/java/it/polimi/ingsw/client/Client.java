@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.Settings;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_state.GameState;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -201,4 +202,6 @@ public abstract class Client {
     public void setCharacters(String[] characters) {
         this.characters = characters;
     }
+
+    public abstract void updateGameState(GameState gameState);
 }
