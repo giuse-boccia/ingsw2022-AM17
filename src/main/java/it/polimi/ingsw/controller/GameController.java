@@ -92,7 +92,6 @@ public class GameController {
         currentPlayerIndex = (currentPlayerIndex + 1) % game.getPlayers().size();
         PlayerClient curPlayer = players.get(currentPlayerIndex);
 
-        sendBroadcastUpdateMessage(curPlayer);
 
         if (game.getCurrentRound().getPlanningPhase().isEnded()) {
             // When I send the message to the nextPlayer, I just have to call currentPap - it's already the pap of the current player
@@ -103,8 +102,11 @@ public class GameController {
             }
 
             curPlayer = getPlayerClientFromPlayer(game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer());
+            sendBroadcastUpdateMessage(curPlayer);
+
             askForMoveInPAP(curPlayer);
         } else {
+            sendBroadcastUpdateMessage(curPlayer);
             askForAssistant(curPlayer);
         }
 

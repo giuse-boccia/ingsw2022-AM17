@@ -22,10 +22,10 @@ public class Controller {
     private final Gson gson;
 
     private final ArrayList<PlayerClient> loggedUsers;
+    private final Object boundLock = new Object();
     private int desiredNumberOfPlayers;
     private GameController gameController;
     private int pongCount;
-    private final Object boundLock = new Object();
     private boolean isExpert;
 
     public Controller() {
@@ -59,19 +59,6 @@ public class Controller {
     }
 
     /**
-     * Return the status field of the given json message
-     *
-     * @param json a JSON string containing the message to get the status of
-     * @return the status field of the given json message
-     */
-    private String getMessageStatus(String json) {
-        Type type = new TypeToken<Message>() {
-        }.getType();
-        Message msg = gson.fromJson(json, type);
-        return msg.getStatus();
-    }
-
-    /**
      * Handles a message received from a Client and sends the appropriate response
      *
      * @param jsonMessage the message received from the client
@@ -84,6 +71,19 @@ public class Controller {
             case "PONG" -> handlePong();
             default -> sendErrorMessage(ch, "LOGIN", "Unrecognised type", 3);
         }
+    }
+
+    /**
+     * Return the status field of the given json message
+     *
+     * @param json a JSON string containing the message to get the status of
+     * @return the status field of the given json message
+     */
+    private String getMessageStatus(String json) {
+        Type type = new TypeToken<Message>() {
+        }.getType();
+        Message msg = gson.fromJson(json, type);
+        return msg.getStatus();
     }
 
     /**
