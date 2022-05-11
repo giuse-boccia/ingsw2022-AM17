@@ -46,4 +46,15 @@ public class Bag implements Place {
         students.add(student);
         Collections.shuffle(students);
     }
+
+    @Override
+    public ArrayList<Student> getStudents() {
+        return new ArrayList<>(students);
+    }
+
+    @Override
+    public void setStudents(ArrayList<Student> students) {
+        this.students.clear();
+        this.students.addAll(students);
+    }
 }

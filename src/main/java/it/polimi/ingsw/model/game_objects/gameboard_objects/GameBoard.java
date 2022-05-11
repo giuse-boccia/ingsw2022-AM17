@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
+import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.characters.*;
@@ -51,7 +52,7 @@ public class GameBoard {
         allCharacters.add(new MovingCharacter(CharacterName.move1FromCardToIsland, this, 4, 1));
         allCharacters.add(new MovingCharacter(CharacterName.swapUpTo2FromEntranceToDiningRoom, this, 0, 2));
         allCharacters.add(new MovingCharacter(CharacterName.swapUpTo3FromEntranceToCard, this, 6, 3));
-        allCharacters.add(new MovingCharacter(CharacterName.move1FromCardToDining, this, 1, 1));
+        allCharacters.add(new MovingCharacter(CharacterName.move1FromCardToDining, this, 4, 1));
 
         allCharacters.add(new PassiveCharacter(CharacterName.plus2MNMoves));
         allCharacters.add(new PassiveCharacter(CharacterName.takeProfWithEqualStudents));
@@ -63,6 +64,18 @@ public class GameBoard {
 
         for (int i = 0; i < 3; i++) {
             res[i] = allCharacters.get(i);
+            if (
+                    res[i].getCardName() == CharacterName.move1FromCardToIsland ||
+                            res[i].getCardName() == CharacterName.move1FromCardToDining ||
+                            res[i].getCardName() == CharacterName.swapUpTo3FromEntranceToCard
+            ) {
+                MovingCharacter mc = (MovingCharacter) res[i];
+                try {
+                    mc.fillCardFromBag();
+                } catch (EmptyBagException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         return res;

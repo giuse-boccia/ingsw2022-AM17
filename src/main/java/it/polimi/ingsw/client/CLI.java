@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.game_objects.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -116,15 +117,39 @@ public class CLI extends Client {
     }
 
     @Override
+    public void endGame(String message) {
+        showMessage(message);
+        System.exit(0);
+    }
+
+    @Override
+    public ArrayList<Color> askColorListForSwapCharacters(int maxBound, String secondElement) throws IOException {
+        int size = askForInteger(0, maxBound, "Choose how many students you want to swap: ", "Number of students");
+        System.out.println("Select " + size + " students from your entrance");
+        ArrayList<Color> selectedColors = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            Color toAdd = askStudentColor();
+            selectedColors.add(toAdd);
+        }
+        System.out.println("Select " + size + " students from " + secondElement);
+        for (int i = 0; i < size; i++) {
+            Color toAdd = askStudentColor();
+            selectedColors.add(toAdd);
+        }
+        return selectedColors;
+    }
+
+    @Override
     public Color askStudentColor() throws IOException {
         String res;
         Color color;
         do {
-            System.out.print("Select the color of the student you want to move: ");
+            System.out.print("Write the color of the student: ");
             res = stdIn.readLine();
             try {
                 color = Color.valueOf(res.toUpperCase());
             } catch (IllegalArgumentException e) {
+                System.out.println("Color not recognised [blue | green | yellow | red | pink]");
                 color = null;
             }
         } while (color == null);

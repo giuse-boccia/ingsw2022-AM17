@@ -2,15 +2,21 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.messages.action.Action;
+import it.polimi.ingsw.messages.action.ActionArgs;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
+import it.polimi.ingsw.model.utils.Students;
 import it.polimi.ingsw.server.ClientHandler;
 import it.polimi.ingsw.server.PlayerClient;
 
@@ -38,9 +44,10 @@ public class GameController {
         currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
         PlayerClient firstPlayer = players.get(currentPlayerIndex);
         askForAssistant(firstPlayer);
+        sendBroadcastWaitingMessage(firstPlayer);
     }
 
-    public void handleActionMessage(ClientActionMessage message, ClientHandler ch) {
+    public void handleActionMessage(ClientActionMessage message, ClientHandler ch) throws GameEndedException {
         if (message.getAction() == null) {
             sendErrorMessage(ch, "Invalid request", 3, "");
         }
@@ -89,24 +96,29 @@ public class GameController {
         if (game.getCurrentRound().getPlanningPhase().isEnded()) {
             // When I send the message to the nextPlayer, I just have to call currentPap - it's already the pap of the current player
             // When pap.currentPlayer == null I have to start another planning phase
+
+            if (game.getCurrentRound().isLastRound()) {
+                alertLastRound();
+            }
+
             curPlayer = getPlayerClientFromPlayer(game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer());
             askForMoveInPAP(curPlayer);
         } else {
             askForAssistant(curPlayer);
         }
 
-        //sendBroadcastWaitingMessage(curPlayer);
+        sendBroadcastWaitingMessage(curPlayer);
 
     }
 
-    private void handleStudentMovedToDining(Action action, PlayerClient player) {
+    private void handleStudentMovedToDining(Action action, PlayerClient player) throws GameEndedException {
         Color color = action.getArgs().getColor();
         DiningRoom dining = player.getPlayer().getDashboard().getDiningRoom();
 
         moveStudent(color, dining, player, "MOVE_STUDENT_TO_DINING");
     }
 
-    private void handleStudentMovedToIsland(Action action, PlayerClient player) {
+    private void handleStudentMovedToIsland(Action action, PlayerClient player) throws GameEndedException {
         Color color = action.getArgs().getColor();
         Integer islandIndex = action.getArgs().getIsland();
 
@@ -118,7 +130,7 @@ public class GameController {
         moveStudent(color, game.getGameBoard().getIslands().get(islandIndex), player, "MOVE_STUDENT_TO_ISLAND");
     }
 
-    private void moveStudent(Color color, Place destination, PlayerClient player, String actionName) {
+    private void moveStudent(Color color, Place destination, PlayerClient player, String actionName) throws GameEndedException {
         try {
             game.getCurrentRound().getCurrentPlayerActionPhase().moveStudent(color, destination);
         } catch (InvalidActionException | InvalidStudentException e) {
@@ -129,7 +141,7 @@ public class GameController {
         sendMessagesInPAP();
     }
 
-    private void handleMotherNatureMoved(Action action, PlayerClient player) {
+    private void handleMotherNatureMoved(Action action, PlayerClient player) throws GameEndedException {
         Integer steps = action.getArgs().getNum_steps();
 
         try {
@@ -142,7 +154,7 @@ public class GameController {
         sendMessagesInPAP();
     }
 
-    private void handleFillFromCloud(Action action, PlayerClient player) {
+    private void handleFillFromCloud(Action action, PlayerClient player) throws GameEndedException {
         Integer cloudNumber = action.getArgs().getCloud();
 
         try {
@@ -152,7 +164,7 @@ public class GameController {
             return;
         }
 
-        if (game.getCurrentRound().getCurrentPlayerActionPhase() != null) {
+        if (game.getCurrentRound().getCurrentPlayerActionPhase() != null || game.isEnded()) {
             sendMessagesInPAP();
         } else {
             currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
@@ -163,7 +175,35 @@ public class GameController {
     }
 
     private void handlePlayCharacter(Action action, PlayerClient player) {
-        // TODO handle this move and their parameters
+        ActionArgs args = action.getArgs();
+        Character selectedCharacter = null;
+        Island selectedIsland = null;
+        for (Character character : game.getGameBoard().getCharacters()) {
+            if (character.getCardName() == args.getCharacterName())
+                selectedCharacter = character;
+        }
+
+        if (selectedCharacter == null) {
+            sendErrorMessage(player.getClientHandler(), "This character is not in the game", 1, "PLAY_CHARACTER");
+            return;
+        }
+
+        if (args.getIsland() != null) {
+            selectedIsland = game.getGameBoard().getIslands().get(args.getIsland());
+        }
+        try {
+            game.getCurrentRound().getCurrentPlayerActionPhase().playCharacter(
+                    selectedCharacter, selectedIsland, args.getColor(), args.getSourceStudents(), args.getDstStudents()
+            );
+        } catch (InvalidCharacterException | CharacterAlreadyPlayedException | StudentNotOnTheCardException | InvalidStudentException | NotEnoughCoinsException e) {
+            sendErrorMessage(player.getClientHandler(), e.getMessage(), 2, "PLAY_CHARACTER");
+            return;
+        } catch (InvalidActionException e) {
+            sendErrorMessage(player.getClientHandler(), e.getMessage(), 1, "PLAY_CHARACTER");
+            return;
+        }
+
+        askForMoveInPAP(player);
     }
 
     private void askForMoveInPAP(PlayerClient player) {
@@ -205,7 +245,7 @@ public class GameController {
 
     private void sendBroadcastWaitingMessage(PlayerClient curPlayer) {
         ServerActionMessage message = new ServerActionMessage();
-        message.setPlayer(curPlayer.getUsername());
+        message.setStatus("UPDATE");
         message.setDisplayText(curPlayer.getUsername() + " is playing...");
         for (PlayerClient player : players) {
             if (player != curPlayer) {
@@ -214,14 +254,49 @@ public class GameController {
         }
     }
 
-    private void sendMessagesInPAP() {
+    private void sendMessagesInPAP() throws GameEndedException {
+
+        if (game.isEnded()) {
+            alertGameEnded();
+            throw new GameEndedException("The game is ended");
+        }
+
         PlayerClient nextPlayer = getPlayerClientFromPlayer(
                 game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer()
         );
 
         askForMoveInPAP(nextPlayer);
 
-        //sendBroadcastWaitingMessage(nextPlayer);
+        sendBroadcastWaitingMessage(nextPlayer);
+    }
+
+    private void alertLastRound() {
+        ServerActionMessage actionMessage = new ServerActionMessage();
+        actionMessage.setStatus("UPDATE");
+        actionMessage.setDisplayText("Be aware! This is the last round");
+        for (PlayerClient player : players) {
+            player.getClientHandler().sendMessageToClient(actionMessage.toJson());
+        }
+    }
+
+    private void alertGameEnded() {
+        // IDEA it could be good to add the status END to handle end game messages
+        ArrayList<Player> winners = game.getWinners();
+        for (PlayerClient player : players) {
+            ServerActionMessage actionMessage = new ServerActionMessage();
+            actionMessage.setStatus("END");
+            actionMessage.setPlayer(player.getUsername());
+
+            if (winners.contains(player.getPlayer())) {
+                // Win message
+                actionMessage.setDisplayText("Congratulations, you won the game!");
+            } else {
+                // Defeat message
+                actionMessage.setDisplayText("Game is ended. You lost");
+            }
+
+            player.getClientHandler().sendMessageToClient(actionMessage.toJson());
+        }
     }
 
     private boolean isCorrectSender(String username) {
@@ -239,5 +314,6 @@ public class GameController {
                 (p) -> p.getUsername().equals(username)
         ).findAny().get().getPlayer();
     }
+
 
 }

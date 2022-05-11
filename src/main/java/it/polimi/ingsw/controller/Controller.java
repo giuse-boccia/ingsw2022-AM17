@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import it.polimi.ingsw.exceptions.GameEndedException;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
@@ -76,7 +77,7 @@ public class Controller {
      * @param jsonMessage the message received from the client
      * @param ch          the {@code ClientHandler} of the client which sent the message
      */
-    public synchronized void handleMessage(String jsonMessage, ClientHandler ch) {
+    public synchronized void handleMessage(String jsonMessage, ClientHandler ch) throws GameEndedException {
         switch (getMessageStatus(jsonMessage)) {
             case "LOGIN" -> handleLoginMessage(jsonMessage, ch);
             case "ACTION" -> handleActionMessage(jsonMessage, ch);
@@ -233,8 +234,12 @@ public class Controller {
             sendErrorMessage(toRemove.getClientHandler(), "LOGIN", errorMessage, 1);
             loggedUsers.remove(toRemove);
         }
-
-        ServerLoginMessage toSend = getServerLoginMessage("A new game is starting");
+        String message = "A new game is starting";
+        if (desiredNumberOfPlayers == 4) {
+            message += ". The teams are: " + loggedUsers.get(0).getUsername() + " and " + loggedUsers.get(2).getUsername() +
+                    " [WHITE team]  VS  " + loggedUsers.get(1).getUsername() + " and " + loggedUsers.get(3).getUsername() + " [BLACK team]";
+        }
+        ServerLoginMessage toSend = getServerLoginMessage(message);
 
         for (PlayerClient playerClient : loggedUsers) {
             // Alert player that game is starting
@@ -256,7 +261,7 @@ public class Controller {
      * @param jsonMessage Json string which contains an action message
      * @param ch          the {@code ClientHandler} of the client who sent the message
      */
-    private void handleActionMessage(String jsonMessage, ClientHandler ch) {
+    private void handleActionMessage(String jsonMessage, ClientHandler ch) throws GameEndedException {
         if (gameController == null) {
             sendErrorMessage(ch, "ACTION", "Game is not started yet", 1);
         }

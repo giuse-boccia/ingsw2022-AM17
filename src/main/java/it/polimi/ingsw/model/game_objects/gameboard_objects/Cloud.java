@@ -57,11 +57,14 @@ public class Cloud implements Place {
         students.add(student);
     }
 
+    @Override
     public ArrayList<Student> getStudents() {
-        return students;
+        return new ArrayList<>(students);
     }
 
-    public int getMaxStudents() {
-        return maxStudents;
+    @Override
+    public void setStudents(ArrayList<Student> students) {
+        this.students.clear();
+        this.students.addAll(students);
     }
 }

@@ -4,9 +4,8 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
-import it.polimi.ingsw.model.game_objects.Student;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Character {
 
@@ -45,8 +44,8 @@ public abstract class Character {
      * @param currentPlayerActionPhase the {@code PlayerActionPhase} which the effect is used in
      * @param island                   the {@code Island} which the {@code Character} affects
      * @param color                    the {@code Color} which the {@code Character} affects
-     * @param srcStudents              the students to be moved to the destination
-     * @param dstStudents              the students to be moved to the source (only if the effect is a "swap" effect)
+     * @param srcColors                the students to be moved to the destination
+     * @param dstColors                the students to be moved to the source (only if the effect is a "swap" effect)
      * @throws InvalidCharacterException       if
      * @throws CharacterAlreadyPlayedException if the current {@code Player} has already played a {@code Character}
      * @throws StudentNotOnTheCardException    if the {@code Character} has not the selected {@code Student} on it
@@ -56,6 +55,6 @@ public abstract class Character {
      */
     public abstract void useEffect(
             PlayerActionPhase currentPlayerActionPhase, Island island, Color color,
-            ArrayList<Student> srcStudents, ArrayList<Student> dstStudents
+            List<Color> srcColors, List<Color> dstColors
     ) throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException, EmptyBagException;
 }
