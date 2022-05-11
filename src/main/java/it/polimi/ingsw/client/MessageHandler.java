@@ -8,6 +8,8 @@ import it.polimi.ingsw.messages.login.ServerLoginMessage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Class which handles a single message from the server within a separate thread
@@ -15,10 +17,25 @@ import java.util.List;
 public class MessageHandler {
     private final NetworkClient nc;
     private final Client client;
+    private boolean isOkay = false;
 
     public MessageHandler(NetworkClient nc) {
         this.nc = nc;
         this.client = nc.getClient();
+    }
+
+    public void startPongThread() {
+        Timer timer = new Timer("PONG THREAD");
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                if (!isOkay) {
+                    client.gracefulTermination("Server crashed");
+                }
+                isOkay = false;
+            }
+        };
+        timer.schedule(task, 3000, 3000);
     }
 
     /**
@@ -51,6 +68,7 @@ public class MessageHandler {
      */
     private void handlePing() {
         sendPong();
+        isOkay = true;
     }
 
     /**

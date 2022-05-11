@@ -73,6 +73,7 @@ public class NetworkClient extends Thread {
     @Override
     public void run() {
         MessageHandler mh = new MessageHandler(NetworkClient.this);
+        mh.startPongThread();
         try {
             while (true) {
                 String jsonMessage = socketIn.readLine();
