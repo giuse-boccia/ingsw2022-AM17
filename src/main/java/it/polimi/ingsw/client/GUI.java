@@ -2,6 +2,7 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_state.GameState;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,6 +60,11 @@ public class GUI extends Client {
     }
 
     @Override
+    public void updateGameState(GameState gameState) {
+
+    }
+
+    @Override
     public ArrayList<Color> askColorListForSwapCharacters(int maxBound, String secondElement) throws IOException {
         return null;
     }
@@ -68,51 +74,26 @@ public class GUI extends Client {
 
     }
 
-    /**
-     * Asks the player to input a username
-     *
-     * @return the username string chosen by the player
-     */
     @Override
     public String askUsername() throws IOException {
         return null;
     }
 
-    /**
-     * Asks the player to input the number of players
-     *
-     * @return an integer from 2 to 4 indicating the desired number of player
-     */
     @Override
     public int askNumPlayers() throws IOException {
         return 0;
     }
 
-    /**
-     * Asks the player to choose whether to play in expert mode or not
-     *
-     * @return true if the player wants to play in expert mode, false otherwise
-     */
     @Override
     public boolean askExpertMode() throws IOException {
         return false;
     }
 
-    /**
-     * Shows the current state of the lobby
-     *
-     * @param gameLobby the {@code GameLobby} object containing the list of players
-     */
     @Override
     public void showCurrentLobby(GameLobby gameLobby) {
 
     }
 
-    /**
-     * Asks the player to pick a color
-     *
-     * @return the picked color
-     */
     @Override
     public Color pickColor() {
         return null;

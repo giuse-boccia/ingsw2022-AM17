@@ -40,10 +40,10 @@ public class ServerLoginMessage extends Message {
     }
 
     /**
-     * Deserializes a json {@code String} into the corresponding {@code LoginMessage} object
+     * Returns a {@code ServerLoginMessage} object from a Json {@code String}
      *
-     * @param json a json {@code String}
-     * @return a {@code LoginMessage} object
+     * @param json the Json {@code String}
+     * @return a {@code ServerLoginMessage} object from a Json {@code String}
      */
     public static ServerLoginMessage fromJson(String json) throws JsonSyntaxException {
         Gson gson = new Gson();

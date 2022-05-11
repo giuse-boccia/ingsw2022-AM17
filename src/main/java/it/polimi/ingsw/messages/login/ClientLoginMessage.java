@@ -28,12 +28,6 @@ public class ClientLoginMessage extends Message {
         return numPlayers;
     }
 
-    public static ClientLoginMessage getMessageFromJSON(String json) throws JsonSyntaxException {
-        Gson gson = new Gson();
-        return gson.fromJson(json, new TypeToken<ClientLoginMessage>() {
-        }.getType());
-    }
-
     public String getAction() {
         return action;
     }
@@ -52,5 +46,17 @@ public class ClientLoginMessage extends Message {
 
     public void setExpert(boolean expert) {
         this.expert = expert;
+    }
+
+    /**
+     * Returns a {@code ClientLoginMessage} object from a Json {@code String}
+     *
+     * @param json the Json {@code String}
+     * @return a {@code ClientLoginMessage} object from a Json {@code String}
+     */
+    public static ClientLoginMessage fromJSON(String json) throws JsonSyntaxException {
+        Gson gson = new Gson();
+        return gson.fromJson(json, new TypeToken<ClientLoginMessage>() {
+        }.getType());
     }
 }

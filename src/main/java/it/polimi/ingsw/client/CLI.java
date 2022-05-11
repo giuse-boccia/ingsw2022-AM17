@@ -1,7 +1,9 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_state.GameState;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,7 +26,7 @@ public class CLI extends Client {
 
     @Override
     public String askUsername() throws IOException {
-        System.out.print("Insert username: ");
+        System.out.print(Messages.ASK_USERNAME);
         String username = stdIn.readLine();
         setUsername(username);
         return username;
@@ -50,7 +52,7 @@ public class CLI extends Client {
 
     @Override
     public void showCurrentLobby(GameLobby lobby) {
-        clearCommandWindow();
+        printBlueLine();
         String message = "GAME: " + lobby.getPlayers().length;
         if (lobby.getNumPlayers() != -1) {
             message += "/" + lobby.getNumPlayers();
@@ -63,7 +65,7 @@ public class CLI extends Client {
         for (String name : lobby.getPlayers()) {
             System.out.println("  - " + name);
         }
-        System.out.println("");
+        System.out.println();
     }
 
     @Override
@@ -73,9 +75,9 @@ public class CLI extends Client {
 
     @Override
     public void gracefulTermination(String message) {
-        clearCommandWindow();
+        printBlueLine();
         System.out.println(message);
-        System.out.println("Application will now close...");
+        System.out.println(Messages.GRACEFUL_TERM);
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -181,24 +183,28 @@ public class CLI extends Client {
     }
 
 
-    /**
-     * Shows the message to the user
-     *
-     * @param message the message to be shown
-     */
     @Override
     public void showMessage(String message) {
-        clearCommandWindow();
+        printBlueLine();
         System.out.println(message);
     }
 
     /**
      * Prints a line containing only "-" characters
      */
-    private void clearCommandWindow() {
-        System.out.println("------------------------------------------------------------");
+    private void printBlueLine() {
+        System.out.println(CliView.BLUE_LINE);
     }
 
+    /**
+     * Asks the user to input an integer between lowerBound and upperBound
+     *
+     * @param lowerBound                  the minimum value which can be input by the user
+     * @param upperBound                  the maximum value which can be input by the user
+     * @param messageToShow               the message to show to let the user know why they have to input a number
+     * @param numberFormatErrMsgBeginning the first part of the error message shown if the user does not input an {@code Integer}
+     * @return the number input by the user (a correct one)
+     */
     private int askForInteger(int lowerBound, int upperBound, String messageToShow, String numberFormatErrMsgBeginning) throws IOException {
         int res;
 
@@ -214,5 +220,11 @@ public class CLI extends Client {
         } while (res < lowerBound || res > upperBound);
 
         return res;
+    }
+
+    @Override
+    public void updateGameState(GameState gameState) {
+        printBlueLine();
+        CliView.printGameState(gameState, getUsername());
     }
 }

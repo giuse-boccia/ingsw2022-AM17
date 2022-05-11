@@ -28,12 +28,23 @@ public class Message {
         this.error = error;
     }
 
+    /**
+     * Returns a {@code Message} object from a Json {@code String}
+     *
+     * @param json the Json {@code String}
+     * @return a {@code Message} object from a Json {@code String}
+     */
     public static Message fromJson(String json) {
         Gson gson = new Gson();
         return gson.fromJson(json, new TypeToken<Message>() {
         }.getType());
     }
 
+    /**
+     * Returns a Json {@code String} from a {@code Message}
+     *
+     * @return a Json {@code String} from a {@code Message}
+     */
     public String toJson() {
         Gson gson = new Gson();
         return gson.toJson(this);
