@@ -234,8 +234,12 @@ public class Controller {
             sendErrorMessage(toRemove.getClientHandler(), "LOGIN", errorMessage, 1);
             loggedUsers.remove(toRemove);
         }
-
-        ServerLoginMessage toSend = getServerLoginMessage("A new game is starting");
+        String message = "A new game is starting";
+        if (desiredNumberOfPlayers == 4) {
+            message += ". The teams are: " + loggedUsers.get(0).getUsername() + " and " + loggedUsers.get(2).getUsername() +
+                    " [WHITE team]  VS  " + loggedUsers.get(1).getUsername() + " and " + loggedUsers.get(3).getUsername() + " [BLACK team]";
+        }
+        ServerLoginMessage toSend = getServerLoginMessage(message);
 
         for (PlayerClient playerClient : loggedUsers) {
             // Alert player that game is starting
