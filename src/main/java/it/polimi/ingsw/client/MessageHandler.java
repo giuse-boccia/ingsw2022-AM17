@@ -32,6 +32,7 @@ public class MessageHandler {
             case "LOGIN" -> handleLogin(jsonMessage);
             case "ACTION" -> parseAction(jsonMessage);
             case "UPDATE" -> handleUpdate(jsonMessage);
+            case "END" -> handleEndGame(jsonMessage);
             default -> client.gracefulTermination("Invalid response from server");
         }
     }
@@ -110,7 +111,7 @@ public class MessageHandler {
     /**
      * Handles an action message
      */
-    private void parseAction(String jsonMessage) throws IOException {
+    private void parseAction(String jsonMessage) {
         // Action broadcast messages does not have to have an Action field: it
         // should receive the whole model
         ServerActionMessage actionMessage = ServerActionMessage.fromJson(jsonMessage);
@@ -171,6 +172,11 @@ public class MessageHandler {
                 client.gracefulTermination("Connection lost");
             }
         }).start();
+    }
+
+    private void handleEndGame(String json) {
+        ServerActionMessage actionMessage = ServerActionMessage.fromJson(json);
+        client.endGame(actionMessage.getDisplayText());
     }
 
 }

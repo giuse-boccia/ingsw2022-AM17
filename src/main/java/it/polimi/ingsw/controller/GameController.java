@@ -46,7 +46,7 @@ public class GameController {
         askForAssistant(firstPlayer);
     }
 
-    public void handleActionMessage(ClientActionMessage message, ClientHandler ch) {
+    public void handleActionMessage(ClientActionMessage message, ClientHandler ch) throws GameEndedException {
         if (message.getAction() == null) {
             sendErrorMessage(ch, "Invalid request", 3, "");
         }
@@ -105,14 +105,14 @@ public class GameController {
 
     }
 
-    private void handleStudentMovedToDining(Action action, PlayerClient player) {
+    private void handleStudentMovedToDining(Action action, PlayerClient player) throws GameEndedException {
         Color color = action.getArgs().getColor();
         DiningRoom dining = player.getPlayer().getDashboard().getDiningRoom();
 
         moveStudent(color, dining, player, "MOVE_STUDENT_TO_DINING");
     }
 
-    private void handleStudentMovedToIsland(Action action, PlayerClient player) {
+    private void handleStudentMovedToIsland(Action action, PlayerClient player) throws GameEndedException {
         Color color = action.getArgs().getColor();
         Integer islandIndex = action.getArgs().getIsland();
 
@@ -124,7 +124,7 @@ public class GameController {
         moveStudent(color, game.getGameBoard().getIslands().get(islandIndex), player, "MOVE_STUDENT_TO_ISLAND");
     }
 
-    private void moveStudent(Color color, Place destination, PlayerClient player, String actionName) {
+    private void moveStudent(Color color, Place destination, PlayerClient player, String actionName) throws GameEndedException {
         try {
             game.getCurrentRound().getCurrentPlayerActionPhase().moveStudent(color, destination);
         } catch (InvalidActionException | InvalidStudentException e) {
@@ -135,7 +135,7 @@ public class GameController {
         sendMessagesInPAP();
     }
 
-    private void handleMotherNatureMoved(Action action, PlayerClient player) {
+    private void handleMotherNatureMoved(Action action, PlayerClient player) throws GameEndedException {
         Integer steps = action.getArgs().getNum_steps();
 
         try {
@@ -148,7 +148,7 @@ public class GameController {
         sendMessagesInPAP();
     }
 
-    private void handleFillFromCloud(Action action, PlayerClient player) {
+    private void handleFillFromCloud(Action action, PlayerClient player) throws GameEndedException {
         Integer cloudNumber = action.getArgs().getCloud();
 
         try {
@@ -158,7 +158,7 @@ public class GameController {
             return;
         }
 
-        if (game.getCurrentRound().getCurrentPlayerActionPhase() != null) {
+        if (game.getCurrentRound().getCurrentPlayerActionPhase() != null || game.isEnded()) {
             sendMessagesInPAP();
         } else {
             currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
@@ -248,7 +248,13 @@ public class GameController {
         }
     }
 
-    private void sendMessagesInPAP() {
+    private void sendMessagesInPAP() throws GameEndedException {
+
+        if (game.isEnded()) {
+            alertGameEnded();
+            throw new GameEndedException("The game is ended");
+        }
+
         PlayerClient nextPlayer = getPlayerClientFromPlayer(
                 game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer()
         );
@@ -256,6 +262,26 @@ public class GameController {
         askForMoveInPAP(nextPlayer);
 
         //sendBroadcastWaitingMessage(nextPlayer);
+    }
+
+    private void alertGameEnded() {
+        // IDEA it could be good to add the status END to handle end game messages
+        ArrayList<Player> winners = game.getWinners();
+        for (PlayerClient player : players) {
+            ServerActionMessage actionMessage = new ServerActionMessage();
+            actionMessage.setStatus("END");
+            actionMessage.setPlayer(player.getUsername());
+
+            if (winners.contains(player.getPlayer())) {
+                // Win message
+                actionMessage.setDisplayText("Congratulations, you won the game!");
+            } else {
+                // Defeat message
+                actionMessage.setDisplayText("Game is ended. You lost");
+            }
+
+            player.getClientHandler().sendMessageToClient(actionMessage.toJson());
+        }
     }
 
     private boolean isCorrectSender(String username) {

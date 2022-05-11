@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import it.polimi.ingsw.exceptions.GameEndedException;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
@@ -76,7 +77,7 @@ public class Controller {
      * @param jsonMessage the message received from the client
      * @param ch          the {@code ClientHandler} of the client which sent the message
      */
-    public synchronized void handleMessage(String jsonMessage, ClientHandler ch) {
+    public synchronized void handleMessage(String jsonMessage, ClientHandler ch) throws GameEndedException {
         switch (getMessageStatus(jsonMessage)) {
             case "LOGIN" -> handleLoginMessage(jsonMessage, ch);
             case "ACTION" -> handleActionMessage(jsonMessage, ch);
@@ -256,7 +257,7 @@ public class Controller {
      * @param jsonMessage Json string which contains an action message
      * @param ch          the {@code ClientHandler} of the client who sent the message
      */
-    private void handleActionMessage(String jsonMessage, ClientHandler ch) {
+    private void handleActionMessage(String jsonMessage, ClientHandler ch) throws GameEndedException {
         if (gameController == null) {
             sendErrorMessage(ch, "ACTION", "Game is not started yet", 1);
         }
