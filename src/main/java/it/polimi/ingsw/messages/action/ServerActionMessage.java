@@ -43,6 +43,12 @@ public class ServerActionMessage extends Message {
         actions.add(action);
     }
 
+    /**
+     * Returns a {@code ServerActionMessage} object from a Json {@code String}
+     *
+     * @param json the Json {@code String}
+     * @return a {@code ServerActionMessage} object from a Json {@code String}
+     */
     public static ServerActionMessage fromJson(String json) {
         Gson gson = new Gson();
         return gson.fromJson(json, new TypeToken<ServerActionMessage>() {

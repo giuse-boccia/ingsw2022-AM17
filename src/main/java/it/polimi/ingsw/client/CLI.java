@@ -181,11 +181,6 @@ public class CLI extends Client {
     }
 
 
-    /**
-     * Shows the message to the user
-     *
-     * @param message the message to be shown
-     */
     @Override
     public void showMessage(String message) {
         clearCommandWindow();
@@ -199,6 +194,15 @@ public class CLI extends Client {
         System.out.println("------------------------------------------------------------");
     }
 
+    /**
+     * Asks the user to input an integer between lowerBound and upperBound
+     *
+     * @param lowerBound                  the minimum value which can be input by the user
+     * @param upperBound                  the maximum value which can be input by the user
+     * @param messageToShow               the message to show to let the user know why they have to input a number
+     * @param numberFormatErrMsgBeginning the first part of the error message shown if the user does not input an {@code Integer}
+     * @return the number input by the user (a correct one)
+     */
     private int askForInteger(int lowerBound, int upperBound, String messageToShow, String numberFormatErrMsgBeginning) throws IOException {
         int res;
 

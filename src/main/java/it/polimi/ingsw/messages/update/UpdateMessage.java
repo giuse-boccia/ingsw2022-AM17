@@ -31,6 +31,12 @@ public class UpdateMessage extends Message {
         this.displayText = displayText;
     }
 
+    /**
+     * Returns an {@code UpdateMessage} object from a Json {@code String}
+     *
+     * @param json the Json {@code String}
+     * @return an {@code UpdateMessage} object from a Json {@code String}
+     */
     public static UpdateMessage fromJson(String json) {
         Gson gson = new Gson();
         return gson.fromJson(json, new TypeToken<UpdateMessage>() {

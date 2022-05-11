@@ -1,11 +1,9 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.controller.ActionHandler;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
-import it.polimi.ingsw.messages.update.UpdateMessage;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,6 +23,9 @@ public class MessageHandler {
         this.client = nc.getClient();
     }
 
+    /**
+     * Starts a new {@code Thread} to check if the {@code Server} is still up and sending "PING" meessages
+     */
     public void startPongThread() {
         Timer timer = new Timer("PONG THREAD");
         TimerTask task = new TimerTask() {
@@ -130,7 +131,7 @@ public class MessageHandler {
     }
 
     /**
-     * Handles an action message
+     * Parses an action message sent by the server
      */
     private void parseAction(String jsonMessage) {
         // Action broadcast messages does not have to have an Action field: it
@@ -164,6 +165,9 @@ public class MessageHandler {
     }
 
 
+    /**
+     * Handles an action message
+     */
     private void handleAction(String chosenAction) {
         new Thread(() -> {
             try {
@@ -183,6 +187,11 @@ public class MessageHandler {
         }).start();
     }
 
+    /**
+     * Shows the user the list of possible actions they can select from and obtains the chosen one
+     *
+     * @param actions the list of actions the user can choose from
+     */
     private void handleMultipleActions(List<String> actions) {
         new Thread(() -> {
             try {
@@ -195,6 +204,11 @@ public class MessageHandler {
         }).start();
     }
 
+    /**
+     * Handles the end of the game and shows a message
+     *
+     * @param json the Json {@code String} to put into the message
+     */
     private void handleEndGame(String json) {
         ServerActionMessage actionMessage = ServerActionMessage.fromJson(json);
         client.endGame(actionMessage.getDisplayText());

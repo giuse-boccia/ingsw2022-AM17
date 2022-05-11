@@ -68,51 +68,26 @@ public class GUI extends Client {
 
     }
 
-    /**
-     * Asks the player to input a username
-     *
-     * @return the username string chosen by the player
-     */
     @Override
     public String askUsername() throws IOException {
         return null;
     }
 
-    /**
-     * Asks the player to input the number of players
-     *
-     * @return an integer from 2 to 4 indicating the desired number of player
-     */
     @Override
     public int askNumPlayers() throws IOException {
         return 0;
     }
 
-    /**
-     * Asks the player to choose whether to play in expert mode or not
-     *
-     * @return true if the player wants to play in expert mode, false otherwise
-     */
     @Override
     public boolean askExpertMode() throws IOException {
         return false;
     }
 
-    /**
-     * Shows the current state of the lobby
-     *
-     * @param gameLobby the {@code GameLobby} object containing the list of players
-     */
     @Override
     public void showCurrentLobby(GameLobby gameLobby) {
 
     }
 
-    /**
-     * Asks the player to pick a color
-     *
-     * @return the picked color
-     */
     @Override
     public Color pickColor() {
         return null;

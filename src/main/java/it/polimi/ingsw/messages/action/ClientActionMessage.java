@@ -15,12 +15,6 @@ public class ClientActionMessage extends Message {
         super.setStatus("ACTION");
     }
 
-    public static ClientActionMessage getMessageFromJSON(String json) throws JsonSyntaxException {
-        Gson gson = new Gson();
-        return gson.fromJson(json, new TypeToken<ClientActionMessage>() {
-        }.getType());
-    }
-
     public String getPlayer() {
         return player;
     }
@@ -35,5 +29,17 @@ public class ClientActionMessage extends Message {
 
     public void setAction(Action action) {
         this.action = action;
+    }
+
+    /**
+     * Returns a {@code ClientActionMessage} object from a Json {@code String}
+     *
+     * @param json the Json {@code String}
+     * @return a {@code ClientActionMessage} object from a Json {@code String}
+     */
+    public static ClientActionMessage fromJSON(String json) throws JsonSyntaxException {
+        Gson gson = new Gson();
+        return gson.fromJson(json, new TypeToken<ClientActionMessage>() {
+        }.getType());
     }
 }

@@ -103,7 +103,7 @@ public class Controller {
      */
     private void handleLoginMessage(String jsonMessage, ClientHandler ch) {
         try {
-            ClientLoginMessage loginMessage = ClientLoginMessage.getMessageFromJSON(jsonMessage);
+            ClientLoginMessage loginMessage = ClientLoginMessage.fromJSON(jsonMessage);
 
             if (loginMessage.getAction() == null) {
                 sendErrorMessage(ch, "LOGIN", "Bad request", 3);
@@ -267,7 +267,7 @@ public class Controller {
         }
 
         try {
-            ClientActionMessage actionMessage = ClientActionMessage.getMessageFromJSON(jsonMessage);
+            ClientActionMessage actionMessage = ClientActionMessage.fromJSON(jsonMessage);
             gameController.handleActionMessage(actionMessage, ch);
         } catch (JsonSyntaxException e) {
             sendErrorMessage(ch, "ACTION", "Bad request (syntax error)", 3);
