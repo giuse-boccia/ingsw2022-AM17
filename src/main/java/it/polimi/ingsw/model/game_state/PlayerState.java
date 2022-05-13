@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.game_objects.Wizard;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Immutable class to represent the current state of a player
@@ -41,7 +42,7 @@ public class PlayerState {
                 player.getWizard(),
                 player.getNumberOfTowers(),
                 player.getNumCoins(),
-                Arrays.stream(player.getHand()).mapToInt(Assistant::getValue).toArray(),
+                Arrays.stream(player.getHand()).filter(Objects::nonNull).mapToInt(Assistant::getValue).toArray(),
                 player.getDashboard().getEntrance().getStudents(),
                 player.getDashboard().getDiningRoom().getStudents()
         );
