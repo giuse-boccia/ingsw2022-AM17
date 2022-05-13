@@ -62,6 +62,7 @@ public class MessageHandler {
      */
     private void handleUpdate(String jsonMessage) {
         UpdateMessage updateMessage = UpdateMessage.fromJson(jsonMessage);
+        client.setCharacters(updateMessage.getGameState().getCharacters());
         client.updateGameState(updateMessage.getGameState());
         client.showMessage(updateMessage.getDisplayText());
     }
