@@ -355,11 +355,11 @@ public class GameController {
      * Alerts all the players that the current one is the last {@code Round}
      */
     private void alertLastRound() {
-        ServerActionMessage actionMessage = new ServerActionMessage();
-        actionMessage.setStatus("UPDATE");
-        actionMessage.setDisplayText("Be aware! This is the last round");
+        UpdateMessage updateMessage = new UpdateMessage();
+        updateMessage.setStatus("UPDATE");
+        updateMessage.setDisplayText("Be aware! This is the last round");
         for (PlayerClient player : players) {
-            player.getClientHandler().sendMessageToClient(actionMessage.toJson());
+            player.getClientHandler().sendMessageToClient(updateMessage.toJson());
         }
     }
 
