@@ -406,7 +406,7 @@ public class GameController {
     private PlayerClient getPlayerClientFromPlayer(Player player) {
         return players.stream().filter(
                 (p) -> p.getPlayer() == player
-        ).findAny().get();
+        ).findAny().orElse(null);
     }
 
     /**
