@@ -17,6 +17,8 @@ import it.polimi.ingsw.server.PlayerClient;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Controller {
     private final Gson gson;
@@ -27,6 +29,7 @@ public class Controller {
     private GameController gameController;
     private int pongCount;
     private boolean isExpert;
+    private int bound = 0;
 
     public Controller() {
         loggedUsers = new ArrayList<>();
@@ -279,24 +282,12 @@ public class Controller {
      * This is done on a parallel thread
      */
     public void startPingPong() {
-        new Thread(() -> {
-            while (true) {
-                synchronized (boundLock) {
-                    pongCount = 0;
-                }
-                Message ping = new Message();
-                ping.setStatus("PING");
-                int bound = 0;
-                for (PlayerClient user : loggedUsers) {
-                    user.getClientHandler().sendMessageToClient(ping.toJson());
-                    bound++;
-                }
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    return;
-                }
+        Timer timer = new Timer("PING THREAD");
+        bound = sendPingAndReturnBound();
+
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
                 synchronized (boundLock) {
                     if (pongCount < bound) {
                         for (PlayerClient user : loggedUsers) {
@@ -308,7 +299,25 @@ public class Controller {
                         System.out.println("Connection with one client lost, clearing the game...");
                     }
                 }
+
+                bound = sendPingAndReturnBound();
             }
-        }).start();
+        };
+
+        timer.schedule(task, 0, 2000);
+    }
+
+    private int sendPingAndReturnBound() {
+        synchronized (boundLock) {
+            pongCount = 0;
+        }
+        Message ping = new Message();
+        ping.setStatus("PING");
+        int bound = 0;
+        for (PlayerClient user : loggedUsers) {
+            user.getClientHandler().sendMessageToClient(ping.toJson());
+            bound++;
+        }
+        return bound;
     }
 }
