@@ -4,6 +4,7 @@ import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
+import it.polimi.ingsw.messages.update.UpdateMessage;
 
 import java.io.IOException;
 import java.util.List;
