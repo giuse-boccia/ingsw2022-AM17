@@ -21,6 +21,7 @@ import it.polimi.ingsw.server.PlayerClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class GameController {
 
@@ -415,8 +416,13 @@ public class GameController {
      * @return the {@code Player} who has the same username as the input one
      */
     private Player getPlayerFromUsername(String username) {
-        return players.stream().filter(
+        Optional<PlayerClient> playerClient = players.stream().filter(
                 (p) -> p.getUsername().equals(username)
-        ).findAny().get().getPlayer();
+        ).findAny();
+        if (playerClient.isPresent()) {
+            return playerClient.get().getPlayer();
+        }
+        // If the message comes from a player which is not in the game the function returns a new, invalid, Player
+        return new Player("", 6);
     }
 }
