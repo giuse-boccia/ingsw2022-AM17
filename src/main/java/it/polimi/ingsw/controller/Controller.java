@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.GameEndedException;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
@@ -11,7 +12,7 @@ import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.server.ClientHandler;
+import it.polimi.ingsw.server.Communicable;
 import it.polimi.ingsw.server.PlayerClient;
 
 import java.lang.reflect.Type;
@@ -41,12 +42,12 @@ public class Controller {
     /**
      * Sends an error message to the client
      *
-     * @param ch           The {@code ClientHandler} of the client which caused the error
+     * @param ch           The {@code Communicable} interface of the client which caused the error
      * @param status       "LOGIN" or "ACTION"
      * @param errorMessage the string which will be shown to the user
      * @param errorCode    an integer representing the error which occurred
      */
-    public static void sendErrorMessage(ClientHandler ch, String status, String errorMessage, int errorCode) {
+    public static void sendErrorMessage(Communicable ch, String status, String errorMessage, int errorCode) {
         if (status.equals("LOGIN")) {
             ServerLoginMessage message = new ServerLoginMessage();
             message.setError(errorCode);
@@ -65,9 +66,9 @@ public class Controller {
      * Handles a message received from a Client and sends the appropriate response
      *
      * @param jsonMessage the message received from the client
-     * @param ch          the {@code ClientHandler} of the client which sent the message
+     * @param ch          the {@code Communicable} interface of the client which sent the message
      */
-    public synchronized void handleMessage(String jsonMessage, ClientHandler ch) throws GameEndedException {
+    public synchronized void handleMessage(String jsonMessage, Communicable ch) throws GameEndedException {
         switch (getMessageStatus(jsonMessage)) {
             case "LOGIN" -> handleLoginMessage(jsonMessage, ch);
             case "ACTION" -> handleActionMessage(jsonMessage, ch);
@@ -102,9 +103,9 @@ public class Controller {
      * Deserializes and handles a login message
      *
      * @param jsonMessage Json string which contains a login message
-     * @param ch          the {@code ClientHandler} of the client who sent the message
+     * @param ch          the {@code Communicable} interface of the client who sent the message
      */
-    private void handleLoginMessage(String jsonMessage, ClientHandler ch) {
+    private void handleLoginMessage(String jsonMessage, Communicable ch) {
         try {
             ClientLoginMessage loginMessage = ClientLoginMessage.fromJSON(jsonMessage);
 
@@ -120,28 +121,34 @@ public class Controller {
 
             }
         } catch (JsonSyntaxException e) {
-            sendErrorMessage(ch, "LOGIN", "Num players must be a number", 3);
+            sendErrorMessage(ch, "LOGIN", Messages.INVALID_FORMAT_NUM_PLAYER, 3);
         }
     }
 
     /**
      * Sets the desired number of players of the game if possible
      *
-     * @param ch         the {@code ClientHandler} of the client who sent the message
+     * @param ch         the {@code Communicable} interface of the client who sent the message
      * @param numPlayers the value contained in the message received
      */
-    private void setGameParameters(ClientHandler ch, int numPlayers, boolean isExpert) {
-        if (numPlayers < 2 || numPlayers > 4) {
-            sendErrorMessage(ch, "LOGIN", "Num players must be between 2 and 4", 3);
-        } else {
-            desiredNumberOfPlayers = numPlayers;
-            this.isExpert = isExpert;
-            System.out.println("GAME CREATED | " + numPlayers + " players | " + (isExpert ? "expert" : "non expert") + " mode");
+    private void setGameParameters(Communicable ch, int numPlayers, boolean isExpert) {
+        if (loggedUsers.isEmpty() || loggedUsers.get(0).getCommunicable() != ch) {
+            sendErrorMessage(ch, "LOGIN", Messages.INVALID_PLAYER_CREATING_GAME, 3);
+            return;
         }
+        if (numPlayers < 2 || numPlayers > 4) {
+            sendErrorMessage(ch, "LOGIN", Messages.INVALID_NUM_PLAYERS, 3);
+            return;
+        }
+
+        desiredNumberOfPlayers = numPlayers;
+        this.isExpert = isExpert;
+        System.out.println("GAME CREATED | " + numPlayers + " players | " + (isExpert ? "expert" : "non expert") + " mode");
+
         if (!isGameReady()) {
-            ServerLoginMessage message = getServerLoginMessage("A new game was created!");
+            ServerLoginMessage message = getServerLoginMessage(Messages.GAME_CREATED);
             for (PlayerClient player : loggedUsers) {
-                player.getClientHandler().sendMessageToClient(message.toJson());
+                player.getCommunicable().sendMessageToClient(message.toJson());
             }
         }
     }
@@ -149,23 +156,23 @@ public class Controller {
     /**
      * Adds the user who sent the message to the loggedUsers {@code ArrayList} if possible
      *
-     * @param ch       the {@code ClientHandler} of the client who sent the message
+     * @param ch       the {@code Communicable} interface of the client who sent the message
      * @param username the username of the user to be added
      */
-    private void addUser(ClientHandler ch, String username) {
+    private void addUser(Communicable ch, String username) {
 
         if (username == null || username.trim().equals("")) {
-            sendErrorMessage(ch, "LOGIN", "Invalid username field", 3);
+            sendErrorMessage(ch, "LOGIN", Messages.INVALID_USERNAME, 3);
         } else if ((desiredNumberOfPlayers != -1 && loggedUsers.size() >= desiredNumberOfPlayers) || loggedUsers.size() >= 4 || gameController != null) {
-            sendErrorMessage(ch, "LOGIN", "The lobby is full", 1);
+            sendErrorMessage(ch, "LOGIN", Messages.LOBBY_FULL, 1);
         } else if (username.length() > 32) {
-            sendErrorMessage(ch, "LOGIN", "Username is too long (max 32 characters)", 3);
+            sendErrorMessage(ch, "LOGIN", Messages.USERNAME_TOO_LONG, 3);
         } else if (loggedUsers.stream().anyMatch(u -> u.getUsername().equals(username))) {
-            sendErrorMessage(ch, "LOGIN", "Username already taken", 2);
+            sendErrorMessage(ch, "LOGIN", Messages.USERNAME_ALREADY_TAKEN, 2);
         } else {
             PlayerClient newUser = new PlayerClient(ch, username);
             loggedUsers.add(newUser);
-            System.out.println("Added player " + newUser.getUsername());
+            System.out.println(Messages.ADDED_PLAYER + newUser.getUsername());
 
             if (newUser == loggedUsers.get(0)) {
                 askDesiredNumberOfPlayers(ch);
@@ -184,14 +191,14 @@ public class Controller {
      */
     private void sendBroadcastMessage() {
 
-        ServerLoginMessage res = getServerLoginMessage("A new player has joined");
+        ServerLoginMessage res = getServerLoginMessage(Messages.NEW_PLAYER_JOINED);
 
         if (desiredNumberOfPlayers != -1) {
-            loggedUsers.get(0).getClientHandler().sendMessageToClient(res.toJson());
+            loggedUsers.get(0).getCommunicable().sendMessageToClient(res.toJson());
         }
 
         for (int i = 1; i < loggedUsers.size(); i++) {
-            loggedUsers.get(i).getClientHandler().sendMessageToClient(res.toJson());
+            loggedUsers.get(i).getCommunicable().sendMessageToClient(res.toJson());
         }
     }
 
@@ -213,12 +220,12 @@ public class Controller {
     /**
      * Sends a message asking for the desired number of players and the mode of the game
      *
-     * @param ch the {@code ClientHandler} of the player to send the message to
+     * @param ch the {@code Communicable} interface of the player to send the message to
      */
-    private void askDesiredNumberOfPlayers(ClientHandler ch) {
+    private void askDesiredNumberOfPlayers(Communicable ch) {
         ServerLoginMessage res = new ServerLoginMessage();
         res.setAction("CREATE_GAME");
-        res.setDisplayText("You are the first player. Set game parameters");
+        res.setDisplayText(Messages.SET_GAME_PARAMETERS);
 
         ch.sendMessageToClient(res.toJson());
 
@@ -234,10 +241,10 @@ public class Controller {
             // Alert player that game is full and removes him
             PlayerClient toRemove = loggedUsers.get(desiredNumberOfPlayers);
             String errorMessage = "A new game for " + desiredNumberOfPlayers + " players is starting. Your connection will be closed";
-            sendErrorMessage(toRemove.getClientHandler(), "LOGIN", errorMessage, 1);
+            sendErrorMessage(toRemove.getCommunicable(), "LOGIN", errorMessage, 1);
             loggedUsers.remove(toRemove);
         }
-        String message = "A new game is starting";
+        String message = Messages.GAME_STARTING;
         if (desiredNumberOfPlayers == 4) {
             message += ". The teams are: " + loggedUsers.get(0).getUsername() + " and " + loggedUsers.get(2).getUsername() +
                     " [WHITE team]  VS  " + loggedUsers.get(1).getUsername() + " and " + loggedUsers.get(3).getUsername() + " [BLACK team]";
@@ -246,7 +253,7 @@ public class Controller {
 
         for (PlayerClient playerClient : loggedUsers) {
             // Alert player that game is starting
-            playerClient.getClientHandler().sendMessageToClient(toSend.toJson());
+            playerClient.getCommunicable().sendMessageToClient(toSend.toJson());
             playerClient.setPlayer(new Player(playerClient.getUsername(), desiredNumberOfPlayers % 2 == 0 ? 8 : 6));
         }
 
@@ -262,9 +269,9 @@ public class Controller {
      * Deserializes and handles an action message
      *
      * @param jsonMessage Json string which contains an action message
-     * @param ch          the {@code ClientHandler} of the client who sent the message
+     * @param ch          the {@code Communicable} interface of the client who sent the message
      */
-    private void handleActionMessage(String jsonMessage, ClientHandler ch) throws GameEndedException {
+    private void handleActionMessage(String jsonMessage, Communicable ch) throws GameEndedException {
         if (gameController == null) {
             sendErrorMessage(ch, "ACTION", "Game is not started yet", 1);
         }
@@ -291,7 +298,7 @@ public class Controller {
                 synchronized (boundLock) {
                     if (pongCount < bound) {
                         for (PlayerClient user : loggedUsers) {
-                            sendErrorMessage(user.getClientHandler(), "LOGIN", "Connection with one client lost", 3);
+                            sendErrorMessage(user.getCommunicable(), "LOGIN", "Connection with one client lost", 3);
                         }
                         loggedUsers.clear();
                         gameController = null;
@@ -315,9 +322,25 @@ public class Controller {
         ping.setStatus("PING");
         int bound = 0;
         for (PlayerClient user : loggedUsers) {
-            user.getClientHandler().sendMessageToClient(ping.toJson());
+            user.getCommunicable().sendMessageToClient(ping.toJson());
             bound++;
         }
         return bound;
+    }
+
+    public int getPongCount() {
+        return pongCount;
+    }
+
+    public ArrayList<PlayerClient> getLoggedUsers() {
+        return new ArrayList<>(loggedUsers);
+    }
+
+    public int getNumPlayersOfGame() {
+        return desiredNumberOfPlayers;
+    }
+
+    public boolean isGameExpert() {
+        return isExpert;
     }
 }

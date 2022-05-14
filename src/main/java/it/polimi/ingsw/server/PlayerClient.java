@@ -3,17 +3,17 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.model.Player;
 
 public class PlayerClient {
-    private final ClientHandler ch;
+    private final Communicable ch;
     private final String username;
     private Player player;
 
-    public PlayerClient(ClientHandler ch, String username) {
+    public PlayerClient(Communicable ch, String username) {
         this.ch = ch;
         this.username = username;
         this.player = null;
     }
 
-    public ClientHandler getClientHandler() {
+    public Communicable getCommunicable() {
         return ch;
     }
 
