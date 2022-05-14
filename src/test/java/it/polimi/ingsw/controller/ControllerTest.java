@@ -187,7 +187,7 @@ class ControllerTest {
         assertEquals(3, response.getError());
         assertEquals("[ERROR] " + Messages.INVALID_NUM_PLAYERS, response.getDisplayText());
         assertNull(response.getGameLobby());
-        assertEquals(-1, controller.getNumPlayersOfGame());
+        assertNull(controller.getGame());
 
         // Num player is "test" -> invalid
         String wrongFormatJson = "{status:LOGIN,username:clod,action:CREATE_GAME,expert:true,numPlayers:test}";
@@ -204,7 +204,7 @@ class ControllerTest {
         assertEquals(3, thirdResponse.getError());
         assertEquals("[ERROR] " + Messages.INVALID_PLAYER_CREATING_GAME, thirdResponse.getDisplayText());
         assertNull(thirdResponse.getGameLobby());
-        assertEquals(-1, controller.getNumPlayersOfGame());
+        assertNull(controller.getGame());
     }
 
     /**
@@ -224,8 +224,8 @@ class ControllerTest {
         assertDoesNotThrow(() -> controller.handleMessage(validNumPlayersJson, ch));
 
         // A new expert game for 2 players should be started: clod and rick should be in, while giuse has to be kicked
-        assertEquals(2, controller.getNumPlayersOfGame());
-        assertTrue(controller.isGameExpert());
+        assertEquals(2, controller.getGame().getPlayers().size());
+        assertTrue(controller.getGame().isExpert());
         assertNotNull(controller.getLoggedUsers().get(0).getPlayer());
         assertNotNull(controller.getLoggedUsers().get(1).getPlayer());
 
@@ -273,8 +273,8 @@ class ControllerTest {
         String startGameJson = "{status:LOGIN,username:clod,action:CREATE_GAME,expert:true,numPlayers:4}";
         assertDoesNotThrow(() -> controller.handleMessage(startGameJson, ch));
 
-        assertEquals(4, controller.getNumPlayersOfGame());
-        assertTrue(controller.isGameExpert());
+        assertEquals(4, controller.getGame().getPlayers().size());
+        assertTrue(controller.getGame().isExpert());
     }
 
 }

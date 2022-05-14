@@ -11,6 +11,7 @@ import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.server.Communicable;
 import it.polimi.ingsw.server.PlayerClient;
@@ -336,11 +337,8 @@ public class Controller {
         return new ArrayList<>(loggedUsers);
     }
 
-    public int getNumPlayersOfGame() {
-        return desiredNumberOfPlayers;
-    }
-
-    public boolean isGameExpert() {
-        return isExpert;
+    public Game getGame() {
+        if (gameController == null) return null;
+        return gameController.getGame();
     }
 }
