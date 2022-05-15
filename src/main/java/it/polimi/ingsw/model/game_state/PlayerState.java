@@ -1,10 +1,7 @@
 package it.polimi.ingsw.model.game_state;
 
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.game_objects.Assistant;
-import it.polimi.ingsw.model.game_objects.Student;
-import it.polimi.ingsw.model.game_objects.TowerColor;
-import it.polimi.ingsw.model.game_objects.Wizard;
+import it.polimi.ingsw.model.game_objects.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,9 +19,10 @@ public class PlayerState {
     private final int[] assistants;
     private final List<Student> entrance;
     private final List<Student> dining;
+    private final List<Color> ownedProfessors;
 
 
-    private PlayerState(String name, TowerColor towerColor, Wizard wizard, int remainingTowers, int numCoins, int[] assistants, List<Student> entrance, List<Student> dining) {
+    private PlayerState(String name, TowerColor towerColor, Wizard wizard, int remainingTowers, int numCoins, int[] assistants, List<Student> entrance, List<Student> dining, List<Color> ownedProfessors) {
         this.name = name;
         this.towerColor = towerColor;
         this.wizard = wizard;
@@ -33,6 +31,7 @@ public class PlayerState {
         this.assistants = assistants;
         this.entrance = entrance;
         this.dining = dining;
+        this.ownedProfessors = ownedProfessors;
     }
 
     public PlayerState(Player player) {
@@ -44,7 +43,8 @@ public class PlayerState {
                 player.getNumCoins(),
                 Arrays.stream(player.getHand()).filter(Objects::nonNull).mapToInt(Assistant::getValue).toArray(),
                 player.getDashboard().getEntrance().getStudents(),
-                player.getDashboard().getDiningRoom().getStudents()
+                player.getDashboard().getDiningRoom().getStudents(),
+                player.getColorsOfOwnedProfessors()
         );
     }
 
@@ -78,5 +78,9 @@ public class PlayerState {
 
     public List<Student> getDining() {
         return dining;
+    }
+
+    public List<Color> getOwnedProfessors() {
+        return ownedProfessors;
     }
 }

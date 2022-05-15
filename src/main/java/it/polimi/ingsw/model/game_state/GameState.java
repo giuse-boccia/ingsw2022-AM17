@@ -15,16 +15,14 @@ import java.util.stream.Collectors;
 public class GameState {
     private final boolean isExpert;
     private final int MNIndex;
-    private final String[] professors;  // array of professors owner, if professors[i] is null then nobody owns the professor
     private final List<PlayerState> players;
     private final List<IslandState> islands;
     private final List<CharacterState> characters;
     private final List<CloudState> clouds;
 
-    public GameState(boolean isExpert, int MNIndex, String[] professors, List<PlayerState> players, List<IslandState> islands, List<CharacterState> characters, List<CloudState> clouds) {
+    public GameState(boolean isExpert, int MNIndex, List<PlayerState> players, List<IslandState> islands, List<CharacterState> characters, List<CloudState> clouds) {
         this.isExpert = isExpert;
         this.MNIndex = MNIndex;
-        this.professors = professors;
         this.players = players;
         this.islands = islands;
         this.characters = characters;
@@ -37,30 +35,23 @@ public class GameState {
      * @param game the game to create a GameState from
      */
     public GameState(Game game) {
-        this.isExpert = game.isExpert();
-        this.MNIndex = game.getGameBoard().getMotherNatureIndex();
+        this(
+                game.isExpert(),
+                game.getGameBoard().getMotherNatureIndex(),
+                game.getPlayers().stream()
+                        .map(PlayerState::new)
+                        .toList(),
+                game.getGameBoard().getIslands().stream()
+                        .map(IslandState::new)
+                        .toList(),
+                Arrays.stream(game.getGameBoard().getCharacters())
+                        .map(CharacterState::new)
+                        .toList(),
+                game.getGameBoard().getClouds().stream()
+                        .map(CloudState::new)
+                        .toList()
+        );
 
-        this.professors = new String[5];
-        for (int i = 0; i < Color.values().length; i++) {
-            Player owner = game.getGameBoard().getOwnerOfProfessor(Color.values()[i]);
-            professors[i] = (owner != null ? owner.getName() : null);
-        }
-
-        this.players = game.getPlayers().stream()
-                .map(PlayerState::new)
-                .toList();
-
-        this.islands = game.getGameBoard().getIslands().stream()
-                .map(IslandState::new)
-                .toList();
-
-        this.characters = Arrays.stream(game.getGameBoard().getCharacters())
-                .map(CharacterState::new)
-                .toList();
-
-        this.clouds = game.getGameBoard().getClouds().stream()
-                .map(CloudState::new)
-                .toList();
     }
 
     public boolean isExpert() {
@@ -69,10 +60,6 @@ public class GameState {
 
     public int getMNIndex() {
         return MNIndex;
-    }
-
-    public String[] getProfessors() {
-        return professors;
     }
 
     public List<PlayerState> getPlayers() {
