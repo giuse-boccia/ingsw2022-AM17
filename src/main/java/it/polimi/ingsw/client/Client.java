@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.Settings;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_state.CharacterState;
 import it.polimi.ingsw.model.game_state.GameState;
 
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.util.List;
 public abstract class Client {
     private static NetworkClient nc;
     private String username;
-    private String[] characters;
+    private List<CharacterState> characters;
 
     /**
      * Starts correctly the {@code CLI} or the {@code GUI} accordingly to the user choice
@@ -195,11 +196,11 @@ public abstract class Client {
         this.username = username;
     }
 
-    public String[] getCharacters() {
+    public List<CharacterState> getCharacters() {
         return characters;
     }
 
-    public void setCharacters(String[] characters) {
+    public void setCharacters(List<CharacterState> characters) {
         this.characters = characters;
     }
 

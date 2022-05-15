@@ -84,21 +84,18 @@ public class ActionHandler {
      * @param nc the {@code NetworkClient} of the {@code Client} to send the response message from
      */
     public static void handlePlayCharacter(NetworkClient nc) throws IOException {
-        // FIXME change this line
-        nc.getClient().setCharacters(new String[]{"move1FromCardToIsland", "noEntry", "swapUpTo2FromEntranceToDiningRoom"});
         nc.getClient().showAllCharactersWithIndex();
         int characterIndex = nc.getClient().askCharacterIndex() - 1;
-        handleCharacterPlayed(nc.getClient().getCharacters()[characterIndex], nc);
+        handleCharacterPlayed(nc.getClient().getCharacters().get(characterIndex).getCharacterName(), nc);
     }
 
     /**
      * Sends the correct {@code Message} to the {@code Server} containing the needed args for each {@code Character}
      *
-     * @param characterName the name of the chosen {@code Character}
-     * @param nc            the {@code NetworkClient} of the {@code Client} to send the response message from
+     * @param name the name of the chosen {@code Character}
+     * @param nc   the {@code NetworkClient} of the {@code Client} to send the response message from
      */
-    private static void handleCharacterPlayed(String characterName, NetworkClient nc) throws IOException {
-        CharacterName name = CharacterName.valueOf(characterName);
+    private static void handleCharacterPlayed(CharacterName name, NetworkClient nc) throws IOException {
         ActionArgs args = new ActionArgs();
         args.setCharacterName(name);
         switch (name) {
