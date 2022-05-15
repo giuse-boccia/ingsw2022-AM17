@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.action.ActionArgs;
@@ -59,10 +60,16 @@ public class GameController {
      */
     public void handleActionMessage(ClientActionMessage message, Communicable ch) throws GameEndedException {
         if (message.getAction() == null) {
-            sendActionErrorMessage(ch, "Invalid request", 3, "");
+            sendActionErrorMessage(ch, Messages.INVALID_REQUEST, 3, "");
+            return;
         }
 
-        PlayerClient player = players.stream().filter(user -> ch.equals(user.getCommunicable())).toList().get(0);
+        List<PlayerClient> playersMatchingCh = players.stream().filter(user -> ch.equals(user.getCommunicable())).toList();
+        if (playersMatchingCh.isEmpty()) {
+            sendActionErrorMessage(ch, Messages.NOT_LOGGED_IN, 3, "");
+            return;
+        }
+        PlayerClient player = playersMatchingCh.get(0);
 
         if (message.getAction().getName().equals("PLAY_ASSISTANT")) {
             handleAssistantPlayed(message.getAction(), player);
@@ -71,6 +78,7 @@ public class GameController {
 
         if (game.getCurrentRound().getCurrentPlayerActionPhase() != null && !isCorrectSender(message.getPlayer())) {
             sendActionErrorMessage(ch, "It's not your turn!", 1, "");
+            return;
         }
 
         Action action = message.getAction();
@@ -80,6 +88,7 @@ public class GameController {
             case "MOVE_MN" -> handleMotherNatureMoved(action, player);
             case "FILL_FROM_CLOUD" -> handleFillFromCloud(action, player);
             case "PLAY_CHARACTER" -> handlePlayCharacter(action, player);
+            default -> sendActionErrorMessage(ch, Messages.INVALID_REQUEST, 3, "");
         }
     }
 
@@ -92,7 +101,8 @@ public class GameController {
     private void handleAssistantPlayed(Action action, PlayerClient player) {
         Integer value = action.getArgs().getValue();
         if (value < 1 || value > 10) {
-            sendActionErrorMessage(player.getCommunicable(), "Invalid argument", 2, action.getName());
+            sendActionErrorMessage(player.getCommunicable(), Messages.INVALID_ARGUMENT, 2, action.getName());
+            return;
         }
 
         Assistant assistant = player.getPlayer().getHand()[value - 1];
@@ -106,9 +116,7 @@ public class GameController {
             return;
         }
 
-        currentPlayerIndex = (currentPlayerIndex + 1) % game.getPlayers().size();
-        PlayerClient curPlayer = players.get(currentPlayerIndex);
-
+        PlayerClient curPlayer;
 
         if (game.getCurrentRound().getPlanningPhase().isEnded()) {
             // When I send the message to the nextPlayer, I just have to call currentPap - it's already the pap of the current player
@@ -123,6 +131,7 @@ public class GameController {
 
             askForMoveInPAP(curPlayer);
         } else {
+            curPlayer = getPlayerClientFromPlayer(game.getCurrentRound().getPlanningPhase().getNextPlayer());
             sendBroadcastUpdateMessage(curPlayer);
             askForAssistant(curPlayer);
         }
