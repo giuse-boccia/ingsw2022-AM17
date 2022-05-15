@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.game_actions;
 
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.AlreadyPlayedAssistantException;
 import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.SameAssistantPlayedException;
@@ -13,7 +14,7 @@ import java.util.Objects;
 
 public class PlanningPhase {
 
-    private final ArrayList<Player> playersInOrder;
+    private ArrayList<Player> playersInOrder;
     private final ArrayList<Assistant> playedAssistants;
     private final Round round;
 
@@ -37,7 +38,7 @@ public class PlanningPhase {
     public void addAssistant(Assistant assistant) throws InvalidActionException, AlreadyPlayedAssistantException, SameAssistantPlayedException {
 
         if (assistant == null) {
-            throw new AlreadyPlayedAssistantException("You have already played this assistant");
+            throw new AlreadyPlayedAssistantException(Messages.ALREADY_PLAYED_ASSISTANT);
         }
 
         Player player = assistant.getPlayer();
@@ -46,12 +47,12 @@ public class PlanningPhase {
             throw new InvalidActionException("Planning phase is ended");
         }
 
-        if (player != playersInOrder.get(playedAssistants.size())) {
-            throw new InvalidActionException("It's not your turn");
+        if (player != getNextPlayer()) {
+            throw new InvalidActionException(Messages.NOT_YOUR_TURN);
         }
 
         if (!isAssistantPlayable(assistant)) {
-            throw new SameAssistantPlayedException("Someone already played the same assistant this turn");
+            throw new SameAssistantPlayedException(Messages.ANOTHER_PLAYED_ASSISTANT);
         }
 
         playedAssistants.add(assistant);
@@ -82,8 +83,12 @@ public class PlanningPhase {
         return true;
     }
 
-    public ArrayList<Assistant> getPlayedAssistants() {
-        return new ArrayList<>(playedAssistants);
+    public void setPlayersInOrder(ArrayList<Player> playersInOrder) {
+        this.playersInOrder = playersInOrder;
+    }
+
+    public Player getNextPlayer() {
+        return isEnded() ? null : playersInOrder.get(playedAssistants.size());
     }
 
     public boolean isEnded() {

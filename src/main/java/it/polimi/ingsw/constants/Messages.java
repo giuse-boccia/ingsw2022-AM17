@@ -27,4 +27,13 @@ public class Messages {
     public static final String NEW_PLAYER_JOINED = "A new player has joined";
     public static final String GAME_STARTING = "A new game is starting";
     public static final String GAME_CREATED = "A new game was created!";
+
+    // Errors in action phase
+    public static final String GAME_NOT_STARTED = "Game is not started yet";
+    public static final String NOT_YOUR_TURN = "It's not your turn";
+    public static final String INVALID_ARGUMENT = "Invalid argument";
+    public static final String ALREADY_PLAYED_ASSISTANT = "You have already played this assistant";
+    public static final String ANOTHER_PLAYED_ASSISTANT = "Someone already played the same assistant this turn";
+    public static final String NOT_LOGGED_IN = "You are not logged in!";
+    public static final String INVALID_REQUEST = "Invalid request";
 }
