@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.utils;
 
 import it.polimi.ingsw.constants.ConsoleColors;
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 
@@ -79,11 +80,11 @@ public class Students {
         StringBuilder stringBuilder = new StringBuilder();
         for (Student student : students) {
             switch (student.getColor()) {
-                case GREEN -> stringBuilder.append(ConsoleColors.GREEN + "\u25CF" + ConsoleColors.RESET);
-                case PINK -> stringBuilder.append(ConsoleColors.PURPLE + "\u25CF" + ConsoleColors.RESET);
-                case RED -> stringBuilder.append(ConsoleColors.RED + "\u25CF" + ConsoleColors.RESET);
-                case BLUE -> stringBuilder.append(ConsoleColors.BLUE + "\u25CF" + ConsoleColors.RESET);
-                case YELLOW -> stringBuilder.append(ConsoleColors.YELLOW + "\u25CF" + ConsoleColors.RESET);
+                case GREEN -> stringBuilder.append(ConsoleColors.GREEN + Messages.STUDENT_CHAR + ConsoleColors.RESET);
+                case PINK -> stringBuilder.append(ConsoleColors.PURPLE + Messages.STUDENT_CHAR + ConsoleColors.RESET);
+                case RED -> stringBuilder.append(ConsoleColors.RED + Messages.STUDENT_CHAR + ConsoleColors.RESET);
+                case BLUE -> stringBuilder.append(ConsoleColors.BLUE + Messages.STUDENT_CHAR + ConsoleColors.RESET);
+                case YELLOW -> stringBuilder.append(ConsoleColors.YELLOW + Messages.STUDENT_CHAR + ConsoleColors.RESET);
             }
         }
 
