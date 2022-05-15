@@ -69,23 +69,37 @@ public class Students {
     }
 
     /**
+     * Returns a String from a student.
+     * The string is composed by a console color sequence, the student char and the console color reset sequence
+     *
+     * @param student a {@code Student}
+     * @return a string containing only one printable char
+     */
+    public static String getStringFromStudent(Student student) {
+        String consoleColor = "";
+        switch (student.getColor()) {
+            case GREEN -> consoleColor = ConsoleColors.GREEN;
+            case PINK -> consoleColor = ConsoleColors.PURPLE;
+            case RED -> consoleColor = ConsoleColors.RED;
+            case BLUE -> consoleColor = ConsoleColors.BLUE;
+            case YELLOW -> consoleColor = ConsoleColors.YELLOW;
+        }
+
+        return consoleColor + Messages.STUDENT_CHAR + ConsoleColors.RESET;
+    }
+
+    /**
      * Returns a String from a list of students
      *
      * @param students a {@code List} of students
      * @return a string
      */
-    public static String getStringFromList(List<Student> students) {
+    public static String getStringFromStudentList(List<Student> students) {
         if (students == null || students.isEmpty()) return "";
 
         StringBuilder stringBuilder = new StringBuilder();
         for (Student student : students) {
-            switch (student.getColor()) {
-                case GREEN -> stringBuilder.append(ConsoleColors.GREEN + Messages.STUDENT_CHAR + ConsoleColors.RESET);
-                case PINK -> stringBuilder.append(ConsoleColors.PURPLE + Messages.STUDENT_CHAR + ConsoleColors.RESET);
-                case RED -> stringBuilder.append(ConsoleColors.RED + Messages.STUDENT_CHAR + ConsoleColors.RESET);
-                case BLUE -> stringBuilder.append(ConsoleColors.BLUE + Messages.STUDENT_CHAR + ConsoleColors.RESET);
-                case YELLOW -> stringBuilder.append(ConsoleColors.YELLOW + Messages.STUDENT_CHAR + ConsoleColors.RESET);
-            }
+            stringBuilder.append(getStringFromStudent(student));
         }
 
         return stringBuilder.toString();
