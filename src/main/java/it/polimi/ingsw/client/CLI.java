@@ -5,9 +5,8 @@ import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_state.GameState;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +16,8 @@ public class CLI extends Client {
 
     public CLI() {
         stdIn = new BufferedReader(new InputStreamReader(System.in));
+        // TODO: move the following comment in Project WIKI
+        // NOTE: for correct visualization in Windows Terminal, run command "chcp 65001" before "java -jar ..."
     }
 
     @Override

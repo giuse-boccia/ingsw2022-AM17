@@ -23,7 +23,7 @@ public class Students {
      * @param color    a {@code Color} to count the students of
      * @return the number of students of the given {@code Color}
      */
-    public static int countColor(ArrayList<Student> students, Color color) {
+    public static int countColor(List<Student> students, Color color) {
         int res = 0;
         for (Student student : students) {
             if (student.getColor() == color) {
@@ -99,7 +99,7 @@ public class Students {
 
         StringBuilder stringBuilder = new StringBuilder();
         for (Student student : students) {
-            stringBuilder.append(getStringFromStudent(student));
+            stringBuilder.append(getStringFromStudent(student)).append(" ");
         }
 
         return stringBuilder.toString();

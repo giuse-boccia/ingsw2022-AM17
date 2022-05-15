@@ -15,7 +15,7 @@ public class SavedGameState extends GameState {
     private final RoundState roundState;
 
     public SavedGameState(boolean isExpert, int MNIndex, String[] professors, List<PlayerState> players, List<IslandState> islands, List<CharacterState> characters, List<CloudState> clouds, List<Student> bag, RoundState roundState) {
-        super(isExpert, MNIndex, professors, players, islands, characters, clouds);
+        super(isExpert, MNIndex, players, islands, characters, clouds);
         this.bag = bag;
         this.roundState = roundState;
     }

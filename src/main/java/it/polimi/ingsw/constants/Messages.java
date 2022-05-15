@@ -4,7 +4,10 @@ public class Messages {
     public static final String ASK_USERNAME = "Insert username: ";
     public static final String GRACEFUL_TERM = "Application will now close...";
 
-    public static final String STUDENT_CHAR = "\u25CF";
+    public static final String STUDENT_CHAR = "●";     // in Windows Terminal is '?' unless you run "chcp 65001" beforehand
+    public static final String PROF_CHAR = "▲";
+    public static final String NO_ENTRY_CHAR = "X";
+
 
     // Possible status in messages
     public static final String STATUS_LOGIN = "LOGIN";
