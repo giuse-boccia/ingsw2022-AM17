@@ -30,7 +30,8 @@ public class DiningRoom implements Place {
 
     @Override
     public void setStudents(ArrayList<Student> students) {
-
+        this.students.clear();
+        this.students.addAll(students);
     }
 
     @Override

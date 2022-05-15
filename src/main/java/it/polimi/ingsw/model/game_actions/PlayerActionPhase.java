@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.game_actions;
 
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.characters.*;
@@ -278,7 +279,7 @@ public class PlayerActionPhase {
         checkInvalidAction();
 
         if (numSteps < 0 || numSteps > mnStrategy.getMNMaxSteps(assistant)) {
-            throw new InvalidStepsForMotherNatureException("Invalid move for mother nature");
+            throw new InvalidStepsForMotherNatureException(Messages.INVALID_MN_MOVE);
         }
 
         gb.moveMotherNature(numSteps);
@@ -315,11 +316,11 @@ public class PlayerActionPhase {
         checkInvalidAction();
 
         if (!mnMoved) {
-            throw new InvalidActionException("Move mother nature first");
+            throw new InvalidActionException(Messages.MOVE_MN_FIRST);
         }
 
         if (cloudIndex < 0 || cloudIndex >= gb.getClouds().size() || gb.getClouds().get(cloudIndex).isEmpty()) {
-            throw new InvalidCloudException("The selected cloud is not valid");
+            throw new InvalidCloudException(Messages.INVALID_CLOUD);
         }
 
         Cloud cloud = gb.getClouds().get(cloudIndex);

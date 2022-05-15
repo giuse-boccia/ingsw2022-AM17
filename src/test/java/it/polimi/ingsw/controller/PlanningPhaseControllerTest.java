@@ -157,7 +157,7 @@ class PlanningPhaseControllerTest {
     /**
      * Starts a new expert game - handling the login phase - for Rick and Giuse, that have to play their assistant in this order
      */
-    private void startNewExpertGameForTwo() throws GameEndedException {
+    public void startNewExpertGameForTwo() throws GameEndedException {
         String rickLoginJson = "{status:LOGIN,username:rick,action:SET_USERNAME,error:0}";
         String giuseLoginJson = "{status:LOGIN,username:giuse,action:SET_USERNAME,error:0}";
 

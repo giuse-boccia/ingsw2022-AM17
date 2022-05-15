@@ -22,6 +22,7 @@ import it.polimi.ingsw.server.PlayerClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class GameController {
@@ -71,13 +72,18 @@ public class GameController {
         }
         PlayerClient player = playersMatchingCh.get(0);
 
+        if (!Objects.equals(player.getPlayer().getName(), message.getPlayer())) {
+            sendActionErrorMessage(ch, Messages.INVALID_IDENTITY, 3, "");
+            return;
+        }
+
         if (message.getAction().getName().equals("PLAY_ASSISTANT")) {
             handleAssistantPlayed(message.getAction(), player);
             return;
         }
 
         if (game.getCurrentRound().getCurrentPlayerActionPhase() != null && !isCorrectSender(message.getPlayer())) {
-            sendActionErrorMessage(ch, "It's not your turn!", 1, "");
+            sendActionErrorMessage(ch, Messages.NOT_YOUR_TURN, 1, "");
             return;
         }
 
