@@ -133,6 +133,9 @@ class PlanningPhaseControllerTest {
         assertEquals("[ERROR] " + Messages.ANOTHER_PLAYED_ASSISTANT, giuseResponse.getDisplayText());
     }
 
+    /**
+     * Completes the first PlanningPhase in a two players match
+     */
     @Test
     void testValidPlanningPhaseForTwo() throws GameEndedException {
         testValidPlayAssistant();
