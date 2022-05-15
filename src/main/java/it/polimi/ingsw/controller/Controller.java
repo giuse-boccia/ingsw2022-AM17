@@ -274,7 +274,8 @@ public class Controller {
      */
     private void handleActionMessage(String jsonMessage, Communicable ch) throws GameEndedException {
         if (gameController == null) {
-            sendErrorMessage(ch, "ACTION", "Game is not started yet", 1);
+            sendErrorMessage(ch, "ACTION", Messages.GAME_NOT_STARTED, 1);
+            return;
         }
 
         try {
