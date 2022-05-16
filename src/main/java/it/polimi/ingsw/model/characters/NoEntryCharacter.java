@@ -42,7 +42,6 @@ public class NoEntryCharacter extends GameboardCharacter {
     public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, List<Color> srcColors, List<Color> dstColors) throws InvalidActionException {
         removeNoEntry();
         island.increaseNoEntryNum();
-        super.addCoinAfterFirstUse();
     }
 
     /**

@@ -37,7 +37,6 @@ public class EveryOneMovesCharacter extends GameboardCharacter {
                     player.getDashboard().getDiningRoom().giveStudent(getGameBoard().getBag(), studentToGive);
                 }
             }
-            super.addCoinAfterFirstUse();
         }
     }
 }

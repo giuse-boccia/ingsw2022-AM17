@@ -25,6 +25,5 @@ public class ResolveIslandCharacter extends GameboardCharacter {
     @Override
     public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, List<Color> srcColors, List<Color> dstColors) {
         currentPlayerActionPhase.resolveIsland(island);
-        super.addCoinAfterFirstUse();
     }
 }

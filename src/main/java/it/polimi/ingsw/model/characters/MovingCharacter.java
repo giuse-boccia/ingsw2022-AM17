@@ -61,10 +61,10 @@ public class MovingCharacter extends GameboardCharacter implements Place {
                 ArrayList<Student> srcStudents = getStudentListFromColorList(srcColors, curEntrance);
                 ArrayList<Student> dstStudents = getStudentListFromColorList(dstColors, this);
                 if (!this.students.containsAll(dstStudents)) {
-                    throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_ON_CARD);
+                    throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_FOUND);
                 }
                 if (!curEntrance.getStudents().containsAll(srcStudents)) {
-                    throw new InvalidActionException("One or more students are not yet in the entrance");
+                    throw new InvalidActionException(Messages.STUDENT_NOT_FOUND);
                 }
                 swapStudents(curEntrance, this, srcStudents, dstStudents);
             }
@@ -83,8 +83,6 @@ public class MovingCharacter extends GameboardCharacter implements Place {
             default -> throw new InvalidCharacterException("This is not a valid character");
 
         }
-
-        super.addCoinAfterFirstUse();
     }
 
     /**
@@ -139,7 +137,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         }
         ArrayList<Student> srcStudents = getStudentListFromColorList(srcColors, this);
         if (!students.containsAll(srcStudents)) {
-            throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_ON_CARD);
+            throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_FOUND);
         }
         if (srcStudents.size() != 1) {
             throw new InvalidActionException(Messages.MOVE_JUST_ONE);
@@ -157,7 +155,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         ArrayList<Student> sourceStudents = source.getStudents();
         for (Color color : colors) {
             Student toAdd = Students.findFirstStudentOfColor(sourceStudents, color);
-            if (toAdd == null) throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_ON_CARD);
+            if (toAdd == null) throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_FOUND);
             res.add(toAdd);
             sourceStudents.remove(toAdd);
         }
