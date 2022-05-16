@@ -149,6 +149,10 @@ public class PlayerActionPhase {
 
         Player owner = gb.getOwnerOfProfessor(color);   // null if nobody owns the professor (see method javadoc)
 
+        if (Students.countColor(getCurrentPlayer().getDashboard().getDiningRoom().getStudents(), color) == 0) {
+            return;
+        }
+
         if (owner == null) {
             gb.setOwnerOfProfessor(color, getCurrentPlayer());
             return;
@@ -202,6 +206,12 @@ public class PlayerActionPhase {
 
         getCurrentPlayer().removeCoins(character.getCost());
         character.addCoinAfterFirstUse();
+
+        if (character.getCardName() == CharacterName.move1FromCardToDining || character.getCardName() == CharacterName.swapUpTo2FromEntranceToDiningRoom) {
+            for (Color c : Color.values()) {
+                stealProfessorIfPossible(c);
+            }
+        }
     }
 
     /**
@@ -273,7 +283,6 @@ public class PlayerActionPhase {
      * @throws InvalidActionException               if the action is not valid
      * @throws InvalidStepsForMotherNatureException if the number of steps selected is greater than the allowed number of steps
      */
-    // FIXME Player check could be done in Game (if it's the Facade), which calls PlayerActionPhase - just a supposition though
     public void moveMotherNature(int numSteps) throws InvalidActionException, InvalidStepsForMotherNatureException {
 
         checkInvalidAction();
