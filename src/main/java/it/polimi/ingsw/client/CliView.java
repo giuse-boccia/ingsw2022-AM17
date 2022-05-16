@@ -120,11 +120,10 @@ public class CliView {
         } else {
             System.out.print(ConsoleColors.WHITE + "empty" + ConsoleColors.RESET);
         }
-        System.out.print(" | ");
 
         // NoEntry
         if (isExpert && islandState.getNoEntryNum() != 0) {
-            System.out.print('X' * islandState.getNoEntryNum() + " | ");
+            System.out.print(" | " + 'X' * islandState.getNoEntryNum() + " | ");
         }
 
         // MN indicator
