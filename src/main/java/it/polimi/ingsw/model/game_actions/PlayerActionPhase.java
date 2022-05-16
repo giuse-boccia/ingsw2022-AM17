@@ -189,7 +189,7 @@ public class PlayerActionPhase {
             throw new NotEnoughCoinsException("You don't have enough coins to play this character");
         }
         if (!canPlayCharacter()) {
-            throw new CharacterAlreadyPlayedException("You already played a character this turn");
+            throw new CharacterAlreadyPlayedException(Messages.ALREADY_PLAYED_CHARACTER);
         }
         try {
             character.useEffect(this, island, color, srcColors, dstColors);

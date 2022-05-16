@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.characters;
 
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
@@ -60,7 +61,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
                 ArrayList<Student> srcStudents = getStudentListFromColorList(srcColors, curEntrance);
                 ArrayList<Student> dstStudents = getStudentListFromColorList(dstColors, this);
                 if (!this.students.containsAll(dstStudents)) {
-                    throw new StudentNotOnTheCardException("One or more students are not yet on the card");
+                    throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_ON_CARD);
                 }
                 if (!curEntrance.getStudents().containsAll(srcStudents)) {
                     throw new InvalidActionException("One or more students are not yet in the entrance");
@@ -110,7 +111,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
      */
     private void swapStudents(Place src, Place dst, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidActionException, InvalidStudentException {
         if (srcStudents.size() > numStudents) {
-            throw new InvalidActionException("You can move up to two students");
+            throw new InvalidActionException(Messages.MOVING_MORE_STUDENTS);
         }
         if (srcStudents.size() != dstStudents.size()) {
             throw new InvalidActionException("This is not a valid swap");
@@ -133,24 +134,32 @@ public class MovingCharacter extends GameboardCharacter implements Place {
      * @throws InvalidActionException       if the action is not valid
      */
     private void moveStudentAwayFromCard(Place destination, List<Color> srcColors) throws StudentNotOnTheCardException, InvalidActionException, InvalidStudentException {
+        if (destination == null) {
+            throw new InvalidActionException(Messages.INVALID_ARGUMENT);
+        }
         ArrayList<Student> srcStudents = getStudentListFromColorList(srcColors, this);
         if (!students.containsAll(srcStudents)) {
-            throw new StudentNotOnTheCardException("The student is not on the card");
+            throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_ON_CARD);
         }
         if (srcStudents.size() != 1) {
-            throw new InvalidActionException("You can move up to two students");
+            throw new InvalidActionException(Messages.MOVE_JUST_ONE);
         }
         for (int i = 0; i < numStudents; i++) {
             this.giveStudent(destination, srcStudents.get(i));
         }
     }
 
-    private ArrayList<Student> getStudentListFromColorList(List<Color> colors, Place source) throws StudentNotOnTheCardException {
+    private ArrayList<Student> getStudentListFromColorList(List<Color> colors, Place source) throws StudentNotOnTheCardException, InvalidActionException {
+        if (colors == null) {
+            throw new InvalidActionException(Messages.INVALID_ARGUMENT);
+        }
         ArrayList<Student> res = new ArrayList<>();
+        ArrayList<Student> sourceStudents = source.getStudents();
         for (Color color : colors) {
-            Student toAdd = Students.findFirstStudentOfColor(source.getStudents(), color);
-            if (toAdd == null) throw new StudentNotOnTheCardException("This student is not present");
+            Student toAdd = Students.findFirstStudentOfColor(sourceStudents, color);
+            if (toAdd == null) throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_ON_CARD);
             res.add(toAdd);
+            sourceStudents.remove(toAdd);
         }
         return res;
     }
@@ -171,7 +180,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
 
     @Override
     public ArrayList<Student> getStudents() {
-        return students;
+        return new ArrayList<>(students);
     }
 
     @Override

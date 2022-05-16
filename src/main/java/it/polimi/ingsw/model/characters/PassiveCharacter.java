@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.characters;
 
+import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidCharacterException;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
@@ -22,13 +24,19 @@ public class PassiveCharacter extends Character {
      * @param srcColors                the students to be moved to the destination
      * @param dstColors                the students to be moved to the source (only if the effect is a "swap" effect)
      * @throws InvalidCharacterException if the {@code Character} is not a {@code PassiveCharacter}
+     * @throws InvalidActionException    if the selected {@code Color} is null
      */
     @Override
-    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, List<Color> srcColors, List<Color> dstColors) throws InvalidCharacterException {
+    public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, List<Color> srcColors, List<Color> dstColors) throws InvalidCharacterException, InvalidActionException {
 
         switch (this.getCardName()) {
             case plus2MNMoves, takeProfWithEqualStudents, plus2Influence, ignoreTowers -> currentPlayerActionPhase.playPassiveCharacter(this);
-            case ignoreColor -> currentPlayerActionPhase.playPassiveCharacterWithColor(color);
+            case ignoreColor -> {
+                if (color == null) {
+                    throw new InvalidActionException(Messages.INVALID_ARGUMENT);
+                }
+                currentPlayerActionPhase.playPassiveCharacterWithColor(color);
+            }
             default -> throw new InvalidCharacterException("This is not a passive character");
 
         }

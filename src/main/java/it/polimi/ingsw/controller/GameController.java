@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
@@ -48,7 +49,7 @@ public class GameController {
         game.start();
         currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
         PlayerClient firstPlayer = players.get(currentPlayerIndex);
-        sendBroadcastUpdateMessage(firstPlayer);
+        sendBroadcastUpdateMessage(firstPlayer.getUsername() + " is playing...");
         askForAssistant(firstPlayer);
     }
 
@@ -133,12 +134,12 @@ public class GameController {
             }
 
             curPlayer = getPlayerClientFromPlayer(game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer());
-            sendBroadcastUpdateMessage(curPlayer);
+            sendBroadcastUpdateMessage(curPlayer.getUsername() + " is playing...");
 
             askForMoveInPAP(curPlayer);
         } else {
             curPlayer = getPlayerClientFromPlayer(game.getCurrentRound().getPlanningPhase().getNextPlayer());
-            sendBroadcastUpdateMessage(curPlayer);
+            sendBroadcastUpdateMessage(curPlayer.getUsername() + " is playing...");
             askForAssistant(curPlayer);
         }
 
@@ -261,11 +262,11 @@ public class GameController {
         }
 
         if (selectedCharacter == null) {
-            sendActionErrorMessage(player.getCommunicable(), "This character is not in the game", 1, "PLAY_CHARACTER");
+            sendActionErrorMessage(player.getCommunicable(), Messages.CHARACTER_NOT_IN_GAME, 1, "PLAY_CHARACTER");
             return;
         }
 
-        if (args.getIsland() != null) {
+        if (args.getIsland() != null && args.getIsland() >= 0 && args.getIsland() < game.getGameBoard().getIslands().size()) {
             selectedIsland = game.getGameBoard().getIslands().get(args.getIsland());
         }
         try {
@@ -273,7 +274,7 @@ public class GameController {
                     selectedCharacter, selectedIsland, args.getColor(), args.getSourceStudents(), args.getDstStudents()
             );
         } catch (InvalidCharacterException | CharacterAlreadyPlayedException | StudentNotOnTheCardException |
-                 InvalidStudentException | NotEnoughCoinsException e) {
+                InvalidStudentException | NotEnoughCoinsException e) {
             sendActionErrorMessage(player.getCommunicable(), e.getMessage(), 2, "PLAY_CHARACTER");
             return;
         } catch (InvalidActionException e) {
@@ -281,6 +282,10 @@ public class GameController {
             return;
         }
 
+        String text = selectedCharacter.getCardName() == CharacterName.everyOneMove3FromDiningRoomToBag ?
+                "Everyone lost up to three " + args.getColor() + " students from their dining room" : player.getUsername() + " is playing...";
+
+        sendBroadcastUpdateMessage(text);
         askForMoveInPAP(player);
     }
 
@@ -333,13 +338,11 @@ public class GameController {
 
     /**
      * Sends to every {@code Player} except the one currently playing a message saying that the curPlayer is playing
-     *
-     * @param curPlayer the {@code Player} currently playing
      */
-    private void sendBroadcastUpdateMessage(PlayerClient curPlayer) {
+    private void sendBroadcastUpdateMessage(String text) {
         UpdateMessage message = new UpdateMessage();
         message.setGameState(new GameState(game));
-        message.setDisplayText(curPlayer.getUsername() + " is playing...");
+        message.setDisplayText(text);
         for (PlayerClient player : players) {
             player.getCommunicable().sendMessageToClient(message.toJson());
         }
@@ -361,7 +364,7 @@ public class GameController {
                 game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer()
         );
 
-        sendBroadcastUpdateMessage(nextPlayer);
+        sendBroadcastUpdateMessage(nextPlayer.getUsername() + " is playing...");
 
         askForMoveInPAP(nextPlayer);
 
