@@ -149,21 +149,27 @@ public class MessageHandler {
             return;
         }
 
-        if (actionMessage.getError() == 2 || actionMessage.getError() == 1) {
-            handleAction(actionMessage.getActions().get(0));
+        if (actionMessage.getActions() == null || actionMessage.getActions().isEmpty()) {
             return;
         }
 
-        if (actionMessage.getActions() != null && !actionMessage.getActions().isEmpty()) {
-            if (actionMessage.getActions().size() > 1) {
+        if (actionMessage.getError() == 2 || actionMessage.getError() == 1) {
+            if (actionMessage.getActions().size() == 1) {
+                handleAction(actionMessage.getActions().get(0));
+                return;
+            } else {
                 handleMultipleActions(actionMessage.getActions());
                 return;
             }
-
-            client.showMessage("Now you have to: " + actionMessage.getActions().get(0));
-            String chosenAction = actionMessage.getActions().get(0);
-            handleAction(chosenAction);
         }
+        if (actionMessage.getActions().size() > 1) {
+            handleMultipleActions(actionMessage.getActions());
+            return;
+        }
+
+        client.showMessage("Now you have to: " + actionMessage.getActions().get(0));
+        String chosenAction = actionMessage.getActions().get(0);
+        handleAction(chosenAction);
     }
 
 

@@ -320,6 +320,15 @@ public class GameController {
         ServerActionMessage message = new ServerActionMessage();
         message.setError(errorCode);
         message.setDisplayText("[ERROR] " + errorMessage);
+        if (action.equals("PLAY_CHARACTER")) {
+            String expectedAction = game.getCurrentRound().getCurrentPlayerActionPhase().getExpectedAction();
+            if (expectedAction.equals("MOVE_STUDENT")) {
+                message.addAction(expectedAction + "_TO_DINING");
+                message.addAction(expectedAction + "_TO_ISLAND");
+            } else {
+                message.addAction(expectedAction);
+            }
+        }
         message.addAction(action);
         ch.sendMessageToClient(message.toJson());
     }
