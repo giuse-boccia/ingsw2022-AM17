@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.game_actions;
 
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.characters.*;
@@ -25,14 +26,15 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayerActionPhase {
-    protected final Assistant assistant;
-    protected final GameBoard gb;
-    protected Character playedCharacter;
-    protected InfluenceStrategy influenceStrategy;
-    protected ProfessorStrategy professorStrategy;
-    protected MNStrategy mnStrategy;
-    int numStudentsMoved = 0;
-    boolean mnMoved = false;
+    private final Assistant assistant;
+    private final GameBoard gb;
+    private Character playedCharacter;
+    private InfluenceStrategy influenceStrategy;
+    private ProfessorStrategy professorStrategy;
+    private MNStrategy mnStrategy;
+    private int numStudentsMoved = 0;
+    private boolean mnMoved = false;
+    private String expectedMove = "MOVE_STUDENT";
 
 
     public PlayerActionPhase(Assistant assistant, GameBoard gb) {
@@ -104,6 +106,18 @@ public class PlayerActionPhase {
         return res;
     }
 
+    public Character getPlayedCharacter() {
+        return playedCharacter;
+    }
+
+    public int getNumStudentsMoved() {
+        return numStudentsMoved;
+    }
+
+    public boolean isMnMoved() {
+        return mnMoved;
+    }
+
     /**
      * Resolves the island where mother nature is and eventually changes that island's owner.
      * In case of tie between two or more players, the owner of the island is not changed
@@ -161,10 +175,12 @@ public class PlayerActionPhase {
      * Method to use the effect of a character and to check if one had already been used this turn
      *
      * @param character The character which we want to use the effect of
+     * @param srcColors list of the color of the students of the source
+     * @param dstColors list of the color of the students of the destination
      * @throws InvalidCharacterException       if the {@code Character} is not valid
      * @throws CharacterAlreadyPlayedException if a {@code Character} has already been used
      */
-    public void playCharacter(Character character, Island island, Color color, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents)
+    public void playCharacter(Character character, Island island, Color color, List<Color> srcColors, List<Color> dstColors)
             throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException, NotEnoughCoinsException {
         if (!gb.getGame().isExpert()) {
             throw new InvalidActionException("There are no characters in the non expert mode");
@@ -172,15 +188,18 @@ public class PlayerActionPhase {
         if (getCurrentPlayer().getNumCoins() < character.getCost()) {
             throw new NotEnoughCoinsException("You don't have enough coins to play this character");
         }
-        if (this.playedCharacter != null) {
+        if (!canPlayCharacter()) {
             throw new CharacterAlreadyPlayedException("You already played a character this turn");
         }
-        this.playedCharacter = character;
         try {
-            character.useEffect(this, island, color, srcStudents, dstStudents);
+            character.useEffect(this, island, color, srcColors, dstColors);
         } catch (EmptyBagException e) {
             gb.getGame().getCurrentRound().setLastRound();
+            return;
         }
+
+        this.playedCharacter = character;
+
         getCurrentPlayer().removeCoins(character.getCost());
         character.addCoinAfterFirstUse();
     }
@@ -217,10 +236,12 @@ public class PlayerActionPhase {
      * @throws InvalidStudentException if the {@code Player} does not own a {@code Student} of the selected {@code Color}
      */
     public void moveStudent(Color color, Place destination) throws InvalidActionException, InvalidStudentException {
-        // TODO InvalidStudent - if I don't own a student of this color, InvalidPlace if I attempt to move it into
-        // TODO the Entrance (it happens when entrance.getStudents() == 7-numStudPlayed
+        // TODO InvalidPlace if I attempt to move a student into the Entrance (it happens when entrance.getStudents() == 7-numStudPlayed
 
-        if (numStudentsMoved == gb.getGame().getPlayers().size() + 1) {
+        int numPlayers = gb.getGame().getPlayers().size();
+        int studentsToMove = numPlayers % 2 == 0 ? 3 : 4;
+
+        if (numStudentsMoved == studentsToMove) {
             throw new InvalidActionException("You have already moved " + numStudentsMoved + " students");
         }
 
@@ -231,6 +252,10 @@ public class PlayerActionPhase {
         );
 
         numStudentsMoved++;
+
+        if (numStudentsMoved == studentsToMove) {
+            expectedMove = "MOVE_MN";
+        }
 
         stealProfessorIfPossible(color);
 
@@ -254,7 +279,7 @@ public class PlayerActionPhase {
         checkInvalidAction();
 
         if (numSteps < 0 || numSteps > mnStrategy.getMNMaxSteps(assistant)) {
-            throw new InvalidStepsForMotherNatureException("Invalid move for mother nature");
+            throw new InvalidStepsForMotherNatureException(Messages.INVALID_MN_MOVE);
         }
 
         gb.moveMotherNature(numSteps);
@@ -271,6 +296,7 @@ public class PlayerActionPhase {
         }
 
         mnMoved = true;
+        expectedMove = "FILL_FROM_CLOUD";
 
         if (gb.getGame().getCurrentRound().isLastRound()) {
             // The PlayerActionPhase is finished
@@ -290,11 +316,11 @@ public class PlayerActionPhase {
         checkInvalidAction();
 
         if (!mnMoved) {
-            throw new InvalidActionException("Move mother nature first");
+            throw new InvalidActionException(Messages.MOVE_MN_FIRST);
         }
 
         if (cloudIndex < 0 || cloudIndex >= gb.getClouds().size() || gb.getClouds().get(cloudIndex).isEmpty()) {
-            throw new InvalidCloudException("The selected cloud is not valid");
+            throw new InvalidCloudException(Messages.INVALID_CLOUD);
         }
 
         Cloud cloud = gb.getClouds().get(cloudIndex);
@@ -319,6 +345,14 @@ public class PlayerActionPhase {
 
     public Player getCurrentPlayer() {
         return assistant.getPlayer();
+    }
+
+    public String getExpectedAction() {
+        return expectedMove;
+    }
+
+    public boolean canPlayCharacter() {
+        return playedCharacter == null;
     }
 
 }

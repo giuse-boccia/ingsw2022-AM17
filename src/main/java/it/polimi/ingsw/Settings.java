@@ -21,6 +21,12 @@ public class Settings {
         this.address = address;
     }
 
+    /**
+     * Reads the connections settings from a file
+     *
+     * @return the {@code Settings} read from a file
+     * @throws NumberFormatException if the server_port field in not a number
+     */
     public static Settings readPrefsFromFile() throws IOException, NumberFormatException {
         Gson gson = new Gson();
 

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.exceptions.GameLoginException;
+import it.polimi.ingsw.exceptions.GameEndedException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.Scanner;
 
-public class ClientHandler implements Runnable {
+public class ClientHandler implements Runnable, Communicable {
 
     private final Socket socket;
     private final Controller controller;
@@ -32,11 +32,7 @@ public class ClientHandler implements Runnable {
         socket.close();
     }
 
-    /**
-     * Sends a response to the client
-     *
-     * @param res the response to send to the client
-     */
+    @Override
     public void sendMessageToClient(String res) {
         out.println(res);
         out.flush();
@@ -57,6 +53,14 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             // Client connection error
             System.err.println("Connection to client lost, alerting other clients...");
+        } catch (GameEndedException e) {
+            // Game is ended, clientHandler will close socket
+            try {
+                // Maybe Thread.sleep, then close socket
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 }

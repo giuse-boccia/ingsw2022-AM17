@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
+import it.polimi.ingsw.model.utils.Students;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -59,17 +60,16 @@ public class Move1FromCardToIslandTest {
         character.fillCardFromBag();
 
         assertEquals(1, character.getNumStudents());
-        assertTrue(2 == island.getStudents().size() || 3 == island.getStudents().size());
+        assertEquals(4, character.getInitialStudents());
+
+        character.setStudents(createListOfStudents());
+
         assertEquals(4, character.getStudents().size());
 
-        ArrayList<Student> studentInCard = new ArrayList<>();
-        studentInCard.add(character.getStudents().get(2));
-
-        assertDoesNotThrow(() -> pap.playCharacter(character, island, null, studentInCard, null));
+        assertDoesNotThrow(() -> pap.playCharacter(character, island, null, List.of(Color.PINK), null));
 
         assertEquals(4, character.getStudents().size());
         assertEquals(3 + initialStudentsOnIsland, island.getStudents().size());
-        assertTrue(island.getStudents().contains(studentInCard.get(0)));
     }
 
     /**
@@ -85,22 +85,23 @@ public class Move1FromCardToIslandTest {
         assertEquals(4, character.getInitialStudents());
         assertEquals(4, character.getStudents().size());
 
+        character.setStudents(createListOfStudents());
+
         Island island = gb.getIslands().get(3);
         int initialStudents = island.getStudents().size();
         island.receiveStudent(new Student(Color.GREEN));
+
         PlayerActionPhase pap = new PlayerActionPhase(
                 new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
 
-        Student studentToGive = character.getStudents().get(0);
         assertDoesNotThrow(() -> pap.playCharacter(
-                character, island, null, new ArrayList<>(List.of(studentToGive)), null
+                character, island, null, List.of(Color.BLUE), null
         ));
 
         assertEquals(initialStudents + 2, island.getStudents().size());
+        assertTrue(Students.countColor(island.getStudents(), Color.BLUE) >= 1);
         assertEquals(4, character.getStudents().size());
-        assertTrue(island.getStudents().contains(studentToGive));
-        assertFalse(character.getStudents().contains(studentToGive));
     }
 
     /**
@@ -119,13 +120,11 @@ public class Move1FromCardToIslandTest {
         Island island = gb.getIslands().get(6);
 
         character.fillCardFromBag();
-
-        ArrayList<Student> invalidStudents = new ArrayList<>(List.of(new Student(Color.GREEN)));
+        character.setStudents(createListOfStudents());
 
         assertThrows(
                 StudentNotOnTheCardException.class,
-                () -> pap.playCharacter(character, island, null, invalidStudents, null),
-                "The student is not on the card"
+                () -> pap.playCharacter(character, island, null, List.of(Color.YELLOW), null)
         );
     }
 
@@ -146,13 +145,26 @@ public class Move1FromCardToIslandTest {
 
         character.fillCardFromBag();
 
-        ArrayList<Student> invalidStudents = new ArrayList<>(character.getStudents().subList(0, 3));
+        character.setStudents(createListOfStudents());
 
         assertThrows(
                 InvalidActionException.class,
-                () -> pap.playCharacter(character, island, null, invalidStudents, null),
-                "You can move up to two students"
+                () -> pap.playCharacter(character, island, null, List.of(Color.BLUE, Color.PINK), null)
         );
+    }
+
+    /**
+     * Creates a list of students containing 3 BLUE students and 1 PINK student
+     *
+     * @return a list of students containing 3 BLUE students and 1 PINK student
+     */
+    private ArrayList<Student> createListOfStudents() {
+        ArrayList<Student> listOfStudents = new ArrayList<>();
+        listOfStudents.add(new Student(Color.BLUE));
+        listOfStudents.add(new Student(Color.BLUE));
+        listOfStudents.add(new Student(Color.BLUE));
+        listOfStudents.add(new Student(Color.PINK));
+        return listOfStudents;
     }
 
 }

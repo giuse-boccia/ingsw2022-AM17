@@ -19,6 +19,7 @@ public class NetworkClient extends Thread {
     private Socket server;
     private BufferedReader socketIn;
     private PrintWriter socketOut;
+    private String username;
 
     public NetworkClient(Client client, String serverAddress, int serverPort) {
         this.client = client;
@@ -50,7 +51,7 @@ public class NetworkClient extends Thread {
      * Asks for a username and sends a login message to the server
      */
     public void askUsernameAndSend() throws IOException {
-        String username = client.askUsername();
+        username = client.askUsername();
         client.showMessage("Connecting to server...");
 
         ClientLoginMessage loginMessage = new ClientLoginMessage();
@@ -71,16 +72,20 @@ public class NetworkClient extends Thread {
 
     @Override
     public void run() {
-        ExecutorService executorPool = Executors.newCachedThreadPool();
-
+        MessageHandler mh = new MessageHandler(NetworkClient.this);
+        mh.startPongThread();
         try {
             while (true) {
                 String jsonMessage = socketIn.readLine();
-                executorPool.submit(new MessageHandler(jsonMessage, NetworkClient.this));  // handles message in a new thread
+                mh.handleMessage(jsonMessage);
             }
         } catch (IOException e) {
             // Server connection error
             client.gracefulTermination("Connection to server lost");
         }
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

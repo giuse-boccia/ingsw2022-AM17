@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TestGameFactory {
 
@@ -82,6 +83,14 @@ public class TestGameFactory {
             p3.getDashboard().getEntrance().receiveStudent(new Student(Color.PINK));
             p2.getDashboard().getEntrance().receiveStudent(new Student(Color.BLUE));
         }
+    }
+
+    public static List<Color> fromListOfStudentToListOfColor(List<Student> students) {
+        List<Color> colors = new ArrayList<>();
+        for (Student student : students) {
+            colors.add(student.getColor());
+        }
+        return colors;
     }
 
 }

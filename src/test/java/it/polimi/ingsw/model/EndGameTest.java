@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
@@ -27,8 +29,17 @@ public class EndGameTest {
         while (game.getGameBoard().getMotherNatureIndex() != 0)
             game.getGameBoard().moveMotherNature(1);
 
-        // Bag has 108 students
-        for (int i = 0; i < 108; i++) {
+        int studentsInBag = 108;
+        for (Character character : game.getGameBoard().getCharacters()) {
+            CharacterName name = character.getCardName();
+            if (name == CharacterName.move1FromCardToIsland || name == CharacterName.move1FromCardToDining) {
+                studentsInBag -= 4;
+            } else if (name == CharacterName.swapUpTo3FromEntranceToCard) {
+                studentsInBag -= 6;
+            }
+        }
+
+        for (int i = 0; i < studentsInBag; i++) {
             assertDoesNotThrow(() ->
                     bag.giveStudent(rick.getDashboard().getEntrance(), bag.getRandStudent())
             );

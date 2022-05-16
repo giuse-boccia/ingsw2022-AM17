@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CloudTest {
@@ -27,12 +28,9 @@ public class CloudTest {
         assertEquals(clouds.size(), game.getPlayers().size());
 
         for (int i = 0; i < clouds.size(); i++) {
-            try {
-                clouds.get(i).fillFromBag(bag);
-            } catch (EmptyBagException e) {
-                e.printStackTrace();
-            }
-            clouds.get(i).emptyTo(game.getPlayers().get(i).getDashboard().getEntrance());
+            int index = i;
+            assertDoesNotThrow(() -> clouds.get(index).fillFromBag(bag));
+            assertDoesNotThrow(() -> clouds.get(index).emptyTo(game.getPlayers().get(index).getDashboard().getEntrance()));
         }
 
         for (Player player : game.getPlayers()) {

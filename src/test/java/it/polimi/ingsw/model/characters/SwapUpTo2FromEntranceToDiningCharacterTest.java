@@ -46,7 +46,7 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
 
     /**
      * Private method to fill the {@code Entrance} and the {@code DiningRoom} for the tests:
-     * the {@code Entrance} receives 3 pink and 3 green students
+     * the {@code Entrance} receives 3 pink and 3 yellow students
      * the {@code DiningRoom} receives 5 red and 5 blue students
      *
      * @param entrance the {@code Entrance} to fill
@@ -99,7 +99,9 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
             );
             int index = i;
             assertDoesNotThrow(() -> pap.playCharacter(
-                    character, null, null, new ArrayList<>(entrance.getStudents().subList(0, index)), new ArrayList<>(dining.getStudents().subList(0, index))
+                    character, null, null,
+                    TestGameFactory.fromListOfStudentToListOfColor(entrance.getStudents().subList(0, index)),
+                    TestGameFactory.fromListOfStudentToListOfColor(dining.getStudents().subList(0, index))
             ));
 
             if (i < character.getNumStudents()) {
@@ -122,8 +124,10 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
         );
 
         assertThrows(InvalidActionException.class, () -> pap.playCharacter(
-                character, null, null, new ArrayList<>(entranceInitialStudents.subList(0, 3)), new ArrayList<>(diningInitialStudents.subList(0, 3))
-        ), "You can move up to two students");
+                character, null, null,
+                List.of(Color.YELLOW, Color.PINK, Color.YELLOW),
+                List.of(Color.RED, Color.RED, Color.RED)
+        ));
 
         doFinalAssertions(entrance, dining);
     }
@@ -154,13 +158,9 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
         DiningRoom diningRoom = rick.getDashboard().getDiningRoom();
         fillEntranceAndDining(entrance, diningRoom);
 
-        ArrayList<Student> invalidStudents = new ArrayList<>(List.of(new Student(Color.PINK), new Student(Color.GREEN)));
-
         assertThrows(
-                InvalidActionException.class,
-                () -> pap.playCharacter(character, null, null, invalidStudents, new ArrayList<>()),
-                "One or more students are not on the entrance"
-        );
+                StudentNotOnTheCardException.class,
+                () -> pap.playCharacter(character, null, null, List.of(Color.PINK, Color.GREEN), List.of(Color.BLUE, Color.RED)));
     }
 
     /**
@@ -189,11 +189,9 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
         DiningRoom diningRoom = rick.getDashboard().getDiningRoom();
         fillEntranceAndDining(entrance, diningRoom);
 
-        ArrayList<Student> invalidStudents = new ArrayList<>(List.of(new Student(Color.PINK), new Student(Color.GREEN)));
-
         assertThrows(
-                InvalidActionException.class,
-                () -> pap.playCharacter(character, null, null, new ArrayList<>(), invalidStudents),
+                StudentNotOnTheCardException.class,
+                () -> pap.playCharacter(character, null, null, List.of(Color.PINK, Color.YELLOW), List.of(Color.PINK, Color.GREEN)),
                 "One or more students are not on the dining room"
         );
     }
@@ -224,13 +222,12 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
         DiningRoom diningRoom = rick.getDashboard().getDiningRoom();
         fillEntranceAndDining(entrance, diningRoom);
 
-        ArrayList<Student> srcStudents = new ArrayList<>(entrance.getStudents().subList(0, 2));
-        ArrayList<Student> dstStudents = new ArrayList<>(diningRoom.getStudents().subList(0, 1));
 
         assertThrows(
                 InvalidActionException.class,
-                () -> pap.playCharacter(character, null, null, srcStudents, dstStudents),
-                "This is not a valid swap"
+                () -> pap.playCharacter(character, null, null,
+                        List.of(Color.PINK),
+                        List.of(Color.RED, Color.RED))
         );
     }
 
@@ -259,14 +256,12 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
         Entrance entrance = rick.getDashboard().getEntrance();
         DiningRoom diningRoom = rick.getDashboard().getDiningRoom();
         fillEntranceAndDining(entrance, diningRoom);
-
-        ArrayList<Student> srcStudents = new ArrayList<>(entrance.getStudents().subList(0, 3));
-        ArrayList<Student> dstStudents = new ArrayList<>(diningRoom.getStudents().subList(0, 3));
-
+        
         assertThrows(
                 InvalidActionException.class,
-                () -> pap.playCharacter(character, null, null, srcStudents, dstStudents),
-                "You can move up to two students"
+                () -> pap.playCharacter(character, null, null,
+                        List.of(Color.YELLOW, Color.YELLOW, Color.YELLOW),
+                        List.of(Color.RED, Color.RED, Color.RED))
         );
     }
 

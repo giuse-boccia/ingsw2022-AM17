@@ -44,6 +44,11 @@ public class Server {
         server.startServer();
     }
 
+    /**
+     * Closes the application showing an input message
+     *
+     * @param message the input message
+     */
     private static void gracefulTermination(String message) {
         System.out.println(message);
         System.out.println("Application will now close...");
