@@ -4,10 +4,7 @@ import it.polimi.ingsw.constants.ConsoleColors;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
-import it.polimi.ingsw.model.game_state.CharacterState;
-import it.polimi.ingsw.model.game_state.GameState;
-import it.polimi.ingsw.model.game_state.IslandState;
-import it.polimi.ingsw.model.game_state.PlayerState;
+import it.polimi.ingsw.model.game_state.*;
 import it.polimi.ingsw.model.utils.Students;
 
 import java.util.List;
@@ -34,6 +31,10 @@ public class CliView {
 
     public static final String DASHBOARD_LINE = ConsoleColors.GREEN +
             "---------------------------------------------------DASHBOARDS-----------------------------------------------------------"
+            + ConsoleColors.RESET;
+
+    public static final String CLOUDS_LINE = ConsoleColors.GREEN +
+            "-----------------------------------------------------CLOUDS-------------------------------------------------------------"
             + ConsoleColors.RESET;
 
     public static final String DASHBOARD_LINE_50 =
@@ -65,7 +66,6 @@ public class CliView {
             System.out.println(CHARACTERS_LINE);
             for (int i = 0; i < gameState.getCharacters().size(); i++) {
                 printCharacterState(gameState.getCharacters().get(i), i);
-
             }
         }
 
@@ -88,6 +88,12 @@ public class CliView {
         // Dashboards
         System.out.println(DASHBOARD_LINE);
         printDashboardsState(gameState.getPlayers(), gameState.isExpert());
+
+        // Clouds
+        System.out.println(CLOUDS_LINE);
+        for (int i = 0; i < gameState.getClouds().size(); i++) {
+            printCloudState(gameState.getClouds().get(i), i);
+        }
 
         // addEmptyLines(gameState);   // ensures at least 50 lines have been printed
     }
@@ -177,6 +183,28 @@ public class CliView {
                 printDoubleDashboard(players.get(1), players.get(3), isExpert);
             }
         }
+    }
+
+    /**
+     * Prints a single line visualizing the state of a cloud (its students or "empty" if it's empty)
+     * ES: Cloud 1 | ● ● ●
+     *
+     * @param cloudState a cloud state, included in a Game State
+     * @param cloudIndex the index of the cloud (starting from 0)
+     */
+    private static void printCloudState(CloudState cloudState, int cloudIndex) {
+        // Cloud index
+        System.out.print("Cloud " + (cloudIndex + 1) + " | ");
+
+        // Students
+        if (cloudState.getStudents().size() != 0) {
+            System.out.print(Students.getStringFromStudentList(cloudState.getStudents()));
+        } else {
+            System.out.print(ConsoleColors.WHITE + "empty" + ConsoleColors.RESET);
+        }
+
+        // print new line character
+        System.out.println();
     }
 
     /**
@@ -284,8 +312,9 @@ public class CliView {
      */
     private static void addEmptyLines(GameState gameState) {
         // TODO: check if correct
-        int printedLines = 25;   // headers, dashboards and assistants are always printed
+        int printedLines = 26;   // headers, dashboards and assistants are always printed
         printedLines += gameState.getIslands().size();      // one line per island
+        printedLines += gameState.getClouds().size();
         printedLines += gameState.isExpert() ? 1 + gameState.getCharacters().size() : 0;    // one line per character + header
 
         while (printedLines < 47) {
