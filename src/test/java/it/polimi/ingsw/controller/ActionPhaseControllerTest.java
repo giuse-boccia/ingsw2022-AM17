@@ -186,7 +186,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage studentNotOnCardResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(2, studentNotOnCardResponse.getError());
-        assertEquals("[ERROR] " + Messages.STUDENT_NOT_ON_CARD, studentNotOnCardResponse.getDisplayText());
+        assertEquals("[ERROR] " + Messages.STUDENT_NOT_FOUND, studentNotOnCardResponse.getDisplayText());
 
 
         String invalidIslandIndexCharacter =

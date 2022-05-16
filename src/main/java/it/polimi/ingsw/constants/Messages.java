@@ -51,7 +51,7 @@ public class Messages {
     public static final String ENTRANCE_DOESNT_CONTAIN_STUDENT = "The entrance doesn't contain this student";
     public static final String CHARACTER_NOT_IN_GAME = "This character is not in the game";
     public static final String MOVE_JUST_ONE = "You have to move only one student";
-    public static final String STUDENT_NOT_ON_CARD = "The student is not on the card";
+    public static final String STUDENT_NOT_FOUND = "Student not found. Check your choices";
     public static final String MOVING_MORE_STUDENTS = "You are trying to move more students than you are allowed to";
     public static final String ALREADY_PLAYED_CHARACTER = "You already played a character this turn";
 }
