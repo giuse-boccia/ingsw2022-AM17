@@ -116,7 +116,7 @@ public class CliView {
         // Island owner
         String ownerString = "FREE";
         if (islandState.getTowerColor() != null) {
-            ownerString = islandState.getTowerColor().name();
+            ownerString = islandState.getTowerColor().name() + " (" + islandState.getNumOfTowers() + ")";
         }
         System.out.print(ownerString + " | ");
 
@@ -165,6 +165,12 @@ public class CliView {
         System.out.println();
     }
 
+    /**
+     * Prints the dashboards. If the game has 3 or 4 players some dashboards might be printed side-by-side
+     *
+     * @param players  a list of player states, included in the game state
+     * @param isExpert whether the game is in expert mode or not
+     */
     private static void printDashboardsState(List<PlayerState> players, boolean isExpert) {
         switch (players.size()) {
             case 2 -> {
@@ -208,7 +214,7 @@ public class CliView {
     }
 
     /**
-     * Prints a single dashboard, centered in the screen
+     * Prints a single dashboard
      *
      * @param player the owner of the dashboard to be printed
      */
@@ -283,7 +289,7 @@ public class CliView {
      * @param player2 the owner of the dashboard to be printed on the right
      */
     private static void printDoubleDashboard(PlayerState player1, PlayerState player2, boolean isExpert) {
-        System.out.println("double dashboard to be implemented");
+        // TODO implement double dashboards
         printSingleDashboard(player1, isExpert);
         System.out.println();
         printSingleDashboard(player2, isExpert);
