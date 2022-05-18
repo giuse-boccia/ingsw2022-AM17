@@ -241,8 +241,9 @@ public class GameController {
         } else {
             currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
             PlayerClient nextPlayer = players.get(currentPlayerIndex);
+            sendBroadcastUpdateMessage(player.getUsername() + " chose cloud number " + (cloudNumber + 1));
+            sendBroadcastUpdateMessage(nextPlayer.getUsername() + " si playing...");
             askForAssistant(nextPlayer);
-            //sendBroadcastWaitingMessage(nextPlayer);
         }
     }
 
