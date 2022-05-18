@@ -246,7 +246,6 @@ public class PlayerActionPhase {
      * @throws InvalidStudentException if the {@code Player} does not own a {@code Student} of the selected {@code Color}
      */
     public void moveStudent(Color color, Place destination) throws InvalidActionException, InvalidStudentException {
-        // TODO InvalidPlace if I attempt to move a student into the Entrance (it happens when entrance.getStudents() == 7-numStudPlayed
 
         int numPlayers = gb.getGame().getPlayers().size();
         int studentsToMove = numPlayers % 2 == 0 ? 3 : 4;

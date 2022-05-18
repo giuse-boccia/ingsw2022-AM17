@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
@@ -38,7 +39,7 @@ public class MessageHandler {
                 isServerUp = false;
             }
         };
-        timer.schedule(task, 3000, 3000);
+        timer.schedule(task, Constants.PONG_INITIAL_DELAY, Constants.PONG_INTERVAL);
     }
 
     /**

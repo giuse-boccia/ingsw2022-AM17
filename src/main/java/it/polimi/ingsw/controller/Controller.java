@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.GameEndedException;
 import it.polimi.ingsw.messages.Message;
@@ -313,7 +314,7 @@ public class Controller {
             }
         };
 
-        timer.schedule(task, 0, 2000);
+        timer.schedule(task, 0, Constants.PING_INTERVAL);
     }
 
     private int sendPingAndReturnBound() {
