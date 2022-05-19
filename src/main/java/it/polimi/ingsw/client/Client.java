@@ -29,6 +29,7 @@ public abstract class Client {
             client = new CLI();
         } else {
             client = new GUI();
+            new Thread(() -> GuiView.main(new String[]{})).start();
         }
         if (args.length < 3) {
             try {
