@@ -166,6 +166,12 @@ public class CLI extends Client {
     }
 
     @Override
+    public void playCharacterWithoutArguments(CharacterName characterName) throws IOException {
+        getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, null, null, null,
+                null, characterName, null, null);
+    }
+
+    @Override
     public void askColorListForSwapCharacters(int maxBound, String secondElement, CharacterName characterName) throws IOException {
         int size = askForInteger(0, maxBound, "Choose how many students you want to swap: ", "Number of students");
         System.out.println("Select " + size + " students from your entrance");

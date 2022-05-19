@@ -12,7 +12,6 @@ import java.util.List;
 
 public class GUI extends Client {
 
-    private final Object lock = new Object();
     private String username;
 
     public static void main(String[] args) {
@@ -89,7 +88,10 @@ public class GUI extends Client {
 
     @Override
     public void gracefulTermination(String message) {
-
+        // TODO show a popup before crashing
+        System.out.println(message);
+        System.out.println("The application will now close...");
+        System.exit(-1);
     }
 
     @Override
@@ -118,22 +120,18 @@ public class GUI extends Client {
     }
 
     @Override
-    public void askUsername() throws IOException {
-        synchronized (lock) {
-            try {
-                lock.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("This is the username: " + username);
+    public void askUsername() {
+
+    }
+
+    @Override
+    public void playCharacterWithoutArguments(CharacterName characterName) throws IOException {
+
     }
 
     public void onLoginBtnPressed(ActionEvent event) {
         username = usernameTextField.getText();
-        synchronized (lock) {
-            lock.notifyAll();
-        }
+        getCurrentObserver().sendLoginParameters(username, null, null);
     }
 
 }

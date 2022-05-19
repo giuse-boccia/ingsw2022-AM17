@@ -84,6 +84,7 @@ public class ActionHandler {
             case swapUpTo3FromEntranceToCard -> nc.getClient().askColorListForSwapCharacters(3, "this card", name);
             case swapUpTo2FromEntranceToDiningRoom -> nc.getClient().askColorListForSwapCharacters(2, "your dining room", name);
             case ignoreColor, everyOneMove3FromDiningRoomToBag -> nc.getClient().pickColorForPassive(name);
+            default -> nc.getClient().playCharacterWithoutArguments(name);
         }
     }
 }

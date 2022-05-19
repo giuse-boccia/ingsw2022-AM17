@@ -186,4 +186,6 @@ public abstract class Client {
     public abstract void askIslandIndexForCharacter(CharacterName characterName) throws IOException;
 
     public abstract void pickColorForPassive(CharacterName characterName) throws IOException;
+
+    public abstract void playCharacterWithoutArguments(CharacterName characterName) throws IOException;
 }
