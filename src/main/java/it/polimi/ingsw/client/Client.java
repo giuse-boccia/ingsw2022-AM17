@@ -2,18 +2,18 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.Settings;
 import it.polimi.ingsw.messages.login.GameLobby;
-import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_state.CharacterState;
 import it.polimi.ingsw.model.game_state.GameState;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Client {
     private static NetworkClient nc;
     private String username;
     private List<CharacterState> characters;
+    private Observer currentObserver;
 
     /**
      * Starts correctly the {@code CLI} or the {@code GUI} accordingly to the user choice
@@ -64,24 +64,13 @@ public abstract class Client {
 
     /**
      * Asks the player to input a username
-     *
-     * @return the username string chosen by the player
      */
-    public abstract String askUsername() throws IOException;
+    public abstract void askUsername() throws IOException;
 
     /**
      * Asks the player to input the number of players
-     *
-     * @return an integer from 2 to 4 indicating the desired number of player
      */
-    public abstract int askNumPlayers() throws IOException;
-
-    /**
-     * Asks the player to choose whether to play in expert mode or not
-     *
-     * @return true if the player wants to play in expert mode, false otherwise
-     */
-    public abstract boolean askExpertMode() throws IOException;
+    public abstract void askNumPlayersAndExpertMode() throws IOException;
 
     /**
      * Shows the current state of the lobby
@@ -89,13 +78,6 @@ public abstract class Client {
      * @param gameLobby the {@code GameLobby} object containing the list of players
      */
     public abstract void showCurrentLobby(GameLobby gameLobby);
-
-    /**
-     * Asks the player to pick a color
-     *
-     * @return the picked color
-     */
-    public abstract Color pickColor();
 
     /**
      * Closes the connection printing the provided message
@@ -113,10 +95,8 @@ public abstract class Client {
 
     /**
      * Asks the user to input a value to play an {@code Assistant}
-     *
-     * @return the value chosen by the user
      */
-    public abstract int getAssistantValue() throws IOException;
+    public abstract void getAssistantValue() throws IOException;
 
     /**
      * Shows the list of actions the user can choose from
@@ -128,45 +108,29 @@ public abstract class Client {
     /**
      * Makes the user choose an action from a list by inputting a number between 1 and bound
      *
-     * @param bound the maximum int the user can input to choose an action
-     * @return the index of the chose action
+     * @param actions the maximum int the user can input to choose an action
      */
-    public abstract int chooseAction(int bound) throws IOException;
+    public abstract void chooseAction(List<String> actions) throws IOException;
 
     /**
      * Asks the user to input a color
-     *
-     * @return the {@code Color} chosen by the user
      */
-    public abstract Color askStudentColor() throws IOException;
-
-    /**
-     * Asks the user to input the index of an {@code Island}
-     *
-     * @return the index of the chosen {@code Island}
-     */
-    public abstract int askIslandIndex() throws IOException;
+    public abstract void askMoveStudentToDining() throws IOException;
 
     /**
      * Asks the user to input the number of moves they want to make MotherNature do
-     *
-     * @return the number of moves chosen by the user
      */
-    public abstract int askNumStepsOfMotherNature() throws IOException;
+    public abstract void askNumStepsOfMotherNature() throws IOException;
 
     /**
      * Asks the user to input the index of an {@code Cloud}
-     *
-     * @return the index of the chosen {@code Cloud}
      */
-    public abstract int askCloudIndex() throws IOException;
+    public abstract void askCloudIndex() throws IOException;
 
     /**
      * Asks the user to input the index of an {@code Character}
-     *
-     * @return the index of the chosen {@code Character}
      */
-    public abstract int askCharacterIndex() throws IOException;
+    public abstract void askCharacterIndex() throws IOException;
 
     /**
      * Shows the list of {@code Characters} present in the {@code Game}, each one with an index starting from 1
@@ -178,9 +142,9 @@ public abstract class Client {
      *
      * @param maxBound      the maximum number of students which can be swapped
      * @param secondElement the second place where to swap the students from/to
-     * @return the {@code ArrayList} of colors of students to be swapped
+     * @param characterName the name of the selected {@code Character}
      */
-    public abstract ArrayList<Color> askColorListForSwapCharacters(int maxBound, String secondElement) throws IOException;
+    public abstract void askColorListForSwapCharacters(int maxBound, String secondElement, CharacterName characterName) throws IOException;
 
     /**
      * Ends the {@code Game} showing a message
@@ -205,5 +169,21 @@ public abstract class Client {
         this.characters = characters;
     }
 
+    public Observer getCurrentObserver() {
+        return currentObserver;
+    }
+
+    public void setCurrentObserver(Observer currentObserver) {
+        this.currentObserver = currentObserver;
+    }
+
     public abstract void updateGameState(GameState gameState);
+
+    public abstract void askMoveStudentToIsland() throws IOException;
+
+    public abstract void askToMoveOneStudentFromCard(boolean toIsland) throws IOException;
+
+    public abstract void askIslandIndexForCharacter(CharacterName characterName) throws IOException;
+
+    public abstract void pickColorForPassive(CharacterName characterName) throws IOException;
 }

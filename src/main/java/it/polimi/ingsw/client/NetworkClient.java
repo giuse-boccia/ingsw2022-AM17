@@ -1,16 +1,17 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
+import it.polimi.ingsw.model.characters.CharacterName;
+import it.polimi.ingsw.model.game_objects.Color;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.List;
 
-public class NetworkClient extends Thread {
+public class NetworkClient extends Thread implements Observer {
     private final Client client;
 
     private final String serverAddress;
@@ -51,14 +52,9 @@ public class NetworkClient extends Thread {
      * Asks for a username and sends a login message to the server
      */
     public void askUsernameAndSend() throws IOException {
-        username = client.askUsername();
+        client.setCurrentObserver(this);
         client.showMessage("Connecting to server...");
-
-        ClientLoginMessage loginMessage = new ClientLoginMessage();
-        loginMessage.setUsername(username);
-        loginMessage.setAction("SET_USERNAME");
-
-        sendMessageToServer(loginMessage.toJson());
+        client.askUsername();
     }
 
     /**
@@ -87,5 +83,31 @@ public class NetworkClient extends Thread {
 
     public String getUsername() {
         return username;
+    }
+
+    @Override
+    public void sendLoginParameters(String username, Integer numPlayers, Boolean isExpert) {
+        if (username != null) {
+            ClientLoginMessage loginMessage = new ClientLoginMessage();
+            loginMessage.setUsername(username);
+            loginMessage.setAction("SET_USERNAME");
+
+            sendMessageToServer(loginMessage.toJson());
+        }
+    }
+
+    @Override
+    public void sendActionParameters(String actionName, Color color, Integer island, Integer num_steps, Integer cloud, Integer value, CharacterName characterName, List<Color> sourceStudents, List<Color> dstStudents) {
+
+    }
+
+    @Override
+    public void sendActionName(String action) {
+
+    }
+
+    @Override
+    public void sendCharacterName(CharacterName name) {
+
     }
 }

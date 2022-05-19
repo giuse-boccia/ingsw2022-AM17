@@ -1,14 +1,13 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.messages.login.GameLobby;
-import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_state.GameState;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GUI extends Client {
@@ -26,38 +25,33 @@ public class GUI extends Client {
     }
 
     @Override
-    public int getAssistantValue() throws IOException {
-        return 0;
+    public void getAssistantValue() throws IOException {
+
     }
 
     @Override
-    public int chooseAction(int bound) throws IOException {
-        return 0;
+    public void chooseAction(List<String> actions) throws IOException {
+        return;
     }
 
     @Override
-    public Color askStudentColor() throws IOException {
-        return null;
+    public void askMoveStudentToDining() throws IOException {
+        return;
     }
 
     @Override
-    public int askIslandIndex() throws IOException {
-        return 0;
+    public void askNumStepsOfMotherNature() throws IOException {
+        return;
     }
 
     @Override
-    public int askNumStepsOfMotherNature() throws IOException {
-        return 0;
+    public void askCloudIndex() throws IOException {
+        return;
     }
 
     @Override
-    public int askCloudIndex() throws IOException {
-        return 0;
-    }
-
-    @Override
-    public int askCharacterIndex() throws IOException {
-        return 0;
+    public void askCharacterIndex() throws IOException {
+        return;
     }
 
     @Override
@@ -71,8 +65,8 @@ public class GUI extends Client {
     }
 
     @Override
-    public ArrayList<Color> askColorListForSwapCharacters(int maxBound, String secondElement) throws IOException {
-        return null;
+    public void askColorListForSwapCharacters(int maxBound, String secondElement, CharacterName characterName) throws IOException {
+        return;
     }
 
     @Override
@@ -84,23 +78,13 @@ public class GUI extends Client {
     private TextField usernameTextField;
 
     @Override
-    public int askNumPlayers() throws IOException {
-        return 0;
-    }
-
-    @Override
-    public boolean askExpertMode() throws IOException {
-        return false;
+    public void askNumPlayersAndExpertMode() throws IOException {
+        return;
     }
 
     @Override
     public void showCurrentLobby(GameLobby gameLobby) {
 
-    }
-
-    @Override
-    public Color pickColor() {
-        return null;
     }
 
     @Override
@@ -114,7 +98,27 @@ public class GUI extends Client {
     }
 
     @Override
-    public String askUsername() throws IOException {
+    public void askMoveStudentToIsland() throws IOException {
+
+    }
+
+    @Override
+    public void askToMoveOneStudentFromCard(boolean toIsland) throws IOException {
+
+    }
+
+    @Override
+    public void pickColorForPassive(CharacterName characterName) throws IOException {
+
+    }
+
+    @Override
+    public void askIslandIndexForCharacter(CharacterName characterName) throws IOException {
+
+    }
+
+    @Override
+    public void askUsername() throws IOException {
         synchronized (lock) {
             try {
                 lock.wait();
@@ -123,7 +127,6 @@ public class GUI extends Client {
             }
         }
         System.out.println("This is the username: " + username);
-        return username;
     }
 
     public void onLoginBtnPressed(ActionEvent event) {

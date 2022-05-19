@@ -2,10 +2,15 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.messages.Message;
+import it.polimi.ingsw.messages.action.Action;
+import it.polimi.ingsw.messages.action.ActionArgs;
+import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import it.polimi.ingsw.messages.update.UpdateMessage;
+import it.polimi.ingsw.model.characters.CharacterName;
+import it.polimi.ingsw.model.game_objects.Color;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,7 +20,7 @@ import java.util.TimerTask;
 /**
  * Class which handles a single message from the server within a separate thread
  */
-public class MessageHandler {
+public class MessageHandler implements Observer {
     private final NetworkClient nc;
     private final Client client;
     private boolean isServerUp = false;
@@ -47,6 +52,7 @@ public class MessageHandler {
      */
     public synchronized void handleMessage(String jsonMessage) throws IOException {
         Message message = Message.fromJson(jsonMessage);
+        client.setCurrentObserver(this);
 
         switch (message.getStatus()) {
             case "PING" -> handlePing();
@@ -105,9 +111,7 @@ public class MessageHandler {
         } else if (message.getAction() != null && message.getAction().equals("CREATE_GAME")) {
             new Thread(() -> {
                 try {
-                    int numPlayers = client.askNumPlayers();
-                    boolean isExpert = client.askExpertMode();
-                    sendGameParameters(numPlayers, isExpert);
+                    client.askNumPlayersAndExpertMode();
                 } catch (IOException e) {
                     client.gracefulTermination("Connection to server went down");
                 }
@@ -157,11 +161,10 @@ public class MessageHandler {
         if (actionMessage.getError() == 2 || actionMessage.getError() == 1) {
             if (actionMessage.getActions().size() == 1) {
                 handleAction(actionMessage.getActions().get(0));
-                return;
             } else {
                 handleMultipleActions(actionMessage.getActions());
-                return;
             }
+            return;
         }
         if (actionMessage.getActions().size() > 1) {
             handleMultipleActions(actionMessage.getActions());
@@ -205,8 +208,7 @@ public class MessageHandler {
         new Thread(() -> {
             try {
                 client.showPossibleActions(actions);
-                int index = client.chooseAction(actions.size());
-                handleAction(actions.get(index));
+                client.chooseAction(actions);
             } catch (IOException e) {
                 client.gracefulTermination("Connection lost");
             }
@@ -223,4 +225,39 @@ public class MessageHandler {
         client.endGame(actionMessage.getDisplayText());
     }
 
+    @Override
+    public void sendActionName(String action) {
+        handleAction(action);
+    }
+
+    @Override
+    public void sendLoginParameters(String username, Integer numPlayers, Boolean isExpert) {
+        sendGameParameters(numPlayers, isExpert);
+    }
+
+    @Override
+    public void sendCharacterName(CharacterName name) throws IOException {
+        ActionHandler.handleCharacterPlayed(name, nc);
+    }
+
+    @Override
+    public void sendActionParameters(String actionName, Color color, Integer island, Integer num_steps, Integer cloud,
+                                     Integer value, CharacterName characterName, List<Color> sourceStudents, List<Color> dstStudents) {
+        ActionArgs args = new ActionArgs();
+        args.setColor(color);
+        args.setIsland(island);
+        args.setNum_steps(num_steps);
+        args.setCloud(cloud);
+        args.setValue(value);
+        args.setCharacterName(characterName);
+        args.setSourceStudents(sourceStudents);
+        args.setDstStudents(dstStudents);
+
+        Action action = new Action(actionName, args);
+
+        ClientActionMessage toSend = new ClientActionMessage();
+        toSend.setAction(action);
+        toSend.setPlayer(client.getUsername());
+        nc.sendMessageToServer(toSend.toJson());
+    }
 }

@@ -2,11 +2,11 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
+import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_state.GameState;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -21,24 +21,32 @@ public class CLI extends Client {
     }
 
     @Override
-    public int getAssistantValue() throws IOException {
-        return askForInteger(1, 10, "Insert value of the selected assistant [1-10]: ", "Assistant value");
+    public void getAssistantValue() throws IOException {
+        int value = askForInteger(1, 10, "Insert value of the selected assistant [1-10]: ", "Assistant value");
+        getCurrentObserver().sendActionParameters("PLAY_ASSISTANT", null, null, null, null,
+                value, null, null, null);
     }
 
     @Override
-    public String askUsername() throws IOException {
+    public void askUsername() throws IOException {
         System.out.print(Messages.ASK_USERNAME);
         String username = stdIn.readLine();
         setUsername(username);
-        return username;
+        getCurrentObserver().sendLoginParameters(username, null, null);
     }
 
     @Override
-    public int askNumPlayers() throws IOException {
-        return askForInteger(2, 4, "Insert desired number of players (2, 3 or 4): ", "Number of players");
+    public void askNumPlayersAndExpertMode() throws IOException {
+        int numPlayers = askForInteger(2, 4, "Insert desired number of players (2, 3 or 4): ", "Number of players");
+        boolean isGameExpert = askExpertMode();
+        getCurrentObserver().sendLoginParameters(null, numPlayers, isGameExpert);
     }
 
-    @Override
+    /**
+     * Asks the player to choose whether to play in expert mode or not
+     *
+     * @return true if the player wants to play in expert mode, false otherwise
+     */
     public boolean askExpertMode() throws IOException {
         String res;
 
@@ -70,11 +78,6 @@ public class CLI extends Client {
     }
 
     @Override
-    public Color pickColor() {
-        return null;
-    }
-
-    @Override
     public void gracefulTermination(String message) {
         printBlueLine();
         System.out.println(message);
@@ -89,9 +92,9 @@ public class CLI extends Client {
 
 
     @Override
-    public int chooseAction(int bound) throws IOException {
+    public void chooseAction(List<String> actions) throws IOException {
         int res;
-
+        int size = actions.size();
         do {
             System.out.print("Select the corresponding number: ");
             String string = stdIn.readLine();
@@ -102,14 +105,51 @@ public class CLI extends Client {
                 System.out.println("Action identifier must be a number!");
             }
 
-        } while (res < 1 || res > bound);
+        } while (res < 1 || res > size);
 
-        return res - 1;
+        getCurrentObserver().sendActionName(actions.get(res - 1));
     }
 
     @Override
-    public int askCharacterIndex() throws IOException {
-        return askForInteger(1, 3, "Insert the number of the character you want to play [1-3]: ", "Character index");
+    public void askIslandIndexForCharacter(CharacterName characterName) throws IOException {
+        int islandIndex = askForInteger(1, 12, "Insert number of the selected island: ", "Island index");
+        getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, islandIndex - 1, null,
+                null, null, characterName, null, null);
+    }
+
+    @Override
+    public void pickColorForPassive(CharacterName characterName) throws IOException {
+        Color color = askForColor();
+        getCurrentObserver().sendActionParameters("PLAY_CHARACTER", color, null, null,
+                null, null, characterName, null, null);
+    }
+
+    @Override
+    public void askToMoveOneStudentFromCard(boolean toIsland) throws IOException {
+        Color color = askForColor();
+        Integer islandIndex = null;
+        CharacterName characterName = CharacterName.move1FromCardToDining;
+        if (toIsland) {
+            islandIndex = askForInteger(1, 12, "Insert number of the selected island: ", "Island index")
+                    - 1;
+            characterName = CharacterName.move1FromCardToIsland;
+        }
+        getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, islandIndex, null,
+                null, null, characterName, List.of(color), null);
+    }
+
+    @Override
+    public void askMoveStudentToIsland() throws IOException {
+        int island = askForInteger(1, 12, "Insert number of the selected island: ", "Island index");
+        Color color = askForColor();
+        getCurrentObserver().sendActionParameters("MOVE_STUDENT_TO_ISLAND", color, island - 1, null, null,
+                null, null, null, null);
+    }
+
+    @Override
+    public void askCharacterIndex() throws IOException {
+        int index = askForInteger(1, 3, "Insert the number of the character you want to play [1-3]: ", "Character index");
+        getCurrentObserver().sendCharacterName(getCharacters().get(index - 1).getCharacterName());
     }
 
     @Override
@@ -126,24 +166,32 @@ public class CLI extends Client {
     }
 
     @Override
-    public ArrayList<Color> askColorListForSwapCharacters(int maxBound, String secondElement) throws IOException {
+    public void askColorListForSwapCharacters(int maxBound, String secondElement, CharacterName characterName) throws IOException {
         int size = askForInteger(0, maxBound, "Choose how many students you want to swap: ", "Number of students");
         System.out.println("Select " + size + " students from your entrance");
-        ArrayList<Color> selectedColors = new ArrayList<>();
+        ArrayList<Color> srcColors = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            Color toAdd = askStudentColor();
-            selectedColors.add(toAdd);
+            Color toAdd = askForColor();
+            srcColors.add(toAdd);
         }
+        ArrayList<Color> dstColors = new ArrayList<>();
         System.out.println("Select " + size + " students from " + secondElement);
         for (int i = 0; i < size; i++) {
-            Color toAdd = askStudentColor();
-            selectedColors.add(toAdd);
+            Color toAdd = askForColor();
+            dstColors.add(toAdd);
         }
-        return selectedColors;
+        getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, null, null, null,
+                null, characterName, srcColors, dstColors);
     }
 
     @Override
-    public Color askStudentColor() throws IOException {
+    public void askMoveStudentToDining() throws IOException {
+        Color color = askForColor();
+        getCurrentObserver().sendActionParameters("MOVE_STUDENT_TO_DINING", color, null, null, null,
+                null, null, null, null);
+    }
+
+    public Color askForColor() throws IOException {
         String res;
         Color color;
         do {
@@ -161,18 +209,17 @@ public class CLI extends Client {
     }
 
     @Override
-    public int askIslandIndex() throws IOException {
-        return askForInteger(1, 12, "Insert number of the selected island: ", "Island index");
+    public void askNumStepsOfMotherNature() throws IOException {
+        int steps = askForInteger(0, 15, "Insert number of steps of mother nature: ", "Number of steps");
+        getCurrentObserver().sendActionParameters("MOVE_MN", null, null, steps, null,
+                null, null, null, null);
     }
 
     @Override
-    public int askNumStepsOfMotherNature() throws IOException {
-        return askForInteger(0, 15, "Insert number of steps of mother nature: ", "Number of steps");
-    }
-
-    @Override
-    public int askCloudIndex() throws IOException {
-        return askForInteger(1, 4, "Insert number of the cloud you want to pick: ", "Cloud index");
+    public void askCloudIndex() throws IOException {
+        int cloud = askForInteger(1, 4, "Insert number of the cloud you want to pick: ", "Cloud index");
+        getCurrentObserver().sendActionParameters("FILL_FROM_CLOUD", null, null, null, cloud - 1,
+                null, null, null, null);
     }
 
     @Override
