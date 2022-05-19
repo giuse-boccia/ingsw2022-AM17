@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" fx:controller="it.polimi.ingsw.client.GUI">
+   <children>
+      <Button fx:id="loginBtn" alignment="CENTER" layoutX="254.0" layoutY="292.0" mnemonicParsing="false" text="LOGIN"
+              textAlignment="CENTER" onAction="#onLoginBtnPressed">
+         <font>
+            <Font name="Baskerville Old Face" size="20.0"/>
+         </font>
+         <effect>
+            <DropShadow/>
+         </effect>
+         <padding>
+            <Insets bottom="10.0" left="25.0" right="25.0" top="10.0"/>
+         </padding>
+      </Button>
+      <Text fontSmoothingType="LCD" layoutX="199.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0"
+            text="ERIANTYS" textAlignment="CENTER" wrappingWidth="201.253173828125">
+         <font>
+            <Font size="38.0"/>
+         </font>
+         <fill>
+            <LinearGradient>
+               <stops>
+                  <Stop>
+                     <color>
+                        <Color red="0.3505730926990509" green="0.4421052634716034" blue="0.019649121910333633"/>
+                     </color>
+                  </Stop>
+                  <Stop offset="1.0">
+                     <color>
+                        <Color red="1.0" green="1.0" blue="1.0"/>
+                     </color>
+                  </Stop>
+               </stops>
+            </LinearGradient>
+         </fill>
+      </Text>
+      <Text layoutX="126.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Insert username">
+         <font>
+            <Font size="18.0"/>
+         </font>
+      </Text>
+      <TextField fx:id="usernameTextField" layoutX="126.0" layoutY="185.0" promptText="nickname">
+         <font>
+            <Font size="14.0"/>
+         </font>
+      </TextField>
+   </children>
+</AnchorPane>

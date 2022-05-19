@@ -3,12 +3,18 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_state.GameState;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GUI extends Client {
+
+    private final Object lock = new Object();
+    private String username;
 
     public static void main(String[] args) {
 
@@ -74,10 +80,8 @@ public class GUI extends Client {
 
     }
 
-    @Override
-    public String askUsername() throws IOException {
-        return null;
-    }
+    @FXML
+    private TextField usernameTextField;
 
     @Override
     public int askNumPlayers() throws IOException {
@@ -107,6 +111,26 @@ public class GUI extends Client {
     @Override
     public void showMessage(String message) {
 
+    }
+
+    @Override
+    public String askUsername() throws IOException {
+        synchronized (lock) {
+            try {
+                lock.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("This is the username: " + username);
+        return username;
+    }
+
+    public void onLoginBtnPressed(ActionEvent event) {
+        username = usernameTextField.getText();
+        synchronized (lock) {
+            lock.notifyAll();
+        }
     }
 
 }
