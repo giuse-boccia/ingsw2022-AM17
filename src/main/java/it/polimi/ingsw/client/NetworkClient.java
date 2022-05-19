@@ -20,7 +20,6 @@ public class NetworkClient extends Thread implements Observer {
     private Socket server;
     private BufferedReader socketIn;
     private PrintWriter socketOut;
-    private String username;
 
     public NetworkClient(Client client, String serverAddress, int serverPort) {
         this.client = client;
@@ -79,10 +78,6 @@ public class NetworkClient extends Thread implements Observer {
             // Server connection error
             client.gracefulTermination("Connection to server lost");
         }
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     @Override
