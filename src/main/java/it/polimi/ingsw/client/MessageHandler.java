@@ -38,7 +38,7 @@ public class MessageHandler implements Observer {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                if (!isServerUp) {
+                if (!isServerUp && client.getUsername() != null) {
                     client.gracefulTermination("Server crashed");
                 }
                 isServerUp = false;
