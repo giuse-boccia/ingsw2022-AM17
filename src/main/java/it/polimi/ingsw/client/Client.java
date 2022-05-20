@@ -29,7 +29,7 @@ public abstract class Client {
             client = new CLI();
         } else {
             client = new GUI();
-            new Thread(() -> GuiView.main(new String[]{})).start();
+            new Thread(() -> GuiView.main((GUI) client)).start();
         }
         if (args.length < 3) {
             try {
@@ -77,7 +77,7 @@ public abstract class Client {
      *
      * @param gameLobby the {@code GameLobby} object containing the list of players
      */
-    public abstract void showCurrentLobby(GameLobby gameLobby);
+    public abstract void showCurrentLobby(GameLobby gameLobby) throws IOException;
 
     /**
      * Closes the connection printing the provided message
@@ -92,6 +92,8 @@ public abstract class Client {
      * @param message the message to be shown
      */
     public abstract void showMessage(String message);
+
+    public abstract void showWarningMessage(String message);
 
     /**
      * Asks the user to input a value to play an {@code Assistant}

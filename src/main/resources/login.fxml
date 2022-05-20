@@ -13,7 +13,8 @@
 
 <?import javafx.scene.layout.AnchorPane?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" fx:controller="it.polimi.ingsw.client.GUI">
+            minWidth="-Infinity" xmlns="http://javafx.com/javafx/18"
+            fx:controller="it.polimi.ingsw.client.gui.LoginController">
    <children>
       <Button fx:id="loginBtn" alignment="CENTER" layoutX="254.0" layoutY="292.0" mnemonicParsing="false" text="LOGIN"
               textAlignment="CENTER" onAction="#onLoginBtnPressed">

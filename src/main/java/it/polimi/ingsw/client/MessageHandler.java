@@ -94,11 +94,11 @@ public class MessageHandler implements Observer {
     /**
      * Handles a login message
      */
-    private void handleLogin(String jsonMessage) {
+    private void handleLogin(String jsonMessage) throws IOException {
         ServerLoginMessage message = ServerLoginMessage.fromJson(jsonMessage);
 
         if (message.getError() == 2) {
-            client.showMessage("Username already taken");
+            client.showWarningMessage("Username already taken");
             new Thread(() -> {
                 try {
                     nc.askUsernameAndSend();

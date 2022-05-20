@@ -243,6 +243,11 @@ public class CLI extends Client {
         System.out.println(message);
     }
 
+    @Override
+    public void showWarningMessage(String message) {
+        showMessage(message);
+    }
+
     /**
      * Prints a line containing only "-" characters
      */

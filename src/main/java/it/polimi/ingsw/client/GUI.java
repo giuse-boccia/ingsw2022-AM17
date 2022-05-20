@@ -3,9 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_state.GameState;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
 
 import java.io.IOException;
 import java.util.List;
@@ -73,30 +71,31 @@ public class GUI extends Client {
 
     }
 
-    @FXML
-    private TextField usernameTextField;
 
     @Override
     public void askNumPlayersAndExpertMode() throws IOException {
-        return;
+        GuiView.changeScene("game_parameters", false, null);
     }
 
     @Override
-    public void showCurrentLobby(GameLobby gameLobby) {
-
+    public void showCurrentLobby(GameLobby gameLobby) throws IOException {
+        GuiView.changeScene("lobby", false, null);
     }
 
     @Override
     public void gracefulTermination(String message) {
         // TODO show a popup before crashing
-        System.out.println(message);
-        System.out.println("The application will now close...");
-        System.exit(-1);
+        GuiView.showErrorDialog(message, true);
     }
 
     @Override
     public void showMessage(String message) {
 
+    }
+
+    @Override
+    public void showWarningMessage(String message) {
+        GuiView.showErrorDialog(message, false);
     }
 
     @Override
@@ -127,11 +126,6 @@ public class GUI extends Client {
     @Override
     public void playCharacterWithoutArguments(CharacterName characterName) throws IOException {
 
-    }
-
-    public void onLoginBtnPressed(ActionEvent event) {
-        username = usernameTextField.getText();
-        getCurrentObserver().sendLoginParameters(username, null, null);
     }
 
 }
