@@ -1,24 +1,39 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.GuiView;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 
 public class GameParametersController implements GuiController {
 
+    private final ObservableList<Integer> numPlayersChoices = FXCollections.observableArrayList(2, 3, 4);
     @FXML
-    public ChoiceBox<String> numPlayersChoiceBox;
+    private ChoiceBox<Integer> numPlayersChoiceBox;
     @FXML
-    public CheckBox isGameExpert;
-    @FXML
-    public Button startGameBtn;
+    private CheckBox isGameExpert;
     @FXML
     private Label title;
 
+    @FXML
+    void initialize() {
+        title.setText("Welcome, " + GuiView.getGui().getUsername());
+
+        numPlayersChoiceBox.setValue(2);
+        numPlayersChoiceBox.setItems(numPlayersChoices);
+
+        isGameExpert.setAllowIndeterminate(false);
+    }
 
     public GameParametersController() {
+    }
+
+    public void onStartButtonClicked(ActionEvent event) {
+        GuiView.getGui().getCurrentObserver().sendLoginParameters(null, numPlayersChoiceBox.getValue(), isGameExpert.isSelected());
     }
 
 
