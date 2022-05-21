@@ -47,16 +47,13 @@ public class GuiView extends Application {
 
         currentSceneName = resourceName;
         FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/" + resourceName + ".fxml"));
-//        scene.setRoot(fxmlLoader.load());
-//        currentController = fxmlLoader.getController();
-//        currentController.receiveData(data);
         Platform.runLater(() -> {
             try {
                 scene = new Scene(fxmlLoader.load());
             } catch (IOException e) {
                 gui.gracefulTermination("Connection to server lost");
             }
-            stage.setMaximized(fullscreen);
+            stage.setResizable(fullscreen);
             stage.setFullScreen(false);
             stage.setScene(scene);
             currentController = fxmlLoader.getController();
@@ -89,7 +86,7 @@ public class GuiView extends Application {
         currentSceneName = "login";
         FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/login.fxml"));
 
-        Rectangle2D screen = Screen.getPrimary().getBounds();
+        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
         width = screen.getWidth();
         height = screen.getHeight();
 

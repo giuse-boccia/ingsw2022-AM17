@@ -44,7 +44,7 @@ public class LobbyController implements GuiController {
 
     private void drawLobby(GameLobby lobby) {
         // Remove all elements set previously
-        gridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) == null || GridPane.getRowIndex(node) <= lobby.getPlayers().length);
+        gridPane.getChildren().removeIf(node -> true);
 
         String text = "PLAYERS: " + lobby.getPlayers().length;
         if (lobby.getNumPlayers() != -1) {
