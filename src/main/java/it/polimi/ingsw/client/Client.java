@@ -12,6 +12,7 @@ import java.util.List;
 public abstract class Client {
     private static NetworkClient nc;
     private String username;
+    private String tmpUsername;
     private List<CharacterState> characters;
     private Observer currentObserver;
 
@@ -161,6 +162,14 @@ public abstract class Client {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getTmpUsername() {
+        return tmpUsername;
+    }
+
+    public void setTmpUsername(String tmpUsername) {
+        this.tmpUsername = tmpUsername;
     }
 
     public List<CharacterState> getCharacters() {

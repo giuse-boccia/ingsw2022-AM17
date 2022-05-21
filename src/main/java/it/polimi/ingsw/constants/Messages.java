@@ -24,7 +24,7 @@ public class Messages {
     // Errors while joining game
     public static final String INVALID_USERNAME = "Invalid username field";
     public static final String USERNAME_TOO_LONG = "Username is too long (max 32 characters)";
-    public static final String USERNAME_ALREADY_TAKEN = "Username is too long (max 32 characters)";
+    public static final String USERNAME_ALREADY_TAKEN = "Username already taken";
     public static final String LOBBY_FULL = "The lobby is full";
     public static final String INVALID_NUM_PLAYERS = "Num players must be between 2 and 4";
     public static final String INVALID_PLAYER_CREATING_GAME = "You can't set this game's parameters";

@@ -48,7 +48,7 @@ public class LobbyController implements GuiController {
 
         String text = "PLAYERS: " + lobby.getPlayers().length;
         if (lobby.getNumPlayers() != -1) {
-            text += "/" + lobby.getNumPlayers() + "| Expert mode: " + (lobby.isExpert() ? " " : "not") + "active";
+            text += "/" + lobby.getNumPlayers() + "| Expert mode: " + (lobby.isExpert() ? " " : "not ") + "active";
         }
 
         Text playersTitle = new Text(text);

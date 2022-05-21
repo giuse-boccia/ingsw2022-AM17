@@ -6,7 +6,8 @@ public class Constants {
     // Server Constants
     public static final int PING_INTERVAL = 2000;
     public static final int PONG_INITIAL_DELAY = 3000;
-    public static final int PONG_INTERVAL = 3000;
+    public static final int PONG_INTERVAL = 2500;
+    public static final int MAX_ATTEMPTS_TO_CONTACT_SERVER = 2;
 
     // Client Constants
     public static final int DEFAULT_PORT = 7373;    // to be used if no port is found in settings.json or given by args

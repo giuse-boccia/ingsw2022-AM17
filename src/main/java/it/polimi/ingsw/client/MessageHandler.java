@@ -23,7 +23,7 @@ import java.util.TimerTask;
 public class MessageHandler implements Observer {
     private final NetworkClient nc;
     private final Client client;
-    private boolean isServerUp = false;
+    private int serverUpCalls = 0;
 
     public MessageHandler(NetworkClient nc) {
         this.nc = nc;
@@ -38,10 +38,12 @@ public class MessageHandler implements Observer {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                if (!isServerUp && client.getUsername() != null) {
+                if (serverUpCalls >= Constants.MAX_ATTEMPTS_TO_CONTACT_SERVER && client.getUsername() != null) {
                     client.gracefulTermination("Server crashed");
+                    this.cancel();
+                } else if (client.getUsername() != null) {
+                    serverUpCalls++;
                 }
-                isServerUp = false;
             }
         };
         timer.schedule(task, Constants.PONG_INITIAL_DELAY, Constants.PONG_INTERVAL);
@@ -79,7 +81,7 @@ public class MessageHandler implements Observer {
      */
     private void handlePing() {
         sendPong();
-        isServerUp = true;
+        serverUpCalls = 0;
     }
 
     /**
@@ -109,6 +111,7 @@ public class MessageHandler implements Observer {
         } else if (message.getError() != 0) {
             client.gracefulTermination(message.getDisplayText());
         } else if (message.getAction() != null && message.getAction().equals("CREATE_GAME")) {
+            client.setUsername(client.getTmpUsername());
             new Thread(() -> {
                 try {
                     client.askNumPlayersAndExpertMode();
@@ -118,6 +121,7 @@ public class MessageHandler implements Observer {
             }).start();
 
         } else {    // action = null & error = 0 ----> this is a broadcast message
+            client.setUsername(client.getTmpUsername());
             client.showMessage(message.getDisplayText());
             client.showCurrentLobby(message.getGameLobby());
         }

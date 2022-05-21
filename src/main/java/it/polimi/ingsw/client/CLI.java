@@ -31,7 +31,7 @@ public class CLI extends Client {
     public void askUsername() throws IOException {
         System.out.print(Messages.ASK_USERNAME);
         String username = stdIn.readLine();
-        setUsername(username);
+        setTmpUsername(username);
         getCurrentObserver().sendLoginParameters(username, null, null);
     }
 
