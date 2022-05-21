@@ -129,12 +129,13 @@ public class GameController {
             // When I send the message to the nextPlayer, I just have to call currentPap - it's already the pap of the current player
             // When pap.currentPlayer == null I have to start another planning phase
 
-            if (game.getCurrentRound().isLastRound()) {
-                alertLastRound();
-            }
-
             curPlayer = getPlayerClientFromPlayer(game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer());
-            sendBroadcastUpdateMessage(curPlayer.getUsername() + " is playing...");
+
+            String text = curPlayer.getUsername() + " is playing...";
+            if (game.getCurrentRound().isLastRound()) {
+                text = Messages.LAST_ROUND + " ";
+            }
+            sendBroadcastUpdateMessage(text);
 
             askForMoveInPAP(curPlayer);
         } else {
@@ -378,18 +379,6 @@ public class GameController {
 
         askForMoveInPAP(nextPlayer);
 
-    }
-
-    /**
-     * Alerts all the players that the current one is the last {@code Round}
-     */
-    private void alertLastRound() {
-        UpdateMessage updateMessage = new UpdateMessage();
-        updateMessage.setStatus("UPDATE");
-        updateMessage.setDisplayText("Be aware! This is the last round");
-        for (PlayerClient player : players) {
-            player.getCommunicable().sendMessageToClient(updateMessage.toJson());
-        }
     }
 
     /**

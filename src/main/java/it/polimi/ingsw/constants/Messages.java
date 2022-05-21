@@ -54,4 +54,7 @@ public class Messages {
     public static final String STUDENT_NOT_FOUND = "Student not found. Check your choices";
     public static final String MOVING_MORE_STUDENTS = "You are trying to move more students than you are allowed to";
     public static final String ALREADY_PLAYED_CHARACTER = "You already played a character this turn";
+
+    // Messages in action phase
+    public static final String LAST_ROUND = "Be aware! This is the last round";
 }
