@@ -10,7 +10,6 @@ import java.util.List;
 
 public class GUI extends Client {
 
-    private String username;
     private static final GuiView guiView = new GuiView();
 
     public static void main(String[] args) {
@@ -29,27 +28,27 @@ public class GUI extends Client {
 
     @Override
     public void chooseAction(List<String> actions) throws IOException {
-        return;
+
     }
 
     @Override
     public void askMoveStudentToDining() throws IOException {
-        return;
+
     }
 
     @Override
     public void askNumStepsOfMotherNature() throws IOException {
-        return;
+
     }
 
     @Override
     public void askCloudIndex() throws IOException {
-        return;
+
     }
 
     @Override
     public void askCharacterIndex() throws IOException {
-        return;
+
     }
 
     @Override
@@ -64,7 +63,7 @@ public class GUI extends Client {
 
     @Override
     public void askColorListForSwapCharacters(int maxBound, String secondElement, CharacterName characterName) throws IOException {
-        return;
+
     }
 
     @Override
@@ -85,7 +84,6 @@ public class GUI extends Client {
 
     @Override
     public void gracefulTermination(String message) {
-        // TODO show a popup before crashing
         GuiView.showErrorDialog(message, true);
     }
 
