@@ -47,9 +47,6 @@ public class GuiView extends Application {
 
         currentSceneName = resourceName;
         FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/" + resourceName + ".fxml"));
-//        scene.setRoot(fxmlLoader.load());
-//        currentController = fxmlLoader.getController();
-//        currentController.receiveData(data);
         Platform.runLater(() -> {
             try {
                 scene = new Scene(fxmlLoader.load());
