@@ -11,6 +11,7 @@ import java.util.List;
 public class GUI extends Client {
 
     private String username;
+    private static final GuiView guiView = new GuiView();
 
     public static void main(String[] args) {
 
@@ -74,12 +75,12 @@ public class GUI extends Client {
 
     @Override
     public void askNumPlayersAndExpertMode() throws IOException {
-        GuiView.changeScene("game_parameters", false, null);
+        guiView.changeScene("game_parameters", false, null);
     }
 
     @Override
     public void showCurrentLobby(GameLobby gameLobby) throws IOException {
-        GuiView.changeScene("lobby", false, null);
+        guiView.changeScene("lobby", false, gameLobby);
     }
 
     @Override
