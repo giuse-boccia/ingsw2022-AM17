@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.model.game_state.GameState;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.AnchorPane;
@@ -24,6 +25,11 @@ public class ActionController implements GuiController {
     public void receiveData(Object data) {
         if (data == null) return;
         GameState gameState = (GameState) data;
+
+        Platform.runLater(() -> drawGameState(gameState));
+    }
+
+    private void drawGameState(GameState gameState) {
 
     }
 }
