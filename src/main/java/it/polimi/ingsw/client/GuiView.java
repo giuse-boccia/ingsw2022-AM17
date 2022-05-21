@@ -53,7 +53,7 @@ public class GuiView extends Application {
             } catch (IOException e) {
                 gui.gracefulTermination("Connection to server lost");
             }
-            stage.setMaximized(fullscreen);
+            stage.setResizable(fullscreen);
             stage.setFullScreen(false);
             stage.setScene(scene);
             currentController = fxmlLoader.getController();
@@ -86,7 +86,7 @@ public class GuiView extends Application {
         currentSceneName = "login";
         FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/login.fxml"));
 
-        Rectangle2D screen = Screen.getPrimary().getBounds();
+        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
         width = screen.getWidth();
         height = screen.getHeight();
 

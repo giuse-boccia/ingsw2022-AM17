@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="600" prefWidth="800"
+            xmlns="http://javafx.com/javafx/16" fx:controller="it.polimi.ingsw.client.gui.ActionController">
+   <children>
+      <Label layoutX="847.0" layoutY="425.0" text="GAME">
+         <font>
+            <Font name="Baskerville Old Face" size="76.0"/>
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

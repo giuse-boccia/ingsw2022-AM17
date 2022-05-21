@@ -58,7 +58,7 @@ public class GUI extends Client {
 
     @Override
     public void updateGameState(GameState gameState) {
-
+        guiView.changeScene("game", true, gameState);
     }
 
     @Override
