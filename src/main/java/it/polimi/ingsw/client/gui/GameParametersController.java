@@ -1,6 +1,5 @@
 package it.polimi.ingsw.client.gui;
 
-import it.polimi.ingsw.client.GuiView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

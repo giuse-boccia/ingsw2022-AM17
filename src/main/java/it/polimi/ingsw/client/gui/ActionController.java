@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
-import it.polimi.ingsw.model.game_state.GameState;
+import it.polimi.ingsw.server.game_state.GameState;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.AnchorPane;

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client;
+package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.constants.ConsoleColors;
 import it.polimi.ingsw.constants.Messages;
