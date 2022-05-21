@@ -170,20 +170,6 @@ public class GameBoard {
     }
 
     /**
-     * Checks if two islands are adjacent
-     *
-     * @param first  the first {@code Island}
-     * @param second the second {@code Island}
-     * @return true if the two islands are adjacent
-     */
-    private boolean areIslandsAdjacent(Island first, Island second) {
-        int firstIndex = islands.indexOf(first);
-        int secondIndex = islands.indexOf(second);
-        int check = (secondIndex - firstIndex + islands.size()) % islands.size();
-        return check == 1 || check == islands.size() - 1;
-    }
-
-    /**
      * Merges two islands and moves mother nature accordingly. The islands must be adjacent
      *
      * @param left  the first {@code Island} to be merged

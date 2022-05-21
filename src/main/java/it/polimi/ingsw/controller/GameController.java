@@ -17,7 +17,7 @@ import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
-import it.polimi.ingsw.model.game_state.GameState;
+import it.polimi.ingsw.server.game_state.GameState;
 import it.polimi.ingsw.server.Communicable;
 import it.polimi.ingsw.server.PlayerClient;
 
@@ -243,7 +243,7 @@ public class GameController {
             currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
             PlayerClient nextPlayer = players.get(currentPlayerIndex);
             sendBroadcastUpdateMessage(player.getUsername() + " chose cloud number " + (cloudNumber + 1));
-            sendBroadcastUpdateMessage(nextPlayer.getUsername() + " si playing...");
+            sendBroadcastUpdateMessage(nextPlayer.getUsername() + " is playing...");
             askForAssistant(nextPlayer);
         }
     }

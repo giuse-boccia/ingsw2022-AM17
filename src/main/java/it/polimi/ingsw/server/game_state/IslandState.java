@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.game_state;
+package it.polimi.ingsw.server.game_state;
 
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.TowerColor;

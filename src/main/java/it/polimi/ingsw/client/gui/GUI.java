@@ -1,9 +1,9 @@
-package it.polimi.ingsw.client;
+package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
-import it.polimi.ingsw.model.game_state.GameState;
-import javafx.scene.control.Alert;
+import it.polimi.ingsw.server.game_state.GameState;
 
 import java.io.IOException;
 import java.util.List;

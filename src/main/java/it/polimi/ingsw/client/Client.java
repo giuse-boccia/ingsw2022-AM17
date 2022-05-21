@@ -1,10 +1,13 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.Settings;
+import it.polimi.ingsw.client.cli.CLI;
+import it.polimi.ingsw.client.gui.GUI;
+import it.polimi.ingsw.client.gui.GuiView;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
-import it.polimi.ingsw.model.game_state.CharacterState;
-import it.polimi.ingsw.model.game_state.GameState;
+import it.polimi.ingsw.server.game_state.CharacterState;
+import it.polimi.ingsw.server.game_state.GameState;
 
 import java.io.IOException;
 import java.util.List;
