@@ -4,7 +4,7 @@ import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
-import it.polimi.ingsw.model.game_state.GameState;
+import it.polimi.ingsw.server.game_state.GameState;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -166,7 +166,7 @@ public class CLI extends Client {
     }
 
     @Override
-    public void playCharacterWithoutArguments(CharacterName characterName) throws IOException {
+    public void playCharacterWithoutArguments(CharacterName characterName) {
         getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, null, null, null,
                 null, characterName, null, null);
     }

@@ -1,13 +1,9 @@
-package it.polimi.ingsw.model.game_state;
+package it.polimi.ingsw.server.game_state;
 
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.game_objects.Color;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Immutable class that represent the game as viewed by the clients

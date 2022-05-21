@@ -4,7 +4,7 @@ import it.polimi.ingsw.constants.ConsoleColors;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
-import it.polimi.ingsw.model.game_state.*;
+import it.polimi.ingsw.server.game_state.*;
 import it.polimi.ingsw.model.utils.Students;
 
 import java.util.List;
