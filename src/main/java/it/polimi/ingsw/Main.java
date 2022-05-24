@@ -1,6 +1,8 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.constants.Constants;
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.server.Server;
 
 import java.util.Arrays;
@@ -13,7 +15,7 @@ public class Main {
 
     public static void main(String[] args) {
         if (args.length < 1 || args.length > 3) {
-            System.out.println("Usage: java -jar eriantys.jar [SERVER | CLI | GUI] [<PORT_NUMBER>] [<HOST_ADDRESS>]");
+            System.out.println(Messages.USAGE);
             System.exit(-1);
         }
 
@@ -24,7 +26,7 @@ public class Main {
             case "server" -> Server.main(config);
             case "cli", "gui" -> Client.main(args);
             default -> {
-                System.out.println("Usage: java -jar eriantys.jar [SERVER | CLI | GUI] [<PORT_NUMBER>] [<HOST_ADDRESS>]");
+                System.out.println(Messages.USAGE);
                 System.exit(-1);
             }
         }
