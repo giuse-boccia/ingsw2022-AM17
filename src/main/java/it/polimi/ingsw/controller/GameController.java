@@ -20,6 +20,7 @@ import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.server.game_state.GameState;
 import it.polimi.ingsw.server.Communicable;
 import it.polimi.ingsw.server.PlayerClient;
+import it.polimi.ingsw.server.game_state.SavedGameState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,6 +127,7 @@ public class GameController {
         PlayerClient curPlayer;
 
         if (game.getCurrentRound().getPlanningPhase().isEnded()) {
+            SavedGameState.saveToFile(game);
             // When I send the message to the nextPlayer, I just have to call currentPap - it's already the pap of the current player
             // When pap.currentPlayer == null I have to start another planning phase
 
@@ -236,6 +238,8 @@ public class GameController {
             sendActionErrorMessage(player.getCommunicable(), e.getMessage(), 1, "FILL_FROM_CLOUD");
             return;
         }
+
+        SavedGameState.saveToFile(game);
 
         if (game.getCurrentRound().getCurrentPlayerActionPhase() != null || game.isEnded()) {
             sendMessagesInPAP();

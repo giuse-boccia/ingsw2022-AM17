@@ -41,6 +41,10 @@ public class CliView {
             "|----------|-----------------------------|-------|"
                     + ConsoleColors.RESET;
 
+    public static final String DASHBOARD_LINE_WITH_COINS =
+            "|----------|-------+-----+-----+---------|-------|"
+                    + ConsoleColors.RESET;
+
     public static final String DASHBOARD_HEADER =
             "| ENTRANCE |         DINING ROOM         | PROFS |"
                     + ConsoleColors.RESET;
@@ -236,7 +240,11 @@ public class CliView {
         // Header
         System.out.println(DASHBOARD_LINE_50);
         System.out.println(DASHBOARD_HEADER);
-        System.out.println(DASHBOARD_LINE_50);
+        if (isExpert) {
+            System.out.println(DASHBOARD_LINE_WITH_COINS);      // coins indicator for expert mode
+        } else {
+            System.out.println(DASHBOARD_LINE_50);
+        }
 
         // First line (1st entrance student + green dining)
         // something like:      |    ●  ●   |    ● ● ●                |   ▲   |

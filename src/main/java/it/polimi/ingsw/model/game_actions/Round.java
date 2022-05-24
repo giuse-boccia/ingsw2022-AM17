@@ -132,6 +132,9 @@ public class Round {
     }
 
     public List<Assistant> getPlayedAssistants() {
-        return playedAssistants;
+        if (playedAssistants == null) {
+            return null;
+        }
+        return new ArrayList<>(playedAssistants);
     }
 }
