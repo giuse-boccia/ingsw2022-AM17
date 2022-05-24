@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.game_objects.gameboard_objects.Cloud;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class Round {
     private final int firstPlayerIndex;
@@ -64,6 +65,7 @@ public class Round {
      * creates the next {@code PlayerActionPhase}
      */
     public void nextPlayerActionPhase() {
+
         currentAssistantIndex++;
 
         if (currentAssistantIndex == game.getPlayers().size()) {
@@ -74,6 +76,9 @@ public class Round {
             currentPlayerIndex = game.getPlayers().indexOf(currentPlayer);
             currentPlayerActionPhase = new PlayerActionPhase(playedAssistants.get(currentAssistantIndex), game.getGameBoard());
         }
+
+        // TODO: save the current state of the game here
+        // una roba tipo game.save() (così se questo round è finito salva quello dopo)
     }
 
     /**
@@ -124,5 +129,9 @@ public class Round {
 
     public int getFirstPlayerIndex() {
         return firstPlayerIndex;
+    }
+
+    public List<Assistant> getPlayedAssistants() {
+        return playedAssistants;
     }
 }

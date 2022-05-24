@@ -8,6 +8,7 @@ public class Constants {
     public static final int PONG_INITIAL_DELAY = 3000;
     public static final int PONG_INTERVAL = 2500;
     public static final int MAX_ATTEMPTS_TO_CONTACT_SERVER = 2;
+    public static final String SAVED_GAME_PATH = "saved_game.json";
 
     // Client Constants
     public static final int DEFAULT_PORT = 7373;    // to be used if no port is found in settings.json or given by args

@@ -47,7 +47,6 @@ public class GameState {
                         .map(CloudState::new)
                         .toList()
         );
-
     }
 
     public boolean isExpert() {
