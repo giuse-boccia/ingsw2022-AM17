@@ -9,10 +9,6 @@ import it.polimi.ingsw.server.game_state.PlayerState;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 
 import java.util.List;
 
@@ -53,20 +49,42 @@ public class DrawingComponents {
     }
 
     private static void drawCharacters(List<CharacterState> characters, double width, double height, AnchorPane root) {
-        double coordX = width * 0.405;
+        double coordX = width * DrawingConstants.CHARACTERS_BEGINNING_PROPORTION;
+        int heightProportion = 13;
 
         for (CharacterState character : characters) {
             String imagePath = "/gameboard/characters/" + character.getCharacterName() + ".jpg";
             System.out.println(imagePath);
             ImageView characterImage = new ImageView(new Image(imagePath));
             characterImage.setX(coordX);
-            characterImage.setY(height / 13);
+            characterImage.setY(height / heightProportion);
             characterImage.setPreserveRatio(true);
-            characterImage.setFitWidth(width * 0.06);
+            characterImage.setFitWidth(width * DrawingConstants.CHARACTER_CARD_PROPORTION);
 
             root.getChildren().add(characterImage);
 
-            coordX += width * 0.065;
+            if (character.isHasCoin()) {
+                ImageView coin = getImageView(
+                        "/gameboard/Moneta_base.png",
+                        coordX + width * (DrawingConstants.COIN_PROPORTION),
+                        height / heightProportion,
+                        width * (DrawingConstants.COIN_PROPORTION)
+                );
+                root.getChildren().add(coin);
+            }
+            if (character.getStudents() != null) {
+                for (int i = 0; i < character.getStudents().size(); i++) {
+                    String studentPath = "/gameboard/students/student_" +
+                            character.getStudents().get(i).getColor().toString().toLowerCase() + ".png";
+                    double fixedWidth = width / 25;
+                    double x = coordX + ((i % 2 == 0) ? 0 : width * (DrawingConstants.CHARACTER_CARD_PROPORTION * 6 / 5));
+                    double y = height / heightProportion + width * (DrawingConstants.CHARACTER_CARD_PROPORTION) + (i / 2) * fixedWidth;
+
+                    root.getChildren().add(getImageView(studentPath, x, y, fixedWidth));
+                }
+            }
+
+            coordX += width * (DrawingConstants.CHARACTER_CARD_PROPORTION + DrawingConstants.SPACE_BETWEEN_CHARACTERS_PROPORTION);
         }
     }
 
@@ -170,4 +188,12 @@ public class DrawingComponents {
 
     }
 
+    private static ImageView getImageView(String path, double x, double y, double fixedWidth) {
+        ImageView iv = new ImageView(new Image(path));
+        iv.setX(x);
+        iv.setY(y);
+        iv.setPreserveRatio(true);
+        iv.setFitWidth(fixedWidth);
+        return iv;
+    }
 }
