@@ -14,11 +14,11 @@ public class RoundState {
     /**
      * a {@code List} of all the assistants played during the preparation phase. Can be null if the prep phase hasn't been played
      */
-    private List<Assistant> playedAssistants;
-    private int firstPlayerIndex;
-    private boolean isLastRound;
+    private final List<AssistantState> playedAssistants;
+    private final int firstPlayerIndex;
+    private final boolean isLastRound;
 
-    public RoundState(List<Assistant> playedAssistants, int firstPlayerIndex, boolean isLastRound) {
+    public RoundState(List<AssistantState> playedAssistants, int firstPlayerIndex, boolean isLastRound) {
         this.playedAssistants = playedAssistants;
         this.firstPlayerIndex = firstPlayerIndex;
         this.isLastRound = isLastRound;
@@ -30,33 +30,23 @@ public class RoundState {
      */
     public RoundState(Round round) {
         this(
-                round.getPlayedAssistants(),
+                round.getPlayedAssistants().stream()
+                        .map(AssistantState::new)
+                        .toList(),
                 round.getFirstPlayerIndex(),
                 round.isLastRound()
         );
     }
 
-    public List<Assistant> getPlayedAssistants() {
+    public List<AssistantState> getPlayedAssistants() {
         return playedAssistants;
-    }
-
-    public void setPlayedAssistants(List<Assistant> playedAssistants) {
-        this.playedAssistants = playedAssistants;
     }
 
     public int getFirstPlayerIndex() {
         return firstPlayerIndex;
     }
 
-    public void setFirstPlayerIndex(int firstPlayerIndex) {
-        this.firstPlayerIndex = firstPlayerIndex;
-    }
-
     public boolean isLastRound() {
         return isLastRound;
-    }
-
-    public void setLastRound(boolean lastRound) {
-        isLastRound = lastRound;
     }
 }

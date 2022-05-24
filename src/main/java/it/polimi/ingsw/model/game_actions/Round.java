@@ -132,6 +132,6 @@ public class Round {
     }
 
     public List<Assistant> getPlayedAssistants() {
-        return playedAssistants;
+        return new ArrayList<>(playedAssistants);
     }
 }

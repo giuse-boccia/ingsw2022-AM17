@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.game_state;
 
 
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
 import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.model.Game;
@@ -12,6 +13,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,17 +42,35 @@ public class SavedGameState extends GameState {
      */
     public static void saveToFile(Game game) {
         try {
-            GameState gs = new SavedGameState(game);
+            SavedGameState gs = new SavedGameState(game);
             Gson gson = new Gson();
             Writer writer = Files.newBufferedWriter(Paths.get(Constants.SAVED_GAME_PATH));
             gson.toJson(gs, writer);
             writer.close();
 
             System.out.println(Messages.SAVE_OK);
+            // } catch (IOException | JsonIOException e) {
         } catch (IOException e) {
             System.out.println(Messages.SAVE_ERR);
         }
     }
 
 
+    public static Game loadFromFile() {
+        SavedGameState gs = null;
+        try {
+            Gson gson = new Gson();
+            Reader reader = Files.newBufferedReader(Paths.get(Constants.SAVED_GAME_PATH));
+            gs = gson.fromJson(reader, SavedGameState.class);
+            reader.close();
+
+            System.out.println(Messages.LOAD_OK);
+        } catch (IOException e) {
+            System.out.println(Messages.LOAD_ERR);
+        }
+
+        // TODO: create the Game from the SavedStateGame
+
+        return null;
+    }
 }

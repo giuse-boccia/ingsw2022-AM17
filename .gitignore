@@ -16,3 +16,6 @@
 # Compiled files
 /out/
 /target/
+
+# Files created at runtime
+/saved_game.json
