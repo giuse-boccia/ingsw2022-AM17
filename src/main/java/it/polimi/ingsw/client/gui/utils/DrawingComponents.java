@@ -8,7 +8,10 @@ import it.polimi.ingsw.server.game_state.GameState;
 import it.polimi.ingsw.server.game_state.PlayerState;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 import java.util.List;
 
@@ -19,13 +22,17 @@ public class DrawingComponents {
         System.out.println("Width: " + width + " height: " + height);
         drawTwoDashboards(width, height, root, gameState);
         drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
+        double textStartingY = height - (width * (1454.0 / 3352.0) * 0.4) - height / 50;
+        drawDashboardText(players.get(2), 0, textStartingY, root, width, height);
         drawDashboard(players.get(3), width * 0.6, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
+        drawDashboardText(players.get(3), width * 0.6, textStartingY, root, width, height);
     }
 
     public static void drawThreePlayersGame(GameState gameState, double width, double height, AnchorPane root) {
         List<PlayerState> players = gameState.getPlayers();
         drawTwoDashboards(width, height, root, gameState);
         drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
+        drawDashboardText(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4) - height / 30, root, width, height);
     }
 
     public static void drawTwoPlayersGame(GameState gameState, double width, double height, AnchorPane root) {
@@ -35,7 +42,10 @@ public class DrawingComponents {
     private static void drawTwoDashboards(double width, double height, AnchorPane root, GameState gameState) {
         List<PlayerState> players = gameState.getPlayers();
         drawDashboard(players.get(0), 0, 0, width * 0.4, root);
+        double textStartingY = width * (1454.0 / 3352.0) * 0.4 + height / 30;
+        drawDashboardText(players.get(0), 0, textStartingY, root, width, height);
         drawDashboard(players.get(1), width * 0.6, 0, width * 0.4, root);
+        drawDashboardText(players.get(1), width * 0.6, textStartingY, root, width, height);
 
         drawClouds(gameState.getClouds(), width, height, root);
         // Draw all three characters
@@ -186,6 +196,16 @@ public class DrawingComponents {
             root.getChildren().add(tower);
         }
 
+    }
+
+    private static void drawDashboardText(PlayerState player, double x, double y, AnchorPane root, double width, double height) {
+        Text text = new Text(player.getName() + " | " + player.getNumCoins() + "x");
+        text.setX(x);
+        text.setY(y);
+        text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.TITLE_FONT_SIZE));
+        root.getChildren().add(text);
+        ImageView coin = getImageView("/gameboard/Moneta_base.png", x + text.getLayoutBounds().getWidth(), y - height / 32, width * DrawingConstants.COIN_PROPORTION);
+        root.getChildren().add(coin);
     }
 
     private static ImageView getImageView(String path, double x, double y, double fixedWidth) {
