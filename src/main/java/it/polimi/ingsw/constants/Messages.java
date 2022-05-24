@@ -57,4 +57,10 @@ public class Messages {
 
     // Messages in action phase
     public static final String LAST_ROUND = "Be aware! This is the last round";
+
+    // Server log messages
+    public static final String SAVE_OK = "Game saved to file";
+    public static final String SAVE_ERR = "Error while saving the game";
+    public static final String LOAD_OK = "Game loaded from file";
+    public static final String LOAD_ERR = "Error while loading the game";
 }
