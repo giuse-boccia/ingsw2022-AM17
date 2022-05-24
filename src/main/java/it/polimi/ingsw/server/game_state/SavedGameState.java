@@ -41,6 +41,9 @@ public class SavedGameState extends GameState {
      * Saves the game to disk
      */
     public static void saveToFile(Game game) {
+
+        System.out.println("Saving to file...");
+
         try {
             SavedGameState gs = new SavedGameState(game);
             Gson gson = new Gson();
@@ -49,8 +52,7 @@ public class SavedGameState extends GameState {
             writer.close();
 
             System.out.println(Messages.SAVE_OK);
-            // } catch (IOException | JsonIOException e) {
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println(Messages.SAVE_ERR);
         }
     }

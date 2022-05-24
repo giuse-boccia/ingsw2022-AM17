@@ -12,7 +12,8 @@ import java.util.List;
  */
 public class RoundState {
     /**
-     * a {@code List} of all the assistants played during the preparation phase. Can be null if the prep phase hasn't been played
+     * a {@code List} of all the assistants played during the preparation phase.
+     * Is null if the prep phase hasn't been played yet
      */
     private final List<AssistantState> playedAssistants;
     private final int firstPlayerIndex;
@@ -30,9 +31,9 @@ public class RoundState {
      */
     public RoundState(Round round) {
         this(
-                round.getPlayedAssistants().stream()
+                round.getPlayedAssistants() != null ? round.getPlayedAssistants().stream()
                         .map(AssistantState::new)
-                        .toList(),
+                        .toList() : null,
                 round.getFirstPlayerIndex(),
                 round.isLastRound()
         );
