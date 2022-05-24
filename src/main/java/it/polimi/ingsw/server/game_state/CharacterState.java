@@ -10,8 +10,8 @@ import java.util.ArrayList;
 public class CharacterState {
     private final CharacterName characterName;
     private final int cost;
-    private final boolean hasCoin;
-    private final ArrayList<Student> students;  // is null if the character doesn't have students
+    private boolean hasCoin;
+    private ArrayList<Student> students;  // is null if the character doesn't have students
 
     public CharacterState(CharacterName characterName, int cost, boolean hasCoin, ArrayList<Student> students) {
         this.characterName = characterName;
@@ -47,5 +47,13 @@ public class CharacterState {
 
     public ArrayList<Student> getStudents() {
         return students;
+    }
+
+    public void setStudents(ArrayList<Student> students) {
+        this.students = students;
+    }
+
+    public void setHasCoin(boolean hasCoin) {
+        this.hasCoin = hasCoin;
     }
 }
