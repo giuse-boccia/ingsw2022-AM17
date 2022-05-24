@@ -2,11 +2,17 @@ package it.polimi.ingsw.client.gui.utils;
 
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
+import it.polimi.ingsw.server.game_state.CharacterState;
+import it.polimi.ingsw.server.game_state.CloudState;
 import it.polimi.ingsw.server.game_state.GameState;
 import it.polimi.ingsw.server.game_state.PlayerState;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 import java.util.List;
 
@@ -15,10 +21,53 @@ public class DrawingComponents {
     public static void drawFourPlayersGame(GameState gameState, double width, double height, AnchorPane root) {
         List<PlayerState> players = gameState.getPlayers();
         System.out.println("Width: " + width + " height: " + height);
-        drawDashboard(players.get(0), 0, 0, width * 0.4, root);
-        drawDashboard(players.get(1), width * 0.6, 0, width * 0.4, root);
+        drawTwoDashboards(width, height, root, gameState);
         drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
         drawDashboard(players.get(3), width * 0.6, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
+    }
+
+    public static void drawThreePlayersGame(GameState gameState, double width, double height, AnchorPane root) {
+        List<PlayerState> players = gameState.getPlayers();
+        drawTwoDashboards(width, height, root, gameState);
+        drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
+    }
+
+    public static void drawTwoPlayersGame(GameState gameState, double width, double height, AnchorPane root) {
+        drawTwoDashboards(width, height, root, gameState);
+    }
+
+    private static void drawTwoDashboards(double width, double height, AnchorPane root, GameState gameState) {
+        List<PlayerState> players = gameState.getPlayers();
+        drawDashboard(players.get(0), 0, 0, width * 0.4, root);
+        drawDashboard(players.get(1), width * 0.6, 0, width * 0.4, root);
+
+        drawClouds(gameState.getClouds(), width, height, root);
+        // Draw all three characters
+        if (gameState.isExpert()) {
+            drawCharacters(gameState.getCharacters(), width, height, root);
+        }
+    }
+
+    private static void drawClouds(List<CloudState> clouds, double width, double height, AnchorPane root) {
+        // TODO cloud's position is always the same, so you could show it directly in fxml file
+    }
+
+    private static void drawCharacters(List<CharacterState> characters, double width, double height, AnchorPane root) {
+        double coordX = width * 0.405;
+
+        for (CharacterState character : characters) {
+            String imagePath = "/gameboard/characters/" + character.getCharacterName() + ".jpg";
+            System.out.println(imagePath);
+            ImageView characterImage = new ImageView(new Image(imagePath));
+            characterImage.setX(coordX);
+            characterImage.setY(height / 13);
+            characterImage.setPreserveRatio(true);
+            characterImage.setFitWidth(width * 0.06);
+
+            root.getChildren().add(characterImage);
+
+            coordX += width * 0.065;
+        }
     }
 
     private static void drawDashboard(PlayerState player, double x, double y, double width, AnchorPane root) {
@@ -118,6 +167,7 @@ public class DrawingComponents {
             tower.setY(coordY);
             root.getChildren().add(tower);
         }
+
     }
 
 }

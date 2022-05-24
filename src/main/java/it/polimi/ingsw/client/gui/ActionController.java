@@ -32,8 +32,10 @@ public class ActionController implements GuiController {
     private void drawGameState(GameState gameState) {
         root.getChildren().removeIf(node -> true);
 
-        if (gameState.getPlayers().size() == 4) {
-            DrawingComponents.drawFourPlayersGame(gameState, width, height, root);
+        switch (gameState.getPlayers().size()) {
+            case 2 -> DrawingComponents.drawTwoPlayersGame(gameState, width, height, root);
+            case 3 -> DrawingComponents.drawThreePlayersGame(gameState, width, height, root);
+            default -> DrawingComponents.drawFourPlayersGame(gameState, width, height, root);
         }
     }
 }
