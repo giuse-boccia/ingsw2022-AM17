@@ -11,9 +11,9 @@
 | Functionality    | Advanced | State |
 | :--------------- | :------: | :---: |
 | Complete rules   | No       | 🟢 |
-| Socket           | No       | 🟡 |
-| GUI              | No       | 🔴 |
-| CLI              | No       | 🟡 |
+| Socket           | No       | 🟢 |
+| GUI              | No       | 🟡 |
+| CLI              | No       | 🟢 |
 | 12 Characters    | Yes      | 🟢 |
 | 4 Players Game   | Yes      | 🟢 |
 | Multiple Games   | Yes      | ⚫ |
