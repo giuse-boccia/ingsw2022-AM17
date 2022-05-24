@@ -8,6 +8,8 @@ public class Constants {
     public static final int PONG_INITIAL_DELAY = 3000;
     public static final int PONG_INTERVAL = 2500;
     public static final int MAX_ATTEMPTS_TO_CONTACT_SERVER = 2;
+    public static final int LOWER_BOUND_SERVER_PORT = 1024;
+    public static final int UPPER_BOUND_SERVER_PORT = 65535;
     public static final String SAVED_GAME_PATH = "saved_game.json";
 
     // Client Constants
@@ -16,6 +18,8 @@ public class Constants {
 
     // Model Constants
     public static final int INITIAL_STUDENTS_IN_BAG = 24;
+    public static final int STUDENTS_IN_ENTRANCE_IN_THREE_PLAYER_GAME = 9;
+    public static final int STUDENTS_IN_ENTRANCE_IN_TWO_OR_FOUR_PLAYER_GAME = 7;
 
 
 }

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.model.game_actions.Round;
 import it.polimi.ingsw.model.game_objects.TowerColor;
@@ -71,8 +72,8 @@ public class Game {
         // The HashMap maps every TowerColor to number of towers of that color
         for (TowerColor color : TowerColor.values()) {
 
-            // Array containing the number of towers of each color in the gameboard - the array has length 0
-            // if there's no Player/Team who has the considered TowerColor
+            // Array containing the number of towers of each color in the GameBoard
+            // - the array has length 0 if there's no Player/Team who owns the considered TowerColor
             int[] towersOfColor = players
                     .stream()
                     .filter(player -> player.getTowerColor() == color)
@@ -165,7 +166,7 @@ public class Game {
 
         for (Player player : players) {
             try {
-                int times = ((players.size() % 2) == 0) ? 7 : 9;
+                int times = ((players.size() % 2) == 0) ? Constants.STUDENTS_IN_ENTRANCE_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.STUDENTS_IN_ENTRANCE_IN_THREE_PLAYER_GAME;
                 for (int i = 0; i < times; i++) {
                     gameBoard.getBag().giveStudent(
                             player.getDashboard().getEntrance(),

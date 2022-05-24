@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.server.game_state.GameState;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -18,7 +19,6 @@ public class ActionController implements GuiController {
         Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
         width = bounds.getWidth();
         height = bounds.getHeight();
-
     }
 
     @Override
@@ -30,6 +30,12 @@ public class ActionController implements GuiController {
     }
 
     private void drawGameState(GameState gameState) {
+        root.getChildren().removeIf(node -> true);
 
+        switch (gameState.getPlayers().size()) {
+            case 2 -> DrawingComponents.drawTwoPlayersGame(gameState, width, height, root);
+            case 3 -> DrawingComponents.drawThreePlayersGame(gameState, width, height, root);
+            default -> DrawingComponents.drawFourPlayersGame(gameState, width, height, root);
+        }
     }
 }

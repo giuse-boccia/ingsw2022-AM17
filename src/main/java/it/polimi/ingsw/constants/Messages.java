@@ -20,6 +20,11 @@ public class Messages {
 
     // Generic errors
     public static final String INVALID_IDENTITY = "You are not who you are pretending to be";
+    public static final String USAGE = "Usage: java -jar eriantys.jar [SERVER | CLI | GUI] [<PORT_NUMBER>] [<HOST_ADDRESS>]";
+    public static final String JSON_NOT_FOUND = "File settings.json not found. Please check documentation";
+    public static final String INVALID_SERVER_PORT = "Invalid server_port";
+    public static final String PORT_NOT_AVAILABLE = "The selected port is not available at the moment";
+    public static final String APPLICATION_CLOSING = "Application will now close...";
 
     // Errors while joining game
     public static final String INVALID_USERNAME = "Invalid username field";
@@ -36,6 +41,8 @@ public class Messages {
     public static final String NEW_PLAYER_JOINED = "A new player has joined";
     public static final String GAME_STARTING = "A new game is starting";
     public static final String GAME_CREATED = "A new game was created!";
+    public static final String SERVER_READY = "Server ready, waiting for clients...";
+    public static final String NEW_SOCKET = "New socket: ";
 
     // Errors in action phase
     public static final String GAME_NOT_STARTED = "Game is not started yet";

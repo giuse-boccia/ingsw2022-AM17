@@ -1,6 +1,8 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.Settings;
+import it.polimi.ingsw.constants.Constants;
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.controller.Controller;
 
 import java.io.IOException;
@@ -24,20 +26,20 @@ public class Server {
                 Settings settings = Settings.readPrefsFromFile();
                 port = settings.getPort();
             } catch (IOException e) {
-                gracefulTermination("File settings.json not found. Please check documentation");
+                gracefulTermination(Messages.JSON_NOT_FOUND);
             } catch (NumberFormatException e) {
-                gracefulTermination("Invalid server_port argument in settings.json");
+                gracefulTermination(Messages.INVALID_SERVER_PORT);
             }
         } else {
             try {
                 port = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                gracefulTermination("Invalid server_port");
+                gracefulTermination(Messages.INVALID_SERVER_PORT);
             }
         }
 
-        if (port < 1024 || port > 65535) {
-            gracefulTermination("Invalid server_port argument. The port number has to be between 1024 and 65535");
+        if (port < Constants.LOWER_BOUND_SERVER_PORT || port > Constants.UPPER_BOUND_SERVER_PORT) {
+            gracefulTermination(Messages.INVALID_SERVER_PORT);
         }
 
         Server server = new Server();
@@ -51,7 +53,7 @@ public class Server {
      */
     private static void gracefulTermination(String message) {
         System.out.println(message);
-        System.out.println("Application will now close...");
+        System.out.println(Messages.APPLICATION_CLOSING);
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -69,11 +71,11 @@ public class Server {
         controller.startPingPong();
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server ready, waiting for clients...");
+            System.out.println(Messages.SERVER_READY);
             while (true) {
                 try {
                     Socket socket = serverSocket.accept();
-                    System.out.println("New socket: " + socket.getRemoteSocketAddress());
+                    System.out.println(Messages.NEW_SOCKET + socket.getRemoteSocketAddress());
                     ClientHandler ch = new ClientHandler(socket, controller);
                     executor.submit(ch);
                 } catch (IOException e) {
@@ -82,7 +84,7 @@ public class Server {
             }
             executor.shutdown();
         } catch (IOException e) {
-            gracefulTermination("The selected port is not available at the moment");
+            gracefulTermination(Messages.PORT_NOT_AVAILABLE);
         }
     }
 
