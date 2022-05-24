@@ -6,6 +6,7 @@ import it.polimi.ingsw.server.game_state.CharacterState;
 import it.polimi.ingsw.server.game_state.CloudState;
 import it.polimi.ingsw.server.game_state.GameState;
 import it.polimi.ingsw.server.game_state.PlayerState;
+import javafx.geometry.Bounds;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -21,8 +22,7 @@ public class DrawingComponents {
 
     public static void drawFourPlayersGame(GameState gameState, double width, double height, AnchorPane root) {
         List<PlayerState> players = gameState.getPlayers();
-        System.out.println("Width: " + width + " height: " + height);
-        drawTwoDashboards(width, height, root, gameState);
+        drawGameComponentsForTwo(width, height, root, gameState);
         drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
         double textStartingY = height - (width * (1454.0 / 3352.0) * 0.4) - height / 45;
         drawDashboardText(players.get(2), 0, textStartingY, root, width, height);
@@ -32,16 +32,16 @@ public class DrawingComponents {
 
     public static void drawThreePlayersGame(GameState gameState, double width, double height, AnchorPane root) {
         List<PlayerState> players = gameState.getPlayers();
-        drawTwoDashboards(width, height, root, gameState);
+        drawGameComponentsForTwo(width, height, root, gameState);
         drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
         drawDashboardText(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4) - height / 45, root, width, height);
     }
 
     public static void drawTwoPlayersGame(GameState gameState, double width, double height, AnchorPane root) {
-        drawTwoDashboards(width, height, root, gameState);
+        drawGameComponentsForTwo(width, height, root, gameState);
     }
 
-    private static void drawTwoDashboards(double width, double height, AnchorPane root, GameState gameState) {
+    private static void drawGameComponentsForTwo(double width, double height, AnchorPane root, GameState gameState) {
         List<PlayerState> players = gameState.getPlayers();
         drawDashboard(players.get(0), 0, 0, width * 0.4, root);
         double textStartingY = width * (1454.0 / 3352.0) * 0.4 + height / 30;
@@ -57,7 +57,57 @@ public class DrawingComponents {
     }
 
     private static void drawClouds(List<CloudState> clouds, double width, double height, AnchorPane root) {
+        // Draw the first two clouds on the left side of the screen and the remaining ones - if present - on the right
+        root.getChildren().add(getCloudsGroup(clouds.subList(0, 2), width, height, false));
+        root.getChildren().add(getCloudsGroup(clouds.subList(2, clouds.size()), width, height, true));
+    }
 
+    private static VBox getCloudsGroup(List<CloudState> clouds, double width, double height, boolean isOnRightSide) {
+        VBox cloudsBox = new VBox();
+        double layoutX;
+        if (isOnRightSide) {
+            layoutX = width - height * DrawingConstants.CLOUD_HEIGHT - width * DrawingConstants.OFFSET_OF_CLOUD_FROM_BORDER;
+        } else {
+            layoutX = width * DrawingConstants.OFFSET_OF_CLOUD_FROM_BORDER;
+        }
+        cloudsBox.setLayoutY(height * DrawingConstants.CLOUD_STARTING_HEIGHT);
+        cloudsBox.setLayoutX(layoutX);
+        cloudsBox.setSpacing(height * DrawingConstants.SPACE_BETWEEN_CLOUDS);
+
+        for (int i = 0; i < Math.min(2, clouds.size()); i++) {
+            CloudState cloud = clouds.get(i);
+            AnchorPane cloudToDraw = getCloudWithStudents(cloud, width, height);
+            cloudsBox.getChildren().add(cloudToDraw);
+        }
+
+        return cloudsBox;
+    }
+
+    private static AnchorPane getCloudWithStudents(CloudState cloud, double width, double height) {
+        ImageView cloudBackground = new ImageView(new Image("/gameboard/clouds/cloud_card.png"));
+        cloudBackground.setPreserveRatio(true);
+        cloudBackground.setFitHeight(height * DrawingConstants.CLOUD_HEIGHT);
+
+        GridPane studentsPane = new GridPane();
+        Bounds imageBounds = cloudBackground.boundsInParentProperty().get();
+        studentsPane.setLayoutX(imageBounds.getWidth() * DrawingConstants.OFFSET_OF_STUDENT_FROM_CLOUD);
+        studentsPane.setLayoutY(imageBounds.getHeight() * DrawingConstants.OFFSET_OF_STUDENT_FROM_CLOUD);
+        studentsPane.setHgap(imageBounds.getWidth() * DrawingConstants.OFFSET_BETWEEN_STUDENTS_IN_CLOUD);
+        studentsPane.setVgap(imageBounds.getHeight() * DrawingConstants.OFFSET_BETWEEN_STUDENTS_IN_CLOUD);
+
+        if (cloud.getStudents() != null) {
+            for (int j = 0; j < cloud.getStudents().size(); j++) {
+                String studentPath = "/gameboard/students/student_" +
+                        cloud.getStudents().get(j).getColor().toString().toLowerCase() + ".png";
+                ImageView student = new ImageView(new Image(studentPath));
+                student.setPreserveRatio(true);
+                student.setFitWidth(width * 0.4 / 25);
+
+                studentsPane.add(student, j % 2, j / 2);
+            }
+        }
+
+        return new AnchorPane(cloudBackground, studentsPane);
     }
 
     private static void drawCharacters(List<CharacterState> characters, double width, double height, AnchorPane root) {
@@ -66,7 +116,6 @@ public class DrawingComponents {
 
         for (CharacterState character : characters) {
             String imagePath = "/gameboard/characters/" + character.getCharacterName() + ".jpg";
-            System.out.println(imagePath);
             ImageView characterImage = new ImageView(new Image(imagePath));
             characterImage.setX(coordX);
             characterImage.setY(height / heightProportion);

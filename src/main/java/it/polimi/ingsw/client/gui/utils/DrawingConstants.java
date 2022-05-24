@@ -19,4 +19,12 @@ public class DrawingConstants {
 
     // Player constants
     public static final double PLAYER_NAME_INITIAL_PADDING = 0.05;
+
+    // Clouds constants
+    public static final double CLOUD_STARTING_HEIGHT = 0.38;
+    public static final double SPACE_BETWEEN_CLOUDS = 0.006;
+    public static final double CLOUD_HEIGHT = 0.12;
+    public static final double OFFSET_OF_CLOUD_FROM_BORDER = 0.025;
+    public static final double OFFSET_OF_STUDENT_FROM_CLOUD = 0.2;
+    public static final double OFFSET_BETWEEN_STUDENTS_IN_CLOUD = 0.05;
 }
