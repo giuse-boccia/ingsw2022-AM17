@@ -2,9 +2,9 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.messages.login.GameLobby;
+import it.polimi.ingsw.server.game_state.GameState;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -12,6 +12,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
+
+import java.util.List;
 
 public class LobbyController implements GuiController {
 
@@ -36,8 +38,8 @@ public class LobbyController implements GuiController {
     }
 
     @Override
-    public void receiveData(Object data) {
-        GameLobby lobby = (GameLobby) data;
+    public void receiveData(GameLobby lobby, GameState gameState, List<String> actions, String message) {
+        if (lobby == null) return;
 
         Platform.runLater(() -> drawLobby(lobby));
     }

@@ -1,12 +1,15 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
+import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.server.game_state.GameState;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Screen;
+
+import java.util.List;
 
 public class ActionController implements GuiController {
 
@@ -22,9 +25,8 @@ public class ActionController implements GuiController {
     }
 
     @Override
-    public void receiveData(Object data) {
-        if (data == null) return;
-        GameState gameState = (GameState) data;
+    public void receiveData(GameLobby lobby, GameState gameState, List<String> actions, String message) {
+        if (gameState == null) return;
 
         Platform.runLater(() -> drawGameState(gameState));
     }

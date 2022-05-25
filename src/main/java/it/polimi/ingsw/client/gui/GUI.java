@@ -58,7 +58,7 @@ public class GUI extends Client {
 
     @Override
     public void updateGameState(GameState gameState) {
-        guiView.changeScene("game", true, gameState);
+        guiView.changeScene("game", true, null, gameState, null, null);
     }
 
     @Override
@@ -74,12 +74,12 @@ public class GUI extends Client {
 
     @Override
     public void askNumPlayersAndExpertMode() throws IOException {
-        guiView.changeScene("game_parameters", false, null);
+        guiView.changeScene("game_parameters", false, null, null, null, null);
     }
 
     @Override
     public void showCurrentLobby(GameLobby gameLobby) throws IOException {
-        guiView.changeScene("lobby", false, gameLobby);
+        guiView.changeScene("lobby", false, gameLobby, null, null, null);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.messages.login.GameLobby;
+import it.polimi.ingsw.server.game_state.GameState;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +12,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 public class GuiView extends Application {
@@ -30,7 +33,7 @@ public class GuiView extends Application {
         return gui;
     }
 
-    public void changeScene(String resourceName, boolean fullscreen, Object data) {
+    public void changeScene(String resourceName, boolean fullscreen, GameLobby lobby, GameState gameState, List<String> actions, String message) {
         // TODO at least read the following idea
         // IDEA: non mandare un object al Controller, ma setta solo la variabile currentController.
         // Quando arriva un messaggio fai currentController.receiveMessage e a quel punto parsa l'oggetto.
@@ -39,7 +42,7 @@ public class GuiView extends Application {
         // TODO save in a variable the name of the current scene and do a check: if it is already showed, just pass data,
         // otherwise show it and pass it data
         if (Objects.equals(currentSceneName, resourceName)) {
-            currentController.receiveData(data);
+            currentController.receiveData(lobby, gameState, actions, message);
             return;
         }
 
@@ -55,7 +58,7 @@ public class GuiView extends Application {
             stage.setFullScreen(false);
             stage.setScene(scene);
             currentController = fxmlLoader.getController();
-            currentController.receiveData(data);
+            currentController.receiveData(lobby, gameState, actions, message);
         });
     }
 

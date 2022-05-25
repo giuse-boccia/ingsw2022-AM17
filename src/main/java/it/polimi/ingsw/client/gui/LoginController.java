@@ -1,8 +1,12 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.messages.login.GameLobby;
+import it.polimi.ingsw.server.game_state.GameState;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+
+import java.util.List;
 
 public class LoginController implements GuiController {
 
@@ -20,7 +24,7 @@ public class LoginController implements GuiController {
     }
 
     @Override
-    public void receiveData(Object data) {
+    public void receiveData(GameLobby lobby, GameState gameState, List<String> actions, String message) {
 
     }
 }
