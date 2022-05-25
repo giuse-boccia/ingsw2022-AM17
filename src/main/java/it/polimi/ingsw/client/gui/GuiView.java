@@ -42,7 +42,6 @@ public class GuiView extends Application {
         // TODO save in a variable the name of the current scene and do a check: if it is already showed, just pass data,
         // otherwise show it and pass it data
         if (Objects.equals(currentSceneName, resourceName)) {
-            currentController.receiveData(lobby, gameState, actions, message);
             return;
         }
 
@@ -58,8 +57,11 @@ public class GuiView extends Application {
             stage.setFullScreen(false);
             stage.setScene(scene);
             currentController = fxmlLoader.getController();
-            currentController.receiveData(lobby, gameState, actions, message);
         });
+    }
+
+    public void sendMessageToController(GameLobby lobby, GameState gameState, List<String> actions, String message) {
+        Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, message));
     }
 
     public static void showErrorDialog(String message, boolean closeApplication) {
