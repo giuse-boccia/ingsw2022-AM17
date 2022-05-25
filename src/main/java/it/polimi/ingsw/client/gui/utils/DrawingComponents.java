@@ -17,32 +17,37 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import java.util.List;
-import java.util.Optional;
 
 public class DrawingComponents {
 
     public static void drawFourPlayersGame(GameState gameState, double width, double height, AnchorPane root, String username) {
         List<PlayerState> players = gameState.getPlayers();
-        drawGameComponentsForTwo(width, height, root, gameState, username);
+        drawGameComponentsForTwo(width, height, root, gameState);
         drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
         double textStartingY = height - (width * (1454.0 / 3352.0) * 0.4) - height / 45;
         drawDashboardText(players.get(2), 0, textStartingY, root, width, height);
         drawDashboard(players.get(3), width * 0.6, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
         drawDashboardText(players.get(3), width * 0.6, textStartingY, root, width, height);
+
+        drawAssistants(gameState, width, height, root, username, 4);
     }
 
     public static void drawThreePlayersGame(GameState gameState, double width, double height, AnchorPane root, String username) {
         List<PlayerState> players = gameState.getPlayers();
-        drawGameComponentsForTwo(width, height, root, gameState, username);
+        drawGameComponentsForTwo(width, height, root, gameState);
         drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
         drawDashboardText(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4) - height / 45, root, width, height);
+
+        drawAssistants(gameState, width, height, root, username, 3);
     }
 
     public static void drawTwoPlayersGame(GameState gameState, double width, double height, AnchorPane root, String username) {
-        drawGameComponentsForTwo(width, height, root, gameState, username);
+        drawGameComponentsForTwo(width, height, root, gameState);
+
+        drawAssistants(gameState, width, height, root, username, 2);
     }
 
-    private static void drawGameComponentsForTwo(double width, double height, AnchorPane root, GameState gameState, String username) {
+    private static void drawGameComponentsForTwo(double width, double height, AnchorPane root, GameState gameState) {
         List<PlayerState> players = gameState.getPlayers();
         drawDashboard(players.get(0), 0, 0, width * 0.4, root);
         double textStartingY = width * (1454.0 / 3352.0) * 0.4 + height / 30;
@@ -55,10 +60,26 @@ public class DrawingComponents {
         if (gameState.isExpert()) {
             drawCharacters(gameState.getCharacters(), width, height, root);
         }
+    }
+
+    private static void drawAssistants(GameState gameState, double width, double height, AnchorPane root, String username, int numPlayers) {
         PlayerState player = gameState.getPlayers().stream().filter(p -> p.getName().equals(username)).findAny().orElse(null);
-        if (player != null) {
-            drawAssistants(player.getAssistants(), width, height);
+        if (player != null && player.getAssistants() != null) {
+            double initialWidth = width * (0.4 + DrawingConstants.OFFSET_OF_FIRST_ASSISTANT);
+            double finalWidth = width * (0.6 - DrawingConstants.OFFSET_OF_FIRST_ASSISTANT);
+            switch (numPlayers) {
+                case 2 -> {
+                    initialWidth = width * DrawingConstants.OFFSET_OF_FIRST_ASSISTANT;
+                    finalWidth = width * (1 - DrawingConstants.OFFSET_OF_FIRST_ASSISTANT);
+                }
+                case 3 -> {
+                    finalWidth = width * (1 - DrawingConstants.OFFSET_OF_FIRST_ASSISTANT);
+                }
+            }
+            GridPane assistants = getAssistants(player.getAssistants(), width, height, initialWidth, finalWidth, numPlayers < 4);
+            root.getChildren().add(assistants);
         }
+
     }
 
     private static void drawClouds(List<CloudState> clouds, double width, double height, AnchorPane root) {
@@ -161,8 +182,33 @@ public class DrawingComponents {
         }
     }
 
-    private static void drawAssistants(int[] assistants, double width, double height) {
+    private static GridPane getAssistants(int[] assistants, double width, double height, double initialWidth, double finalWidth, boolean singleLine) {
+        assistants = new int[]{1, 4, 8, 10};
+        if (assistants.length == 0) return new GridPane();
+        double assistantHeight = height - (width * (1454.0 / 3352.0) * 0.4);
+        double spaceForAssistants = finalWidth - initialWidth - 5 * width * DrawingConstants.OFFSET_BETWEEN_ASSISTANTS;
+        GridPane gridPane = new GridPane();
+        gridPane.setLayoutX(initialWidth);
+        gridPane.setLayoutY(assistantHeight);
+        gridPane.setHgap(width * DrawingConstants.OFFSET_BETWEEN_ASSISTANTS);
+        gridPane.setVgap(height * DrawingConstants.OFFSET_OF_FIRST_ASSISTANT);
 
+        for (int value : assistants) {
+            String path = "/gameboard/assistants/Assistente (" + value + ").png";
+            ImageView assistant = new ImageView(new Image(path));
+            assistant.setPreserveRatio(true);
+            double minWidth = singleLine ? DrawingConstants.ASSISTANT_MAX_WIDTH_SINGLE_LINE :
+                    DrawingConstants.ASSISTANT_MAX_WIDTH_MULTILINE;
+            assistant.setFitWidth(spaceForAssistants * Math.min((double) 2 / assistants.length, minWidth));
+            if (singleLine) {
+                gridPane.add(assistant, value - 1, 0);
+            } else {
+                int numRows = assistants.length / 2 + assistants.length % 2;
+                gridPane.add(assistant, (value - 1) % numRows, (value - 1) / numRows);
+            }
+        }
+
+        return gridPane;
     }
 
     private static void drawDashboard(PlayerState player, double x, double y, double width, AnchorPane root) {

@@ -27,4 +27,10 @@ public class DrawingConstants {
     public static final double OFFSET_OF_CLOUD_FROM_BORDER = 0.025;
     public static final double OFFSET_OF_STUDENT_FROM_CLOUD = 0.2;
     public static final double OFFSET_BETWEEN_STUDENTS_IN_CLOUD = 0.05;
+
+    // Assistants constants
+    public static final double OFFSET_OF_FIRST_ASSISTANT = 0.02;
+    public static final double OFFSET_BETWEEN_ASSISTANTS = 0.004;
+    public static final double ASSISTANT_MAX_WIDTH_MULTILINE = 0.38;
+    public static final double ASSISTANT_MAX_WIDTH_SINGLE_LINE = 0.1;
 }
