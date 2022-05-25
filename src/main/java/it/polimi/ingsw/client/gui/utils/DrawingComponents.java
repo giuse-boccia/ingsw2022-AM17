@@ -2,13 +2,12 @@ package it.polimi.ingsw.client.gui.utils;
 
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
-import it.polimi.ingsw.server.game_state.CharacterState;
-import it.polimi.ingsw.server.game_state.CloudState;
-import it.polimi.ingsw.server.game_state.GameState;
-import it.polimi.ingsw.server.game_state.PlayerState;
+import it.polimi.ingsw.server.game_state.*;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.*;
@@ -19,6 +18,8 @@ import javafx.scene.text.Text;
 import java.util.List;
 
 public class DrawingComponents {
+
+    private static double dashboardHeight;
 
     public static void drawFourPlayersGame(GameState gameState, double width, double height, AnchorPane root, String username) {
         List<PlayerState> players = gameState.getPlayers();
@@ -48,18 +49,26 @@ public class DrawingComponents {
     }
 
     private static void drawGameComponentsForTwo(double width, double height, AnchorPane root, GameState gameState) {
+        dashboardHeight = width * (1454.0 / 3352.0) * 0.4;
         List<PlayerState> players = gameState.getPlayers();
         drawDashboard(players.get(0), 0, 0, width * 0.4, root);
-        double textStartingY = width * (1454.0 / 3352.0) * 0.4 + height / 30;
+        double textStartingY = dashboardHeight + height / 30;
         drawDashboardText(players.get(0), 0, textStartingY, root, width, height);
         drawDashboard(players.get(1), width * 0.6, 0, width * 0.4, root);
         drawDashboardText(players.get(1), width * 0.6, textStartingY, root, width, height);
 
         drawClouds(gameState.getClouds(), width, height, root);
+        drawIslands(gameState.getIslands(), width, height, root);
         // Draw all three characters
         if (gameState.isExpert()) {
             drawCharacters(gameState.getCharacters(), width, height, root);
         }
+    }
+
+    private static void drawIslands(List<IslandState> islands, double width, double height, AnchorPane root) {
+        double heightForIslands = height - 2 * dashboardHeight;
+        // TODO draw islands - using some math...
+
     }
 
     private static void drawAssistants(GameState gameState, double width, double height, AnchorPane root, String username, int numPlayers) {
