@@ -17,12 +17,13 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DrawingComponents {
 
-    public static void drawFourPlayersGame(GameState gameState, double width, double height, AnchorPane root) {
+    public static void drawFourPlayersGame(GameState gameState, double width, double height, AnchorPane root, String username) {
         List<PlayerState> players = gameState.getPlayers();
-        drawGameComponentsForTwo(width, height, root, gameState);
+        drawGameComponentsForTwo(width, height, root, gameState, username);
         drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
         double textStartingY = height - (width * (1454.0 / 3352.0) * 0.4) - height / 45;
         drawDashboardText(players.get(2), 0, textStartingY, root, width, height);
@@ -30,18 +31,18 @@ public class DrawingComponents {
         drawDashboardText(players.get(3), width * 0.6, textStartingY, root, width, height);
     }
 
-    public static void drawThreePlayersGame(GameState gameState, double width, double height, AnchorPane root) {
+    public static void drawThreePlayersGame(GameState gameState, double width, double height, AnchorPane root, String username) {
         List<PlayerState> players = gameState.getPlayers();
-        drawGameComponentsForTwo(width, height, root, gameState);
+        drawGameComponentsForTwo(width, height, root, gameState, username);
         drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
         drawDashboardText(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4) - height / 45, root, width, height);
     }
 
-    public static void drawTwoPlayersGame(GameState gameState, double width, double height, AnchorPane root) {
-        drawGameComponentsForTwo(width, height, root, gameState);
+    public static void drawTwoPlayersGame(GameState gameState, double width, double height, AnchorPane root, String username) {
+        drawGameComponentsForTwo(width, height, root, gameState, username);
     }
 
-    private static void drawGameComponentsForTwo(double width, double height, AnchorPane root, GameState gameState) {
+    private static void drawGameComponentsForTwo(double width, double height, AnchorPane root, GameState gameState, String username) {
         List<PlayerState> players = gameState.getPlayers();
         drawDashboard(players.get(0), 0, 0, width * 0.4, root);
         double textStartingY = width * (1454.0 / 3352.0) * 0.4 + height / 30;
@@ -53,6 +54,10 @@ public class DrawingComponents {
         // Draw all three characters
         if (gameState.isExpert()) {
             drawCharacters(gameState.getCharacters(), width, height, root);
+        }
+        PlayerState player = gameState.getPlayers().stream().filter(p -> p.getName().equals(username)).findAny().orElse(null);
+        if (player != null) {
+            drawAssistants(player.getAssistants(), width, height);
         }
     }
 
@@ -154,6 +159,10 @@ public class DrawingComponents {
 
             coordX += width * (DrawingConstants.CHARACTER_CARD_PROPORTION + DrawingConstants.SPACE_BETWEEN_CHARACTERS_PROPORTION);
         }
+    }
+
+    private static void drawAssistants(int[] assistants, double width, double height) {
+
     }
 
     private static void drawDashboard(PlayerState player, double x, double y, double width, AnchorPane root) {

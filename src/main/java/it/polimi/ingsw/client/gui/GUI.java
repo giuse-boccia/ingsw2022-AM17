@@ -18,36 +18,36 @@ public class GUI extends Client {
 
     @Override
     public void showPossibleActions(List<String> actions) {
+        guiView.sendMessageToController(null, null, actions, null, getUsername());
+    }
+
+    @Override
+    public void getAssistantValue() {
 
     }
 
     @Override
-    public void getAssistantValue() throws IOException {
+    public void chooseAction(List<String> actions) {
 
     }
 
     @Override
-    public void chooseAction(List<String> actions) throws IOException {
+    public void askMoveStudentToDining() {
 
     }
 
     @Override
-    public void askMoveStudentToDining() throws IOException {
+    public void askNumStepsOfMotherNature() {
 
     }
 
     @Override
-    public void askNumStepsOfMotherNature() throws IOException {
+    public void askCloudIndex() {
 
     }
 
     @Override
-    public void askCloudIndex() throws IOException {
-
-    }
-
-    @Override
-    public void askCharacterIndex() throws IOException {
+    public void askCharacterIndex() {
 
     }
 
@@ -58,8 +58,8 @@ public class GUI extends Client {
 
     @Override
     public void updateGameState(GameState gameState) {
-        guiView.changeScene("game", true, null, gameState, null, null);
-        guiView.sendMessageToController(null, gameState, null, null);
+        guiView.changeScene("game", true);
+        guiView.sendMessageToController(null, gameState, null, null, getUsername());
     }
 
     @Override
@@ -68,20 +68,20 @@ public class GUI extends Client {
     }
 
     @Override
-    public void showAllCharactersWithIndex() throws IOException {
+    public void showAllCharactersWithIndex() {
 
     }
 
 
     @Override
-    public void askNumPlayersAndExpertMode() throws IOException {
-        guiView.changeScene("game_parameters", false, null, null, null, null);
+    public void askNumPlayersAndExpertMode() {
+        guiView.changeScene("game_parameters", false);
     }
 
     @Override
-    public void showCurrentLobby(GameLobby gameLobby) throws IOException {
-        guiView.changeScene("lobby", false, gameLobby, null, null, null);
-        guiView.sendMessageToController(gameLobby, null, null, null);
+    public void showCurrentLobby(GameLobby gameLobby) {
+        guiView.changeScene("lobby", false);
+        guiView.sendMessageToController(gameLobby, null, null, null, getUsername());
     }
 
     @Override
@@ -100,22 +100,22 @@ public class GUI extends Client {
     }
 
     @Override
-    public void askMoveStudentToIsland() throws IOException {
+    public void askMoveStudentToIsland() {
 
     }
 
     @Override
-    public void askToMoveOneStudentFromCard(boolean toIsland) throws IOException {
+    public void askToMoveOneStudentFromCard(boolean toIsland) {
 
     }
 
     @Override
-    public void pickColorForPassive(CharacterName characterName) throws IOException {
+    public void pickColorForPassive(CharacterName characterName) {
 
     }
 
     @Override
-    public void askIslandIndexForCharacter(CharacterName characterName) throws IOException {
+    public void askIslandIndexForCharacter(CharacterName characterName) {
 
     }
 
@@ -125,7 +125,7 @@ public class GUI extends Client {
     }
 
     @Override
-    public void playCharacterWithoutArguments(CharacterName characterName) throws IOException {
+    public void playCharacterWithoutArguments(CharacterName characterName) {
 
     }
 

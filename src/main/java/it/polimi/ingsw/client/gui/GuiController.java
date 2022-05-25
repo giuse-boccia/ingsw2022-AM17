@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface GuiController {
 
-    void receiveData(GameLobby lobby, GameState gameState, List<String> actions, String message);
+    void receiveData(GameLobby lobby, GameState gameState, List<String> actions, String message, String username);
 
 }

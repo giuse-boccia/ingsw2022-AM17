@@ -38,7 +38,7 @@ public class LobbyController implements GuiController {
     }
 
     @Override
-    public void receiveData(GameLobby lobby, GameState gameState, List<String> actions, String message) {
+    public void receiveData(GameLobby lobby, GameState gameState, List<String> actions, String message, String username) {
         if (lobby == null) return;
 
         Platform.runLater(() -> drawLobby(lobby));

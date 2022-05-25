@@ -33,7 +33,7 @@ public class GuiView extends Application {
         return gui;
     }
 
-    public void changeScene(String resourceName, boolean fullscreen, GameLobby lobby, GameState gameState, List<String> actions, String message) {
+    public void changeScene(String resourceName, boolean fullscreen) {
         // TODO at least read the following idea
         // IDEA: non mandare un object al Controller, ma setta solo la variabile currentController.
         // Quando arriva un messaggio fai currentController.receiveMessage e a quel punto parsa l'oggetto.
@@ -60,8 +60,8 @@ public class GuiView extends Application {
         });
     }
 
-    public void sendMessageToController(GameLobby lobby, GameState gameState, List<String> actions, String message) {
-        Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, message));
+    public void sendMessageToController(GameLobby lobby, GameState gameState, List<String> actions, String message, String username) {
+        Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, message, username));
     }
 
     public static void showErrorDialog(String message, boolean closeApplication) {

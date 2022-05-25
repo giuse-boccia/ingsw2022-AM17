@@ -25,19 +25,23 @@ public class ActionController implements GuiController {
     }
 
     @Override
-    public void receiveData(GameLobby lobby, GameState gameState, List<String> actions, String message) {
+    public void receiveData(GameLobby lobby, GameState gameState, List<String> actions, String message, String username) {
+        if (actions != null) {
+
+        }
+
         if (gameState == null) return;
 
-        Platform.runLater(() -> drawGameState(gameState));
+        Platform.runLater(() -> drawGameState(gameState, username));
     }
 
-    private void drawGameState(GameState gameState) {
+    private void drawGameState(GameState gameState, String username) {
         root.getChildren().removeIf(node -> true);
 
         switch (gameState.getPlayers().size()) {
-            case 2 -> DrawingComponents.drawTwoPlayersGame(gameState, width, height, root);
-            case 3 -> DrawingComponents.drawThreePlayersGame(gameState, width, height, root);
-            default -> DrawingComponents.drawFourPlayersGame(gameState, width, height, root);
+            case 2 -> DrawingComponents.drawTwoPlayersGame(gameState, width, height, root, username);
+            case 3 -> DrawingComponents.drawThreePlayersGame(gameState, width, height, root, username);
+            default -> DrawingComponents.drawFourPlayersGame(gameState, width, height, root, username);
         }
     }
 }
