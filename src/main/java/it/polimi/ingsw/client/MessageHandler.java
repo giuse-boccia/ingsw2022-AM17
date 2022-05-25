@@ -24,29 +24,15 @@ public class MessageHandler implements Observer {
     private final NetworkClient nc;
     private final Client client;
     private int serverUpCalls = 0;
+    private static TimerTask serverUpTask;
 
     public MessageHandler(NetworkClient nc) {
         this.nc = nc;
         this.client = nc.getClient();
     }
 
-    /**
-     * Starts a new {@code Thread} to check if the {@code Server} is still up and sending "PING" meessages
-     */
-    public void startPongThread() {
-        Timer timer = new Timer("PONG THREAD");
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                if (serverUpCalls >= Constants.MAX_ATTEMPTS_TO_CONTACT_SERVER && client.getUsername() != null) {
-                    client.gracefulTermination("Server crashed");
-                    this.cancel();
-                } else if (client.getUsername() != null) {
-                    serverUpCalls++;
-                }
-            }
-        };
-        timer.schedule(task, Constants.PONG_INITIAL_DELAY, Constants.PONG_INTERVAL);
+    public static TimerTask getServerUpTask() {
+        return serverUpTask;
     }
 
     /**
@@ -227,6 +213,25 @@ public class MessageHandler implements Observer {
     private void handleEndGame(String json) {
         ServerActionMessage actionMessage = ServerActionMessage.fromJson(json);
         client.endGame(actionMessage.getDisplayText());
+    }
+
+    /**
+     * Starts a new {@code Thread} to check if the {@code Server} is still up and sending "PING" meessages
+     */
+    public void startPongThread() {
+        Timer timer = new Timer("PONG THREAD");
+        serverUpTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (serverUpCalls >= Constants.MAX_ATTEMPTS_TO_CONTACT_SERVER && client.getUsername() != null) {
+                    client.gracefulTermination("Server crashed");
+                    this.cancel();
+                } else if (client.getUsername() != null) {
+                    serverUpCalls++;
+                }
+            }
+        };
+        timer.schedule(serverUpTask, Constants.PONG_INITIAL_DELAY, Constants.PONG_INTERVAL);
     }
 
     @Override
