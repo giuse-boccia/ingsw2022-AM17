@@ -104,4 +104,16 @@ public class Students {
 
         return stringBuilder.toString();
     }
+
+    /**
+     * Counts how many students of the provided color are in the list and whose index in it is before the input position
+     *
+     * @param students a {@code List} of students
+     * @param color    the {@code Color} to search for
+     * @param position the position before which search
+     * @return the number of students of the array of the provided color before the position
+     */
+    public static int countStudentsOfSameColorBeforePosition(List<Student> students, Color color, int position) {
+        return (int) students.subList(0, position).stream().filter(student -> student.getColor() == color).count();
+    }
 }

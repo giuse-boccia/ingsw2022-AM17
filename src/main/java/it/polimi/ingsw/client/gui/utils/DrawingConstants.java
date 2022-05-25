@@ -33,4 +33,29 @@ public class DrawingConstants {
     public static final double OFFSET_BETWEEN_ASSISTANTS = 0.004;
     public static final double ASSISTANT_MAX_WIDTH_MULTILINE = 0.38;
     public static final double ASSISTANT_MAX_WIDTH_SINGLE_LINE = 0.1;
+
+    // Entrance constants
+    public static final double ENTRANCE_HGAP = 0.018;
+    public static final double ENTRANCE_VGAP = 0.03082;
+    public static final double INITIAL_X_OFFSET_ENTRANCE = 0.034;
+    public static final double INITIAL_Y_OFFSET_ENTRANCE = 0.055;
+
+
+    // Dining room constants
+    public static final double DINING_ROOM_HGAP = 0.00824;
+    public static final double DINING_ROOM_VGAP = 0.03145;
+    public static final double INITIAL_X_OFFSET_DINING_ROOM = 0.1875;
+    public static final double INITIAL_Y_OFFSET_DINING_ROOM = 0.055;
+
+    // Professor room constants
+    public static final double INITIAL_X_OFFSET_PROFESSOR_ROOM = 0.705;
+    public static final double INITIAL_Y_OFFSET_PROFESSOR_ROOM = 0.05;
+    public static final double PROFESSOR_ROOM_VGAP = 0.0195;
+
+    // Towers constants
+    public static final double INITIAL_X_OFFSET_TOWERS = 0.80515;
+    public static final double INITIAL_Y_OFFSET_TOWERS = 0.075;
+    public static final double TOWERS_HGAP = 0.01344;
+    public static final double TOWERS_VGAP = 0.007548;
+    public static final double TOWERS_SIZE = 0.065;
 }

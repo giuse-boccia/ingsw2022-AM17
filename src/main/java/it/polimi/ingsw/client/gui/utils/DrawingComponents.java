@@ -2,12 +2,11 @@ package it.polimi.ingsw.client.gui.utils;
 
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
+import it.polimi.ingsw.model.utils.Students;
 import it.polimi.ingsw.server.game_state.*;
-import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.*;
@@ -20,6 +19,8 @@ import java.util.List;
 public class DrawingComponents {
 
     private static double dashboardHeight;
+    private static List<ImageView> dashboards;
+    private static List<ImageView> islands;
 
     public static void drawFourPlayersGame(GameState gameState, double width, double height, AnchorPane root, String username) {
         List<PlayerState> players = gameState.getPlayers();
@@ -227,95 +228,83 @@ public class DrawingComponents {
         dashboard.setY(y);
         root.getChildren().add(dashboard);
 
-        double coordX, coordY;
         // Add students to entrance
+        GridPane entrance = getGridPane(
+                x + width * DrawingConstants.INITIAL_X_OFFSET_ENTRANCE, y + width * DrawingConstants.INITIAL_Y_OFFSET_ENTRANCE,
+                width * DrawingConstants.ENTRANCE_HGAP, width * DrawingConstants.ENTRANCE_VGAP
+        );
         for (int i = 0; i < player.getEntrance().size(); i++) {
             Student s = player.getEntrance().get(i);
             String resourceName = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
             ImageView student = new ImageView(new Image(resourceName));
             student.setPreserveRatio(true);
             student.setFitWidth(width / 25);
+            student.setOnMouseClicked(mouseEvent -> ObjectClickListeners.setStudentClicked(s.getColor()));
 
-            if (i % 2 == 0) {
-                coordX = x + width / 10.7;
-            } else {
-                coordX = x + width / 29.412;
-            }
-            coordY = y + (width / 18.182) + (width / 13.793) * (i / 2 + i % 2);
-
-            student.setX(coordX);
-            student.setY(coordY);
-            root.getChildren().add(student);
+            entrance.add(student, (i + 1) % 2, i / 2 + i % 2);
         }
+        root.getChildren().add(entrance);
+
         // Add students to dining room
+        GridPane diningRoom = getGridPane(x + width * DrawingConstants.INITIAL_X_OFFSET_DINING_ROOM,
+                y + width * DrawingConstants.INITIAL_Y_OFFSET_DINING_ROOM, width * DrawingConstants.DINING_ROOM_HGAP,
+                width * DrawingConstants.DINING_ROOM_VGAP);
+
+        List<Color> colorsInOrder = List.of(Color.GREEN, Color.RED, Color.YELLOW, Color.PINK, Color.BLUE);
         for (int i = 0; i < player.getDining().size(); i++) {
             Student s = player.getDining().get(i);
             String resourceName = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
             ImageView student = new ImageView(new Image(resourceName));
             student.setPreserveRatio(true);
             student.setFitWidth(width / 25);
+            student.setOnMouseClicked(mouseEvent -> ObjectClickListeners.setDiningRoomClicked());
 
-            coordY = y + width / 18.182;
-            double deltaY = width / 13.793;
-            switch (s.getColor()) {
-                case RED -> coordY += deltaY;
-                case YELLOW -> coordY += 2 * deltaY;
-                case PINK -> coordY += 3 * deltaY;
-                case BLUE -> coordY += 4 * deltaY;
-            }
+            int row = colorsInOrder.indexOf(s.getColor());
+            int column = Students.countStudentsOfSameColorBeforePosition(player.getDining(), s.getColor(), i);
 
-            int multiplyingNumber = 0;
-            for (int j = 0; j < i; j++) {
-                if (player.getDining().get(j).getColor() == s.getColor()) {
-                    multiplyingNumber++;
-                }
-            }
-            coordX = x + width / 5.33 + (width / 21.05) * multiplyingNumber;
-
-            student.setX(coordX);
-            student.setY(coordY);
-            root.getChildren().add(student);
+            diningRoom.add(student, column, row);
         }
+        root.getChildren().add(diningRoom);
+
         // Add professors
-        for (Color color : player.getOwnedProfessors()) {
-            String path = "/gameboard/professors/teacher_" + color.toString().toLowerCase() + ".png";
-            ImageView professor = new ImageView(new Image(path));
-            professor.setPreserveRatio(true);
-            professor.setFitWidth(width / 20);
-            professor.setRotate(90);
+        GridPane professorRoom = getGridPane(
+                x + width * DrawingConstants.INITIAL_X_OFFSET_PROFESSOR_ROOM, y + width * DrawingConstants.INITIAL_Y_OFFSET_PROFESSOR_ROOM,
+                0, width * DrawingConstants.PROFESSOR_ROOM_VGAP
+        );
+        for (int i = 0; i < colorsInOrder.size(); i++) {
+            Color color = colorsInOrder.get(i);
+            if (player.getOwnedProfessors().contains(color)) {
+                String path = "/gameboard/professors/teacher_" + color.toString().toLowerCase() + ".png";
+                ImageView professor = new ImageView(new Image(path));
+                professor.setPreserveRatio(true);
+                professor.setFitWidth(width / 20);
+                professor.setRotate(90);
 
-            coordX = x + width / 1.4184;
-            coordY = y + width / 20;
-            double deltaY = width / 14.035;
-            switch (color) {
-                case RED -> coordY += deltaY;
-                case YELLOW -> coordY += 2 * deltaY;
-                case PINK -> coordY += 3 * deltaY;
-                case BLUE -> coordY += 4 * deltaY;
+                professorRoom.add(professor, 0, i);
+            } else {
+                Pane emptyPlace = new Pane();
+                emptyPlace.setPrefWidth(width / 20);
+                emptyPlace.setPrefHeight(width / 20);
+                professorRoom.add(emptyPlace, 0, i);
             }
 
-            professor.setX(coordX);
-            professor.setY(coordY);
-            root.getChildren().add(professor);
         }
+        root.getChildren().add(professorRoom);
+
         // Add towers
+        GridPane towers = getGridPane(
+                x + width * DrawingConstants.INITIAL_X_OFFSET_TOWERS, y + width * DrawingConstants.INITIAL_Y_OFFSET_TOWERS,
+                width * DrawingConstants.TOWERS_HGAP, width * DrawingConstants.TOWERS_VGAP
+        );
         for (int i = 0; i < player.getRemainingTowers(); i++) {
             String path = "/gameboard/towers/" + player.getTowerColor().toString().toLowerCase() + "_tower.png";
             ImageView tower = new ImageView(new Image(path));
             tower.setPreserveRatio(true);
-            tower.setFitWidth(width / 15.385);
+            tower.setFitWidth(width * DrawingConstants.TOWERS_SIZE);
 
-            if (i % 2 == 0) {
-                coordX = x + width / 1.242;
-            } else {
-                coordX = x + width / 1.133;
-            }
-            coordY = y + width / 13.333 + (i / 2) * (width / 13.793);
-
-            tower.setX(coordX);
-            tower.setY(coordY);
-            root.getChildren().add(tower);
+            towers.add(tower, i % 2, i / 2);
         }
+        root.getChildren().add(towers);
 
     }
 
@@ -339,5 +328,14 @@ public class DrawingComponents {
         iv.setX(x);
         iv.setY(y);
         return iv;
+    }
+
+    private static GridPane getGridPane(double x, double y, double hgap, double vgap) {
+        GridPane grid = new GridPane();
+        grid.setLayoutX(x);
+        grid.setLayoutY(y);
+        grid.setHgap(hgap);
+        grid.setVgap(vgap);
+        return grid;
     }
 }
