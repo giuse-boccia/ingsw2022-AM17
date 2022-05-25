@@ -183,7 +183,6 @@ public class DrawingComponents {
     }
 
     private static GridPane getAssistants(int[] assistants, double width, double height, double initialWidth, double finalWidth, boolean singleLine) {
-        assistants = new int[]{1, 4, 8, 10};
         if (assistants.length == 0) return new GridPane();
         double assistantHeight = height - (width * (1454.0 / 3352.0) * 0.4);
         double spaceForAssistants = finalWidth - initialWidth - 5 * width * DrawingConstants.OFFSET_BETWEEN_ASSISTANTS;
