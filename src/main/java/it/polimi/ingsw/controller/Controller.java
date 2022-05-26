@@ -50,15 +50,15 @@ public class Controller {
      * @param errorCode    an integer representing the error which occurred
      */
     public static void sendErrorMessage(Communicable ch, String status, String errorMessage, int errorCode) {
-        if (status.equals("LOGIN")) {
+        if (status.equals(Messages.STATUS_LOGIN)) {
             ServerLoginMessage message = new ServerLoginMessage();
             message.setError(errorCode);
-            message.setDisplayText("[ERROR] " + errorMessage);
+            message.setDisplayText(Messages.ERROR + errorMessage);
             ch.sendMessageToClient(message.toJson());
-        } else if (status.equals("ACTION")) {
+        } else if (status.equals(Messages.STATUS_ACTION)) {
             ServerActionMessage message = new ServerActionMessage();
             message.setError(errorCode);
-            message.setDisplayText("[ERROR] " + errorMessage);
+            message.setDisplayText(Messages.ERROR + errorMessage);
             ch.sendMessageToClient(message.toJson());
         }
 
@@ -72,10 +72,10 @@ public class Controller {
      */
     public synchronized void handleMessage(String jsonMessage, Communicable ch) throws GameEndedException {
         switch (getMessageStatus(jsonMessage)) {
-            case "LOGIN" -> handleLoginMessage(jsonMessage, ch);
-            case "ACTION" -> handleActionMessage(jsonMessage, ch);
-            case "PONG" -> handlePong();
-            default -> sendErrorMessage(ch, "LOGIN", "Unrecognised type", 3);
+            case Messages.STATUS_LOGIN -> handleLoginMessage(jsonMessage, ch);
+            case Messages.STATUS_ACTION -> handleActionMessage(jsonMessage, ch);
+            case Messages.STATUS_PONG -> handlePong();
+            default -> sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.UNRECOGNISED_TYPE, 3);
         }
     }
 
@@ -112,18 +112,19 @@ public class Controller {
             ClientLoginMessage loginMessage = ClientLoginMessage.fromJSON(jsonMessage);
 
             if (loginMessage.getAction() == null) {
-                sendErrorMessage(ch, "LOGIN", "Bad request", 3);
+                sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.BAD_REQUEST, 3);
                 return;
             }
 
             switch (loginMessage.getAction()) {
-                case "SET_USERNAME" -> addUser(ch, loginMessage.getUsername());
-                case "CREATE_GAME" -> setGameParameters(ch, loginMessage.getNumPlayers(), loginMessage.isExpert());
-                default -> sendErrorMessage(ch, "LOGIN", "Bad request", 3);
+                case Messages.ACTION_SET_USERNAME -> addUser(ch, loginMessage.getUsername());
+                case Messages.ACTION_CREATE_GAME ->
+                        setGameParameters(ch, loginMessage.getNumPlayers(), loginMessage.isExpert());
+                default -> sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.BAD_REQUEST, 3);
 
             }
         } catch (JsonSyntaxException e) {
-            sendErrorMessage(ch, "LOGIN", Messages.INVALID_FORMAT_NUM_PLAYER, 3);
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INVALID_FORMAT_NUM_PLAYER, 3);
         }
     }
 
@@ -135,11 +136,11 @@ public class Controller {
      */
     private void setGameParameters(Communicable ch, int numPlayers, boolean isExpert) {
         if (loggedUsers.isEmpty() || loggedUsers.get(0).getCommunicable() != ch) {
-            sendErrorMessage(ch, "LOGIN", Messages.INVALID_PLAYER_CREATING_GAME, 3);
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INVALID_PLAYER_CREATING_GAME, 3);
             return;
         }
         if (numPlayers < 2 || numPlayers > 4) {
-            sendErrorMessage(ch, "LOGIN", Messages.INVALID_NUM_PLAYERS, 3);
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INVALID_NUM_PLAYERS, 3);
             return;
         }
 
@@ -164,13 +165,13 @@ public class Controller {
     private void addUser(Communicable ch, String username) {
 
         if (username == null || username.trim().equals("")) {
-            sendErrorMessage(ch, "LOGIN", Messages.INVALID_USERNAME, 3);
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INVALID_USERNAME, 3);
         } else if ((desiredNumberOfPlayers != -1 && loggedUsers.size() >= desiredNumberOfPlayers) || loggedUsers.size() >= 4 || gameController != null) {
-            sendErrorMessage(ch, "LOGIN", Messages.LOBBY_FULL, 1);
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.LOBBY_FULL, 1);
         } else if (username.length() > 32) {
-            sendErrorMessage(ch, "LOGIN", Messages.USERNAME_TOO_LONG, 3);
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.USERNAME_TOO_LONG, 3);
         } else if (loggedUsers.stream().anyMatch(u -> u.getUsername().equals(username))) {
-            sendErrorMessage(ch, "LOGIN", Messages.USERNAME_ALREADY_TAKEN, 2);
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.USERNAME_ALREADY_TAKEN, 2);
         } else {
             PlayerClient newUser = new PlayerClient(ch, username);
             loggedUsers.add(newUser);
@@ -226,7 +227,7 @@ public class Controller {
      */
     private void askDesiredNumberOfPlayers(Communicable ch) {
         ServerLoginMessage res = new ServerLoginMessage();
-        res.setAction("CREATE_GAME");
+        res.setAction(Messages.ACTION_CREATE_GAME);
         res.setDisplayText(Messages.SET_GAME_PARAMETERS);
 
         ch.sendMessageToClient(res.toJson());
@@ -243,7 +244,7 @@ public class Controller {
             // Alert player that game is full and removes him
             PlayerClient toRemove = loggedUsers.get(desiredNumberOfPlayers);
             String errorMessage = "A new game for " + desiredNumberOfPlayers + " players is starting. Your connection will be closed";
-            sendErrorMessage(toRemove.getCommunicable(), "LOGIN", errorMessage, 1);
+            sendErrorMessage(toRemove.getCommunicable(), Messages.STATUS_LOGIN, errorMessage, 1);
             loggedUsers.remove(toRemove);
         }
         String message = Messages.GAME_STARTING;
@@ -275,7 +276,7 @@ public class Controller {
      */
     private void handleActionMessage(String jsonMessage, Communicable ch) throws GameEndedException {
         if (gameController == null) {
-            sendErrorMessage(ch, "ACTION", Messages.GAME_NOT_STARTED, 1);
+            sendErrorMessage(ch, Messages.STATUS_ACTION, Messages.GAME_NOT_STARTED, 1);
             return;
         }
 
@@ -283,7 +284,7 @@ public class Controller {
             ClientActionMessage actionMessage = ClientActionMessage.fromJSON(jsonMessage);
             gameController.handleActionMessage(actionMessage, ch);
         } catch (JsonSyntaxException e) {
-            sendErrorMessage(ch, "ACTION", "Bad request (syntax error)", 3);
+            sendErrorMessage(ch, Messages.STATUS_ACTION, Messages.BAD_REQUEST_SYNTAX, 3);
         }
     }
 
@@ -301,12 +302,12 @@ public class Controller {
                 synchronized (boundLock) {
                     if (pongCount < bound) {
                         for (PlayerClient user : loggedUsers) {
-                            sendErrorMessage(user.getCommunicable(), "LOGIN", "Connection with one client lost", 3);
+                            sendErrorMessage(user.getCommunicable(), Messages.STATUS_LOGIN, Messages.CONNECTION_WITH_CLIENT_LOST, 3);
                         }
                         loggedUsers.clear();
                         gameController = null;
                         desiredNumberOfPlayers = -1;
-                        System.out.println("Connection with one client lost, clearing the game...");
+                        System.out.println(Messages.CLEARING_GAME);
                     }
                 }
 
@@ -322,7 +323,7 @@ public class Controller {
             pongCount = 0;
         }
         Message ping = new Message();
-        ping.setStatus("PING");
+        ping.setStatus(Messages.STATUS_PING);
         int bound = 0;
         for (PlayerClient user : loggedUsers) {
             user.getCommunicable().sendMessageToClient(ping.toJson());

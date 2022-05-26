@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.exceptions.GameEndedException;
 
@@ -52,7 +53,7 @@ public class ClientHandler implements Runnable, Communicable {
             // Socket closed by another method
         } catch (IOException e) {
             // Client connection error
-            System.err.println("Connection to client lost, alerting other clients...");
+            System.err.println(Messages.ALERTING_OTHER_CLIENTS);
         } catch (GameEndedException e) {
             // Game is ended, clientHandler will close socket
             try {

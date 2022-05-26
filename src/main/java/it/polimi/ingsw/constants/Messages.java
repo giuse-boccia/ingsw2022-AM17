@@ -15,6 +15,8 @@ public class Messages {
     // Possible status in messages
     public static final String STATUS_LOGIN = "LOGIN";
     public static final String STATUS_ACTION = "ACTION";
+    public static final String STATUS_PONG = "PONG";
+    public static final String STATUS_PING = "PING";
     public static final String STATUS_UPDATE = "UPDATE";
     public static final String STATUS_END = "END";
 
@@ -25,6 +27,10 @@ public class Messages {
     public static final String INVALID_SERVER_PORT = "Invalid server_port";
     public static final String PORT_NOT_AVAILABLE = "The selected port is not available at the moment";
     public static final String APPLICATION_CLOSING = "Application will now close...";
+    public static final String UNRECOGNISED_TYPE = "Unrecognised type";
+    public static final String ERROR = "[ERROR] ";
+    public static final String BAD_REQUEST = "Bad request";
+    public static final String BAD_REQUEST_SYNTAX = "Bad request (syntax error)";
 
     // Errors while joining game
     public static final String INVALID_USERNAME = "Invalid username field";
@@ -34,6 +40,10 @@ public class Messages {
     public static final String INVALID_NUM_PLAYERS = "Num players must be between 2 and 4";
     public static final String INVALID_PLAYER_CREATING_GAME = "You can't set this game's parameters";
     public static final String INVALID_FORMAT_NUM_PLAYER = "Num players must be a number";
+
+    // Connection errors
+    public static final String ALERTING_OTHER_CLIENTS = "Connection to client lost, alerting other clients...";
+    public static final String CONNECTION_WITH_CLIENT_LOST = "Connection with one client lost";
 
     // Messages in game creation
     public static final String ADDED_PLAYER = "Added player ";
@@ -55,19 +65,52 @@ public class Messages {
     public static final String INVALID_CLOUD = "The selected cloud is not valid";
     public static final String INVALID_MN_MOVE = "Invalid move for mother nature";
     public static final String MOVE_MN_FIRST = "Move mother nature first";
+    public static final String MOVE_STUDENTS_FIRST = "Move your students first";
     public static final String ENTRANCE_DOESNT_CONTAIN_STUDENT = "The entrance doesn't contain this student";
+    public static final String STUDENT_NOT_IN_ENTRANCE = "One or more students are not on the entrance";
+    public static final String DINING_ROOM_DOESNT_CONTAIN_STUDENT = "The dining room doesn't contain this student";
+    public static final String STUDENT_NOT_IN_DINING_ROOM = "One or more students are not on the dining room";
+    public static final String NO_CHARACTER_IN_NON_EXPERT = "There are no characters in the non expert mode";
+    public final static String INVALID_CHARACTER = "This is not a valid character";
     public static final String CHARACTER_NOT_IN_GAME = "This character is not in the game";
+    public static final String INVALID_SWAP = "This is not a valid swap";
     public static final String MOVE_JUST_ONE = "You have to move only one student";
     public static final String STUDENT_NOT_FOUND = "Student not found. Check your choices";
+    public static final String STUDENT_NOT_ON_CHARACTER = "The character doesn't contain this student";
+    public static final String NO_NOENTRY = "There are no NoEntry pawns left on this card";
+    public static final String NOT_PASSIVE = "This is not a passive character";
     public static final String MOVING_MORE_STUDENTS = "You are trying to move more students than you are allowed to";
     public static final String ALREADY_PLAYED_CHARACTER = "You already played a character this turn";
+    public static final String EMPTY_BAG = "The bag is empty!";
+    public static final String NOT_ENOUGH_COINS = "You don't have enough coins to play this character";
+    public static final String INVALID_ISLAND = "Invalid island index";
+
+    // Actions
+    public static final String ACTION_SET_USERNAME = "SET_USERNAME";
+    public static final String ACTION_CREATE_GAME = "CREATE_GAME";
+    public static final String ACTION_LOAD_GAME = "LOAD_GAME";
+    public static final String ACTION_PLAY_ASSISTANT = "PLAY_ASSISTANT";
+    public static final String ACTION_MOVE_STUDENT = "MOVE_STUDENT";
+    public static final String ACTION_MOVE_STUDENT_TO_DINING = "MOVE_STUDENT_TO_DINING";
+    public static final String ACTION_MOVE_STUDENT_TO_ISLAND = "MOVE_STUDENT_TO_ISLAND";
+    public static final String ACTION_MOVE_MN = "MOVE_MN";
+    public static final String ACTION_PLAY_CHARACTER = "PLAY_CHARACTER";
+    public static final String ACTION_FILL_FROM_CLOUD = "FILL_FROM_CLOUD";
+
+    // Messages in planning phase
+    public static final String PLANNING_PHASE_ENDED = "Planning phase is ended";
 
     // Messages in action phase
     public static final String LAST_ROUND = "Be aware! This is the last round";
-
+    public static final String GAME_ENDED = "The game is ended";
+    public static final String GAME_WON = "Congratulations, you won the game!";
+    public static final String GAME_LOST = "Unfortunately you lost";
+    public static final String IS_PLAYING = " is playing...";
     // Server log messages
     public static final String SAVE_OK = "Game saved to file";
     public static final String SAVE_ERR = "Error while saving the game";
     public static final String LOAD_OK = "Game loaded from file";
     public static final String LOAD_ERR = "Error while loading the game";
+    public static final String SAVING_TO_FILE = "Saving to file...";
+    public static final String CLEARING_GAME = "Connection with one client lost, clearing the game...";
 }

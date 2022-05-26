@@ -37,7 +37,7 @@ public class PassiveCharacter extends Character {
                 }
                 currentPlayerActionPhase.playPassiveCharacterWithColor(color);
             }
-            default -> throw new InvalidCharacterException("This is not a passive character");
+            default -> throw new InvalidCharacterException(Messages.NOT_PASSIVE);
 
         }
 

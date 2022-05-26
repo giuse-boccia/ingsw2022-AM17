@@ -44,7 +44,7 @@ public class PlanningPhase {
         Player player = assistant.getPlayer();
 
         if (isEnded()) {
-            throw new InvalidActionException("Planning phase is ended");
+            throw new InvalidActionException(Messages.PLANNING_PHASE_ENDED);
         }
 
         if (player != getNextPlayer()) {

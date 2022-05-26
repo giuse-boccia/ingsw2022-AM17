@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
@@ -90,9 +91,9 @@ public class GameBoard {
         ArrayList<Island> result = new ArrayList<>();
 
         ArrayList<Student> students = Students.getSomeStudents(2);
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < Constants.ISLANDS; i++) {
             Island newIsland = new Island();
-            if (i != motherNatureIndex && i != ((motherNatureIndex + 6) % 12)) {
+            if (i != motherNatureIndex && i != ((motherNatureIndex + (Constants.ISLANDS / 2)) % Constants.ISLANDS)) {
                 newIsland.receiveStudent(students.get(0));
                 students.remove(0);
             }
@@ -111,7 +112,7 @@ public class GameBoard {
         ArrayList<Cloud> result = new ArrayList<>();
         int numPlayers = game.getPlayers().size();
         for (int i = 0; i < numPlayers; i++) {
-            result.add(new Cloud(numPlayers % 2 == 0 ? 3 : 4));
+            result.add(new Cloud(numPlayers % 2 == 0 ? Constants.STUDENTS_ON_CLOUD_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.STUDENTS_ON_CLOUD_IN_THREE_PLAYER_GAME));
         }
         return result;
     }

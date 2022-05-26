@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.strategies.mn_strategies;
 
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.model.game_objects.Assistant;
 
 public class MNBonus implements MNStrategy {
@@ -7,7 +8,7 @@ public class MNBonus implements MNStrategy {
     private final int bonus;
 
     public MNBonus() {
-        this.bonus = 2;
+        this.bonus = Constants.MN_BONUS;
     }
 
     public MNBonus(int bonus) {
