@@ -4,31 +4,27 @@ import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.utils.Students;
 import it.polimi.ingsw.server.game_state.*;
-import javafx.animation.PauseTransition;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
-import org.controlsfx.control.NotificationPane;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class DrawingComponents {
 
     private static double dashboardHeight;
-    private static final List<ImageView> characterImages = new ArrayList<>();
+    private static final List<BorderPane> characterImages = new ArrayList<>();
     private static final List<AnchorPane> cloudImages = new ArrayList<>();
     private static final List<BorderPane> assistantCards = new ArrayList<>();
-    private static GridPane entrance;
-    private static GridPane diningRoom;
+    private static final List<BorderPane> entranceStudents = new ArrayList<>();
+    private static final List<BorderPane> diningGaps = new ArrayList<>();
     private static ImageView motherNature;
     private static List<ImageView> islands = new ArrayList<>();
     private static List<String> currentActions;
@@ -167,13 +163,15 @@ public class DrawingComponents {
         for (CharacterState character : characters) {
             String imagePath = "/gameboard/characters/" + character.getCharacterName() + ".jpg";
             ImageView characterImage = new ImageView(new Image(imagePath));
-            characterImage.setX(coordX);
-            characterImage.setY(height / heightProportion);
             characterImage.setPreserveRatio(true);
             characterImage.setFitWidth(width * DrawingConstants.CHARACTER_CARD_PROPORTION);
 
-            root.getChildren().add(characterImage);
-            characterImages.add(characterImage);
+            BorderPane characterToAdd = new BorderPane(characterImage);
+            characterToAdd.setLayoutX(coordX);
+            characterToAdd.setLayoutY(height / heightProportion);
+            characterToAdd.setOnMouseClicked(event -> ObjectClickListeners.setCharacterClicked(character.getCharacterName(), characterToAdd));
+            characterImages.add(characterToAdd);
+            root.getChildren().add(characterToAdd);
 
             if (character.isHasCoin()) {
                 double imageWidth = width * (DrawingConstants.COIN_PROPORTION);
@@ -262,7 +260,13 @@ public class DrawingComponents {
             student.setFitWidth(width / 25);
             student.setOnMouseClicked(mouseEvent -> ObjectClickListeners.setStudentClicked(s.getColor(), student));
 
-            newEntrance.add(student, (i + 1) % 2, i / 2 + i % 2);
+            BorderPane studentPane = new BorderPane(student);
+            if (username.equals(player.getName())) {
+                studentPane.setOnMouseClicked(event -> ObjectClickListeners.setStudentClicked(s.getColor(), studentPane));
+                entranceStudents.add(studentPane);
+            }
+
+            newEntrance.add(studentPane, (i + 1) % 2, i / 2 + i % 2);
         }
         root.getChildren().add(newEntrance);
 
@@ -272,25 +276,42 @@ public class DrawingComponents {
                 width * DrawingConstants.DINING_ROOM_VGAP);
 
         List<Color> colorsInOrder = List.of(Color.GREEN, Color.RED, Color.YELLOW, Color.PINK, Color.BLUE);
+        HashMap<Color, Integer> diningStudents = new HashMap<>();
         for (int i = 0; i < player.getDining().size(); i++) {
             Student s = player.getDining().get(i);
             String resourceName = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
             ImageView student = new ImageView(new Image(resourceName));
             student.setPreserveRatio(true);
             student.setFitWidth(width / 25);
-            student.setOnMouseClicked(mouseEvent -> ObjectClickListeners.setDiningRoomClicked());
 
             int row = colorsInOrder.indexOf(s.getColor());
-            int column = Students.countStudentsOfSameColorBeforePosition(player.getDining(), s.getColor(), i);
+            Integer column = diningStudents.get(s.getColor());
+            if (column == null) {
+                column = 0;
+            }
+            diningStudents.put(s.getColor(), column + 1);
 
             newDiningRoom.add(student, column, row);
         }
-        root.getChildren().add(newDiningRoom);
 
-        if (username.equals(player.getName())) {
-            entrance = newEntrance;
-            diningRoom = newDiningRoom;
+        for (Color color : colorsInOrder) {
+            diningStudents.putIfAbsent(color, 0);
+            int positionOfEmptySpace = diningStudents.get(color);
+            if (positionOfEmptySpace == 10) break;
+
+            // If you want to change to a circle, the radius is width / 25 * 0,55
+            BorderPane emptySpace = new BorderPane();
+            emptySpace.setOnMouseClicked(mouseEvent -> ObjectClickListeners.setDiningRoomClicked());
+            emptySpace.setPrefWidth(width / 25);
+            emptySpace.setPrefHeight(width / 25);
+
+            newDiningRoom.add(emptySpace, positionOfEmptySpace, colorsInOrder.indexOf(color));
+
+            if (username.equals(player.getName())) {
+                diningGaps.add(emptySpace);
+            }
         }
+        root.getChildren().add(newDiningRoom);
 
         // Add professors
         GridPane professorRoom = getGridPane(
@@ -374,16 +395,16 @@ public class DrawingComponents {
     }
 
     private static void highlightAction(String action) {
-        entrance.getStyleClass().clear();
-        diningRoom.getStyleClass().clear();
-        assistantCards.forEach(assistant -> assistant.getStyleClass().clear());
-        //islands.forEach(island -> island.getStyleClass().clear());
-        characterImages.forEach(character -> character.getStyleClass().clear());
-        cloudImages.forEach(cloud -> cloud.getStyleClass().clear());
+//        entrance.getStyleClass().clear();
+//        diningRoom.getStyleClass().clear();
+//        assistantCards.forEach(assistant -> assistant.getStyleClass().clear());
+//        islands.forEach(island -> island.getStyleClass().clear());
+//        characterImages.forEach(character -> character.getStyleClass().clear());
+//        cloudImages.forEach(cloud -> cloud.getStyleClass().clear());
         switch (action) {
             case "MOVE_STUDENT_TO_DINING", "MOVE_STUDENT_TO_ISLAND" -> {
-                setGoldenBorder(entrance);
-                setGoldenBorder(diningRoom);
+                entranceStudents.forEach(DrawingComponents::setGoldenBorder);
+                diningGaps.forEach(DrawingComponents::setGoldenBorder);
                 islands.forEach(DrawingComponents::setGoldenBorder);
             }
             case "PLAY_ASSISTANT" -> {
@@ -399,6 +420,10 @@ public class DrawingComponents {
                 cloudImages.forEach(DrawingComponents::setGoldenBorder);
             }
         }
+    }
+
+    public static void removeGoldenBordersFromAllCharacters() {
+
     }
 
     private static void setGoldenBorder(Node element) {
