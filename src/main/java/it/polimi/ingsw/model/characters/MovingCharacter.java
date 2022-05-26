@@ -73,14 +73,14 @@ public class MovingCharacter extends GameboardCharacter implements Place {
                 ArrayList<Student> srcStudents = getStudentListFromColorList(srcColors, curDashBoard.getEntrance());
                 ArrayList<Student> dstStudents = getStudentListFromColorList(dstColors, curDashBoard.getDiningRoom());
                 if (!curDashBoard.getEntrance().getStudents().containsAll(srcStudents)) {
-                    throw new InvalidActionException("One or more students are not on the entrance");
+                    throw new InvalidActionException(Messages.STUDENT_NOT_IN_ENTRANCE);
                 }
                 if (!curDashBoard.getDiningRoom().getStudents().containsAll(dstStudents)) {
-                    throw new InvalidActionException("One or more students are not on the dining room");
+                    throw new InvalidActionException(Messages.STUDENT_NOT_IN_DINING_ROOM);
                 }
                 swapStudents(curDashBoard.getEntrance(), curDashBoard.getDiningRoom(), srcStudents, dstStudents);
             }
-            default -> throw new InvalidCharacterException("This is not a valid character");
+            default -> throw new InvalidCharacterException(Messages.INVALID_CHARACTER);
 
         }
     }
@@ -112,7 +112,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
             throw new InvalidActionException(Messages.MOVING_MORE_STUDENTS);
         }
         if (srcStudents.size() != dstStudents.size()) {
-            throw new InvalidActionException("This is not a valid swap");
+            throw new InvalidActionException(Messages.INVALID_SWAP);
         }
         for (int i = 0; i < srcStudents.size(); i++) {
             Student firstStudentToSwap = srcStudents.get(i);
@@ -165,7 +165,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
     @Override
     public void giveStudent(Place destination, Student student) throws InvalidStudentException {
         if (student == null || !students.contains(student)) {
-            throw new InvalidStudentException("The character doesn't contain this student");
+            throw new InvalidStudentException(Messages.STUDENT_NOT_ON_CHARACTER);
         }
         students.remove(student);
         destination.receiveStudent(student);

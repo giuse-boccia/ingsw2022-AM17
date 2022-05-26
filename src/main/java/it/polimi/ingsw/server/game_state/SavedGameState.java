@@ -42,7 +42,7 @@ public class SavedGameState extends GameState {
      */
     public static void saveToFile(Game game) {
 
-        System.out.println("Saving to file...");
+        System.out.println(Messages.SAVING_TO_FILE);
 
         try {
             SavedGameState gs = new SavedGameState(game);

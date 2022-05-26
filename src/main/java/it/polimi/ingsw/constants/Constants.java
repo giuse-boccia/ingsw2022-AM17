@@ -17,9 +17,16 @@ public class Constants {
     public static final String DEFAULT_ADDRESS = "localhost";
 
     // Model Constants
-    public static final int INITIAL_STUDENTS_IN_BAG = 24;
+    public static final int INITIAL_STUDENTS_IN_BAG_OF_EACH_COLOR = 24;
+    public static final int ISLANDS = 12;
     public static final int STUDENTS_IN_ENTRANCE_IN_THREE_PLAYER_GAME = 9;
+    public static final int STUDENTS_ON_CLOUD_IN_THREE_PLAYER_GAME = 4;
+    public static final int STUDENTS_TO_MOVE_IN_THREE_PLAYER_GAME = 4;
     public static final int STUDENTS_IN_ENTRANCE_IN_TWO_OR_FOUR_PLAYER_GAME = 7;
+    public static final int STUDENTS_ON_CLOUD_IN_TWO_OR_FOUR_PLAYER_GAME = 3;
+    public static final int STUDENTS_TO_MOVE_IN_TWO_OR_FOUR_PLAYER_GAME = 3;
+    public static final int MN_BONUS = 2;
+    public static final int INFLUENCE_BONUS = 2;
 
 
 }

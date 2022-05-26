@@ -3,6 +3,7 @@ package it.polimi.ingsw.messages.action;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.Message;
 
 public class ClientActionMessage extends Message {
@@ -12,7 +13,7 @@ public class ClientActionMessage extends Message {
 
     public ClientActionMessage() {
         super();
-        super.setStatus("ACTION");
+        super.setStatus(Messages.STATUS_ACTION);
     }
 
     public String getPlayer() {

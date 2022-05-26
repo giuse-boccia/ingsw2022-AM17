@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.game_actions;
 
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
@@ -34,7 +35,7 @@ public class PlayerActionPhase {
     private MNStrategy mnStrategy;
     private int numStudentsMoved = 0;
     private boolean mnMoved = false;
-    private String expectedMove = "MOVE_STUDENT";
+    private String expectedMove = Messages.ACTION_MOVE_STUDENT;
 
 
     public PlayerActionPhase(Assistant assistant, GameBoard gb) {
@@ -187,10 +188,10 @@ public class PlayerActionPhase {
     public void playCharacter(Character character, Island island, Color color, List<Color> srcColors, List<Color> dstColors)
             throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException, NotEnoughCoinsException {
         if (!gb.getGame().isExpert()) {
-            throw new InvalidActionException("There are no characters in the non expert mode");
+            throw new InvalidActionException(Messages.NO_CHARACTER_IN_NON_EXPERT);
         }
         if (getCurrentPlayer().getNumCoins() < character.getCost()) {
-            throw new NotEnoughCoinsException("You don't have enough coins to play this character");
+            throw new NotEnoughCoinsException(Messages.NOT_ENOUGH_COINS);
         }
         if (!canPlayCharacter()) {
             throw new CharacterAlreadyPlayedException(Messages.ALREADY_PLAYED_CHARACTER);
@@ -248,7 +249,7 @@ public class PlayerActionPhase {
     public void moveStudent(Color color, Place destination) throws InvalidActionException, InvalidStudentException {
 
         int numPlayers = gb.getGame().getPlayers().size();
-        int studentsToMove = numPlayers % 2 == 0 ? 3 : 4;
+        int studentsToMove = numPlayers % 2 == 0 ? Constants.STUDENTS_TO_MOVE_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.STUDENTS_TO_MOVE_IN_THREE_PLAYER_GAME;
 
         if (numStudentsMoved == studentsToMove) {
             throw new InvalidActionException("You have already moved " + numStudentsMoved + " students");
@@ -263,7 +264,7 @@ public class PlayerActionPhase {
         numStudentsMoved++;
 
         if (numStudentsMoved == studentsToMove) {
-            expectedMove = "MOVE_MN";
+            expectedMove = Messages.ACTION_MOVE_MN;
         }
 
         stealProfessorIfPossible(color);
@@ -304,7 +305,7 @@ public class PlayerActionPhase {
         }
 
         mnMoved = true;
-        expectedMove = "FILL_FROM_CLOUD";
+        expectedMove = Messages.ACTION_FILL_FROM_CLOUD;
 
         if (gb.getGame().getCurrentRound().isLastRound()) {
             // The PlayerActionPhase is finished
@@ -345,9 +346,9 @@ public class PlayerActionPhase {
      */
     private void checkInvalidAction() throws InvalidActionException {
 
-        int studentsToMove = gb.getGame().getPlayers().size() % 2 == 0 ? 3 : 4;
+        int studentsToMove = gb.getGame().getPlayers().size() % 2 == 0 ? Constants.STUDENTS_TO_MOVE_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.STUDENTS_TO_MOVE_IN_THREE_PLAYER_GAME;
         if (numStudentsMoved < studentsToMove) {
-            throw new InvalidActionException("Move your students first");
+            throw new InvalidActionException(Messages.MOVE_STUDENTS_FIRST);
         }
     }
 

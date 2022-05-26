@@ -3,6 +3,7 @@ package it.polimi.ingsw.messages.login;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.Message;
 
 public class ServerLoginMessage extends Message {
@@ -12,7 +13,7 @@ public class ServerLoginMessage extends Message {
 
     public ServerLoginMessage() {
         super();
-        super.setStatus("LOGIN");
+        super.setStatus(Messages.STATUS_LOGIN);
     }
 
     public String getDisplayText() {
