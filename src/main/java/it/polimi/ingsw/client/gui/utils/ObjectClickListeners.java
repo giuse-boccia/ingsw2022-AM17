@@ -2,9 +2,12 @@ package it.polimi.ingsw.client.gui.utils;
 
 
 import it.polimi.ingsw.client.gui.GuiView;
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
 import javafx.scene.Node;
+
+import java.io.IOException;
 
 public class ObjectClickListeners {
 
@@ -43,8 +46,13 @@ public class ObjectClickListeners {
 
     public static void setCharacterClicked(CharacterName name, Node element) {
         if (!isMoveValid(element)) return;
-        // TODO remove border from every character - except this one if he needs parameters
+        DrawingComponents.removeGoldenBordersFromAllCharacters();
         System.out.println("Played character " + name);
+        try {
+            GuiView.getGui().getCurrentObserver().sendCharacterName(name);
+        } catch (IOException e) {
+            GuiView.getGui().gracefulTermination(Messages.SERVER_CRASHED);
+        }
     }
 
     private static boolean isMoveValid(Node element) {

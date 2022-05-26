@@ -130,7 +130,8 @@ public class GUI extends Client {
 
     @Override
     public void playCharacterWithoutArguments(CharacterName characterName) {
-
+        getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, null, null, null,
+                null, characterName, null, null);
     }
 
 }

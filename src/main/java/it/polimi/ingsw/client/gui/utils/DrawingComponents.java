@@ -395,12 +395,6 @@ public class DrawingComponents {
     }
 
     private static void highlightAction(String action) {
-//        entrance.getStyleClass().clear();
-//        diningRoom.getStyleClass().clear();
-//        assistantCards.forEach(assistant -> assistant.getStyleClass().clear());
-//        islands.forEach(island -> island.getStyleClass().clear());
-//        characterImages.forEach(character -> character.getStyleClass().clear());
-//        cloudImages.forEach(cloud -> cloud.getStyleClass().clear());
         switch (action) {
             case "MOVE_STUDENT_TO_DINING", "MOVE_STUDENT_TO_ISLAND" -> {
                 entranceStudents.forEach(DrawingComponents::setGoldenBorder);
@@ -423,7 +417,7 @@ public class DrawingComponents {
     }
 
     public static void removeGoldenBordersFromAllCharacters() {
-
+        characterImages.forEach(character -> character.getStyleClass().clear());
     }
 
     private static void setGoldenBorder(Node element) {

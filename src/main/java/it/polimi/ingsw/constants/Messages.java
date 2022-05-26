@@ -3,6 +3,7 @@ package it.polimi.ingsw.constants;
 public class Messages {
     public static final String ASK_USERNAME = "Insert username: ";
     public static final String GRACEFUL_TERM = "Application will now close...";
+    public static final String SERVER_CRASHED = "Connection to server lost";
 
     // public static final String STUDENT_CHAR = "●";       // in Windows Terminal is '?' unless you run "chcp 65001" beforehand
     public static final String STUDENT_CHAR = "*";
