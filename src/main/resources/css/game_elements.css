@@ -1,0 +1,5 @@
+.highlight_element {
+    -fx-border-color: rgba(172, 172, 7, 0.68);
+    -fx-border-width: 1.5;
+    -fx-background-color: rgba(172, 172, 7, 0.68);
+}

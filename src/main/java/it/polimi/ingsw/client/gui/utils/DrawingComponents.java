@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.utils.Students;
 import it.polimi.ingsw.server.game_state.*;
 import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -14,21 +15,28 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DrawingComponents {
 
     private static double dashboardHeight;
-    private static List<ImageView> dashboards;
-    private static List<ImageView> islands;
+    private static final List<ImageView> characterImages = new ArrayList<>();
+    private static final List<AnchorPane> cloudImages = new ArrayList<>();
+    private static final List<BorderPane> assistantCards = new ArrayList<>();
+    private static GridPane entrance;
+    private static GridPane diningRoom;
+    private static ImageView motherNature;
+    private static List<ImageView> islands = new ArrayList<>();
+    private static List<String> currentActions;
 
     public static void drawFourPlayersGame(GameState gameState, double width, double height, AnchorPane root, String username) {
         List<PlayerState> players = gameState.getPlayers();
-        drawGameComponentsForTwo(width, height, root, gameState);
-        drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
+        drawGameComponentsForTwo(width, height, root, gameState, username);
+        drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root, username);
         double textStartingY = height - (width * (1454.0 / 3352.0) * 0.4) - height / 45;
         drawDashboardText(players.get(2), 0, textStartingY, root, width, height);
-        drawDashboard(players.get(3), width * 0.6, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
+        drawDashboard(players.get(3), width * 0.6, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root, username);
         drawDashboardText(players.get(3), width * 0.6, textStartingY, root, width, height);
 
         drawAssistants(gameState, width, height, root, username, 4);
@@ -36,26 +44,28 @@ public class DrawingComponents {
 
     public static void drawThreePlayersGame(GameState gameState, double width, double height, AnchorPane root, String username) {
         List<PlayerState> players = gameState.getPlayers();
-        drawGameComponentsForTwo(width, height, root, gameState);
-        drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root);
+        drawGameComponentsForTwo(width, height, root, gameState, username);
+        drawDashboard(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4), width * 0.4, root, username);
         drawDashboardText(players.get(2), 0, height - (width * (1454.0 / 3352.0) * 0.4) - height / 45, root, width, height);
 
         drawAssistants(gameState, width, height, root, username, 3);
     }
 
     public static void drawTwoPlayersGame(GameState gameState, double width, double height, AnchorPane root, String username) {
-        drawGameComponentsForTwo(width, height, root, gameState);
+        drawGameComponentsForTwo(width, height, root, gameState, username);
 
         drawAssistants(gameState, width, height, root, username, 2);
     }
 
-    private static void drawGameComponentsForTwo(double width, double height, AnchorPane root, GameState gameState) {
+    private static void drawGameComponentsForTwo(double width, double height, AnchorPane root, GameState gameState, String username) {
+        root.getStylesheets().add("/css/game_elements.css");
+
         dashboardHeight = width * (1454.0 / 3352.0) * 0.4;
         List<PlayerState> players = gameState.getPlayers();
-        drawDashboard(players.get(0), 0, 0, width * 0.4, root);
+        drawDashboard(players.get(0), 0, 0, width * 0.4, root, username);
         double textStartingY = dashboardHeight + height / 30;
         drawDashboardText(players.get(0), 0, textStartingY, root, width, height);
-        drawDashboard(players.get(1), width * 0.6, 0, width * 0.4, root);
+        drawDashboard(players.get(1), width * 0.6, 0, width * 0.4, root, username);
         drawDashboardText(players.get(1), width * 0.6, textStartingY, root, width, height);
 
         drawClouds(gameState.getClouds(), width, height, root);
@@ -114,6 +124,7 @@ public class DrawingComponents {
             CloudState cloud = clouds.get(i);
             AnchorPane cloudToDraw = getCloudWithStudents(cloud, width, height);
             cloudsBox.getChildren().add(cloudToDraw);
+            cloudImages.add(cloudToDraw);
         }
 
         return cloudsBox;
@@ -159,6 +170,7 @@ public class DrawingComponents {
             characterImage.setFitWidth(width * DrawingConstants.CHARACTER_CARD_PROPORTION);
 
             root.getChildren().add(characterImage);
+            characterImages.add(characterImage);
 
             if (character.isHasCoin()) {
                 double imageWidth = width * (DrawingConstants.COIN_PROPORTION);
@@ -195,7 +207,8 @@ public class DrawingComponents {
     private static GridPane getAssistants(int[] assistants, double width, double height, double initialWidth, double finalWidth, boolean singleLine) {
         if (assistants.length == 0) return new GridPane();
         double assistantHeight = height - (width * (1454.0 / 3352.0) * 0.4);
-        double spaceForAssistants = finalWidth - initialWidth - 5 * width * DrawingConstants.OFFSET_BETWEEN_ASSISTANTS;
+        int assistantsPerLine = singleLine ? assistants.length : (assistants.length / 2);
+        double spaceForAssistants = finalWidth - initialWidth - assistantsPerLine * width * DrawingConstants.OFFSET_BETWEEN_ASSISTANTS;
         GridPane gridPane = new GridPane();
         gridPane.setLayoutX(initialWidth);
         gridPane.setLayoutY(assistantHeight);
@@ -209,18 +222,23 @@ public class DrawingComponents {
             double minWidth = singleLine ? DrawingConstants.ASSISTANT_MAX_WIDTH_SINGLE_LINE :
                     DrawingConstants.ASSISTANT_MAX_WIDTH_MULTILINE;
             assistant.setFitWidth(spaceForAssistants * Math.min((double) 2 / assistants.length, minWidth));
+
+            assistant.setOnMouseClicked(event -> ObjectClickListeners.setAssistantClicked(value, assistant));
+            BorderPane assistantPane = new BorderPane(assistant);
+            assistantCards.add(assistantPane);
+
             if (singleLine) {
-                gridPane.add(assistant, value - 1, 0);
+                gridPane.add(assistantPane, value - 1, 0);
             } else {
                 int numRows = assistants.length / 2 + assistants.length % 2;
-                gridPane.add(assistant, (value - 1) % numRows, (value - 1) / numRows);
+                gridPane.add(assistantPane, (value - 1) % numRows, (value - 1) / numRows);
             }
         }
 
         return gridPane;
     }
 
-    private static void drawDashboard(PlayerState player, double x, double y, double width, AnchorPane root) {
+    private static void drawDashboard(PlayerState player, double x, double y, double width, AnchorPane root, String username) {
         ImageView dashboard = new ImageView(new Image("/gameboard/Plancia_DEF_circles.png"));
         dashboard.setPreserveRatio(true);
         dashboard.setFitWidth(width);
@@ -229,7 +247,7 @@ public class DrawingComponents {
         root.getChildren().add(dashboard);
 
         // Add students to entrance
-        GridPane entrance = getGridPane(
+        GridPane newEntrance = getGridPane(
                 x + width * DrawingConstants.INITIAL_X_OFFSET_ENTRANCE, y + width * DrawingConstants.INITIAL_Y_OFFSET_ENTRANCE,
                 width * DrawingConstants.ENTRANCE_HGAP, width * DrawingConstants.ENTRANCE_VGAP
         );
@@ -239,14 +257,14 @@ public class DrawingComponents {
             ImageView student = new ImageView(new Image(resourceName));
             student.setPreserveRatio(true);
             student.setFitWidth(width / 25);
-            student.setOnMouseClicked(mouseEvent -> ObjectClickListeners.setStudentClicked(s.getColor()));
+            student.setOnMouseClicked(mouseEvent -> ObjectClickListeners.setStudentClicked(s.getColor(), student));
 
-            entrance.add(student, (i + 1) % 2, i / 2 + i % 2);
+            newEntrance.add(student, (i + 1) % 2, i / 2 + i % 2);
         }
-        root.getChildren().add(entrance);
+        root.getChildren().add(newEntrance);
 
         // Add students to dining room
-        GridPane diningRoom = getGridPane(x + width * DrawingConstants.INITIAL_X_OFFSET_DINING_ROOM,
+        GridPane newDiningRoom = getGridPane(x + width * DrawingConstants.INITIAL_X_OFFSET_DINING_ROOM,
                 y + width * DrawingConstants.INITIAL_Y_OFFSET_DINING_ROOM, width * DrawingConstants.DINING_ROOM_HGAP,
                 width * DrawingConstants.DINING_ROOM_VGAP);
 
@@ -262,9 +280,14 @@ public class DrawingComponents {
             int row = colorsInOrder.indexOf(s.getColor());
             int column = Students.countStudentsOfSameColorBeforePosition(player.getDining(), s.getColor(), i);
 
-            diningRoom.add(student, column, row);
+            newDiningRoom.add(student, column, row);
         }
-        root.getChildren().add(diningRoom);
+        root.getChildren().add(newDiningRoom);
+
+        if (username.equals(player.getName())) {
+            entrance = newEntrance;
+            diningRoom = newDiningRoom;
+        }
 
         // Add professors
         GridPane professorRoom = getGridPane(
@@ -337,5 +360,46 @@ public class DrawingComponents {
         grid.setHgap(hgap);
         grid.setVgap(vgap);
         return grid;
+    }
+
+    public static void setCurrentActions(List<String> currentActions) {
+        DrawingComponents.currentActions = currentActions;
+        // TODO highlight the corresponding parts
+        for (String action : currentActions) {
+            highlightAction(action);
+        }
+    }
+
+    private static void highlightAction(String action) {
+        entrance.getStyleClass().clear();
+        diningRoom.getStyleClass().clear();
+        assistantCards.forEach(assistant -> assistant.getStyleClass().clear());
+        //islands.forEach(island -> island.getStyleClass().clear());
+        characterImages.forEach(character -> character.getStyleClass().clear());
+        cloudImages.forEach(cloud -> cloud.getStyleClass().clear());
+        switch (action) {
+            case "MOVE_STUDENT_TO_DINING", "MOVE_STUDENT_TO_ISLAND" -> {
+                setGoldenBorder(entrance);
+                setGoldenBorder(diningRoom);
+                islands.forEach(DrawingComponents::setGoldenBorder);
+            }
+            case "PLAY_ASSISTANT" -> {
+                assistantCards.forEach(DrawingComponents::setGoldenBorder);
+                assistantCards.forEach(System.out::println);
+            }
+            case "PLAY_CHARACTER" -> {
+                characterImages.forEach(DrawingComponents::setGoldenBorder);
+            }
+            case "MOVE_MN" -> {
+                setGoldenBorder(motherNature);
+            }
+            case "FILL_FROM_CLOUD" -> {
+                cloudImages.forEach(DrawingComponents::setGoldenBorder);
+            }
+        }
+    }
+
+    private static void setGoldenBorder(Node element) {
+        element.getStyleClass().add("highlight_element");
     }
 }

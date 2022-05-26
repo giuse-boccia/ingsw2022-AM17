@@ -1,18 +1,25 @@
 package it.polimi.ingsw.client.gui.utils;
 
 
+import it.polimi.ingsw.client.gui.GuiView;
 import it.polimi.ingsw.model.game_objects.Color;
-
-import java.util.ArrayList;
-import java.util.List;
+import javafx.scene.Node;
 
 public class ObjectClickListeners {
 
-    private static final List<Color> studentsClicked = new ArrayList<>();
     private static Color studentClicked;
 
-    public static void setStudentClicked(Color color) {
-        studentClicked = color;
+    public static void setAssistantClicked(int value, Node element) {
+        // TODO check if assistant is active or has a border (but getStyleClass() is not working)
+        GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_ASSISTANT", null, null,
+                null, null, value, null, null, null);
+        element.getStyleClass().removeAll();
+    }
+
+    public static void setStudentClicked(Color color, Node element) {
+        if (element.getStyleClass().contains("highlight_element")) {
+            studentClicked = color;
+        }
         System.out.println("Color clicked: " + studentClicked);
     }
 

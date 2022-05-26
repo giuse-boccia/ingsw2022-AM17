@@ -24,7 +24,7 @@ public class GUI extends Client {
 
     @Override
     public void getAssistantValue() {
-
+        guiView.sendMessageToController(null, null, List.of("PLAY_ASSISTANT"), null, getUsername());
     }
 
     @Override
@@ -87,7 +87,9 @@ public class GUI extends Client {
 
     @Override
     public void gracefulTermination(String message) {
-        MessageHandler.getServerUpTask().cancel();
+        if (MessageHandler.getServerUpTask() != null) {
+            MessageHandler.getServerUpTask().cancel();
+        }
         GuiView.showErrorDialog(message, true);
     }
 
