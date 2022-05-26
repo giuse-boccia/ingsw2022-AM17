@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.utils.Students;
 import it.polimi.ingsw.server.game_state.*;
+import javafx.animation.PauseTransition;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -14,6 +15,8 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
+import org.controlsfx.control.NotificationPane;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -223,8 +226,8 @@ public class DrawingComponents {
                     DrawingConstants.ASSISTANT_MAX_WIDTH_MULTILINE;
             assistant.setFitWidth(spaceForAssistants * Math.min((double) 2 / assistants.length, minWidth));
 
-            assistant.setOnMouseClicked(event -> ObjectClickListeners.setAssistantClicked(value, assistant));
             BorderPane assistantPane = new BorderPane(assistant);
+            assistantPane.setOnMouseClicked(event -> ObjectClickListeners.setAssistantClicked(value, assistantPane));
             assistantCards.add(assistantPane);
 
             if (singleLine) {
@@ -385,7 +388,6 @@ public class DrawingComponents {
             }
             case "PLAY_ASSISTANT" -> {
                 assistantCards.forEach(DrawingComponents::setGoldenBorder);
-                assistantCards.forEach(System.out::println);
             }
             case "PLAY_CHARACTER" -> {
                 characterImages.forEach(DrawingComponents::setGoldenBorder);
@@ -402,4 +404,5 @@ public class DrawingComponents {
     private static void setGoldenBorder(Node element) {
         element.getStyleClass().add("highlight_element");
     }
+
 }

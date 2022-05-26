@@ -2,14 +2,19 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.server.game_state.GameState;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import org.controlsfx.control.NotificationPane;
+import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
 import java.util.List;
@@ -60,8 +65,16 @@ public class GuiView extends Application {
         });
     }
 
-    public void sendMessageToController(GameLobby lobby, GameState gameState, List<String> actions, String message, String username) {
-        Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, message, username));
+    public void sendMessageToController(GameLobby lobby, GameState gameState, List<String> actions, String username) {
+        Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, username));
+    }
+
+    public void showToast(String message) {
+        if (scene == null) return;
+        System.out.println("Toast with message: " + message);
+        Platform.runLater(() -> {
+            Notifications.create().owner(stage).text(message).hideAfter(Duration.seconds(3)).position(Pos.BOTTOM_CENTER).show();
+        });
     }
 
     public static void showErrorDialog(String message, boolean closeApplication) {

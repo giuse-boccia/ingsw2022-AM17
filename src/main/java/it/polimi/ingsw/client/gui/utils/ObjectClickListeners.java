@@ -10,10 +10,11 @@ public class ObjectClickListeners {
     private static Color studentClicked;
 
     public static void setAssistantClicked(int value, Node element) {
-        // TODO check if assistant is active or has a border (but getStyleClass() is not working)
-        GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_ASSISTANT", null, null,
-                null, null, value, null, null, null);
-        element.getStyleClass().removeAll();
+        if (element.getStyleClass().contains("highlight_element")) {
+            GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_ASSISTANT", null, null,
+                    null, null, value, null, null, null);
+            element.getStyleClass().removeAll();
+        }
     }
 
     public static void setStudentClicked(Color color, Node element) {

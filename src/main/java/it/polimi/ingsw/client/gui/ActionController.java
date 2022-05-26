@@ -25,7 +25,7 @@ public class ActionController implements GuiController {
     }
 
     @Override
-    public void receiveData(GameLobby lobby, GameState gameState, List<String> actions, String message, String username) {
+    public void receiveData(GameLobby lobby, GameState gameState, List<String> actions, String username) {
         if (actions != null) {
             Platform.runLater(() -> DrawingComponents.setCurrentActions(actions));
         }

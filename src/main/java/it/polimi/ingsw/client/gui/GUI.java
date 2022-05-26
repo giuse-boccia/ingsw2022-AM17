@@ -19,12 +19,12 @@ public class GUI extends Client {
 
     @Override
     public void showPossibleActions(List<String> actions) {
-        guiView.sendMessageToController(null, null, actions, null, getUsername());
+        guiView.sendMessageToController(null, null, actions, getUsername());
     }
 
     @Override
     public void getAssistantValue() {
-        guiView.sendMessageToController(null, null, List.of("PLAY_ASSISTANT"), null, getUsername());
+        guiView.sendMessageToController(null, null, List.of("PLAY_ASSISTANT"), getUsername());
     }
 
     @Override
@@ -60,7 +60,7 @@ public class GUI extends Client {
     @Override
     public void updateGameState(GameState gameState) {
         guiView.changeScene("game", true);
-        guiView.sendMessageToController(null, gameState, null, null, getUsername());
+        guiView.sendMessageToController(null, gameState, null, getUsername());
     }
 
     @Override
@@ -82,7 +82,7 @@ public class GUI extends Client {
     @Override
     public void showCurrentLobby(GameLobby gameLobby) {
         guiView.changeScene("lobby", false);
-        guiView.sendMessageToController(gameLobby, null, null, null, getUsername());
+        guiView.sendMessageToController(gameLobby, null, null, getUsername());
     }
 
     @Override
@@ -95,7 +95,7 @@ public class GUI extends Client {
 
     @Override
     public void showMessage(String message) {
-
+        guiView.showToast(message);
     }
 
     @Override
