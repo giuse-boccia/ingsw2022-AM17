@@ -1,5 +1,9 @@
 .highlight_element {
-    -fx-border-color: rgba(172, 172, 7, 0.68);
+    -fx-border-color: rgba(204, 204, 115, 0.68);
     -fx-border-width: 1.5;
-    -fx-background-color: rgba(172, 172, 7, 0.68);
+    -fx-background-color: rgba(204, 204, 115, 0.68);
+}
+
+.selected_element {
+    -fx-background-color: rgba(124, 124, 0, 0.68);
 }
