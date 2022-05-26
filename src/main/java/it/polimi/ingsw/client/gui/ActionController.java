@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.messages.login.GameLobby;
+import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -33,6 +34,15 @@ public class ActionController implements GuiController {
         if (gameState == null) return;
 
         Platform.runLater(() -> drawGameState(gameState, username));
+    }
+
+    @Override
+    public void askCharacterParameters(CharacterName name, boolean requireColor, boolean requireIsland, boolean isSwapCard, boolean moveOneStudentAway) {
+        if (moveOneStudentAway) {
+            Platform.runLater(() -> DrawingComponents.moveStudentAwayFromCard(name, name == CharacterName.move1FromCardToIsland));
+        } else if (isSwapCard) {
+
+        }
     }
 
     private void drawGameState(GameState gameState, String username) {

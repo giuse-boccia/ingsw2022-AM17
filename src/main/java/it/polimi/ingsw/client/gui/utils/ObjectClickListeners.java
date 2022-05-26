@@ -13,6 +13,9 @@ public class ObjectClickListeners {
 
     private static Color studentClickedColor;
     private static Node studentClicked;
+    private static Color studentOnCardClickedColor;
+    private static Node studentOnCardClicked;
+    private static CharacterName lastCharacterPlayed;
 
     public static void setAssistantClicked(int value, Node element) {
         if (isMoveValid(element)) {
@@ -25,22 +28,29 @@ public class ObjectClickListeners {
         if (isMoveValid(element)) {
             if (studentClicked != null) {
                 studentClicked.getStyleClass().clear();
+                studentClicked.getStyleClass().add("highlight_element");
             }
             studentClicked = element;
             studentClicked.getStyleClass().add("selected_element");
             studentClickedColor = color;
+            studentOnCardClickedColor = null;
         }
-        System.out.println("Color clicked: " + studentClickedColor);
     }
 
     public static void setDiningRoomClicked() {
         if (studentClicked != null) {
-            studentClicked.getStyleClass().clear();
+            setElementHighlighted(studentClicked);
             // A student of the selected color has been moved to the dining room
             GuiView.getGui().getCurrentObserver().sendActionParameters("MOVE_STUDENT_TO_DINING", studentClickedColor, null,
                     null, null, null, null, null, null);
             studentClicked = null;
             studentClickedColor = null;
+        } else if (studentOnCardClicked != null && lastCharacterPlayed == CharacterName.move1FromCardToDining) {
+            setElementHighlighted(studentOnCardClicked);
+            GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", studentOnCardClickedColor,
+                    null, null, null, null, lastCharacterPlayed, null, null);
+            studentOnCardClicked = null;
+            studentOnCardClickedColor = null;
         }
     }
 
@@ -53,6 +63,23 @@ public class ObjectClickListeners {
         } catch (IOException e) {
             GuiView.getGui().gracefulTermination(Messages.SERVER_CRASHED);
         }
+    }
+
+    public static void setStudentsOnCardClicked(Color color, CharacterName name, Node element) {
+        if (!isMoveValid(element)) return;
+        if (studentOnCardClicked != null) {
+            setElementHighlighted(studentOnCardClicked);
+        }
+        studentOnCardClickedColor = color;
+        studentOnCardClicked = element;
+        studentOnCardClicked.getStyleClass().add("selected_element");
+        lastCharacterPlayed = name;
+        studentClicked = null;
+    }
+
+    private static void setElementHighlighted(Node element) {
+        element.getStyleClass().clear();
+        element.getStyleClass().add("highlight_element");
     }
 
     private static boolean isMoveValid(Node element) {

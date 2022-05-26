@@ -1,8 +1,8 @@
 package it.polimi.ingsw.client.gui.utils;
 
+import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
-import it.polimi.ingsw.model.utils.Students;
 import it.polimi.ingsw.server.game_state.*;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -25,6 +25,7 @@ public class DrawingComponents {
     private static final List<BorderPane> assistantCards = new ArrayList<>();
     private static final List<BorderPane> entranceStudents = new ArrayList<>();
     private static final List<BorderPane> diningGaps = new ArrayList<>();
+    private static final HashMap<CharacterName, List<BorderPane>> studentsOnCharacter = new HashMap<>();
     private static ImageView motherNature;
     private static List<ImageView> islands = new ArrayList<>();
     private static List<String> currentActions;
@@ -188,6 +189,7 @@ public class DrawingComponents {
                 grid.setLayoutX(coordX + width * DrawingConstants.SPACE_BETWEEN_STUDENTS_ON_CHARACTERS);
                 grid.setLayoutY(height / heightProportion + characterImage.boundsInParentProperty().get().getHeight());
 
+                List<BorderPane> studentOnCharacter = new ArrayList<>();
                 for (int i = 0; i < character.getStudents().size(); i++) {
                     String studentPath = "/gameboard/students/student_" +
                             character.getStudents().get(i).getColor().toString().toLowerCase() + ".png";
@@ -195,8 +197,17 @@ public class DrawingComponents {
                     student.setPreserveRatio(true);
                     student.setFitWidth(width * 0.4 / 25);
 
-                    grid.add(student, i / 2, i % 2);
+                    BorderPane studentPane = new BorderPane(student);
+                    int index = i;
+                    studentPane.setOnMouseClicked(event ->
+                            ObjectClickListeners.setStudentsOnCardClicked(
+                                    character.getStudents().get(index).getColor(), character.getCharacterName(), studentPane))
+                    ;
+                    studentOnCharacter.add(studentPane);
+
+                    grid.add(studentPane, i / 2, i % 2);
                 }
+                studentsOnCharacter.put(character.getCharacterName(), studentOnCharacter);
 
                 root.getChildren().add(grid);
             }
@@ -422,6 +433,19 @@ public class DrawingComponents {
 
     private static void setGoldenBorder(Node element) {
         element.getStyleClass().add("highlight_element");
+    }
+
+    public static void moveStudentAwayFromCard(CharacterName name, boolean toIsland) {
+        System.out.println("About to draw borders");
+        if (studentsOnCharacter.containsKey(name)) {
+            List<BorderPane> students = studentsOnCharacter.get(name);
+            students.forEach(DrawingComponents::setGoldenBorder);
+            if (toIsland) {
+                islands.forEach(DrawingComponents::setGoldenBorder);
+            } else {
+                diningGaps.forEach(DrawingComponents::setGoldenBorder);
+            }
+        }
     }
 
 }

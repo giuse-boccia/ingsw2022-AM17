@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.messages.login.GameLobby;
+import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
@@ -69,9 +70,12 @@ public class GuiView extends Application {
         Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, username));
     }
 
+    public void askCharacterParameters(CharacterName name, boolean requireColor, boolean requireIsland, boolean isSwapCard, boolean moveOneStudentAway) {
+        Platform.runLater(() -> currentController.askCharacterParameters(name, requireColor, requireIsland, isSwapCard, moveOneStudentAway));
+    }
+
     public void showToast(String message) {
         if (scene == null) return;
-        System.out.println("Toast with message: " + message);
         Platform.runLater(() -> {
             Notifications.create().owner(stage).text(message).hideAfter(Duration.seconds(3)).position(Pos.BOTTOM_CENTER).show();
         });
