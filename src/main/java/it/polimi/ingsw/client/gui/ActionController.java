@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
-import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
@@ -11,7 +10,6 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Screen;
 
-import java.io.IOException;
 import java.util.List;
 
 public class ActionController implements GuiController {
@@ -44,13 +42,9 @@ public class ActionController implements GuiController {
             Platform.runLater(() -> DrawingComponents.moveStudentAwayFromCard(name, name == CharacterName.move1FromCardToIsland));
         } else if (isSwapCard) {
             int maxStudents = name == CharacterName.swapUpTo3FromEntranceToCard ? 3 : 2;
-            Platform.runLater(() -> DrawingComponents.swapStudentsFromEntranceForCharacter(name, maxStudents == 3, maxStudents));
+            GuiView.showPopupForColorOrBound(maxStudents);
         } else if (requireColor) {
-            try {
-                GuiView.showChooseColorPopUp(name);
-            } catch (IOException e) {
-                GuiView.getGui().gracefulTermination(Messages.GENERIC_ERROR_GUI);
-            }
+            GuiView.showPopupForColorOrBound(-1);
         }
     }
 

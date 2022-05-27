@@ -117,4 +117,8 @@ public class Messages {
 
     // Errors for GUI
     public static final String GENERIC_ERROR_GUI = "Error while loading the scene";
+
+    // Character messages
+    public static final String CHOOSE_BOUND_CHARACTER = "Choose how many students do you want to swap";
+    public static final String CHOOSE_COLOR_CHARACTER = "Choose one color for the effect of the character";
 }
