@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.gui.utils;
 
+import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
@@ -446,6 +447,10 @@ public class DrawingComponents {
                 diningGaps.forEach(DrawingComponents::setGoldenBorder);
             }
         }
+    }
+
+    public static void swapStudentsFromEntranceForCharacter(CharacterName name, boolean withCard, int maxStudents) {
+
     }
 
 }

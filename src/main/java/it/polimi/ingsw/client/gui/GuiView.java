@@ -1,18 +1,32 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
+import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.server.game_state.GameState;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.PopupControl;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.controlsfx.control.NotificationPane;
 import org.controlsfx.control.Notifications;
@@ -98,6 +112,17 @@ public class GuiView extends Application {
                 System.exit(-1);
             }
         });
+    }
+
+    public static void showChooseColorPopUp(CharacterName name) throws IOException {
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.WINDOW_MODAL);
+        popupStage.initOwner(scene.getWindow());
+        popupStage.initStyle(StageStyle.UNDECORATED);
+        FXMLLoader loader = new FXMLLoader(GuiView.class.getResource("/choose_color_for_character.fxml"));
+        popupStage.setScene(new Scene(loader.load(), 400, 210));
+
+        popupStage.show();
     }
 
     @Override

@@ -38,26 +38,28 @@ public class ObjectClickListeners {
     }
 
     public static void setDiningRoomClicked() {
-        if (studentClicked != null) {
+        if (studentOnCardClicked != null) {
+            if (lastCharacterPlayed == CharacterName.move1FromCardToDining) {
+                setElementHighlighted(studentOnCardClicked);
+                GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", studentOnCardClickedColor,
+                        null, null, null, null, lastCharacterPlayed, null, null);
+                studentOnCardClicked = null;
+                studentOnCardClickedColor = null;
+            }
+        } else if (studentClicked != null) {
             setElementHighlighted(studentClicked);
             // A student of the selected color has been moved to the dining room
             GuiView.getGui().getCurrentObserver().sendActionParameters("MOVE_STUDENT_TO_DINING", studentClickedColor, null,
                     null, null, null, null, null, null);
             studentClicked = null;
             studentClickedColor = null;
-        } else if (studentOnCardClicked != null && lastCharacterPlayed == CharacterName.move1FromCardToDining) {
-            setElementHighlighted(studentOnCardClicked);
-            GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", studentOnCardClickedColor,
-                    null, null, null, null, lastCharacterPlayed, null, null);
-            studentOnCardClicked = null;
-            studentOnCardClickedColor = null;
         }
     }
 
     public static void setCharacterClicked(CharacterName name, Node element) {
         if (!isMoveValid(element)) return;
         DrawingComponents.removeGoldenBordersFromAllCharacters();
-        System.out.println("Played character " + name);
+        lastCharacterPlayed = name;
         try {
             GuiView.getGui().getCurrentObserver().sendCharacterName(name);
         } catch (IOException e) {
@@ -73,8 +75,11 @@ public class ObjectClickListeners {
         studentOnCardClickedColor = color;
         studentOnCardClicked = element;
         studentOnCardClicked.getStyleClass().add("selected_element");
-        lastCharacterPlayed = name;
         studentClicked = null;
+    }
+
+    public static void setSwapCharacterPlayed(CharacterName name) {
+        lastCharacterPlayed = name;
     }
 
     private static void setElementHighlighted(Node element) {
@@ -88,5 +93,9 @@ public class ObjectClickListeners {
             return true;
         }
         return false;
+    }
+
+    public static CharacterName getLastCharacterPlayed() {
+        return lastCharacterPlayed;
     }
 }
