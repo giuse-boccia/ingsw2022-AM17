@@ -1,6 +1,5 @@
 package it.polimi.ingsw.client.gui.utils;
 
-import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
@@ -202,7 +201,7 @@ public class DrawingComponents {
                     int index = i;
                     studentPane.setOnMouseClicked(event ->
                             ObjectClickListeners.setStudentsOnCardClicked(
-                                    character.getStudents().get(index).getColor(), character.getCharacterName(), studentPane))
+                                    character.getStudents().get(index).getColor(), studentPane))
                     ;
                     studentOnCharacter.add(studentPane);
 

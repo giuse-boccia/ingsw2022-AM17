@@ -67,7 +67,7 @@ public class ObjectClickListeners {
         }
     }
 
-    public static void setStudentsOnCardClicked(Color color, CharacterName name, Node element) {
+    public static void setStudentsOnCardClicked(Color color, Node element) {
         if (!isMoveValid(element)) return;
         if (studentOnCardClicked != null) {
             setElementHighlighted(studentOnCardClicked);
@@ -76,10 +76,6 @@ public class ObjectClickListeners {
         studentOnCardClicked = element;
         studentOnCardClicked.getStyleClass().add("selected_element");
         studentClicked = null;
-    }
-
-    public static void setSwapCharacterPlayed(CharacterName name) {
-        lastCharacterPlayed = name;
     }
 
     private static void setElementHighlighted(Node element) {
