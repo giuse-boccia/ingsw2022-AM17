@@ -43,7 +43,7 @@ public class ObjectClickListeners {
             studentClicked.getStyleClass().add("selected_element");
             studentClickedColor = color;
             studentOnCardClickedColor = null;
-        } else if (isMoveValidForCharacter(element) && srcStudentColorsForCharacter.size() < studentsToSwapForSwapCharacters) {
+        } else if (hasSwapCharacterBeenPlayed(element) && srcStudentColorsForCharacter.size() < studentsToSwapForSwapCharacters) {
             element.getStyleClass().add("element_selected_for_swap_character");
             srcStudentColorsForCharacter.add(color);
             srcStudentsForCharacter.add(element);
@@ -54,7 +54,11 @@ public class ObjectClickListeners {
     public static void setDiningRoomClicked() {
         if (studentOnCardClicked != null) {
             if (lastCharacterPlayed == CharacterName.move1FromCardToDining) {
-                setElementHighlighted(studentOnCardClicked);
+                if (studentClicked != null) {
+                    setElementHighlighted(studentClicked);
+                }
+                studentOnCardClicked.getStyleClass().clear();
+                studentOnCardClicked.getStyleClass().add("element_active_for_moving_character");
                 GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", studentOnCardClickedColor,
                         null, null, null, null, lastCharacterPlayed, null, null);
                 studentOnCardClicked = null;
@@ -71,7 +75,7 @@ public class ObjectClickListeners {
     }
 
     public static void setStudentOnDiningClicked(Color color, Node element) {
-        if (!isMoveValidForCharacter(element)) return;
+        if (!hasSwapCharacterBeenPlayed(element)) return;
         if (dstStudentColorsForCharacter.size() >= studentsToSwapForSwapCharacters) return;
         element.getStyleClass().add("element_selected_for_swap_character");
         dstStudentsForCharacter.add(element);
@@ -92,15 +96,16 @@ public class ObjectClickListeners {
     }
 
     public static void setStudentsOnCardClicked(Color color, Node element) {
-        if (isMoveValid(element)) {
+        if (hasMovingCharacterBeenPlayed(element)) {
             if (studentOnCardClicked != null) {
-                setElementHighlighted(studentOnCardClicked);
+                studentOnCardClicked.getStyleClass().clear();
+                studentOnCardClicked.getStyleClass().add("element_active_for_moving_character");
             }
             studentOnCardClickedColor = color;
             studentOnCardClicked = element;
-            studentOnCardClicked.getStyleClass().add("selected_element");
+            studentOnCardClicked.getStyleClass().add("element_selected_for_moving_character");
             studentClicked = null;
-        } else if (isMoveValidForCharacter(element)) {
+        } else if (hasSwapCharacterBeenPlayed(element)) {
             if (dstStudentsForCharacter.size() < studentsToSwapForSwapCharacters) {
                 element.getStyleClass().add("element_selected_for_swap_character");
                 dstStudentColorsForCharacter.add(color);
@@ -157,8 +162,16 @@ public class ObjectClickListeners {
         return false;
     }
 
-    private static boolean isMoveValidForCharacter(Node element) {
+    private static boolean hasSwapCharacterBeenPlayed(Node element) {
         if (element.getStyleClass().contains("element_active_for_swap_character")) {
+            element.getStyleClass().clear();
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean hasMovingCharacterBeenPlayed(Node element) {
+        if (element.getStyleClass().contains("element_active_for_moving_character")) {
             element.getStyleClass().clear();
             return true;
         }

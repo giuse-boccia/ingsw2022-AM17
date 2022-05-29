@@ -19,3 +19,15 @@
     -fx-border-width: 1.5;
     -fx-background-color: rgba(0, 42, 79, 0.45);
 }
+
+.element_active_for_moving_character {
+    -fx-border-color: rgba(78, 199, 86, 0.68);
+    -fx-border-width: 1.5;
+    -fx-background-color: rgba(165, 224, 157, 0.68);
+}
+
+.element_selected_for_moving_character {
+    -fx-border-color: rgba(7, 82, 0, 0.68);
+    -fx-border-width: 1.5;
+    -fx-background-color: rgba(27, 196, 37, 0.68);
+}

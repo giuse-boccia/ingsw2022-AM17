@@ -446,6 +446,10 @@ public class DrawingComponents {
         element.getStyleClass().add("element_active_for_swap_character");
     }
 
+    private static void setGreenBorders(Node element) {
+        element.getStyleClass().add("element_active_for_moving_character");
+    }
+
     public static void addBlueBordersToEntranceStudents() {
         entranceStudents.forEach(DrawingComponents::setBlueBorders);
     }
@@ -461,11 +465,11 @@ public class DrawingComponents {
     public static void moveStudentAwayFromCard(CharacterName name, boolean toIsland) {
         if (studentsOnCharacter.containsKey(name)) {
             List<BorderPane> students = studentsOnCharacter.get(name);
-            students.forEach(DrawingComponents::setGoldenBorder);
+            students.forEach(DrawingComponents::setGreenBorders);
             if (toIsland) {
-                islands.forEach(DrawingComponents::setGoldenBorder);
+                islands.forEach(DrawingComponents::setGreenBorders);
             } else {
-                diningGaps.forEach(DrawingComponents::setGoldenBorder);
+                diningGaps.forEach(DrawingComponents::setGreenBorders);
             }
         }
     }
