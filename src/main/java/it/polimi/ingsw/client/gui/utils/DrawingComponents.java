@@ -442,21 +442,23 @@ public class DrawingComponents {
         element.getStyleClass().add("highlight_element");
     }
 
+    private static void setBlueBorders(Node element) {
+        element.getStyleClass().add("element_active_for_swap_character");
+    }
+
     public static void addBlueBordersToEntranceStudents() {
-        entranceStudents.forEach(element -> element.getStyleClass().add("element_active_for_swap_character"));
+        entranceStudents.forEach(DrawingComponents::setBlueBorders);
     }
 
     public static void addBlueBordersToCharacterStudents(CharacterName name) {
-        studentsOnCharacter.get(name).forEach(student ->
-                student.getStyleClass().add("element_active_for_swap_character"));
+        studentsOnCharacter.get(name).forEach(DrawingComponents::setBlueBorders);
     }
 
     public static void addBlueBordersToDiningStudents() {
-        diningStudents.forEach(element -> element.getStyleClass().add("element_active_for_swap_character"));
+        diningStudents.forEach(DrawingComponents::setBlueBorders);
     }
 
     public static void moveStudentAwayFromCard(CharacterName name, boolean toIsland) {
-        System.out.println("About to draw borders");
         if (studentsOnCharacter.containsKey(name)) {
             List<BorderPane> students = studentsOnCharacter.get(name);
             students.forEach(DrawingComponents::setGoldenBorder);
