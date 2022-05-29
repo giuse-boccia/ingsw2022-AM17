@@ -25,6 +25,7 @@ public class DrawingComponents {
     private static final List<BorderPane> assistantCards = new ArrayList<>();
     private static final List<BorderPane> entranceStudents = new ArrayList<>();
     private static final List<BorderPane> diningGaps = new ArrayList<>();
+    private static final List<BorderPane> diningStudents = new ArrayList<>();
     private static final HashMap<CharacterName, List<BorderPane>> studentsOnCharacter = new HashMap<>();
     private static ImageView motherNature;
     private static List<ImageView> islands = new ArrayList<>();
@@ -300,9 +301,15 @@ public class DrawingComponents {
             if (column == null) {
                 column = 0;
             }
-            diningStudents.put(s.getColor(), column + 1);
 
-            newDiningRoom.add(student, column, row);
+            BorderPane studentWithBorder = new BorderPane(student);
+            studentWithBorder.setOnMouseClicked(event -> ObjectClickListeners.setStudentOnDiningClicked(s.getColor(), studentWithBorder));
+            diningStudents.put(s.getColor(), column + 1);
+            newDiningRoom.add(studentWithBorder, column, row);
+
+            if (username.equals(player.getName())) {
+                DrawingComponents.diningStudents.add(studentWithBorder);
+            }
         }
 
         for (Color color : colorsInOrder) {
@@ -435,6 +442,19 @@ public class DrawingComponents {
         element.getStyleClass().add("highlight_element");
     }
 
+    public static void addBlueBordersToEntranceStudents() {
+        entranceStudents.forEach(element -> element.getStyleClass().add("element_active_for_swap_character"));
+    }
+
+    public static void addBlueBordersToCharacterStudents(CharacterName name) {
+        studentsOnCharacter.get(name).forEach(student ->
+                student.getStyleClass().add("element_active_for_swap_character"));
+    }
+
+    public static void addBlueBordersToDiningStudents() {
+        diningStudents.forEach(element -> element.getStyleClass().add("element_active_for_swap_character"));
+    }
+
     public static void moveStudentAwayFromCard(CharacterName name, boolean toIsland) {
         System.out.println("About to draw borders");
         if (studentsOnCharacter.containsKey(name)) {
@@ -448,8 +468,15 @@ public class DrawingComponents {
         }
     }
 
-    public static void swapStudentsFromEntranceForCharacter(CharacterName name, boolean withCard, int maxStudents) {
-
+    public static void removeGoldenBordersFromAllElements() {
+        diningGaps.forEach(gap -> gap.getStyleClass().clear());
+        entranceStudents.forEach(student -> student.getStyleClass().clear());
+        assistantCards.forEach(assistant -> assistant.getStyleClass().clear());
+        cloudImages.forEach(cloud -> cloud.getStyleClass().clear());
+        assistantCards.forEach(card -> card.getStyleClass().clear());
+        islands.forEach(island -> island.getStyleClass().clear());
+        studentsOnCharacter.values().forEach(list -> list.forEach(student -> student.getStyleClass().clear()));
+        characterImages.forEach(character -> character.getStyleClass().clear());
     }
 
 }

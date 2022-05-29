@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
 import it.polimi.ingsw.constants.Messages;
@@ -114,7 +115,7 @@ public class GuiView extends Application {
         });
     }
 
-    public static void showPopupForColorOrBound(int bound) {
+    public static void showPopupForColorOrBound(int bound, CharacterName name) {
         Stage popupStage = getNewUndecoratedStage();
         double width = DrawingConstants.CHARACTER_POPUP_WIDTH;
         double height = DrawingConstants.CHARACTER_POPUP_HEIGHT;
@@ -157,6 +158,8 @@ public class GuiView extends Application {
             choiceBoxStackPane.setPrefWidth(width);
             anchorPane.getChildren().add(choiceBoxStackPane);
             confirmBtn.setOnMouseClicked(event -> {
+                DrawingComponents.removeGoldenBordersFromAllElements();
+                ObjectClickListeners.setSwapCharacterPlayed(valuesChoiceBox.getValue());
                 popupStage.close();
             });
         }

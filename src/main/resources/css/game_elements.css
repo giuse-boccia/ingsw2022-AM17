@@ -7,3 +7,15 @@
 .selected_element {
     -fx-background-color: rgba(124, 124, 0, 0.68);
 }
+
+.element_active_for_swap_character {
+    -fx-border-color: rgba(0, 95, 210, 0.68);
+    -fx-border-width: 1.5;
+    -fx-background-color: rgba(53, 138, 210, 0.68);
+}
+
+.element_selected_for_swap_character {
+    -fx-border-color: rgba(0, 28, 63, 0.68);
+    -fx-border-width: 1.5;
+    -fx-background-color: rgba(0, 42, 79, 0.45);
+}
