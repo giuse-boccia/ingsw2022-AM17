@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.gui.utils;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.server.game_state.*;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -16,6 +17,8 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static java.lang.Math.*;
 
 public class DrawingComponents {
 
@@ -77,9 +80,26 @@ public class DrawingComponents {
     }
 
     private static void drawIslands(List<IslandState> islands, double width, double height, AnchorPane root) {
-        double heightForIslands = height - 2 * dashboardHeight;
-        // TODO draw islands - using some math...
-
+        /*double verticalSemi-axis = height * 0.5 - dashboardHeight;
+        double horizontalSemi-axis = width * 0.2;*/
+        double deltaAngle = (2 * 3.14) / islands.size();
+        for (int i = 0; i < islands.size(); i++) {
+            String path = "/gameboard/islands/Isola_" + ((i % 3) + 1) + ".png";
+            ImageView island = new ImageView(path);
+            island.setPreserveRatio(true);
+            island.setFitWidth(width * 0.07);
+            Bounds imageBounds = island.boundsInParentProperty().get();
+            double islandWidth = imageBounds.getWidth();
+            double islandHeight = imageBounds.getHeight();
+            BorderPane bp = new BorderPane(island);
+            //double distance = (verticalSemi-axis*horizontalSemi-axis) / sqrt(Math.pow(horizontalSemi-axis * sin(deltaAngle * i), 2) + Math.pow(verticalSemi-axis * cos(deltaAngle * i), 2));
+            double distance = height * 0.5 - dashboardHeight;
+            double X = cos(deltaAngle * i) * distance;
+            double Y = sin(deltaAngle * i) * distance;
+            bp.setLayoutX(width * 0.5 - islandWidth / 2 + X);
+            bp.setLayoutY(height * 0.5 - islandHeight / 2 + Y);
+            root.getChildren().add(bp);
+        }
     }
 
     private static void drawAssistants(GameState gameState, double width, double height, AnchorPane root, String username, int numPlayers) {
@@ -92,9 +112,8 @@ public class DrawingComponents {
                     initialWidth = width * DrawingConstants.OFFSET_OF_FIRST_ASSISTANT;
                     finalWidth = width * (1 - DrawingConstants.OFFSET_OF_FIRST_ASSISTANT);
                 }
-                case 3 -> {
-                    finalWidth = width * (1 - DrawingConstants.OFFSET_OF_FIRST_ASSISTANT);
-                }
+                case 3 -> finalWidth = width * (1 - DrawingConstants.OFFSET_OF_FIRST_ASSISTANT);
+
             }
             GridPane assistants = getAssistants(player.getAssistants(), width, height, initialWidth, finalWidth, numPlayers < 4);
             root.getChildren().add(assistants);
@@ -412,18 +431,10 @@ public class DrawingComponents {
                 diningGaps.forEach(DrawingComponents::setGoldenBorder);
                 islands.forEach(DrawingComponents::setGoldenBorder);
             }
-            case "PLAY_ASSISTANT" -> {
-                assistantCards.forEach(DrawingComponents::setGoldenBorder);
-            }
-            case "PLAY_CHARACTER" -> {
-                characterImages.forEach(DrawingComponents::setGoldenBorder);
-            }
-            case "MOVE_MN" -> {
-                setGoldenBorder(motherNature);
-            }
-            case "FILL_FROM_CLOUD" -> {
-                cloudImages.forEach(DrawingComponents::setGoldenBorder);
-            }
+            case "PLAY_ASSISTANT" -> assistantCards.forEach(DrawingComponents::setGoldenBorder);
+            case "PLAY_CHARACTER" -> characterImages.forEach(DrawingComponents::setGoldenBorder);
+            case "MOVE_MN" -> setGoldenBorder(motherNature);
+            case "FILL_FROM_CLOUD" -> cloudImages.forEach(DrawingComponents::setGoldenBorder);
         }
     }
 
