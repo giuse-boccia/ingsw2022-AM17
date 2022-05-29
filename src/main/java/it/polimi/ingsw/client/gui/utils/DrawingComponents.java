@@ -28,6 +28,7 @@ public class DrawingComponents {
     private static final List<BorderPane> assistantCards = new ArrayList<>();
     private static final List<BorderPane> entranceStudents = new ArrayList<>();
     private static final List<BorderPane> diningGaps = new ArrayList<>();
+    private static final List<BorderPane> diningStudents = new ArrayList<>();
     private static final HashMap<CharacterName, List<BorderPane>> studentsOnCharacter = new HashMap<>();
     private static ImageView motherNature;
     private static List<ImageView> islands = new ArrayList<>();
@@ -220,7 +221,7 @@ public class DrawingComponents {
                     int index = i;
                     studentPane.setOnMouseClicked(event ->
                             ObjectClickListeners.setStudentsOnCardClicked(
-                                    character.getStudents().get(index).getColor(), character.getCharacterName(), studentPane))
+                                    character.getStudents().get(index).getColor(), studentPane))
                     ;
                     studentOnCharacter.add(studentPane);
 
@@ -319,9 +320,15 @@ public class DrawingComponents {
             if (column == null) {
                 column = 0;
             }
-            diningStudents.put(s.getColor(), column + 1);
 
-            newDiningRoom.add(student, column, row);
+            BorderPane studentWithBorder = new BorderPane(student);
+            studentWithBorder.setOnMouseClicked(event -> ObjectClickListeners.setStudentOnDiningClicked(s.getColor(), studentWithBorder));
+            diningStudents.put(s.getColor(), column + 1);
+            newDiningRoom.add(studentWithBorder, column, row);
+
+            if (username.equals(player.getName())) {
+                DrawingComponents.diningStudents.add(studentWithBorder);
+            }
         }
 
         for (Color color : colorsInOrder) {
@@ -446,17 +453,47 @@ public class DrawingComponents {
         element.getStyleClass().add("highlight_element");
     }
 
+    private static void setBlueBorders(Node element) {
+        element.getStyleClass().add("element_active_for_swap_character");
+    }
+
+    private static void setGreenBorders(Node element) {
+        element.getStyleClass().add("element_active_for_moving_character");
+    }
+
+    public static void addBlueBordersToEntranceStudents() {
+        entranceStudents.forEach(DrawingComponents::setBlueBorders);
+    }
+
+    public static void addBlueBordersToCharacterStudents(CharacterName name) {
+        studentsOnCharacter.get(name).forEach(DrawingComponents::setBlueBorders);
+    }
+
+    public static void addBlueBordersToDiningStudents() {
+        diningStudents.forEach(DrawingComponents::setBlueBorders);
+    }
+
     public static void moveStudentAwayFromCard(CharacterName name, boolean toIsland) {
-        System.out.println("About to draw borders");
         if (studentsOnCharacter.containsKey(name)) {
             List<BorderPane> students = studentsOnCharacter.get(name);
-            students.forEach(DrawingComponents::setGoldenBorder);
+            students.forEach(DrawingComponents::setGreenBorders);
             if (toIsland) {
-                islands.forEach(DrawingComponents::setGoldenBorder);
+                islands.forEach(DrawingComponents::setGreenBorders);
             } else {
-                diningGaps.forEach(DrawingComponents::setGoldenBorder);
+                diningGaps.forEach(DrawingComponents::setGreenBorders);
             }
         }
+    }
+
+    public static void removeGoldenBordersFromAllElements() {
+        diningGaps.forEach(gap -> gap.getStyleClass().clear());
+        entranceStudents.forEach(student -> student.getStyleClass().clear());
+        assistantCards.forEach(assistant -> assistant.getStyleClass().clear());
+        cloudImages.forEach(cloud -> cloud.getStyleClass().clear());
+        assistantCards.forEach(card -> card.getStyleClass().clear());
+        islands.forEach(island -> island.getStyleClass().clear());
+        studentsOnCharacter.values().forEach(list -> list.forEach(student -> student.getStyleClass().clear()));
+        characterImages.forEach(character -> character.getStyleClass().clear());
     }
 
 }

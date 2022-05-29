@@ -41,7 +41,10 @@ public class ActionController implements GuiController {
         if (moveOneStudentAway) {
             Platform.runLater(() -> DrawingComponents.moveStudentAwayFromCard(name, name == CharacterName.move1FromCardToIsland));
         } else if (isSwapCard) {
-
+            int maxStudents = name == CharacterName.swapUpTo3FromEntranceToCard ? 3 : 2;
+            GuiView.showPopupForColorOrBound(maxStudents, name);
+        } else if (requireColor) {
+            GuiView.showPopupForColorOrBound(-1, name);
         }
     }
 

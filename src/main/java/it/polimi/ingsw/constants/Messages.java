@@ -114,4 +114,11 @@ public class Messages {
     public static final String LOAD_ERR = "Error while loading the game";
     public static final String SAVING_TO_FILE = "Saving to file...";
     public static final String CLEARING_GAME = "Connection with one client lost, clearing the game...";
+
+    // Errors for GUI
+    public static final String GENERIC_ERROR_GUI = "Error while loading the scene";
+
+    // Character messages
+    public static final String CHOOSE_BOUND_CHARACTER = "Choose how many students do you want to swap";
+    public static final String CHOOSE_COLOR_CHARACTER = "Choose one color for the effect of the character";
 }

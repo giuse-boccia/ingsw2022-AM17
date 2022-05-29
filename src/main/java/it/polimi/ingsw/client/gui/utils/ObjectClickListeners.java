@@ -8,6 +8,9 @@ import it.polimi.ingsw.model.game_objects.Color;
 import javafx.scene.Node;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ObjectClickListeners {
 
@@ -16,6 +19,12 @@ public class ObjectClickListeners {
     private static Color studentOnCardClickedColor;
     private static Node studentOnCardClicked;
     private static CharacterName lastCharacterPlayed;
+    private static final List<Color> srcStudentColorsForCharacter = new ArrayList<>();
+    private static final List<Color> dstStudentColorsForCharacter = new ArrayList<>();
+    private static final List<Node> srcStudentsForCharacter = new ArrayList<>();
+    private static final List<Node> dstStudentsForCharacter = new ArrayList<>();
+    private static Node lastCharacterPlayedNode;
+    private static Integer studentsToSwapForSwapCharacters;
 
     public static void setAssistantClicked(int value, Node element) {
         if (isMoveValid(element)) {
@@ -34,30 +43,51 @@ public class ObjectClickListeners {
             studentClicked.getStyleClass().add("selected_element");
             studentClickedColor = color;
             studentOnCardClickedColor = null;
+        } else if (hasSwapCharacterBeenPlayed(element) && srcStudentColorsForCharacter.size() < studentsToSwapForSwapCharacters) {
+            element.getStyleClass().add("element_selected_for_swap_character");
+            srcStudentColorsForCharacter.add(color);
+            srcStudentsForCharacter.add(element);
+            sendSwapCharacterPlayedMessage();
         }
     }
 
     public static void setDiningRoomClicked() {
-        if (studentClicked != null) {
+        if (studentOnCardClicked != null) {
+            if (lastCharacterPlayed == CharacterName.move1FromCardToDining) {
+                if (studentClicked != null) {
+                    setElementHighlighted(studentClicked);
+                }
+                studentOnCardClicked.getStyleClass().clear();
+                studentOnCardClicked.getStyleClass().add("element_active_for_moving_character");
+                GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", studentOnCardClickedColor,
+                        null, null, null, null, lastCharacterPlayed, null, null);
+                studentOnCardClicked = null;
+                studentOnCardClickedColor = null;
+            }
+        } else if (studentClicked != null) {
             setElementHighlighted(studentClicked);
             // A student of the selected color has been moved to the dining room
             GuiView.getGui().getCurrentObserver().sendActionParameters("MOVE_STUDENT_TO_DINING", studentClickedColor, null,
                     null, null, null, null, null, null);
             studentClicked = null;
             studentClickedColor = null;
-        } else if (studentOnCardClicked != null && lastCharacterPlayed == CharacterName.move1FromCardToDining) {
-            setElementHighlighted(studentOnCardClicked);
-            GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", studentOnCardClickedColor,
-                    null, null, null, null, lastCharacterPlayed, null, null);
-            studentOnCardClicked = null;
-            studentOnCardClickedColor = null;
         }
+    }
+
+    public static void setStudentOnDiningClicked(Color color, Node element) {
+        if (!hasSwapCharacterBeenPlayed(element)) return;
+        if (dstStudentColorsForCharacter.size() >= studentsToSwapForSwapCharacters) return;
+        element.getStyleClass().add("element_selected_for_swap_character");
+        dstStudentsForCharacter.add(element);
+        dstStudentColorsForCharacter.add(color);
+        sendSwapCharacterPlayedMessage();
     }
 
     public static void setCharacterClicked(CharacterName name, Node element) {
         if (!isMoveValid(element)) return;
         DrawingComponents.removeGoldenBordersFromAllCharacters();
-        System.out.println("Played character " + name);
+        lastCharacterPlayed = name;
+        lastCharacterPlayedNode = element;
         try {
             GuiView.getGui().getCurrentObserver().sendCharacterName(name);
         } catch (IOException e) {
@@ -65,16 +95,58 @@ public class ObjectClickListeners {
         }
     }
 
-    public static void setStudentsOnCardClicked(Color color, CharacterName name, Node element) {
-        if (!isMoveValid(element)) return;
-        if (studentOnCardClicked != null) {
-            setElementHighlighted(studentOnCardClicked);
+    public static void setStudentsOnCardClicked(Color color, Node element) {
+        if (hasMovingCharacterBeenPlayed(element)) {
+            if (studentOnCardClicked != null) {
+                studentOnCardClicked.getStyleClass().clear();
+                studentOnCardClicked.getStyleClass().add("element_active_for_moving_character");
+            }
+            studentOnCardClickedColor = color;
+            studentOnCardClicked = element;
+            studentOnCardClicked.getStyleClass().add("element_selected_for_moving_character");
+            studentClicked = null;
+        } else if (hasSwapCharacterBeenPlayed(element)) {
+            if (dstStudentsForCharacter.size() < studentsToSwapForSwapCharacters) {
+                element.getStyleClass().add("element_selected_for_swap_character");
+                dstStudentColorsForCharacter.add(color);
+                dstStudentsForCharacter.add(element);
+                sendSwapCharacterPlayedMessage();
+            }
         }
-        studentOnCardClickedColor = color;
-        studentOnCardClicked = element;
-        studentOnCardClicked.getStyleClass().add("selected_element");
-        lastCharacterPlayed = name;
-        studentClicked = null;
+    }
+
+    private static void sendSwapCharacterPlayedMessage() {
+        if (srcStudentsForCharacter.size() != studentsToSwapForSwapCharacters ||
+                dstStudentsForCharacter.size() != studentsToSwapForSwapCharacters) {
+            return;
+        }
+        System.out.println("About to send info: " + Arrays.toString(new List[]{srcStudentColorsForCharacter}) + "and " +
+                Arrays.toString(new List[]{dstStudentsForCharacter}));
+        srcStudentsForCharacter.forEach(element -> element.getStyleClass().clear());
+        dstStudentsForCharacter.forEach(element -> element.getStyleClass().clear());
+
+        GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, null, null,
+                null, null, lastCharacterPlayed, srcStudentColorsForCharacter, dstStudentColorsForCharacter);
+
+        srcStudentsForCharacter.clear();
+        srcStudentColorsForCharacter.clear();
+        dstStudentsForCharacter.clear();
+        dstStudentColorsForCharacter.clear();
+    }
+
+    public static void setSwapCharacterPlayed(int studentsToMove) {
+        System.out.println(lastCharacterPlayedNode + " for " + lastCharacterPlayed);
+        lastCharacterPlayedNode.getStyleClass().clear();
+        lastCharacterPlayedNode.getStyleClass().add("element_active_for_swap_character");
+
+        DrawingComponents.addBlueBordersToEntranceStudents();
+        if (lastCharacterPlayed == CharacterName.swapUpTo3FromEntranceToCard) {
+            DrawingComponents.addBlueBordersToCharacterStudents(lastCharacterPlayed);
+        } else {
+            DrawingComponents.addBlueBordersToDiningStudents();
+        }
+
+        studentsToSwapForSwapCharacters = studentsToMove;
     }
 
     private static void setElementHighlighted(Node element) {
@@ -88,5 +160,25 @@ public class ObjectClickListeners {
             return true;
         }
         return false;
+    }
+
+    private static boolean hasSwapCharacterBeenPlayed(Node element) {
+        if (element.getStyleClass().contains("element_active_for_swap_character")) {
+            element.getStyleClass().clear();
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean hasMovingCharacterBeenPlayed(Node element) {
+        if (element.getStyleClass().contains("element_active_for_moving_character")) {
+            element.getStyleClass().clear();
+            return true;
+        }
+        return false;
+    }
+
+    public static CharacterName getLastCharacterPlayed() {
+        return lastCharacterPlayed;
     }
 }

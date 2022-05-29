@@ -3,6 +3,8 @@ package it.polimi.ingsw.client.gui.utils;
 public class DrawingConstants {
     public static final String FONT_NAME = "Baskerville Old Face";
     public static final int TITLE_FONT_SIZE = 18;
+    public static final int SUBTITLE_FONT_SIZE = 16;
+    public static final int PARAGRAPH_FONT_SIZE = 14;
 
     // Characters constants
     public static final double CHARACTER_CARD_PROPORTION = 0.06;
@@ -58,4 +60,12 @@ public class DrawingConstants {
     public static final double TOWERS_HGAP = 0.01344;
     public static final double TOWERS_VGAP = 0.007548;
     public static final double TOWERS_SIZE = 0.065;
+
+    // Character popups constants
+    public static final int CHARACTER_POPUP_WIDTH = 400;
+    public static final int CHARACTER_POPUP_HEIGHT = 210;
+    public static final double CHARACTER_POPUP_TITLE_OFFSET_Y = 0.125;
+    public static final double CHARACTER_POPUP_BUTTON_OFFSET_Y = 0.85;
+    public static final double CHARACTER_POPUP_CHOICE_BOX_OFFSET_Y = 0.45;
+    public static final double CHARACTER_POPUP = 0.125;
 }
