@@ -101,9 +101,7 @@ public class DrawingComponents {
             bp.setOnMouseClicked(event -> {
                 ObjectClickListeners.setIslandClicked(bp, steps, islandIndex);
             });
-            if (i != gameState.getMNIndex()) {
-                DrawingComponents.islands.add(bp);
-            }
+            DrawingComponents.islands.add(bp);
             double X = cos(deltaAngle * i) * radius;
             double Y = sin(deltaAngle * i) * radius;
             double startingXIsland = width * 0.5 - islandWidth / 2 + X;
