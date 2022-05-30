@@ -5,6 +5,7 @@ import it.polimi.ingsw.client.gui.GuiView;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import javafx.scene.Node;
 
 import java.io.IOException;
@@ -19,6 +20,8 @@ public class ObjectClickListeners {
     private static Color studentOnCardClickedColor;
     private static Node studentOnCardClicked;
     private static CharacterName lastCharacterPlayed;
+    private static Node islandClicked;
+    private static Node cloudClicked;
     private static final List<Color> srcStudentColorsForCharacter = new ArrayList<>();
     private static final List<Color> dstStudentColorsForCharacter = new ArrayList<>();
     private static final List<Node> srcStudentsForCharacter = new ArrayList<>();
@@ -147,6 +150,49 @@ public class ObjectClickListeners {
         }
 
         studentsToSwapForSwapCharacters = studentsToMove;
+    }
+
+    public static void setCloudClicked(Node element, int cloudIndex) {
+        if (isMoveValid(element)) {
+            if (cloudClicked != null) {
+                cloudClicked.getStyleClass().clear();
+                cloudClicked.getStyleClass().add("highlight_element");
+            }
+            cloudClicked = element;
+            GuiView.getGui().getCurrentObserver().sendActionParameters(
+                    Messages.ACTION_FILL_FROM_CLOUD,
+                    null,
+                    null,
+                    null,
+                    cloudIndex,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+        }
+
+    }
+
+    public static void setIslandClicked(Node element, int numsteps) {
+        if (isMoveValid(element)) {
+            if (islandClicked != null) {
+                islandClicked.getStyleClass().clear();
+                islandClicked.getStyleClass().add("highlight_element");
+            }
+            islandClicked = element;
+            GuiView.getGui().getCurrentObserver().sendActionParameters(
+                    Messages.ACTION_MOVE_MN,
+                    null,
+                    null,
+                    numsteps,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+        }
     }
 
     private static void setElementHighlighted(Node element) {

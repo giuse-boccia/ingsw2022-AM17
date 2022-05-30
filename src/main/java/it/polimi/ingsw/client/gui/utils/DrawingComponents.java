@@ -14,6 +14,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class DrawingComponents {
 
     public static final HashMap<Integer, List<BorderPane>> studentsOnIslands = new HashMap<>();
     public static final List<BorderPane> noEntriesOnIslands = new ArrayList<>();
-    private static final List<ImageView> islands = new ArrayList<>();
+    private static final List<BorderPane> islands = new ArrayList<>();
     private static BorderPane motherNature;
     private static List<String> currentActions;
 
@@ -95,6 +96,15 @@ public class DrawingComponents {
             double islandWidth = imageBounds.getWidth();
             double islandHeight = imageBounds.getHeight();
             BorderPane bp = new BorderPane(island);
+            final int steps = (i - gameState.getMNIndex() + gameState.getIslands().size()) % gameState.getIslands().size();
+            int finalI = i;
+            bp.setOnMouseClicked(event -> {
+                System.out.println(finalI);
+                ObjectClickListeners.setIslandClicked(bp, steps);
+            });
+            if (i != gameState.getMNIndex()) {
+                DrawingComponents.islands.add(bp);
+            }
             double X = cos(deltaAngle * i) * radius;
             double Y = sin(deltaAngle * i) * radius;
             double startingXIsland = width * 0.5 - islandWidth / 2 + X;
@@ -105,13 +115,13 @@ public class DrawingComponents {
 
             GridPane elementsOnIsland = new GridPane();
             elementsOnIsland.setLayoutX(startingXIsland + width * 0.019);
-            elementsOnIsland.setLayoutY(startingYIsland + height * 0.05);
+            elementsOnIsland.setLayoutY(startingYIsland + height * 0.025);
 
             for (int j = 0; j < islands.get(i).getNumOfTowers(); j++) {
                 String towerPath = "/gameboard/towers/" + islands.get(i).getTowerColor().toString().toLowerCase() + "_tower.png";
                 ImageView tower = new ImageView(new Image(towerPath));
                 tower.setPreserveRatio(true);
-                tower.setFitWidth(islandWidth / 8);
+                tower.setFitWidth(islandWidth / 4);
                 elementsOnIsland.add(tower, j, 0);
             }
 
@@ -154,8 +164,6 @@ public class DrawingComponents {
                 motherNature = new BorderPane(MN);
                 motherNature.setLayoutX(startingXIsland + islandWidth - width * 0.025);
                 motherNature.setLayoutY(startingYIsland + islandHeight / 3);
-                motherNature.setOnMouseClicked(event -> {
-                });
                 root.getChildren().add(motherNature);
             }
         }
@@ -201,6 +209,8 @@ public class DrawingComponents {
         for (int i = 0; i < Math.min(2, clouds.size()); i++) {
             CloudState cloud = clouds.get(i);
             AnchorPane cloudToDraw = getCloudWithStudents(cloud, width, height);
+            int cloudIndex = i;
+            cloudToDraw.setOnMouseClicked(event -> ObjectClickListeners.setCloudClicked(cloudToDraw, cloudIndex));
             cloudsBox.getChildren().add(cloudToDraw);
             cloudImages.add(cloudToDraw);
         }
@@ -498,7 +508,7 @@ public class DrawingComponents {
             }
             case "PLAY_ASSISTANT" -> assistantCards.forEach(DrawingComponents::setGoldenBorder);
             case "PLAY_CHARACTER" -> characterImages.forEach(DrawingComponents::setGoldenBorder);
-            case "MOVE_MN" -> setGoldenBorder(motherNature);
+            case "MOVE_MN" -> islands.forEach(DrawingComponents::setGoldenBorder);
             case "FILL_FROM_CLOUD" -> cloudImages.forEach(DrawingComponents::setGoldenBorder);
         }
     }
