@@ -3,7 +3,6 @@ package it.polimi.ingsw.client.gui.utils;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
-import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.server.game_state.*;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -30,8 +29,11 @@ public class DrawingComponents {
     private static final List<BorderPane> diningGaps = new ArrayList<>();
     private static final List<BorderPane> diningStudents = new ArrayList<>();
     private static final HashMap<CharacterName, List<BorderPane>> studentsOnCharacter = new HashMap<>();
-    private static ImageView motherNature;
-    private static List<ImageView> islands = new ArrayList<>();
+
+    public static final HashMap<Integer, List<BorderPane>> studentsOnIslands = new HashMap<>();
+    public static final List<BorderPane> noEntriesOnIslands = new ArrayList<>();
+    private static final List<ImageView> islands = new ArrayList<>();
+    private static BorderPane motherNature;
     private static List<String> currentActions;
 
     public static void drawFourPlayersGame(GameState gameState, double width, double height, AnchorPane root, String username) {
@@ -73,17 +75,17 @@ public class DrawingComponents {
         drawDashboardText(players.get(1), width * 0.6, textStartingY, root, width, height);
 
         drawClouds(gameState.getClouds(), width, height, root);
-        drawIslands(gameState.getIslands(), width, height, root);
+        drawIslands(gameState, width, height, root);
         // Draw all three characters
         if (gameState.isExpert()) {
             drawCharacters(gameState.getCharacters(), width, height, root);
         }
     }
 
-    private static void drawIslands(List<IslandState> islands, double width, double height, AnchorPane root) {
-        /*double verticalSemi-axis = height * 0.5 - dashboardHeight;
-        double horizontalSemi-axis = width * 0.2;*/
+    private static void drawIslands(GameState gameState, double width, double height, AnchorPane root) {
+        List<IslandState> islands = gameState.getIslands();
         double deltaAngle = (2 * 3.14) / islands.size();
+        double radius = height * 0.5 - dashboardHeight;
         for (int i = 0; i < islands.size(); i++) {
             String path = "/gameboard/islands/Isola_" + ((i % 3) + 1) + ".png";
             ImageView island = new ImageView(path);
@@ -93,13 +95,69 @@ public class DrawingComponents {
             double islandWidth = imageBounds.getWidth();
             double islandHeight = imageBounds.getHeight();
             BorderPane bp = new BorderPane(island);
-            //double distance = (verticalSemi-axis*horizontalSemi-axis) / sqrt(Math.pow(horizontalSemi-axis * sin(deltaAngle * i), 2) + Math.pow(verticalSemi-axis * cos(deltaAngle * i), 2));
-            double distance = height * 0.5 - dashboardHeight;
-            double X = cos(deltaAngle * i) * distance;
-            double Y = sin(deltaAngle * i) * distance;
-            bp.setLayoutX(width * 0.5 - islandWidth / 2 + X);
-            bp.setLayoutY(height * 0.5 - islandHeight / 2 + Y);
+            double X = cos(deltaAngle * i) * radius;
+            double Y = sin(deltaAngle * i) * radius;
+            double startingXIsland = width * 0.5 - islandWidth / 2 + X;
+            double startingYIsland = height * 0.5 - islandHeight / 2 + Y;
+            bp.setLayoutX(startingXIsland);
+            bp.setLayoutY(startingYIsland);
             root.getChildren().add(bp);
+
+            GridPane elementsOnIsland = new GridPane();
+            elementsOnIsland.setLayoutX(startingXIsland + width * 0.019);
+            elementsOnIsland.setLayoutY(startingYIsland + height * 0.05);
+
+            for (int j = 0; j < islands.get(i).getNumOfTowers(); j++) {
+                String towerPath = "/gameboard/towers/" + islands.get(i).getTowerColor().toString().toLowerCase() + "_tower.png";
+                ImageView tower = new ImageView(new Image(towerPath));
+                tower.setPreserveRatio(true);
+                tower.setFitWidth(islandWidth / 8);
+                elementsOnIsland.add(tower, j, 0);
+            }
+
+            int lastRow = 1;
+            List<BorderPane> studentsOnIsland = new ArrayList<>();
+            for (int j = 0; j < islands.get(i).getStudents().size(); j++) {
+                Student s = islands.get(i).getStudents().get(j);
+                String studentPath = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
+                ImageView student = new ImageView(new Image(studentPath));
+                student.setPreserveRatio(true);
+                student.setFitWidth(islandWidth / 8);
+                lastRow = j / 4 + 1;
+                BorderPane studentBorderPane = new BorderPane(student);
+                studentBorderPane.setOnMouseClicked(event -> {
+                });
+                studentsOnIsland.add(studentBorderPane);
+
+                elementsOnIsland.add(studentBorderPane, j % 4, lastRow);
+            }
+            DrawingComponents.studentsOnIslands.put(i, studentsOnIsland);
+
+            for (int j = 0; j < islands.get(i).getNoEntryNum(); j++) {
+                ImageView noEntry = new ImageView(new Image("/gameboard/deny_island_icon.png"));
+                noEntry.setPreserveRatio(true);
+                noEntry.setFitWidth(islandWidth / 8);
+
+                BorderPane noEntryBorderPane = new BorderPane(noEntry);
+                noEntryBorderPane.setOnMouseClicked(event -> {
+                }); // TODO remember to pass island index
+                noEntriesOnIslands.add(noEntryBorderPane);
+                elementsOnIsland.add(noEntryBorderPane, j % 4, lastRow + 1);
+            }
+
+            root.getChildren().add(elementsOnIsland);
+
+            if (i == gameState.getMNIndex()) {
+                ImageView MN = new ImageView(new Image("/gameboard/mother_nature.png"));
+                MN.setPreserveRatio(true);
+                MN.setFitWidth(islandWidth * 0.3);
+                motherNature = new BorderPane(MN);
+                motherNature.setLayoutX(startingXIsland + islandWidth - width * 0.025);
+                motherNature.setLayoutY(startingYIsland + islandHeight / 3);
+                motherNature.setOnMouseClicked(event -> {
+                });
+                root.getChildren().add(motherNature);
+            }
         }
     }
 
