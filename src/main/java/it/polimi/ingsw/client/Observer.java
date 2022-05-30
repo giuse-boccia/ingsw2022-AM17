@@ -12,6 +12,8 @@ public interface Observer {
 
     void sendUsername(String username);
 
+    void sendLoadGame();
+
     void sendActionParameters(String actionName, Color color, Integer island,
                               Integer num_steps, Integer cloud, Integer value,
                               CharacterName characterName, List<Color> sourceStudents, List<Color> dstStudents);

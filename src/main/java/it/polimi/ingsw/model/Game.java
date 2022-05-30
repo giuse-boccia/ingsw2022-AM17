@@ -217,7 +217,6 @@ public class Game {
     }
 
     public int getRoundsPlayed() {
-        // TODO implement this method - it was created just to make the project build
-        return 0;
+        return roundsPlayed;
     }
 }
