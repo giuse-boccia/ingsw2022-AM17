@@ -96,11 +96,10 @@ public class DrawingComponents {
             double islandWidth = imageBounds.getWidth();
             double islandHeight = imageBounds.getHeight();
             BorderPane bp = new BorderPane(island);
-            final int steps = (i - gameState.getMNIndex() + gameState.getIslands().size()) % gameState.getIslands().size();
-            int finalI = i;
+            int steps = (i - gameState.getMNIndex() + gameState.getIslands().size()) % gameState.getIslands().size();
+            int islandIndex = i;
             bp.setOnMouseClicked(event -> {
-                System.out.println(finalI);
-                ObjectClickListeners.setIslandClicked(bp, steps);
+                ObjectClickListeners.setIslandClicked(bp, steps, islandIndex);
             });
             if (i != gameState.getMNIndex()) {
                 DrawingComponents.islands.add(bp);
@@ -135,8 +134,8 @@ public class DrawingComponents {
                 student.setFitWidth(islandWidth / 8);
                 lastRow = j / 4 + 1;
                 BorderPane studentBorderPane = new BorderPane(student);
-                studentBorderPane.setOnMouseClicked(event -> {
-                });
+                studentBorderPane.setOnMouseClicked(event ->
+                        ObjectClickListeners.setStudentOnIslandClicked(studentBorderPane, s.getColor(), islandIndex));
                 studentsOnIsland.add(studentBorderPane);
 
                 elementsOnIsland.add(studentBorderPane, j % 4, lastRow);
@@ -543,6 +542,7 @@ public class DrawingComponents {
 
     public static void moveStudentAwayFromCard(CharacterName name, boolean toIsland) {
         if (studentsOnCharacter.containsKey(name)) {
+            removeGoldenBordersFromAllElements();
             List<BorderPane> students = studentsOnCharacter.get(name);
             students.forEach(DrawingComponents::setGreenBorders);
             if (toIsland) {
