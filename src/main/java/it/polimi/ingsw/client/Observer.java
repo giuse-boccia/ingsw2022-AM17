@@ -8,7 +8,10 @@ import java.util.List;
 
 public interface Observer {
 
+    // TODO: separate into 2 methods
     void sendLoginParameters(String username, Integer numPlayers, Boolean isExpert);
+
+    void sendLoadGame();
 
     void sendActionParameters(String actionName, Color color, Integer island,
                               Integer num_steps, Integer cloud, Integer value,

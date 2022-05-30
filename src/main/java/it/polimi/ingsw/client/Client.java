@@ -202,4 +202,6 @@ public abstract class Client {
     public abstract void pickColorForPassive(CharacterName characterName) throws IOException;
 
     public abstract void playCharacterWithoutArguments(CharacterName characterName) throws IOException;
+
+    public abstract void askCreateOrLoad() throws IOException;
 }
