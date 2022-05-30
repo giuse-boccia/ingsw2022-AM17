@@ -22,17 +22,20 @@ import java.util.List;
  * This is used for persistence
  */
 public class SavedGameState extends GameState {
+    private int roundsPlayed;
     private final List<Student> bag;
     private final RoundState roundState;
 
-    public SavedGameState(boolean isExpert, int MNIndex, List<PlayerState> players, List<IslandState> islands, List<CharacterState> characters, List<CloudState> clouds, List<Student> bag, RoundState roundState) {
+    public SavedGameState(boolean isExpert, int MNIndex, List<PlayerState> players, List<IslandState> islands, List<CharacterState> characters, List<CloudState> clouds, int roundsPlayed, List<Student> bag, RoundState roundState) {
         super(isExpert, MNIndex, players, islands, characters, clouds);
+        this.roundsPlayed = roundsPlayed;
         this.bag = bag;
         this.roundState = roundState;
     }
 
     public SavedGameState(Game game) {
         super(game);
+        this.roundsPlayed = game.getRoundsPlayed();
         this.bag = game.getGameBoard().getBag().getStudents();
         this.roundState = new RoundState(game.getCurrentRound());
     }
