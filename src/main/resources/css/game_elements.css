@@ -31,3 +31,9 @@
     -fx-border-width: 1.5;
     -fx-background-color: rgba(27, 196, 37, 0.68);
 }
+
+.element_active_for_island_character {
+    -fx-border-color: rgba(162, 50, 239, 0.68);
+    -fx-border-width: 1.5;
+    -fx-background-color: rgba(211, 151, 248, 0.68);
+}

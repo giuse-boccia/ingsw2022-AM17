@@ -551,6 +551,11 @@ public class DrawingComponents {
         }
     }
 
+    public static void askIslandIndex() {
+        removeGoldenBordersFromAllElements();
+        islands.forEach(island -> island.getStyleClass().add("element_active_for_island_character"));
+    }
+
     public static void removeGoldenBordersFromAllElements() {
         diningGaps.forEach(gap -> gap.getStyleClass().clear());
         entranceStudents.forEach(student -> student.getStyleClass().clear());

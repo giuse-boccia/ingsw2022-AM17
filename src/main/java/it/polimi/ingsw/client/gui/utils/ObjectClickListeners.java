@@ -178,6 +178,9 @@ public class ObjectClickListeners {
                     null, null, null, lastCharacterPlayed, List.of(studentOnCardClickedColor), null);
             studentOnCardClicked = null;
             studentOnCardClickedColor = null;
+        } else if (hasIslandCharacterBeenPlayed(element)) {
+            GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, islandIndex,
+                    null, null, null, lastCharacterPlayed, null, null);
         } else if (isMoveValid(element)) {
             if (studentClicked != null && studentClickedColor != null) {
                 setElementHighlighted(studentClicked);
@@ -220,6 +223,10 @@ public class ObjectClickListeners {
             return true;
         }
         return false;
+    }
+
+    private static boolean hasIslandCharacterBeenPlayed(Node element) {
+        return element.getStyleClass().contains("element_active_for_moving_character");
     }
 
     public static CharacterName getLastCharacterPlayed() {

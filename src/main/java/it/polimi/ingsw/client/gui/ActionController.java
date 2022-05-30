@@ -45,6 +45,8 @@ public class ActionController implements GuiController {
             GuiView.showPopupForColorOrBound(maxStudents, name);
         } else if (requireColor) {
             GuiView.showPopupForColorOrBound(-1, name);
+        } else if (requireIsland) {
+            Platform.runLater(DrawingComponents::askIslandIndex);
         }
     }
 
