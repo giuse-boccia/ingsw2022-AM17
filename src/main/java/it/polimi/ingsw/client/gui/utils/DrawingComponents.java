@@ -264,19 +264,17 @@ public class DrawingComponents {
 
             if (character.isHasCoin()) {
                 double imageWidth = width * (DrawingConstants.COIN_PROPORTION);
-                ImageView coin = getImageView(
-                        "/gameboard/Moneta_base.png",
-                        coordX + width * (DrawingConstants.CHARACTER_CARD_PROPORTION) - imageWidth,
-                        height / 20,
-                        imageWidth
-                );
+                ImageView coin = new ImageView(new Image("/gameboard/Moneta_base.png"));
+                coin.setPreserveRatio(true);
+                coin.setX(coordX + width * (DrawingConstants.CHARACTER_CARD_PROPORTION) - imageWidth);
+                coin.setY(height * 0.21);
+                coin.setFitWidth(imageWidth);
                 root.getChildren().add(coin);
             }
             if (character.getStudents() != null) {
                 GridPane grid = new GridPane();
                 grid.setLayoutX(coordX + width * DrawingConstants.SPACE_BETWEEN_STUDENTS_ON_CHARACTERS);
-                grid.setLayoutY(height / heightProportion + characterImage.boundsInParentProperty().get().getHeight());
-
+                grid.setLayoutY(height / heightProportion - 2 * width * 0.4 / 25);
                 List<BorderPane> studentOnCharacter = new ArrayList<>();
                 for (int i = 0; i < character.getStudents().size(); i++) {
                     String studentPath = "/gameboard/students/student_" +
