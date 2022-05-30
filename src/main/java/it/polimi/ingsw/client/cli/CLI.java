@@ -33,14 +33,14 @@ public class CLI extends Client {
         System.out.print(Messages.ASK_USERNAME);
         String username = stdIn.readLine();
         setTmpUsername(username);
-        getCurrentObserver().sendLoginParameters(username, null, null);
+        getCurrentObserver().sendUsername(username);
     }
 
     @Override
     public void askNumPlayersAndExpertMode() throws IOException {
         int numPlayers = askForInteger(2, 4, "Insert desired number of players (2, 3 or 4): ", "Number of players");
         boolean isGameExpert = askExpertMode();
-        getCurrentObserver().sendLoginParameters(null, numPlayers, isGameExpert);
+        getCurrentObserver().sendParametersForGame(numPlayers, isGameExpert);
     }
 
     /**

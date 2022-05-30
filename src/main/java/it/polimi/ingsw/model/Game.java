@@ -215,4 +215,9 @@ public class Game {
     public ArrayList<Player> getWinners() {
         return winners;
     }
+
+    public int getRoundsPlayed() {
+        // TODO implement this method - it was created just to make the project build
+        return 0;
+    }
 }

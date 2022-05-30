@@ -37,7 +37,7 @@ public class GameParametersController implements GuiController {
     }
 
     public void onStartButtonClicked(ActionEvent event) {
-        GuiView.getGui().getCurrentObserver().sendLoginParameters(null, numPlayersChoiceBox.getValue(), isGameExpert.isSelected());
+        GuiView.getGui().getCurrentObserver().sendParametersForGame(numPlayersChoiceBox.getValue(), isGameExpert.isSelected());
     }
 
 

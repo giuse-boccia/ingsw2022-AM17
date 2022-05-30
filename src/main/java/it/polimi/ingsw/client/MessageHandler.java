@@ -269,15 +269,18 @@ public class MessageHandler implements Observer {
     }
 
     @Override
-    public void sendLoginParameters(String username, Integer numPlayers, Boolean isExpert) {
+    public void sendParametersForGame(Integer numPlayers, Boolean isExpert) {
+        sendGameParameters(numPlayers, isExpert);
+    }
+
+    @Override
+    public void sendUsername(String username) {
         if (username != null) {
             ClientLoginMessage loginMessage = new ClientLoginMessage();
             loginMessage.setUsername(username);
             loginMessage.setAction("SET_USERNAME");
 
             nc.sendMessageToServer(loginMessage.toJson());
-        } else {
-            sendGameParameters(numPlayers, isExpert);
         }
     }
 
