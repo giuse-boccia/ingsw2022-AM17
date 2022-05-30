@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.constants.Constants;
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.action.ActionArgs;
@@ -89,7 +90,16 @@ public class MessageHandler implements Observer {
             client.showWarningMessage("Username already taken");
             new Thread(() -> {
                 try {
-                    nc.askUsernameAndSend();
+                    askUsernameAndSend();
+                } catch (IOException e) {
+                    client.gracefulTermination("Connection to server went down");
+                }
+            }).start();
+        } else if (message.getError() == 5) {
+            client.showWarningMessage(message.getDisplayText());    // username doesn't match in saved_game.json
+            new Thread(() -> {
+                try {
+                    askUsernameAndSend();
                 } catch (IOException e) {
                     client.gracefulTermination("Connection to server went down");
                 }
@@ -100,6 +110,7 @@ public class MessageHandler implements Observer {
             client.setUsername(client.getTmpUsername());
             new Thread(() -> {
                 try {
+                    // client.askCreateOrLoad();
                     client.askNumPlayersAndExpertMode();
                 } catch (IOException e) {
                     client.gracefulTermination("Connection to server went down");
@@ -114,6 +125,15 @@ public class MessageHandler implements Observer {
     }
 
     /**
+     * Asks for a username and sends a login message to the server
+     */
+    public void askUsernameAndSend() throws IOException {
+        client.setCurrentObserver(this);
+        client.showMessage("Connecting to server...");
+        client.askUsername();
+    }
+
+    /**
      * Sends a "CREATE_GAME" message to the server with the player preferences
      *
      * @param numPlayers an integer between 2 and 4
@@ -121,9 +141,18 @@ public class MessageHandler implements Observer {
      */
     private void sendGameParameters(int numPlayers, boolean isExpert) {
         ClientLoginMessage msg = new ClientLoginMessage();
-        msg.setAction("CREATE_GAME");
+        msg.setAction(Messages.ACTION_CREATE_GAME);
         msg.setNumPlayers(numPlayers);
         msg.setExpert(isExpert);
+        nc.sendMessageToServer(msg.toJson());
+    }
+
+    /**
+     * Sends a "CREATE_GAME" message to the server with the player preferences
+     */
+    public void sendLoadGame() {
+        ClientLoginMessage msg = new ClientLoginMessage();
+        msg.setAction(Messages.ACTION_LOAD_GAME);
         nc.sendMessageToServer(msg.toJson());
     }
 
@@ -240,8 +269,19 @@ public class MessageHandler implements Observer {
     }
 
     @Override
-    public void sendLoginParameters(String username, Integer numPlayers, Boolean isExpert) {
+    public void sendParametersForGame(Integer numPlayers, Boolean isExpert) {
         sendGameParameters(numPlayers, isExpert);
+    }
+
+    @Override
+    public void sendUsername(String username) {
+        if (username != null) {
+            ClientLoginMessage loginMessage = new ClientLoginMessage();
+            loginMessage.setUsername(username);
+            loginMessage.setAction("SET_USERNAME");
+
+            nc.sendMessageToServer(loginMessage.toJson());
+        }
     }
 
     @Override

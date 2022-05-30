@@ -215,4 +215,8 @@ public class Game {
     public ArrayList<Player> getWinners() {
         return winners;
     }
+
+    public int getRoundsPlayed() {
+        return roundsPlayed;
+    }
 }

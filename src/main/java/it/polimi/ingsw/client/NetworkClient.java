@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
 
-public class NetworkClient extends Thread implements Observer {
+public class NetworkClient extends Thread {
     private final Client client;
 
     private final String serverAddress;
@@ -40,21 +40,11 @@ public class NetworkClient extends Thread implements Observer {
             socketIn = new BufferedReader(new InputStreamReader(server.getInputStream()));
             socketOut = new PrintWriter(server.getOutputStream(), true);
 
-            askUsernameAndSend();
-
         } catch (IOException e) {
             client.gracefulTermination("Cannot connect to server, check server_address argument");
         }
     }
 
-    /**
-     * Asks for a username and sends a login message to the server
-     */
-    public void askUsernameAndSend() throws IOException {
-        client.setCurrentObserver(this);
-        client.showMessage("Connecting to server...");
-        client.askUsername();
-    }
 
     /**
      * Sends a message to the server
@@ -68,8 +58,11 @@ public class NetworkClient extends Thread implements Observer {
     @Override
     public void run() {
         MessageHandler mh = new MessageHandler(NetworkClient.this);
-        mh.startPongThread();
+
         try {
+            mh.askUsernameAndSend();
+            mh.startPongThread();
+
             while (true) {
                 String jsonMessage = socketIn.readLine();
                 mh.handleMessage(jsonMessage);
@@ -78,31 +71,5 @@ public class NetworkClient extends Thread implements Observer {
             // Server connection error
             client.gracefulTermination("Connection to server lost");
         }
-    }
-
-    @Override
-    public void sendLoginParameters(String username, Integer numPlayers, Boolean isExpert) {
-        if (username != null) {
-            ClientLoginMessage loginMessage = new ClientLoginMessage();
-            loginMessage.setUsername(username);
-            loginMessage.setAction("SET_USERNAME");
-
-            sendMessageToServer(loginMessage.toJson());
-        }
-    }
-
-    @Override
-    public void sendActionParameters(String actionName, Color color, Integer island, Integer num_steps, Integer cloud, Integer value, CharacterName characterName, List<Color> sourceStudents, List<Color> dstStudents) {
-
-    }
-
-    @Override
-    public void sendActionName(String action) {
-
-    }
-
-    @Override
-    public void sendCharacterName(CharacterName name) {
-
     }
 }

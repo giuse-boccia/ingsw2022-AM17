@@ -136,4 +136,9 @@ public class GUI extends Client {
                 null, characterName, null, null);
     }
 
+    @Override
+    public void askCreateOrLoad() throws IOException {
+        // TODO: implement
+    }
+
 }

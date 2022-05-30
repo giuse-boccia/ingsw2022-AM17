@@ -33,14 +33,36 @@ public class CLI extends Client {
         System.out.print(Messages.ASK_USERNAME);
         String username = stdIn.readLine();
         setTmpUsername(username);
-        getCurrentObserver().sendLoginParameters(username, null, null);
+        getCurrentObserver().sendUsername(username);
+    }
+
+    @Override
+    public void askCreateOrLoad() throws IOException {
+        String res;
+
+        do {
+            System.out.print("No game on server ");
+            System.out.println("1. Create a new game");
+            System.out.println("2. Load a previous game");
+            System.out.println("> ");
+            res = stdIn.readLine();
+        } while (!res.equals("1") && !res.equals("2"));
+
+        if (res.equals("1")) {
+            askNumPlayersAndExpertMode();
+        }
+        if (res.equals("2")) {
+            gracefulTermination("not implemented yet!");
+            // TODO: remove graceTerm
+            getCurrentObserver().sendLoadGame();
+        }
     }
 
     @Override
     public void askNumPlayersAndExpertMode() throws IOException {
         int numPlayers = askForInteger(2, 4, "Insert desired number of players (2, 3 or 4): ", "Number of players");
         boolean isGameExpert = askExpertMode();
-        getCurrentObserver().sendLoginParameters(null, numPlayers, isGameExpert);
+        getCurrentObserver().sendParametersForGame(numPlayers, isGameExpert);
     }
 
     /**
