@@ -68,4 +68,8 @@ public class DrawingConstants {
     public static final double CHARACTER_POPUP_BUTTON_OFFSET_Y = 0.85;
     public static final double CHARACTER_POPUP_CHOICE_BOX_OFFSET_Y = 0.45;
     public static final double CHARACTER_POPUP = 0.125;
+
+    // End game popup
+    public static final int END_GAME_POPUP_WIDTH = 350;
+    public static final int END_GAME_POPUP_HEIGHT = 200;
 }

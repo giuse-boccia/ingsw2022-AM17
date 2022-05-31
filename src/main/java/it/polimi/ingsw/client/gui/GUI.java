@@ -13,6 +13,7 @@ import java.util.List;
 public class GUI extends Client {
 
     private static final GuiView guiView = new GuiView();
+    private boolean isGameEnded = false;
 
     public static void main(String[] args) {
 
@@ -55,7 +56,9 @@ public class GUI extends Client {
 
     @Override
     public void endGame(String message) {
-
+        isGameEnded = true;
+        MessageHandler.getServerUpTask().cancel();
+        GuiView.endGame(message);
     }
 
     @Override
@@ -88,6 +91,7 @@ public class GUI extends Client {
 
     @Override
     public void gracefulTermination(String message) {
+        if (isGameEnded) return;
         if (MessageHandler.getServerUpTask() != null) {
             MessageHandler.getServerUpTask().cancel();
         }

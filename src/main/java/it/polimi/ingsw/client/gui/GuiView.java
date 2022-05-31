@@ -19,8 +19,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -55,13 +57,6 @@ public class GuiView extends Application {
     }
 
     public void changeScene(String resourceName, boolean fullscreen) {
-        // TODO at least read the following idea
-        // IDEA: non mandare un object al Controller, ma setta solo la variabile currentController.
-        // Quando arriva un messaggio fai currentController.receiveMessage e a quel punto parsa l'oggetto.
-        // In questo modo non si crea una nuova scena ogni volta
-
-        // TODO save in a variable the name of the current scene and do a check: if it is already showed, just pass data,
-        // otherwise show it and pass it data
         if (Objects.equals(currentSceneName, resourceName)) {
             return;
         }
@@ -115,7 +110,7 @@ public class GuiView extends Application {
         });
     }
 
-    public static void showPopupForColorOrBound(int bound, CharacterName name) {
+    public static void showPopupForColorOrBound(int bound) {
         Stage popupStage = getNewUndecoratedStage();
         double width = DrawingConstants.CHARACTER_POPUP_WIDTH;
         double height = DrawingConstants.CHARACTER_POPUP_HEIGHT;
@@ -166,6 +161,29 @@ public class GuiView extends Application {
 
         popupStage.setScene(new Scene(anchorPane, width, height));
         popupStage.show();
+    }
+
+    public static void endGame(String message) {
+        Platform.runLater(() -> {
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle(Messages.END_GAME_TITLE);
+
+            Text endGameText = new Text(message);
+            endGameText.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.SUBTITLE_FONT_SIZE));
+            Button closeAppBtn = new Button();
+            closeAppBtn.setText(Messages.END_GAME_BUTTON_TEXT);
+            closeAppBtn.setStyle("-fx-font-family: Algerian; -fx-font-size: 16");
+            closeAppBtn.setOnMouseClicked(event -> {
+                System.out.println(Messages.GAME_ENDED_MESSAGE);
+                System.exit(0);
+            });
+            VBox vBox = new VBox(endGameText, closeAppBtn);
+            vBox.setAlignment(Pos.CENTER);
+
+            stage.setScene(new Scene(vBox, DrawingConstants.END_GAME_POPUP_WIDTH, DrawingConstants.END_GAME_POPUP_HEIGHT));
+            stage.show();
+        });
     }
 
     private static Stage getNewUndecoratedStage() {

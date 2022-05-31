@@ -121,4 +121,9 @@ public class Messages {
     // Character messages
     public static final String CHOOSE_BOUND_CHARACTER = "Choose how many students do you want to swap";
     public static final String CHOOSE_COLOR_CHARACTER = "Choose one color for the effect of the character";
+
+    // Messages in GUI
+    public static final String END_GAME_TITLE = "Game is ended";
+    public static final String END_GAME_BUTTON_TEXT = "Close application";
+    public static final String GAME_ENDED_MESSAGE = "The game is ended. See you at the next match!";
 }

@@ -43,6 +43,8 @@ public class MessageHandler implements Observer {
         Message message = Message.fromJson(jsonMessage);
         client.setCurrentObserver(this);
 
+        if (message == null) return;
+
         switch (message.getStatus()) {
             case "PING" -> handlePing();
             case "LOGIN" -> handleLogin(jsonMessage);
