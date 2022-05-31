@@ -105,7 +105,7 @@ public class Messages {
     public static final String LAST_ROUND = "Be aware! This is the last round";
     public static final String GAME_ENDED = "The game is ended";
     public static final String GAME_WON = "Congratulations, you won the game!";
-    public static final String GAME_LOST = "Unfortunately you lost";
+    public static final String GAME_LOST = "Unfortunately you lost.";
     public static final String IS_PLAYING = " is playing...";
     // Server log messages
     public static final String SAVE_OK = "Game saved to file";
@@ -126,4 +126,13 @@ public class Messages {
     public static final String END_GAME_TITLE = "Game is ended";
     public static final String END_GAME_BUTTON_TEXT = "Close application";
     public static final String GAME_ENDED_MESSAGE = "The game is ended. See you at the next match!";
+
+    // Broadcast messages to notify that a player did a specific action
+    public static final String BROADCAST_SEPARATOR = ". Now ";
+    public static final String BROADCAST_ASSISTANT = " played assistant number ";
+    public static final String BROADCAST_TO_DINING = " student to his dining room ";
+    public static final String BROADCAST_TO_ISLAND = " student to island number ";
+    public static final String BROADCAST_FOR_MOTHER_NATURE = " moved mother nature of ";
+    public static final String BROADCAST_FILL_FROM_CLOUD = " chose cloud number ";
+    public static final String BROADCAST_GAME_WON = " won the game";
 }
