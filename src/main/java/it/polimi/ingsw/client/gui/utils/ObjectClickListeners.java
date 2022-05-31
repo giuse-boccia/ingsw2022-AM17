@@ -226,7 +226,7 @@ public class ObjectClickListeners {
     }
 
     private static boolean hasIslandCharacterBeenPlayed(Node element) {
-        return element.getStyleClass().contains("element_active_for_moving_character");
+        return element.getStyleClass().contains("element_active_for_island_character");
     }
 
     public static CharacterName getLastCharacterPlayed() {
