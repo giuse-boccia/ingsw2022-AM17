@@ -9,7 +9,6 @@ import it.polimi.ingsw.server.game_state.GameState;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -85,7 +84,7 @@ public class CLI extends Client {
 
     @Override
     public void showCurrentLobby(GameLobby lobby) {
-        if (lobby.isSaved()) {
+        if (lobby.isFromSavedGame()) {
             printSavedGameLobby(lobby);
         } else {
             printNewGameLobby(lobby);
@@ -101,7 +100,7 @@ public class CLI extends Client {
         System.out.println(message);
 
         List<String> ready = lobby.getPlayers();
-        for (String name : lobby.getAllPlayers()) {
+        for (String name : lobby.getPlayersFromSavedGame()) {
             String playerString = ready.contains(name) ? "[READY]" : "[WAITING]";
             playerString += "  " + name;
             System.out.println(playerString);

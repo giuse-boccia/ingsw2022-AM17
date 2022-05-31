@@ -22,7 +22,7 @@ import java.util.List;
  * This is used for persistence
  */
 public class SavedGameState extends GameState {
-    private int roundsPlayed;
+    private final int roundsPlayed;
     private final List<Student> bag;
     private final RoundState roundState;
 
@@ -61,18 +61,13 @@ public class SavedGameState extends GameState {
     }
 
 
-    public static Game loadFromFile() {
+    public static Game loadFromFile() throws IOException {
         SavedGameState gs = null;
-        try {
-            Gson gson = new Gson();
-            Reader reader = Files.newBufferedReader(Paths.get(Constants.SAVED_GAME_PATH));
-            gs = gson.fromJson(reader, SavedGameState.class);
-            reader.close();
+        Gson gson = new Gson();
+        Reader reader = Files.newBufferedReader(Paths.get(Constants.SAVED_GAME_PATH));
+        gs = gson.fromJson(reader, SavedGameState.class);
+        reader.close();
 
-            System.out.println(Messages.LOAD_OK);
-        } catch (IOException e) {
-            System.out.println(Messages.LOAD_ERR);
-        }
 
         // TODO: create the Game from the SavedStateGame
 
