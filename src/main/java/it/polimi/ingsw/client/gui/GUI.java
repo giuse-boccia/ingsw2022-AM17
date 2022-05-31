@@ -40,12 +40,12 @@ public class GUI extends Client {
 
     @Override
     public void askNumStepsOfMotherNature() {
-
+        guiView.sendMessageToController(null, null, List.of("MOVE_MN"), getUsername());
     }
 
     @Override
     public void askCloudIndex() {
-
+        guiView.sendMessageToController(null, null, List.of("FILL_FROM_CLOUD"), getUsername());
     }
 
     @Override
