@@ -9,6 +9,7 @@ import it.polimi.ingsw.server.game_state.GameState;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,10 +42,10 @@ public class CLI extends Client {
         String res;
 
         do {
-            System.out.print("No game on server ");
+            System.out.println("No game on server ");
             System.out.println("1. Create a new game");
             System.out.println("2. Load a previous game");
-            System.out.println("> ");
+            System.out.print("> ");
             res = stdIn.readLine();
         } while (!res.equals("1") && !res.equals("2"));
 
@@ -84,8 +85,33 @@ public class CLI extends Client {
 
     @Override
     public void showCurrentLobby(GameLobby lobby) {
+        if (lobby.isSaved()) {
+            printSavedGameLobby(lobby);
+        } else {
+            printNewGameLobby(lobby);
+        }
+    }
+
+    private void printSavedGameLobby(GameLobby lobby) {
         printBlueLine();
-        String message = "GAME: " + lobby.getPlayers().length;
+        String message = "GAME: " + lobby.getPlayers().size();
+        message += "/" + lobby.getNumPlayers();
+        message += " players | ";
+        message += "Expert mode: " + (lobby.isExpert() ? "Active" : "Not active");
+        System.out.println(message);
+
+        List<String> ready = lobby.getPlayers();
+        for (String name : lobby.getAllPlayers()) {
+            String playerString = ready.contains(name) ? "[READY]" : "[WAITING]";
+            playerString += "  " + name;
+            System.out.println(playerString);
+        }
+        System.out.println();
+    }
+
+    private void printNewGameLobby(GameLobby lobby) {
+        printBlueLine();
+        String message = "GAME: " + lobby.getPlayers().size();
         if (lobby.getNumPlayers() != -1) {
             message += "/" + lobby.getNumPlayers();
         }

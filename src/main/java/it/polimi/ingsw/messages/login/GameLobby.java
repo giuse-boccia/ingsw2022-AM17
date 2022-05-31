@@ -1,14 +1,26 @@
 package it.polimi.ingsw.messages.login;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameLobby {
-    private String[] players;
+    private List<String> players;
     private int numPlayers;
     private boolean isExpert;
     private boolean isSaved;
     private String[] allPlayers;
 
+    // for Controller
+    public GameLobby() {
+        players = new ArrayList<>();
+        numPlayers = -1;
+        isExpert = false;
+        isSaved = false;
+        allPlayers = null;
+    }
+
     // new game
-    public GameLobby(String[] players, int numPlayers, boolean isExpert) {
+    public GameLobby(List<String> players, int numPlayers, boolean isExpert) {
         this.players = players;
         this.numPlayers = numPlayers;
         this.isExpert = isExpert;
@@ -17,7 +29,7 @@ public class GameLobby {
     }
 
     // loading from save
-    public GameLobby(String[] players, int numPlayers, boolean isExpert, boolean isSaved, String[] allPlayers) {
+    public GameLobby(List<String> players, int numPlayers, boolean isExpert, boolean isSaved, String[] allPlayers) {
         this.players = players;
         this.numPlayers = numPlayers;
         this.isExpert = isExpert;
@@ -25,11 +37,11 @@ public class GameLobby {
         this.allPlayers = allPlayers;
     }
 
-    public String[] getPlayers() {
+    public List<String> getPlayers() {
         return players;
     }
 
-    public void setPlayers(String[] players) {
+    public void setPlayers(List<String> players) {
         this.players = players;
     }
 

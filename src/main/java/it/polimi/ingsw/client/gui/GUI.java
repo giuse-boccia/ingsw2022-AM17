@@ -139,6 +139,7 @@ public class GUI extends Client {
     @Override
     public void askCreateOrLoad() throws IOException {
         // TODO: implement
+        askNumPlayersAndExpertMode();
     }
 
 }

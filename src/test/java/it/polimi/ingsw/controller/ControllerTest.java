@@ -6,6 +6,9 @@ import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ControllerTest {
@@ -133,8 +136,8 @@ class ControllerTest {
         // The second player should have received a broadcast message telling him he's in the lobby
         ServerLoginMessage secondMsg = ServerLoginMessage.fromJson(secondCh.getJson());
         assertEquals(Messages.NEW_PLAYER_JOINED, secondMsg.getDisplayText());
-        assertEquals("clod", secondMsg.getGameLobby().getPlayers()[0]);
-        assertEquals("rick", secondMsg.getGameLobby().getPlayers()[1]);
+        assertEquals("clod", secondMsg.getGameLobby().getPlayers().get(0));
+        assertEquals("rick", secondMsg.getGameLobby().getPlayers().get(1));
         assertEquals(-1, secondMsg.getGameLobby().getNumPlayers());
     }
 
@@ -168,7 +171,7 @@ class ControllerTest {
         ServerLoginMessage giuseMessage = ServerLoginMessage.fromJson(secondCh.getJson());
 
         assertEquals(Messages.NEW_PLAYER_JOINED, clodMessage.getDisplayText(), giuseMessage.getDisplayText());
-        assertArrayEquals(new String[]{"clod", "giuse"}, clodMessage.getGameLobby().getPlayers());
+        assertEquals(new ArrayList<String>(List.of(new String[]{"clod", "giuse"})), clodMessage.getGameLobby().getPlayers());
     }
 
     /**
