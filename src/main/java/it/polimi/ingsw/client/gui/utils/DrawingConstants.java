@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.gui.utils;
 
 public class DrawingConstants {
-    public static final String FONT_NAME = "Algerian";
+    public static final String FONT_NAME = "Baskerville Old Face";
     public static final int TITLE_FONT_SIZE = 18;
     public static final int SUBTITLE_FONT_SIZE = 16;
     public static final int PARAGRAPH_FONT_SIZE = 14;

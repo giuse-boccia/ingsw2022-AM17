@@ -479,7 +479,6 @@ public class DrawingComponents {
     }
 
     public static void setCurrentActions(List<String> currentActions) {
-        // TODO highlight the corresponding parts
         for (String action : currentActions) {
             highlightAction(action);
         }

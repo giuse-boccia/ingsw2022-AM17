@@ -34,7 +34,7 @@ public class LobbyController implements GuiController {
         gridPane.setVgap(width / 64);
         AnchorPane.setLeftAnchor(gridPane, width / 64);
         AnchorPane.setRightAnchor(gridPane, width / 64);
-        AnchorPane.setTopAnchor(gridPane, height / 8);
+        AnchorPane.setTopAnchor(gridPane, height / 4.5);
         root.getChildren().add(1, gridPane);
     }
 
