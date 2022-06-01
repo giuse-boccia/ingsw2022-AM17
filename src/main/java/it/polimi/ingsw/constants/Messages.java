@@ -130,7 +130,7 @@ public class Messages {
     // Broadcast messages to notify that a player did a specific action
     public static final String BROADCAST_SEPARATOR = ". Now ";
     public static final String BROADCAST_ASSISTANT = " played assistant number ";
-    public static final String BROADCAST_TO_DINING = " student to his dining room ";
+    public static final String BROADCAST_TO_DINING = " student to his dining room";
     public static final String BROADCAST_TO_ISLAND = " student to island number ";
     public static final String BROADCAST_FOR_MOTHER_NATURE = " moved mother nature of ";
     public static final String BROADCAST_FILL_FROM_CLOUD = " chose cloud number ";

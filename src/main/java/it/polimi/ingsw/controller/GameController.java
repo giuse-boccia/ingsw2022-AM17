@@ -125,7 +125,7 @@ public class GameController {
         }
 
         PlayerClient curPlayer;
-        String text = player.getUsername() + Messages.BROADCAST_ASSISTANT + (value - 1) + Messages.BROADCAST_SEPARATOR;
+        String text = player.getUsername() + Messages.BROADCAST_ASSISTANT + (value) + Messages.BROADCAST_SEPARATOR;
 
         if (game.getCurrentRound().getPlanningPhase().isEnded()) {
             SavedGameState.saveToFile(game);
