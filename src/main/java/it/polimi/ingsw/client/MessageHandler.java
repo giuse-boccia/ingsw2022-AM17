@@ -1,11 +1,18 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.client.observers.choices.action.ActionChoiceObserver;
+import it.polimi.ingsw.client.observers.choices.character.CharacterChoiceObserver;
+import it.polimi.ingsw.client.observers.game_actions.choose_cloud.ChooseCloudObserver;
+import it.polimi.ingsw.client.observers.game_actions.move_mn.MoveMNObserver;
+import it.polimi.ingsw.client.observers.game_actions.move_student.MoveStudentObserver;
+import it.polimi.ingsw.client.observers.game_actions.play_assistant.PlayAssistantObserver;
+import it.polimi.ingsw.client.observers.game_actions.play_character.PlayCharacterObserver;
+import it.polimi.ingsw.client.observers.login.game_parameters.GameParametersObserver;
+import it.polimi.ingsw.client.observers.login.load_game.LoadGameObserver;
+import it.polimi.ingsw.client.observers.login.username.UsernameObserver;
 import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.Message;
-import it.polimi.ingsw.messages.action.Action;
-import it.polimi.ingsw.messages.action.ActionArgs;
-import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
@@ -14,6 +21,7 @@ import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,11 +29,21 @@ import java.util.TimerTask;
 /**
  * Class which handles a single message from the server within a separate thread
  */
-public class MessageHandler implements Observer {
+public class MessageHandler implements ObserverHandler {
     private final NetworkClient nc;
     private final Client client;
     private int serverUpCalls = 0;
     private static TimerTask serverUpTask;
+    private final List<UsernameObserver> usernameObservers = new ArrayList<>();
+    private final List<GameParametersObserver> gameParametersObservers = new ArrayList<>();
+    private final List<LoadGameObserver> loadGameObservers = new ArrayList<>();
+    private final List<MoveStudentObserver> moveStudentObservers = new ArrayList<>();
+    private final List<MoveMNObserver> moveMNObservers = new ArrayList<>();
+    private final List<ChooseCloudObserver> chooseCloudObservers = new ArrayList<>();
+    private final List<PlayAssistantObserver> playAssistantObservers = new ArrayList<>();
+    private final List<PlayCharacterObserver> playCharactersObservers = new ArrayList<>();
+    private final List<ActionChoiceObserver> actionChoiceObservers = new ArrayList<>();
+    private final List<CharacterChoiceObserver> characterChoiceObservers = new ArrayList<>();
 
     public MessageHandler(NetworkClient nc) {
         this.nc = nc;
@@ -41,7 +59,6 @@ public class MessageHandler implements Observer {
      */
     public synchronized void handleMessage(String jsonMessage) throws IOException {
         Message message = Message.fromJson(jsonMessage);
-        client.setCurrentObserver(this);
 
         if (message == null) return;
 
@@ -130,23 +147,9 @@ public class MessageHandler implements Observer {
      * Asks for a username and sends a login message to the server
      */
     public void askUsernameAndSend() throws IOException {
-        client.setCurrentObserver(this);
+        client.setCurrentObserverHandler(this);
         client.showMessage("Connecting to server...");
         client.askUsername();
-    }
-
-    /**
-     * Sends a "CREATE_GAME" message to the server with the player preferences
-     *
-     * @param numPlayers an integer between 2 and 4
-     * @param isExpert   true if the game should be in expert mode
-     */
-    private void sendGameParameters(int numPlayers, boolean isExpert) {
-        ClientLoginMessage msg = new ClientLoginMessage();
-        msg.setAction(Messages.ACTION_CREATE_GAME);
-        msg.setNumPlayers(numPlayers);
-        msg.setExpert(isExpert);
-        nc.sendMessageToServer(msg.toJson());
     }
 
     /**
@@ -156,6 +159,110 @@ public class MessageHandler implements Observer {
         ClientLoginMessage msg = new ClientLoginMessage();
         msg.setAction(Messages.ACTION_LOAD_GAME);
         nc.sendMessageToServer(msg.toJson());
+    }
+
+    public NetworkClient getNetworkClient() {
+        return nc;
+    }
+
+    public void attachUsernameObserver(UsernameObserver usernameObserver) {
+        usernameObservers.add(usernameObserver);
+    }
+
+    public void attachGameParametersObserver(GameParametersObserver parametersObserver) {
+        gameParametersObservers.add(parametersObserver);
+    }
+
+    public void attachMoveStudentObserver(MoveStudentObserver moveStudentObserver) {
+        moveStudentObservers.add(moveStudentObserver);
+    }
+
+    @Override
+    public void attachMoveMNObserver(MoveMNObserver moveStudentObserver) {
+        moveMNObservers.add(moveStudentObserver);
+    }
+
+    @Override
+    public void attachActionChoiceObserver(ActionChoiceObserver actionChoiceObserver) {
+        actionChoiceObservers.add(actionChoiceObserver);
+    }
+
+    @Override
+    public void attachCharacterChoiceObserver(CharacterChoiceObserver characterChoiceObserver) {
+        characterChoiceObservers.add(characterChoiceObserver);
+    }
+
+    @Override
+    public void notifyActionChoiceObservers(String name) {
+        actionChoiceObservers.forEach(observer -> observer.onActionChosen(name));
+    }
+
+    @Override
+    public void notifyCharacterChoiceObservers(CharacterName name) {
+        characterChoiceObservers.forEach(observer -> {
+            try {
+                observer.onCharacterChosen(name);
+            } catch (IOException e) {
+                client.gracefulTermination(Messages.SERVER_CRASHED);
+            }
+        });
+    }
+
+    @Override
+    public void notifyMoveMNObservers(int numSteps) {
+        moveMNObservers.forEach(observer -> observer.onMotherNatureMoved(numSteps));
+    }
+
+    @Override
+    public void attachLoadGameObserver(LoadGameObserver loadGameObserver) {
+        loadGameObservers.add(loadGameObserver);
+    }
+
+    @Override
+    public void notifyAllLoadGameObservers() {
+        loadGameObservers.forEach(LoadGameObserver::loadGame);
+    }
+
+    @Override
+    public void attachChooseCloudObserver(ChooseCloudObserver cloudObserver) {
+        chooseCloudObservers.add(cloudObserver);
+    }
+
+    @Override
+    public void attachPlayAssistantObserver(PlayAssistantObserver playAssistantObserver) {
+        playAssistantObservers.add(playAssistantObserver);
+    }
+
+    @Override
+    public void attachPlayCharacterObserver(PlayCharacterObserver playCharacterObserver) {
+        playCharactersObservers.add(playCharacterObserver);
+    }
+
+    @Override
+    public void notifyPlayCharacterObservers(CharacterName name, Color color, Integer island, List<Color> srcStudents, List<Color> dstStudents) {
+        playCharactersObservers.forEach(observer -> observer.onCharacterPlayed(name, color, island, srcStudents, dstStudents));
+    }
+
+    @Override
+    public void notifyPlayAssistantObservers(int index) {
+        playAssistantObservers.forEach(observer -> observer.onAssistantPlayed(index));
+    }
+
+    @Override
+    public void notifyChooseCloudObservers(int index) {
+        chooseCloudObservers.forEach(observer -> observer.onCloudChosen(index));
+    }
+
+    public void notifyAllUsernameObservers(String message) {
+        usernameObservers.forEach(observer -> observer.onUsernameEntered(message));
+    }
+
+    public void notifyAllGameParametersObservers(int numPlayers, boolean isExpert) {
+        gameParametersObservers.forEach(observer -> observer.onGameParametersSet(numPlayers, isExpert));
+    }
+
+    public void notifyMoveStudentObservers(Color color, Integer islandIndex) {
+        moveStudentObservers.forEach(observer -> observer.onStudentMoved(color, islandIndex));
     }
 
     /**
@@ -201,7 +308,7 @@ public class MessageHandler implements Observer {
     /**
      * Handles an action message
      */
-    private void handleAction(String chosenAction) {
+    public void handleAction(String chosenAction) {
         new Thread(() -> {
             try {
                 switch (chosenAction) {
@@ -263,52 +370,5 @@ public class MessageHandler implements Observer {
             }
         };
         timer.schedule(serverUpTask, Constants.PONG_INITIAL_DELAY, Constants.PONG_INTERVAL);
-    }
-
-    @Override
-    public void sendActionName(String action) {
-        handleAction(action);
-    }
-
-    @Override
-    public void sendParametersForGame(Integer numPlayers, Boolean isExpert) {
-        sendGameParameters(numPlayers, isExpert);
-    }
-
-    @Override
-    public void sendUsername(String username) {
-        if (username != null) {
-            ClientLoginMessage loginMessage = new ClientLoginMessage();
-            loginMessage.setUsername(username);
-            loginMessage.setAction("SET_USERNAME");
-
-            nc.sendMessageToServer(loginMessage.toJson());
-        }
-    }
-
-    @Override
-    public void sendCharacterName(CharacterName name) throws IOException {
-        ActionHandler.handleCharacterPlayed(name, nc);
-    }
-
-    @Override
-    public void sendActionParameters(String actionName, Color color, Integer island, Integer num_steps, Integer cloud,
-                                     Integer value, CharacterName characterName, List<Color> sourceStudents, List<Color> dstStudents) {
-        ActionArgs args = new ActionArgs();
-        args.setColor(color);
-        args.setIsland(island);
-        args.setNum_steps(num_steps);
-        args.setCloud(cloud);
-        args.setValue(value);
-        args.setCharacterName(characterName);
-        args.setSourceStudents(sourceStudents);
-        args.setDstStudents(dstStudents);
-
-        Action action = new Action(actionName, args);
-
-        ClientActionMessage toSend = new ClientActionMessage();
-        toSend.setAction(action);
-        toSend.setPlayer(client.getUsername());
-        nc.sendMessageToServer(toSend.toJson());
     }
 }
