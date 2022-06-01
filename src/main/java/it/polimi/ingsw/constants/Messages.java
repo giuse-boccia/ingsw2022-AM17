@@ -107,6 +107,7 @@ public class Messages {
     public static final String GAME_WON = "Congratulations, you won the game!";
     public static final String GAME_LOST = "Unfortunately you lost.";
     public static final String IS_PLAYING = " is playing...";
+
     // Server log messages
     public static final String SAVE_OK = "Game saved to file";
     public static final String SAVE_ERR = "Error while saving the game";
