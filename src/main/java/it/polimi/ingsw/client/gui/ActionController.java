@@ -5,7 +5,6 @@ import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Screen;
@@ -14,12 +13,10 @@ import java.util.List;
 
 public class ActionController implements GuiController {
 
-    @FXML
     AnchorPane root;
     double width, height;
 
-    @FXML
-    void initialize() {
+    public void initialize() {
         Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
         width = bounds.getWidth();
         height = bounds.getHeight();
@@ -57,5 +54,9 @@ public class ActionController implements GuiController {
             case 3 -> DrawingComponents.drawThreePlayersGame(gameState, width, height, root, username);
             default -> DrawingComponents.drawFourPlayersGame(gameState, width, height, root, username);
         }
+    }
+
+    public void setRoot(AnchorPane root) {
+        this.root = root;
     }
 }

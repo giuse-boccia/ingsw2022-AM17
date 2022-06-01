@@ -75,6 +75,27 @@ public class GuiView extends Application {
         });
     }
 
+    public void startGameScene() {
+        Platform.runLater(() -> {
+            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+            double screenWidth = bounds.getWidth();
+            double screenHeight = bounds.getHeight();
+            AnchorPane root = new AnchorPane();
+            root.setId(DrawingConstants.ID_ROOT_GAME);
+            scene = new Scene(root, screenWidth, screenHeight);
+            scene.getStylesheets().add("/css/style.css");
+
+            ActionController newController = new ActionController();
+            newController.setRoot(root);
+            newController.initialize();
+            currentController = newController;
+
+            stage.setResizable(false);
+            stage.setMaximized(true);
+            stage.setScene(scene);
+        });
+    }
+
     public void sendMessageToController(GameLobby lobby, GameState gameState, List<String> actions, String username) {
         Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, username));
     }
@@ -193,6 +214,7 @@ public class GuiView extends Application {
         newStage.initStyle(StageStyle.UNDECORATED);
         return newStage;
     }
+
 
     @Override
     public void start(Stage stage) throws Exception {

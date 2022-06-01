@@ -13,7 +13,7 @@ import java.util.List;
 public class GUI extends Client {
 
     private static final GuiView guiView = new GuiView();
-    private boolean isGameEnded = false;
+    private boolean isGameEnded = false, isGameStarted = false;
 
     public static void main(String[] args) {
 
@@ -63,7 +63,10 @@ public class GUI extends Client {
 
     @Override
     public void updateGameState(GameState gameState) {
-        guiView.changeScene("game", true);
+        if (!isGameStarted) {
+            isGameStarted = true;
+            guiView.startGameScene();
+        }
         guiView.sendMessageToController(null, gameState, null, getUsername());
     }
 
