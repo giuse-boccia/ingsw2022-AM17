@@ -181,7 +181,7 @@ public class GameController {
             return;
         }
 
-        String text = player.getUsername() + " moved a " + color + Messages.BROADCAST_TO_ISLAND + islandIndex;
+        String text = player.getUsername() + " moved a " + color + Messages.BROADCAST_TO_ISLAND + (islandIndex + 1);
         moveStudent(color, game.getGameBoard().getIslands().get(islandIndex), player, Messages.ACTION_MOVE_STUDENT_TO_ISLAND, text);
     }
 
