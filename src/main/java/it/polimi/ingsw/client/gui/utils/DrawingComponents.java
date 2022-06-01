@@ -30,6 +30,7 @@ public class DrawingComponents {
     public static final HashMap<Integer, List<BorderPane>> studentsOnIslands = new HashMap<>();
     public static final List<BorderPane> noEntriesOnIslands = new ArrayList<>();
     private static final List<BorderPane> islands = new ArrayList<>();
+    private static List<String> lastActions;
 
     public static void drawTwoPlayersGame(GameState gameState, double pageWidth, double pageHeight, AnchorPane root, String username) {
         drawGameComponentsForTwo(pageWidth, pageHeight, root, gameState, username);
@@ -479,6 +480,7 @@ public class DrawingComponents {
     }
 
     public static void setCurrentActions(List<String> currentActions) {
+        lastActions = currentActions;
         // TODO highlight the corresponding parts
         for (String action : currentActions) {
             highlightAction(action);
@@ -571,4 +573,7 @@ public class DrawingComponents {
         islands.clear();
     }
 
+    public static List<String> getLastActions() {
+        return lastActions;
+    }
 }
