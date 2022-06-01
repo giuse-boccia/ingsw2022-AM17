@@ -17,7 +17,7 @@ public abstract class Client {
     private String username;
     private String tmpUsername;
     private List<CharacterState> characters;
-    private Observer currentObserver;
+    private ObserverHandler currentObserverHandler;
 
     /**
      * Starts correctly the {@code CLI} or the {@code GUI} accordingly to the user choice
@@ -183,12 +183,12 @@ public abstract class Client {
         this.characters = characters;
     }
 
-    public Observer getCurrentObserver() {
-        return currentObserver;
+    public ObserverHandler getCurrentObserverHandler() {
+        return currentObserverHandler;
     }
 
-    public void setCurrentObserver(Observer currentObserver) {
-        this.currentObserver = currentObserver;
+    public void setCurrentObserverHandler(ObserverHandler currentObserverHandler) {
+        this.currentObserverHandler = currentObserverHandler;
     }
 
     public abstract void updateGameState(GameState gameState);
