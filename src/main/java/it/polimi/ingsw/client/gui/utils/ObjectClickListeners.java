@@ -135,11 +135,11 @@ public class ObjectClickListeners {
         lastCharacterPlayedNode.getStyleClass().clear();
         lastCharacterPlayedNode.getStyleClass().add("element_active_for_swap_character");
 
-        DrawingComponents.addBlueBordersToEntranceStudents();
+        DrawingComponents.setBlueBordersToEntranceStudents();
         if (lastCharacterPlayed == CharacterName.swapUpTo3FromEntranceToCard) {
-            DrawingComponents.addBlueBordersToCharacterStudents(lastCharacterPlayed);
+            DrawingComponents.setBlueBordersToCharacterStudents(lastCharacterPlayed);
         } else {
-            DrawingComponents.addBlueBordersToDiningStudents();
+            DrawingComponents.setBlueBordersToDiningStudents();
         }
 
         studentsToSwapForSwapCharacters = studentsToMove;

@@ -51,7 +51,6 @@ public class NetworkClient extends Thread {
         }
     }
 
-
     /**
      * Sends a message to the server
      *

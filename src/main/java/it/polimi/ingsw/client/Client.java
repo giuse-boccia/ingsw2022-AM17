@@ -97,6 +97,11 @@ public abstract class Client {
      */
     public abstract void showMessage(String message);
 
+    /**
+     * Shows the given message
+     *
+     * @param message the message to be shown
+     */
     public abstract void showWarningMessage(String message);
 
     /**
@@ -191,17 +196,48 @@ public abstract class Client {
         this.currentObserverHandler = currentObserverHandler;
     }
 
+    /**
+     * Updates the current {@code GameState} overwriting it with the given one
+     *
+     * @param gameState the {@code GameState} to overwrite over the current one
+     */
     public abstract void updateGameState(GameState gameState);
 
+    /**
+     * Asks the user the parameters to move a {@code Student} to an {@code Island}
+     */
     public abstract void askMoveStudentToIsland() throws IOException;
 
+    /**
+     * Asks the user the parameters to move a {@code Student} from a {@code Character} card, which can be move1FromCardToIsland or move1FromCardToDining
+     *
+     * @param toIsland if true the {@code Character} being used is move1FromCardToIsland
+     */
     public abstract void askToMoveOneStudentFromCard(boolean toIsland) throws IOException;
 
+    /**
+     * Asks the user an {@code Island} index to be used by the given {@code Character}
+     *
+     * @param characterName the given {@code Character} name
+     */
     public abstract void askIslandIndexForCharacter(CharacterName characterName) throws IOException;
 
+    /**
+     * Asks the user to pick a {@code Color} to be used by the given passive {@code Character}
+     *
+     * @param characterName the given {@code Character} name
+     */
     public abstract void pickColorForPassive(CharacterName characterName) throws IOException;
 
+    /**
+     * Plays the given {@code Character} without asking any parameter
+     *
+     * @param characterName the given {@code Character} name
+     */
     public abstract void playCharacterWithoutArguments(CharacterName characterName) throws IOException;
 
+    /**
+     * Asks the user if they want to create a new {@code Game} or to load the previous one
+     */
     public abstract void askCreateOrLoad() throws IOException;
 }
