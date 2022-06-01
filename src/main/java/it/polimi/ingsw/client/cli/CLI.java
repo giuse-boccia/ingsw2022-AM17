@@ -24,8 +24,7 @@ public class CLI extends Client {
     @Override
     public void getAssistantValue() throws IOException {
         int value = askForInteger(1, 10, "Insert value of the selected assistant [1-10]: ", "Assistant value");
-        getCurrentObserver().sendActionParameters("PLAY_ASSISTANT", null, null, null, null,
-                value, null, null, null);
+        getCurrentObserverHandler().notifyPlayAssistantObservers(value);
     }
 
     @Override
@@ -33,7 +32,7 @@ public class CLI extends Client {
         System.out.print(Messages.ASK_USERNAME);
         String username = stdIn.readLine();
         setTmpUsername(username);
-        getCurrentObserver().sendUsername(username);
+        getCurrentObserverHandler().notifyAllUsernameObservers(username);
     }
 
     @Override
@@ -54,7 +53,7 @@ public class CLI extends Client {
         if (res.equals("2")) {
             gracefulTermination("not implemented yet!");
             // TODO: remove graceTerm
-            getCurrentObserver().sendLoadGame();
+            getCurrentObserverHandler().notifyAllLoadGameObservers();
         }
     }
 
@@ -62,7 +61,7 @@ public class CLI extends Client {
     public void askNumPlayersAndExpertMode() throws IOException {
         int numPlayers = askForInteger(2, 4, "Insert desired number of players (2, 3 or 4): ", "Number of players");
         boolean isGameExpert = askExpertMode();
-        getCurrentObserver().sendParametersForGame(numPlayers, isGameExpert);
+        getCurrentObserverHandler().notifyAllGameParametersObservers(numPlayers, isGameExpert);
     }
 
     /**
@@ -130,21 +129,19 @@ public class CLI extends Client {
 
         } while (res < 1 || res > size);
 
-        getCurrentObserver().sendActionName(actions.get(res - 1));
+        getCurrentObserverHandler().notifyActionChoiceObservers(actions.get(res - 1));
     }
 
     @Override
     public void askIslandIndexForCharacter(CharacterName characterName) throws IOException {
         int islandIndex = askForInteger(1, 12, "Insert number of the selected island: ", "Island index");
-        getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, islandIndex - 1, null,
-                null, null, characterName, null, null);
+        getCurrentObserverHandler().notifyPlayCharacterObservers(characterName, null, islandIndex - 1, null, null);
     }
 
     @Override
     public void pickColorForPassive(CharacterName characterName) throws IOException {
         Color color = askForColor();
-        getCurrentObserver().sendActionParameters("PLAY_CHARACTER", color, null, null,
-                null, null, characterName, null, null);
+        getCurrentObserverHandler().notifyPlayCharacterObservers(characterName, color, null, null, null);
     }
 
     @Override
@@ -157,22 +154,20 @@ public class CLI extends Client {
                     - 1;
             characterName = CharacterName.move1FromCardToIsland;
         }
-        getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, islandIndex, null,
-                null, null, characterName, List.of(color), null);
+        getCurrentObserverHandler().notifyPlayCharacterObservers(characterName, null, islandIndex, List.of(color), null);
     }
 
     @Override
     public void askMoveStudentToIsland() throws IOException {
         int island = askForInteger(1, 12, "Insert number of the selected island: ", "Island index");
         Color color = askForColor();
-        getCurrentObserver().sendActionParameters("MOVE_STUDENT_TO_ISLAND", color, island - 1, null, null,
-                null, null, null, null);
+        getCurrentObserverHandler().notifyMoveStudentObservers(color, island - 1);
     }
 
     @Override
     public void askCharacterIndex() throws IOException {
         int index = askForInteger(1, 3, "Insert the number of the character you want to play [1-3]: ", "Character index");
-        getCurrentObserver().sendCharacterName(getCharacters().get(index - 1).getCharacterName());
+        getCurrentObserverHandler().notifyCharacterChoiceObservers(getCharacters().get(index - 1).getCharacterName());
     }
 
     @Override
@@ -190,8 +185,7 @@ public class CLI extends Client {
 
     @Override
     public void playCharacterWithoutArguments(CharacterName characterName) {
-        getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, null, null, null,
-                null, characterName, null, null);
+        getCurrentObserverHandler().notifyPlayCharacterObservers(characterName, null, null, null, null);
     }
 
     @Override
@@ -209,15 +203,13 @@ public class CLI extends Client {
             Color toAdd = askForColor();
             dstColors.add(toAdd);
         }
-        getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, null, null, null,
-                null, characterName, srcColors, dstColors);
+        getCurrentObserverHandler().notifyPlayCharacterObservers(characterName, null, null, srcColors, dstColors);
     }
 
     @Override
     public void askMoveStudentToDining() throws IOException {
         Color color = askForColor();
-        getCurrentObserver().sendActionParameters("MOVE_STUDENT_TO_DINING", color, null, null, null,
-                null, null, null, null);
+        getCurrentObserverHandler().notifyMoveStudentObservers(color, null);
     }
 
     public Color askForColor() throws IOException {
@@ -240,15 +232,13 @@ public class CLI extends Client {
     @Override
     public void askNumStepsOfMotherNature() throws IOException {
         int steps = askForInteger(0, 15, "Insert number of steps of mother nature: ", "Number of steps");
-        getCurrentObserver().sendActionParameters("MOVE_MN", null, null, steps, null,
-                null, null, null, null);
+        getCurrentObserverHandler().notifyMoveMNObservers(steps);
     }
 
     @Override
     public void askCloudIndex() throws IOException {
         int cloud = askForInteger(1, 4, "Insert number of the cloud you want to pick: ", "Cloud index");
-        getCurrentObserver().sendActionParameters("FILL_FROM_CLOUD", null, null, null, cloud - 1,
-                null, null, null, null);
+        getCurrentObserverHandler().notifyChooseCloudObservers(cloud - 1);
     }
 
     @Override
