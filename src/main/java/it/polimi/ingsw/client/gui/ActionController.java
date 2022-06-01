@@ -51,8 +51,7 @@ public class ActionController implements GuiController {
     }
 
     private void drawGameState(GameState gameState, String username) {
-        root.getChildren().removeIf(node -> true);
-
+        DrawingComponents.clearAll(root);
         switch (gameState.getPlayers().size()) {
             case 2 -> DrawingComponents.drawTwoPlayersGame(gameState, width, height, root, username);
             case 3 -> DrawingComponents.drawThreePlayersGame(gameState, width, height, root, username);
