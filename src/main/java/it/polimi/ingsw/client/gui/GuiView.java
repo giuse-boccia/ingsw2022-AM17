@@ -40,7 +40,6 @@ import java.util.stream.IntStream;
 
 public class GuiView extends Application {
 
-    private double width, height;
     private static GUI gui;
     private static Scene scene;
     private static Stage stage;
@@ -84,32 +83,6 @@ public class GuiView extends Application {
         Platform.runLater(() -> currentController.askCharacterParameters(name, requireColor, requireIsland, isSwapCard, moveOneStudentAway));
     }
 
-    public void showToast(String message) {
-        if (scene == null) return;
-        Platform.runLater(() -> {
-            Notifications.create().owner(stage).text(message).hideAfter(Duration.seconds(3)).position(Pos.BOTTOM_CENTER).show();
-        });
-    }
-
-    public static void showErrorDialog(String message, boolean closeApplication) {
-        Alert.AlertType alertType = closeApplication ? Alert.AlertType.ERROR : Alert.AlertType.WARNING;
-
-        Platform.runLater(() -> {
-            Alert alert = new Alert(alertType);
-            alert.setTitle("Error");
-            alert.setHeaderText(message);
-            alert.setContentText(null);
-
-            alert.showAndWait();
-
-            if (closeApplication) {
-                System.out.println(message);
-                System.out.println("The application will now close...");
-                System.exit(-1);
-            }
-        });
-    }
-
     public static void showPopupForColorOrBound(int bound) {
         Stage popupStage = getNewUndecoratedStage();
         double width = DrawingConstants.CHARACTER_POPUP_WIDTH;
@@ -141,8 +114,9 @@ public class GuiView extends Application {
             choiceBoxStackPane.setPrefWidth(width);
             anchorPane.getChildren().add(choiceBoxStackPane);
             confirmBtn.setOnMouseClicked(event -> {
-                GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", colorChoiceBox.getValue(), null,
-                        null, null, null, ObjectClickListeners.getLastCharacterPlayed(), null, null);
+                gui.getCurrentObserverHandler().notifyPlayCharacterObservers(
+                        ObjectClickListeners.getLastCharacterPlayed(), colorChoiceBox.getValue(), null, null, null
+                );
                 popupStage.close();
             });
         } else {
@@ -161,6 +135,32 @@ public class GuiView extends Application {
 
         popupStage.setScene(new Scene(anchorPane, width, height));
         popupStage.show();
+    }
+
+    public static void showErrorDialog(String message, boolean closeApplication) {
+        Alert.AlertType alertType = closeApplication ? Alert.AlertType.ERROR : Alert.AlertType.WARNING;
+
+        Platform.runLater(() -> {
+            Alert alert = new Alert(alertType);
+            alert.setTitle("Error");
+            alert.setHeaderText(message);
+            alert.setContentText(null);
+
+            alert.showAndWait();
+
+            if (closeApplication) {
+                System.out.println(message);
+                System.out.println("The application will now close...");
+                System.exit(-1);
+            }
+        });
+    }
+
+    public void showToast(String message) {
+        if (scene == null) return;
+        Platform.runLater(() ->
+                Notifications.create().owner(stage).text(message).hideAfter(Duration.seconds(3)).position(Pos.BOTTOM_CENTER).show()
+        );
     }
 
     public static void endGame(String message) {
@@ -201,8 +201,8 @@ public class GuiView extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/login.fxml"));
 
         Rectangle2D screen = Screen.getPrimary().getVisualBounds();
-        width = screen.getWidth();
-        height = screen.getHeight();
+        double width = screen.getWidth();
+        double height = screen.getHeight();
 
         scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setTitle("Eriantys");

@@ -21,7 +21,7 @@ public class LoginController implements GuiController {
     public void onLoginBtnPressed(ActionEvent event) {
         String username = usernameTextField.getText();
         GuiView.getGui().setTmpUsername(username);
-        GuiView.getGui().getCurrentObserver().sendUsername(username);
+        GuiView.getGui().getCurrentObserverHandler().notifyAllUsernameObservers(username);
     }
 
     @Override
