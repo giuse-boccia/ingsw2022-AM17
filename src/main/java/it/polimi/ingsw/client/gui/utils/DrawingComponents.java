@@ -206,7 +206,7 @@ public class DrawingComponents {
         for (int i = 0; i < Math.min(2, clouds.size()); i++) {
             CloudState cloud = clouds.get(i);
             AnchorPane cloudToDraw = getCloudWithStudents(cloud, width, height);
-            int cloudIndex = i;
+            int cloudIndex = i + (isOnRightSide ? 2 : 0);
             cloudToDraw.setOnMouseClicked(event -> ObjectClickListeners.setCloudClicked(cloudToDraw, cloudIndex));
             cloudsBox.getChildren().add(cloudToDraw);
             cloudImages.add(cloudToDraw);
