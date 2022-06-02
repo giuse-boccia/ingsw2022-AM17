@@ -75,4 +75,7 @@ public class DrawingConstants {
     // End game popup
     public static final int END_GAME_POPUP_WIDTH = 350;
     public static final int END_GAME_POPUP_HEIGHT = 200;
+
+    // IDs of elements
+    public static final String ID_ROOT_GAME = "root";
 }

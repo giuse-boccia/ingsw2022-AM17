@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
+import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
@@ -76,12 +77,33 @@ public class GuiView extends Application {
         });
     }
 
+    public void startGameScene() {
+        Platform.runLater(() -> {
+            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+            double screenWidth = bounds.getWidth();
+            double screenHeight = bounds.getHeight();
+            AnchorPane root = new AnchorPane();
+            root.setId(DrawingConstants.ID_ROOT_GAME);
+            scene = new Scene(root, screenWidth, screenHeight);
+            scene.getStylesheets().add("/css/style.css");
+
+            ActionController newController = new ActionController();
+            newController.setRoot(root);
+            newController.initialize();
+            currentController = newController;
+
+            stage.setResizable(false);
+            stage.setMaximized(true);
+            stage.setScene(scene);
+        });
+    }
+
     public void sendMessageToController(GameLobby lobby, GameState gameState, List<String> actions, String username) {
         Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, username));
     }
 
-    public void askCharacterParameters(CharacterName name, boolean requireColor, boolean requireIsland, boolean isSwapCard, boolean moveOneStudentAway) {
-        Platform.runLater(() -> currentController.askCharacterParameters(name, requireColor, requireIsland, isSwapCard, moveOneStudentAway));
+    public void askCharacterParameters(CharacterName name, GuiCharacterType characterType) {
+        Platform.runLater(() -> currentController.askCharacterParameters(name, characterType));
     }
 
     public static void showPopupForColorOrBound(int bound) {
@@ -194,6 +216,7 @@ public class GuiView extends Application {
         newStage.initStyle(StageStyle.UNDECORATED);
         return newStage;
     }
+
 
     @Override
     public void start(Stage stage) throws Exception {

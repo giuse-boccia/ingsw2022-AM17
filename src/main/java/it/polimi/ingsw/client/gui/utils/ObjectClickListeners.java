@@ -35,8 +35,7 @@ public class ObjectClickListeners {
     public static void setStudentClicked(Color color, Node element) {
         if (isMoveValid(element)) {
             if (studentClicked != null) {
-                studentClicked.getStyleClass().clear();
-                studentClicked.getStyleClass().add("highlight_element");
+                setElementHighlighted(studentClicked);
             }
             studentClicked = element;
             studentClicked.getStyleClass().add("selected_element");
@@ -57,13 +56,13 @@ public class ObjectClickListeners {
             if (studentClicked != null) {
                 setElementHighlighted(studentClicked);
             }
-            studentOnCardClicked.getStyleClass().clear();
-            studentOnCardClicked.getStyleClass().add("element_active_for_moving_character");
+            setElementHighlighted(studentOnCardClicked);
             GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
                     lastCharacterPlayed, null, null, List.of(studentOnCardClickedColor), null
             );
             studentOnCardClicked = null;
             studentOnCardClickedColor = null;
+            resetToCurrentHighlighting();
         } else if (studentClicked != null) {
             setElementHighlighted(studentClicked);
             // A student of the selected color has been moved to the dining room
@@ -124,6 +123,7 @@ public class ObjectClickListeners {
         GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
                 lastCharacterPlayed, null, null, srcStudentColorsForCharacter, dstStudentColorsForCharacter
         );
+        resetToCurrentHighlighting();
 
         srcStudentsForCharacter.clear();
         srcStudentColorsForCharacter.clear();
@@ -148,8 +148,7 @@ public class ObjectClickListeners {
     public static void setCloudClicked(Node element, int cloudIndex) {
         if (isMoveValid(element)) {
             if (cloudClicked != null) {
-                cloudClicked.getStyleClass().clear();
-                cloudClicked.getStyleClass().add("highlight_element");
+                setElementHighlighted(cloudClicked);
             }
             cloudClicked = element;
             GuiView.getGui().getCurrentObserverHandler().notifyChooseCloudObservers(cloudIndex);
@@ -162,12 +161,18 @@ public class ObjectClickListeners {
             GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
                     lastCharacterPlayed, null, islandIndex, List.of(studentOnCardClickedColor), null
             );
+            setElementHighlighted(studentOnCardClicked);
             studentOnCardClicked = null;
             studentOnCardClickedColor = null;
+            resetToCurrentHighlighting();
         } else if (hasIslandCharacterBeenPlayed(element)) {
             GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
                     lastCharacterPlayed, null, islandIndex, null, null
             );
+            setElementHighlighted(studentOnCardClicked);
+            studentOnCardClicked = null;
+            studentOnCardClickedColor = null;
+            resetToCurrentHighlighting();
         } else if (isMoveValid(element)) {
             if (studentClicked != null && studentClickedColor != null) {
                 setElementHighlighted(studentClicked);
@@ -222,5 +227,10 @@ public class ObjectClickListeners {
     public static void setStudentOnIslandClicked(Node element, Color color, int islandIndex) {
         setStudentsOnCardClicked(color, element);
         ObjectClickListeners.islandIndex = islandIndex;
+    }
+
+    private static void resetToCurrentHighlighting() {
+        DrawingComponents.removeGoldenBordersFromAllElements();
+        DrawingComponents.setCurrentActions(DrawingComponents.getLastActions());
     }
 }

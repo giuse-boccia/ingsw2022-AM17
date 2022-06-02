@@ -30,6 +30,7 @@ public class DrawingComponents {
     public static final HashMap<Integer, List<BorderPane>> studentsOnIslands = new HashMap<>();
     public static final List<BorderPane> noEntriesOnIslands = new ArrayList<>();
     private static final List<BorderPane> islands = new ArrayList<>();
+    private static List<String> lastActions;
 
     /**
      * Draws the given {@code GameState} of a two players {@code Game}
@@ -607,6 +608,7 @@ public class DrawingComponents {
      * @param currentActions the list of actions to be highlighted
      */
     public static void highlightCurrentActions(List<String> currentActions) {
+        lastActions = currentActions;
         for (String action : currentActions) {
             switch (action) {
                 case "MOVE_STUDENT_TO_DINING", "MOVE_STUDENT_TO_ISLAND" -> {
@@ -740,4 +742,7 @@ public class DrawingComponents {
         islands.clear();
     }
 
+    public static List<String> getLastActions() {
+        return lastActions;
+    }
 }
