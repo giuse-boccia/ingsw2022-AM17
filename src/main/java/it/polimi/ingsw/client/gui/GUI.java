@@ -2,12 +2,11 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.MessageHandler;
+import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
-import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.server.game_state.GameState;
 
-import java.io.IOException;
 import java.util.List;
 
 public class GUI extends Client {
@@ -72,7 +71,7 @@ public class GUI extends Client {
 
     @Override
     public void askColorListForSwapCharacters(int maxBound, String secondElement, CharacterName characterName) {
-        guiView.askCharacterParameters(characterName, false, false, true, false);
+        guiView.askCharacterParameters(characterName, GuiCharacterType.SWAP);
     }
 
     @Override
@@ -119,17 +118,17 @@ public class GUI extends Client {
     @Override
     public void askToMoveOneStudentFromCard(boolean toIsland) {
         CharacterName name = toIsland ? CharacterName.move1FromCardToIsland : CharacterName.move1FromCardToDining;
-        guiView.askCharacterParameters(name, false, false, false, true);
+        guiView.askCharacterParameters(name, GuiCharacterType.MOVE_ONE_STUDENT_AWAY);
     }
 
     @Override
     public void pickColorForPassive(CharacterName characterName) {
-        guiView.askCharacterParameters(characterName, true, false, false, false);
+        guiView.askCharacterParameters(characterName, GuiCharacterType.COLOR);
     }
 
     @Override
     public void askIslandIndexForCharacter(CharacterName characterName) {
-        guiView.askCharacterParameters(characterName, false, true, false, false);
+        guiView.askCharacterParameters(characterName, GuiCharacterType.ISLAND);
     }
 
     @Override

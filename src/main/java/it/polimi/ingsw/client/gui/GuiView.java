@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
+import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
@@ -19,7 +20,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -100,8 +100,8 @@ public class GuiView extends Application {
         Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, username));
     }
 
-    public void askCharacterParameters(CharacterName name, boolean requireColor, boolean requireIsland, boolean isSwapCard, boolean moveOneStudentAway) {
-        Platform.runLater(() -> currentController.askCharacterParameters(name, requireColor, requireIsland, isSwapCard, moveOneStudentAway));
+    public void askCharacterParameters(CharacterName name, GuiCharacterType characterType) {
+        Platform.runLater(() -> currentController.askCharacterParameters(name, characterType));
     }
 
     public static void showPopupForColorOrBound(int bound) {

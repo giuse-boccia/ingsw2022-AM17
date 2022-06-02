@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
+import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
@@ -34,16 +35,16 @@ public class ActionController implements GuiController {
     }
 
     @Override
-    public void askCharacterParameters(CharacterName name, boolean requireColor, boolean requireIsland, boolean isSwapCard, boolean moveOneStudentAway) {
-        if (moveOneStudentAway) {
-            Platform.runLater(() -> DrawingComponents.moveStudentAwayFromCard(name, name == CharacterName.move1FromCardToIsland));
-        } else if (isSwapCard) {
-            int maxStudents = name == CharacterName.swapUpTo3FromEntranceToCard ? 3 : 2;
-            GuiView.showPopupForColorOrBound(maxStudents);
-        } else if (requireColor) {
-            GuiView.showPopupForColorOrBound(-1);
-        } else if (requireIsland) {
-            Platform.runLater(DrawingComponents::askIslandIndex);
+    public void askCharacterParameters(CharacterName name, GuiCharacterType characterType) {
+        switch (characterType) {
+            case MOVE_ONE_STUDENT_AWAY -> Platform.runLater(() ->
+                    DrawingComponents.moveStudentAwayFromCard(name, name == CharacterName.move1FromCardToIsland));
+            case SWAP -> {
+                int maxStudents = name == CharacterName.swapUpTo3FromEntranceToCard ? 3 : 2;
+                GuiView.showPopupForColorOrBound(maxStudents);
+            }
+            case COLOR -> GuiView.showPopupForColorOrBound(-1);
+            case ISLAND -> Platform.runLater(DrawingComponents::askIslandIndex);
         }
     }
 
