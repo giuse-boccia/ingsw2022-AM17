@@ -231,6 +231,6 @@ public class ObjectClickListeners {
 
     private static void resetToCurrentHighlighting() {
         DrawingComponents.removeGoldenBordersFromAllElements();
-        DrawingComponents.setCurrentActions(DrawingComponents.getLastActions());
+        DrawingComponents.highlightCurrentActions(DrawingComponents.getLastActions());
     }
 }
