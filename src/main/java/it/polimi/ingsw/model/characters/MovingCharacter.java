@@ -147,6 +147,15 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         }
     }
 
+    /**
+     * Returns an {@code ArrayList} of students from a {@code List} of colors
+     *
+     * @param colors the {@code List} of colors given
+     * @param source the {@code Place} to get the correct students from
+     * @return an {@code ArrayList} of students from a {@code List} of colors
+     * @throws StudentNotOnTheCardException if the {@code Student} is not on the card
+     * @throws InvalidActionException       if the given {@code List} of colors is invalid
+     */
     private ArrayList<Student> getStudentListFromColorList(List<Color> colors, Place source) throws StudentNotOnTheCardException, InvalidActionException {
         if (colors == null) {
             throw new InvalidActionException(Messages.INVALID_ARGUMENT);

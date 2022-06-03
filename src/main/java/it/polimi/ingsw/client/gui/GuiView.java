@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
+import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
@@ -19,8 +20,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -38,7 +42,6 @@ import java.util.stream.IntStream;
 
 public class GuiView extends Application {
 
-    private double width, height;
     private static GUI gui;
     private static Scene scene;
     private static Stage stage;
@@ -55,13 +58,6 @@ public class GuiView extends Application {
     }
 
     public void changeScene(String resourceName, boolean fullscreen) {
-        // TODO at least read the following idea
-        // IDEA: non mandare un object al Controller, ma setta solo la variabile currentController.
-        // Quando arriva un messaggio fai currentController.receiveMessage e a quel punto parsa l'oggetto.
-        // In questo modo non si crea una nuova scena ogni volta
-
-        // TODO save in a variable the name of the current scene and do a check: if it is already showed, just pass data,
-        // otherwise show it and pass it data
         if (Objects.equals(currentSceneName, resourceName)) {
             return;
         }
@@ -81,41 +77,36 @@ public class GuiView extends Application {
         });
     }
 
+    public void startGameScene() {
+        Platform.runLater(() -> {
+            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+            double screenWidth = bounds.getWidth();
+            double screenHeight = bounds.getHeight();
+            AnchorPane root = new AnchorPane();
+            root.setId(DrawingConstants.ID_ROOT_GAME);
+            scene = new Scene(root, screenWidth, screenHeight);
+            scene.getStylesheets().add("/css/style.css");
+
+            ActionController newController = new ActionController();
+            newController.setRoot(root);
+            newController.initialize();
+            currentController = newController;
+
+            stage.setResizable(false);
+            stage.setMaximized(true);
+            stage.setScene(scene);
+        });
+    }
+
     public void sendMessageToController(GameLobby lobby, GameState gameState, List<String> actions, String username) {
         Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, username));
     }
 
-    public void askCharacterParameters(CharacterName name, boolean requireColor, boolean requireIsland, boolean isSwapCard, boolean moveOneStudentAway) {
-        Platform.runLater(() -> currentController.askCharacterParameters(name, requireColor, requireIsland, isSwapCard, moveOneStudentAway));
+    public void askCharacterParameters(CharacterName name, GuiCharacterType characterType) {
+        Platform.runLater(() -> currentController.askCharacterParameters(name, characterType));
     }
 
-    public void showToast(String message) {
-        if (scene == null) return;
-        Platform.runLater(() -> {
-            Notifications.create().owner(stage).text(message).hideAfter(Duration.seconds(3)).position(Pos.BOTTOM_CENTER).show();
-        });
-    }
-
-    public static void showErrorDialog(String message, boolean closeApplication) {
-        Alert.AlertType alertType = closeApplication ? Alert.AlertType.ERROR : Alert.AlertType.WARNING;
-
-        Platform.runLater(() -> {
-            Alert alert = new Alert(alertType);
-            alert.setTitle("Error");
-            alert.setHeaderText(message);
-            alert.setContentText(null);
-
-            alert.showAndWait();
-
-            if (closeApplication) {
-                System.out.println(message);
-                System.out.println("The application will now close...");
-                System.exit(-1);
-            }
-        });
-    }
-
-    public static void showPopupForColorOrBound(int bound, CharacterName name) {
+    public static void showPopupForColorOrBound(int bound) {
         Stage popupStage = getNewUndecoratedStage();
         double width = DrawingConstants.CHARACTER_POPUP_WIDTH;
         double height = DrawingConstants.CHARACTER_POPUP_HEIGHT;
@@ -146,8 +137,9 @@ public class GuiView extends Application {
             choiceBoxStackPane.setPrefWidth(width);
             anchorPane.getChildren().add(choiceBoxStackPane);
             confirmBtn.setOnMouseClicked(event -> {
-                GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", colorChoiceBox.getValue(), null,
-                        null, null, null, ObjectClickListeners.getLastCharacterPlayed(), null, null);
+                gui.getCurrentObserverHandler().notifyPlayCharacterObservers(
+                        ObjectClickListeners.getLastCharacterPlayed(), colorChoiceBox.getValue(), null, null, null
+                );
                 popupStage.close();
             });
         } else {
@@ -168,6 +160,55 @@ public class GuiView extends Application {
         popupStage.show();
     }
 
+    public static void showErrorDialog(String message, boolean closeApplication) {
+        Alert.AlertType alertType = closeApplication ? Alert.AlertType.ERROR : Alert.AlertType.WARNING;
+
+        Platform.runLater(() -> {
+            Alert alert = new Alert(alertType);
+            alert.setTitle("Error");
+            alert.setHeaderText(message);
+            alert.setContentText(null);
+
+            alert.showAndWait();
+
+            if (closeApplication) {
+                System.out.println(message);
+                System.out.println("The application will now close...");
+                System.exit(-1);
+            }
+        });
+    }
+
+    public void showToast(String message) {
+        if (scene == null) return;
+        Platform.runLater(() ->
+                Notifications.create().owner(stage).text(message).hideAfter(Duration.seconds(3)).position(Pos.BOTTOM_CENTER).show()
+        );
+    }
+
+    public static void endGame(String message) {
+        Platform.runLater(() -> {
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle(Messages.END_GAME_TITLE);
+
+            Text endGameText = new Text(message);
+            endGameText.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.SUBTITLE_FONT_SIZE));
+            Button closeAppBtn = new Button();
+            closeAppBtn.setText(Messages.END_GAME_BUTTON_TEXT);
+            closeAppBtn.setStyle("-fx-font-family: Algerian; -fx-font-size: 16");
+            closeAppBtn.setOnMouseClicked(event -> {
+                System.out.println(Messages.GAME_ENDED_MESSAGE);
+                System.exit(0);
+            });
+            VBox vBox = new VBox(endGameText, closeAppBtn);
+            vBox.setAlignment(Pos.CENTER);
+
+            stage.setScene(new Scene(vBox, DrawingConstants.END_GAME_POPUP_WIDTH, DrawingConstants.END_GAME_POPUP_HEIGHT));
+            stage.show();
+        });
+    }
+
     private static Stage getNewUndecoratedStage() {
         Stage newStage = new Stage();
         newStage.initModality(Modality.WINDOW_MODAL);
@@ -176,15 +217,17 @@ public class GuiView extends Application {
         return newStage;
     }
 
+
     @Override
     public void start(Stage stage) throws Exception {
         GuiView.stage = stage;
+        stage.getIcons().add(new Image("/gameboard/cranio_logo.png"));
         currentSceneName = "login";
         FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/login.fxml"));
 
         Rectangle2D screen = Screen.getPrimary().getVisualBounds();
-        width = screen.getWidth();
-        height = screen.getHeight();
+        double width = screen.getWidth();
+        double height = screen.getHeight();
 
         scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setTitle("Eriantys");

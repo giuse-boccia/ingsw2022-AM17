@@ -83,8 +83,12 @@ public class Controller {
      * @return the status field of the given json message
      */
     private String getMessageStatus(String json) {
-        Message msg = Message.fromJson(json);
-        return msg.getStatus();
+        try {
+            Message msg = Message.fromJson(json);
+            return msg.getStatus();
+        } catch (JsonSyntaxException e) {
+            return "";
+        }
     }
 
     /**
@@ -357,6 +361,11 @@ public class Controller {
         timer.schedule(task, 0, Constants.PING_INTERVAL);
     }
 
+    /**
+     * Sends a "PING" message to every client and returns how many messages have been sent
+     *
+     * @return how many "PING" messages have been sent
+     */
     private int sendPingAndReturnBound() {
         synchronized (boundLock) {
             pongCount = 0;

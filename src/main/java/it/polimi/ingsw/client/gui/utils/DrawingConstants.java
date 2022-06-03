@@ -9,7 +9,7 @@ public class DrawingConstants {
     // Characters constants
     public static final double CHARACTER_CARD_PROPORTION = 0.06;
     public static final double SPACE_BETWEEN_CHARACTERS_PROPORTION = 0.005;
-    public static final double CHARACTERS_BEGINNING_PROPORTION = 0.405;
+    public static final double CHARACTERS_BEGINNING_PROPORTION = 0.03;
     public static final double SPACE_BETWEEN_BORDERS_STUDENT_ON_CHARACTERS = 0.05;
     public static final double SPACE_BETWEEN_STUDENTS_ON_CHARACTERS = 0.007;
 
@@ -36,11 +36,14 @@ public class DrawingConstants {
     public static final double ASSISTANT_MAX_WIDTH_MULTILINE = 0.38;
     public static final double ASSISTANT_MAX_WIDTH_SINGLE_LINE = 0.1;
 
+    // Dashboard constanst
+    public static final double DASHBOARD_HEIGHT_OVER_WIDTH = 1454.0 / 3352.0;
+
     // Entrance constants
     public static final double ENTRANCE_HGAP = 0.018;
     public static final double ENTRANCE_VGAP = 0.03082;
     public static final double INITIAL_X_OFFSET_ENTRANCE = 0.034;
-    public static final double INITIAL_Y_OFFSET_ENTRANCE = 0.055;
+    public static final double INITIAL_Y_OFFSET_ENTRANCE = 0.052;
 
 
     // Dining room constants
@@ -68,4 +71,11 @@ public class DrawingConstants {
     public static final double CHARACTER_POPUP_BUTTON_OFFSET_Y = 0.85;
     public static final double CHARACTER_POPUP_CHOICE_BOX_OFFSET_Y = 0.45;
     public static final double CHARACTER_POPUP = 0.125;
+
+    // End game popup
+    public static final int END_GAME_POPUP_WIDTH = 350;
+    public static final int END_GAME_POPUP_HEIGHT = 200;
+
+    // IDs of elements
+    public static final String ID_ROOT_GAME = "root";
 }

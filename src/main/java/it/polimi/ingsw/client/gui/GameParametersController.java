@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
@@ -37,7 +38,9 @@ public class GameParametersController implements GuiController {
     }
 
     public void onStartButtonClicked(ActionEvent event) {
-        GuiView.getGui().getCurrentObserver().sendParametersForGame(numPlayersChoiceBox.getValue(), isGameExpert.isSelected());
+        GuiView.getGui().getCurrentObserverHandler().notifyAllGameParametersObservers(
+                numPlayersChoiceBox.getValue(), isGameExpert.isSelected()
+        );
     }
 
 
@@ -47,7 +50,7 @@ public class GameParametersController implements GuiController {
     }
 
     @Override
-    public void askCharacterParameters(CharacterName name, boolean requireColor, boolean requireIsland, boolean isSwapCard, boolean moveOneStudentAway) {
+    public void askCharacterParameters(CharacterName name, GuiCharacterType characterType) {
 
     }
 }

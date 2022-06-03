@@ -63,6 +63,37 @@ class PlanningPhaseControllerTest {
     }
 
     /**
+     * Tests what happens when the correct player sends a message with an invalid action name
+     */
+    @Test
+    void testInvalidActionName() throws GameEndedException {
+        startNewExpertGameForTwo();
+
+        String rickJson = "{status:ACTION,player:rick,action:{name:TEST,args:{value:5}}}";
+        controller.handleMessage(rickJson, rickCh);
+
+        ServerActionMessage rickResponse = ServerActionMessage.fromJson(rickCh.getJson());
+        assertEquals(3, rickResponse.getError());
+        assertEquals("[ERROR] " + Messages.INVALID_REQUEST, rickResponse.getDisplayText());
+    }
+
+    /**
+     * Tests what happens when a player logged in sends a message with a username different from
+     * the one he chose in the login phase
+     */
+    @Test
+    void testInvalidUsernameAfterLogin() throws GameEndedException {
+        startNewExpertGameForTwo();
+
+        String invalidJson = "{status:ACTION,player:not_rick,action:{name:PLAY_ASSISTANT,args:{value:5}}}";
+        controller.handleMessage(invalidJson, rickCh);
+
+        ServerActionMessage response = ServerActionMessage.fromJson(rickCh.getJson());
+        assertEquals("[ERROR] " + Messages.INVALID_IDENTITY, response.getDisplayText());
+        assertEquals(3, response.getError());
+    }
+
+    /**
      * Tests what happens when a player attempts to play an assistant when it's not his turn
      */
     @Test

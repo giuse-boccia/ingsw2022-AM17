@@ -125,6 +125,7 @@ public class GameController {
         }
 
         PlayerClient curPlayer;
+        String text = player.getUsername() + Messages.BROADCAST_ASSISTANT + (value) + Messages.BROADCAST_SEPARATOR;
 
         if (game.getCurrentRound().getPlanningPhase().isEnded()) {
             SavedGameState.saveToFile(game);
@@ -133,7 +134,7 @@ public class GameController {
 
             curPlayer = getPlayerClientFromPlayer(game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer());
 
-            String text = curPlayer.getUsername() + Messages.IS_PLAYING;
+            text += curPlayer.getUsername() + Messages.IS_PLAYING;
             if (game.getCurrentRound().isLastRound()) {
                 text = Messages.LAST_ROUND + " ";
             }
@@ -142,7 +143,7 @@ public class GameController {
             askForMoveInPAP(curPlayer);
         } else {
             curPlayer = getPlayerClientFromPlayer(game.getCurrentRound().getPlanningPhase().getNextPlayer());
-            sendBroadcastUpdateMessage(curPlayer.getUsername() + Messages.IS_PLAYING);
+            sendBroadcastUpdateMessage(text + curPlayer.getUsername() + Messages.IS_PLAYING);
             askForAssistant(curPlayer);
         }
 
@@ -160,7 +161,8 @@ public class GameController {
         Color color = action.getArgs().getColor();
         DiningRoom dining = player.getPlayer().getDashboard().getDiningRoom();
 
-        moveStudent(color, dining, player, Messages.ACTION_MOVE_STUDENT_TO_DINING);
+        String text = player.getUsername() + " moved a " + color + Messages.BROADCAST_TO_DINING;
+        moveStudent(color, dining, player, Messages.ACTION_MOVE_STUDENT_TO_DINING, text);
     }
 
     /**
@@ -179,7 +181,8 @@ public class GameController {
             return;
         }
 
-        moveStudent(color, game.getGameBoard().getIslands().get(islandIndex), player, Messages.ACTION_MOVE_STUDENT_TO_ISLAND);
+        String text = player.getUsername() + " moved a " + color + Messages.BROADCAST_TO_ISLAND + (islandIndex + 1);
+        moveStudent(color, game.getGameBoard().getIslands().get(islandIndex), player, Messages.ACTION_MOVE_STUDENT_TO_ISLAND, text);
     }
 
     /**
@@ -191,7 +194,7 @@ public class GameController {
      * @param actionName  the action name to send to the {@code Player} if there was an error in their choice
      * @throws GameEndedException if the {@code Game} is ended
      */
-    private void moveStudent(Color color, Place destination, PlayerClient player, String actionName) throws GameEndedException {
+    private void moveStudent(Color color, Place destination, PlayerClient player, String actionName, String message) throws GameEndedException {
         try {
             game.getCurrentRound().getCurrentPlayerActionPhase().moveStudent(color, destination);
         } catch (InvalidActionException | InvalidStudentException e) {
@@ -199,7 +202,7 @@ public class GameController {
             return;
         }
 
-        sendMessagesInPAP();
+        sendMessagesInPAP(message);
     }
 
     /**
@@ -219,7 +222,8 @@ public class GameController {
             return;
         }
 
-        sendMessagesInPAP();
+        String text = player.getUsername() + Messages.BROADCAST_FOR_MOTHER_NATURE + steps + " steps";
+        sendMessagesInPAP(text);
     }
 
     /**
@@ -241,13 +245,13 @@ public class GameController {
 
         SavedGameState.saveToFile(game);
 
+        String text = player.getUsername() + Messages.BROADCAST_FILL_FROM_CLOUD + (cloudNumber + 1);
         if (game.getCurrentRound().getCurrentPlayerActionPhase() != null || game.isEnded()) {
-            sendMessagesInPAP();
+            sendMessagesInPAP(text);
         } else {
             currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
             PlayerClient nextPlayer = players.get(currentPlayerIndex);
-            // sendBroadcastUpdateMessage(player.getUsername() + " chose cloud number " + (cloudNumber + 1));
-            sendBroadcastUpdateMessage(nextPlayer.getUsername() + Messages.IS_PLAYING);
+            sendBroadcastUpdateMessage(text + Messages.BROADCAST_SEPARATOR + nextPlayer.getUsername() + Messages.IS_PLAYING);
             askForAssistant(nextPlayer);
         }
     }
@@ -368,7 +372,7 @@ public class GameController {
      *
      * @throws GameEndedException if the game is ended
      */
-    private void sendMessagesInPAP() throws GameEndedException {
+    private void sendMessagesInPAP(String message) throws GameEndedException {
 
         if (game.isEnded()) {
             alertGameEnded();
@@ -379,7 +383,7 @@ public class GameController {
                 game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer()
         );
 
-        sendBroadcastUpdateMessage(nextPlayer.getUsername() + Messages.IS_PLAYING);
+        sendBroadcastUpdateMessage(message + Messages.BROADCAST_SEPARATOR + nextPlayer.getUsername() + Messages.IS_PLAYING);
 
         askForMoveInPAP(nextPlayer);
 
@@ -391,6 +395,12 @@ public class GameController {
     private void alertGameEnded() {
         //TODO Show everyone who won the game (if i lose i want to know who won)
         ArrayList<Player> winners = game.getWinners();
+        String winnersText;
+        if (winners.size() == 2) {
+            winnersText = winners.get(0).getName() + " and " + winners.get(1).getName() + Messages.BROADCAST_GAME_WON;
+        } else {
+            winnersText = winners.get(0).getName() + Messages.BROADCAST_GAME_WON;
+        }
         for (PlayerClient player : players) {
             ServerActionMessage actionMessage = new ServerActionMessage();
             actionMessage.setStatus(Messages.STATUS_END);
@@ -401,7 +411,7 @@ public class GameController {
                 actionMessage.setDisplayText(Messages.GAME_WON);
             } else {
                 // Defeat message
-                actionMessage.setDisplayText(Messages.GAME_LOST);
+                actionMessage.setDisplayText(Messages.GAME_LOST + winnersText);
             }
 
             player.getCommunicable().sendMessageToClient(actionMessage.toJson());

@@ -1,12 +1,10 @@
 package it.polimi.ingsw.client.gui.utils;
 
 import it.polimi.ingsw.client.gui.GuiView;
-import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
 import javafx.scene.Node;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,16 +28,14 @@ public class ObjectClickListeners {
 
     public static void setAssistantClicked(int value, Node element) {
         if (isMoveValid(element)) {
-            GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_ASSISTANT", null, null,
-                    null, null, value, null, null, null);
+            GuiView.getGui().getCurrentObserverHandler().notifyPlayAssistantObservers(value);
         }
     }
 
     public static void setStudentClicked(Color color, Node element) {
         if (isMoveValid(element)) {
             if (studentClicked != null) {
-                studentClicked.getStyleClass().clear();
-                studentClicked.getStyleClass().add("highlight_element");
+                setElementHighlighted(studentClicked);
             }
             studentClicked = element;
             studentClicked.getStyleClass().add("selected_element");
@@ -56,20 +52,21 @@ public class ObjectClickListeners {
 
     public static void setDiningRoomClicked() {
         if (studentOnCardClicked != null && lastCharacterPlayed == CharacterName.move1FromCardToDining) {
+            // Character move1FromCardToDining has been played
             if (studentClicked != null) {
                 setElementHighlighted(studentClicked);
             }
-            studentOnCardClicked.getStyleClass().clear();
-            studentOnCardClicked.getStyleClass().add("element_active_for_moving_character");
-            GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, null,
-                    null, null, null, lastCharacterPlayed, List.of(studentOnCardClickedColor), null);
+            setElementHighlighted(studentOnCardClicked);
+            GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
+                    lastCharacterPlayed, null, null, List.of(studentOnCardClickedColor), null
+            );
             studentOnCardClicked = null;
             studentOnCardClickedColor = null;
+            resetToCurrentHighlighting();
         } else if (studentClicked != null) {
             setElementHighlighted(studentClicked);
             // A student of the selected color has been moved to the dining room
-            GuiView.getGui().getCurrentObserver().sendActionParameters("MOVE_STUDENT_TO_DINING", studentClickedColor, null,
-                    null, null, null, null, null, null);
+            GuiView.getGui().getCurrentObserverHandler().notifyMoveStudentObservers(studentClickedColor, null);
             studentClicked = null;
             studentClickedColor = null;
         }
@@ -89,11 +86,7 @@ public class ObjectClickListeners {
         DrawingComponents.removeGoldenBordersFromAllCharacters();
         lastCharacterPlayed = name;
         lastCharacterPlayedNode = element;
-        try {
-            GuiView.getGui().getCurrentObserver().sendCharacterName(name);
-        } catch (IOException e) {
-            GuiView.getGui().gracefulTermination(Messages.SERVER_CRASHED);
-        }
+        GuiView.getGui().getCurrentObserverHandler().notifyCharacterChoiceObservers(name);
     }
 
     public static void setStudentsOnCardClicked(Color color, Node element) {
@@ -127,8 +120,10 @@ public class ObjectClickListeners {
         srcStudentsForCharacter.forEach(element -> element.getStyleClass().clear());
         dstStudentsForCharacter.forEach(element -> element.getStyleClass().clear());
 
-        GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, null, null,
-                null, null, lastCharacterPlayed, srcStudentColorsForCharacter, dstStudentColorsForCharacter);
+        GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
+                lastCharacterPlayed, null, null, srcStudentColorsForCharacter, dstStudentColorsForCharacter
+        );
+        resetToCurrentHighlighting();
 
         srcStudentsForCharacter.clear();
         srcStudentColorsForCharacter.clear();
@@ -140,11 +135,11 @@ public class ObjectClickListeners {
         lastCharacterPlayedNode.getStyleClass().clear();
         lastCharacterPlayedNode.getStyleClass().add("element_active_for_swap_character");
 
-        DrawingComponents.addBlueBordersToEntranceStudents();
+        DrawingComponents.setBlueBordersToEntranceStudents();
         if (lastCharacterPlayed == CharacterName.swapUpTo3FromEntranceToCard) {
-            DrawingComponents.addBlueBordersToCharacterStudents(lastCharacterPlayed);
+            DrawingComponents.setBlueBordersToCharacterStudents(lastCharacterPlayed);
         } else {
-            DrawingComponents.addBlueBordersToDiningStudents();
+            DrawingComponents.setBlueBordersToDiningStudents();
         }
 
         studentsToSwapForSwapCharacters = studentsToMove;
@@ -153,45 +148,41 @@ public class ObjectClickListeners {
     public static void setCloudClicked(Node element, int cloudIndex) {
         if (isMoveValid(element)) {
             if (cloudClicked != null) {
-                cloudClicked.getStyleClass().clear();
-                cloudClicked.getStyleClass().add("highlight_element");
+                setElementHighlighted(cloudClicked);
             }
             cloudClicked = element;
-            GuiView.getGui().getCurrentObserver().sendActionParameters(
-                    Messages.ACTION_FILL_FROM_CLOUD,
-                    null,
-                    null,
-                    null,
-                    cloudIndex,
-                    null,
-                    null,
-                    null,
-                    null
-            );
+            GuiView.getGui().getCurrentObserverHandler().notifyChooseCloudObservers(cloudIndex);
         }
 
     }
 
     public static void setIslandClicked(Node element, int numSteps, int islandIndex) {
         if (hasMovingCharacterBeenPlayed(element) && studentOnCardClicked != null && lastCharacterPlayed == CharacterName.move1FromCardToIsland) {
-            GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, islandIndex,
-                    null, null, null, lastCharacterPlayed, List.of(studentOnCardClickedColor), null);
+            GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
+                    lastCharacterPlayed, null, islandIndex, List.of(studentOnCardClickedColor), null
+            );
+            setElementHighlighted(studentOnCardClicked);
             studentOnCardClicked = null;
             studentOnCardClickedColor = null;
+            resetToCurrentHighlighting();
         } else if (hasIslandCharacterBeenPlayed(element)) {
-            GuiView.getGui().getCurrentObserver().sendActionParameters("PLAY_CHARACTER", null, islandIndex,
-                    null, null, null, lastCharacterPlayed, null, null);
+            GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
+                    lastCharacterPlayed, null, islandIndex, null, null
+            );
+            setElementHighlighted(studentOnCardClicked);
+            studentOnCardClicked = null;
+            studentOnCardClickedColor = null;
+            resetToCurrentHighlighting();
         } else if (isMoveValid(element)) {
             if (studentClicked != null && studentClickedColor != null) {
                 setElementHighlighted(studentClicked);
-                GuiView.getGui().getCurrentObserver().sendActionParameters("MOVE_STUDENT_TO_ISLAND", studentClickedColor,
-                        islandIndex, null, null, null, null, null, null);
+                GuiView.getGui().getCurrentObserverHandler().notifyMoveStudentObservers(studentClickedColor, islandIndex);
+
                 studentClicked = null;
                 studentClickedColor = null;
             } else {
                 element.getStyleClass().add("highlight_element");
-                GuiView.getGui().getCurrentObserver().sendActionParameters(Messages.ACTION_MOVE_MN, null, null,
-                        numSteps, null, null, null, null, null);
+                GuiView.getGui().getCurrentObserverHandler().notifyMoveMNObservers(numSteps);
             }
         }
     }
@@ -226,7 +217,7 @@ public class ObjectClickListeners {
     }
 
     private static boolean hasIslandCharacterBeenPlayed(Node element) {
-        return element.getStyleClass().contains("element_active_for_moving_character");
+        return element.getStyleClass().contains("element_active_for_island_character");
     }
 
     public static CharacterName getLastCharacterPlayed() {
@@ -236,5 +227,10 @@ public class ObjectClickListeners {
     public static void setStudentOnIslandClicked(Node element, Color color, int islandIndex) {
         setStudentsOnCardClicked(color, element);
         ObjectClickListeners.islandIndex = islandIndex;
+    }
+
+    private static void resetToCurrentHighlighting() {
+        DrawingComponents.removeGoldenBordersFromAllElements();
+        DrawingComponents.highlightCurrentActions(DrawingComponents.getLastActions());
     }
 }
