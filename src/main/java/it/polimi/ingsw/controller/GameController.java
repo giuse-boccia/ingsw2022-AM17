@@ -397,9 +397,9 @@ public class GameController {
         ArrayList<Player> winners = game.getWinners();
         String winnersText;
         if (winners.size() == 2) {
-            winnersText = winners.get(0) + " and " + winners.get(1) + Messages.BROADCAST_GAME_WON;
+            winnersText = winners.get(0).getName() + " and " + winners.get(1).getName() + Messages.BROADCAST_GAME_WON;
         } else {
-            winnersText = winners.get(0) + Messages.BROADCAST_GAME_WON;
+            winnersText = winners.get(0).getName() + Messages.BROADCAST_GAME_WON;
         }
         for (PlayerClient player : players) {
             ServerActionMessage actionMessage = new ServerActionMessage();
