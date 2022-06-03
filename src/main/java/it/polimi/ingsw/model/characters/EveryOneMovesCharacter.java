@@ -30,7 +30,7 @@ public class EveryOneMovesCharacter extends GameboardCharacter {
     @Override
     public void useEffect(PlayerActionPhase currentPlayerActionPhase, Island island, Color color, List<Color> srcColors, List<Color> dstColors) throws InvalidStudentException {
         for (Player player : getGameBoard().getGame().getPlayers()) {
-            int studentsToMove = Math.max(player.getDashboard().getDiningRoom().getNumberOfStudentsOfColor(color), 3);
+            int studentsToMove = Math.min(player.getDashboard().getDiningRoom().getNumberOfStudentsOfColor(color), 3);
             for (int i = 0; i < studentsToMove; i++) {
                 Student studentToGive = Students.findFirstStudentOfColor(player.getDashboard().getDiningRoom().getStudents(), color);
                 if (studentToGive != null) {
