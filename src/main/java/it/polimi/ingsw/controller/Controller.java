@@ -322,6 +322,11 @@ public class Controller {
         timer.schedule(task, 0, Constants.PING_INTERVAL);
     }
 
+    /**
+     * Sends a "PING" message to every client and returns how many messages have been sent
+     *
+     * @return how many "PING" messages have been sent
+     */
     private int sendPingAndReturnBound() {
         synchronized (boundLock) {
             pongCount = 0;

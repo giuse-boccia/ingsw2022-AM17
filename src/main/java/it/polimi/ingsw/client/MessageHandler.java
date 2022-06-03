@@ -304,7 +304,6 @@ public class MessageHandler implements ObserverHandler {
         handleAction(chosenAction);
     }
 
-
     /**
      * Handles an action message
      */

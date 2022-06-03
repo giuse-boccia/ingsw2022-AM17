@@ -32,12 +32,30 @@ public class DrawingComponents {
     private static final List<BorderPane> islands = new ArrayList<>();
     private static List<String> lastActions;
 
+    /**
+     * Draws the given {@code GameState} of a two players {@code Game}
+     *
+     * @param gameState  the given {@code GameState} to be drawn
+     * @param pageWidth  the width of the screen
+     * @param pageHeight the height of the screen
+     * @param root       the {@code AnchorPane} to attach the different components to
+     * @param username   the username of the {@code Player} whose GUI will be drawn the given {@code GameState} on
+     */
     public static void drawTwoPlayersGame(GameState gameState, double pageWidth, double pageHeight, AnchorPane root, String username) {
         drawGameComponentsForTwo(pageWidth, pageHeight, root, gameState, username);
 
         drawAssistants(gameState, pageWidth, pageHeight, root, username);
     }
 
+    /**
+     * Draws the given {@code GameState} of a three players {@code Game}
+     *
+     * @param gameState  the given {@code GameState} to be drawn
+     * @param pageWidth  the width of the screen
+     * @param pageHeight the height of the screen
+     * @param root       the {@code AnchorPane} to attach the different components to
+     * @param username   the username of the {@code Player} whose GUI will be drawn the given {@code GameState} on
+     */
     public static void drawThreePlayersGame(GameState gameState, double pageWidth, double pageHeight, AnchorPane root, String username) {
         List<PlayerState> players = gameState.getPlayers();
         drawGameComponentsForTwo(pageWidth, pageHeight, root, gameState, username);
@@ -48,6 +66,15 @@ public class DrawingComponents {
         drawAssistants(gameState, pageWidth, pageHeight, root, username);
     }
 
+    /**
+     * Draws the given {@code GameState} of a four players {@code Game}
+     *
+     * @param gameState  the given {@code GameState} to be drawn
+     * @param pageWidth  the width of the screen
+     * @param pageHeight the height of the screen
+     * @param root       the {@code AnchorPane} to attach the different components to
+     * @param username   the username of the {@code Player} whose GUI will be drawn the given {@code GameState} on
+     */
     public static void drawFourPlayersGame(GameState gameState, double pageWidth, double pageHeight, AnchorPane root, String username) {
         List<PlayerState> players = gameState.getPlayers();
         drawGameComponentsForTwo(pageWidth, pageHeight, root, gameState, username);
@@ -61,6 +88,15 @@ public class DrawingComponents {
         drawAssistants(gameState, pageWidth, pageHeight, root, username);
     }
 
+    /**
+     * Draws the components of a two players {@code Game}
+     *
+     * @param pageWidth  the width of the screen
+     * @param pageHeight the height of the screen
+     * @param root       the {@code AnchorPane} to attach the different components to
+     * @param gameState  the given {@code GameState} to be drawn
+     * @param username   the username of the {@code Player} whose GUI will be drawn the given {@code GameState} on
+     */
     private static void drawGameComponentsForTwo(double pageWidth, double pageHeight, AnchorPane root, GameState gameState, String username) {
         root.getStylesheets().add("/css/game_elements.css");
 
@@ -81,6 +117,14 @@ public class DrawingComponents {
         }
     }
 
+    /**
+     * Draws a {@code DashBoard} with all the students in the {@code Entrance} and {@code DiningRoom}, the professors and the towers
+     *
+     * @param player   the player to draw the {@code DashBoard} of
+     * @param y        the starting Y coordinate of the {@code DashBoard}
+     * @param root     the {@code AnchorPane} to attach the {@code DashBoard} to
+     * @param username the username of the player who owns the {@code DashBoard}
+     */
     private static void drawDashboard(PlayerState player, double y, AnchorPane root, String username) {
         ImageView dashboardImage = new ImageView(new Image("/gameboard/Plancia_DEF_circles.png"));
         dashboardImage.setPreserveRatio(true);
@@ -209,6 +253,17 @@ public class DrawingComponents {
 
     }
 
+    /**
+     * Draws the text under/over the {@code DashBoard} with the username of the given {@code Player} and, if the game is in ExpertMode, the number of coins they own
+     *
+     * @param player     the player to insert in the text
+     * @param x          the starting X coordinate of the text
+     * @param y          the starting Y coordinate of the text
+     * @param pageWidth  the width of the screen
+     * @param pageHeight the height of the screen
+     * @param root       the {@code AnchorPane} to attach te text to
+     * @param isExpert   true if the the {@code Game} is in Expert Mode
+     */
     private static void drawDashboardText(PlayerState player, double x, double y, double pageWidth, double pageHeight, AnchorPane root, boolean isExpert) {
         double startingX = x + pageWidth * DrawingConstants.PLAYER_NAME_INITIAL_PADDING;
         Text text;
@@ -239,15 +294,23 @@ public class DrawingComponents {
         }
     }
 
-    private static void drawIslands(GameState gameState, double width, double height, AnchorPane root) {
+    /**
+     * Draws the islands accordingly to the given {@code GameState}
+     *
+     * @param gameState  the {@code GameState} to fetch the information about the islands from
+     * @param pageWidth  the width of the screen
+     * @param pageHeight the height of the screen
+     * @param root       the {@code AnchorPane} to attach the islands to
+     */
+    private static void drawIslands(GameState gameState, double pageWidth, double pageHeight, AnchorPane root) {
         List<IslandState> islands = gameState.getIslands();
         double deltaAngle = (2 * 3.14) / islands.size();
-        double radius = height * 0.32;
+        double radius = pageHeight * 0.32;
         for (int i = 0; i < islands.size(); i++) {
             String path = "/gameboard/islands/Isola_" + ((i % 3) + 1) + ".png";
             ImageView island = new ImageView(path);
             island.setPreserveRatio(true);
-            island.setFitWidth(width * 0.1);
+            island.setFitWidth(pageWidth * 0.1);
             Bounds imageBounds = island.boundsInParentProperty().get();
             double islandWidth = imageBounds.getWidth();
             double islandHeight = imageBounds.getHeight();
@@ -258,15 +321,15 @@ public class DrawingComponents {
             DrawingComponents.islands.add(bp);
             double X = Math.cos(deltaAngle * i) * radius;
             double Y = Math.sin(deltaAngle * i) * radius;
-            double startingXIsland = width * 0.73 - islandWidth / 2 + X;
-            double startingYIsland = height * 0.4 - islandHeight / 2 + Y;
+            double startingXIsland = pageWidth * 0.73 - islandWidth / 2 + X;
+            double startingYIsland = pageHeight * 0.4 - islandHeight / 2 + Y;
             bp.setLayoutX(startingXIsland);
             bp.setLayoutY(startingYIsland);
             root.getChildren().add(bp);
 
             GridPane elementsOnIsland = new GridPane();
-            elementsOnIsland.setLayoutX(width * 0.019);
-            elementsOnIsland.setLayoutY(height * 0.025);
+            elementsOnIsland.setLayoutX(pageWidth * 0.019);
+            elementsOnIsland.setLayoutY(pageHeight * 0.025);
 
             for (int j = 0; j < islands.get(i).getNumOfTowers(); j++) {
                 String towerPath = "/gameboard/towers/" + islands.get(i).getTowerColor().toString().toLowerCase() + "_tower.png";
@@ -313,13 +376,22 @@ public class DrawingComponents {
                 MN.setPreserveRatio(true);
                 MN.setFitWidth(islandWidth * 0.3);
                 BorderPane motherNature = new BorderPane(MN);
-                motherNature.setLayoutX(islandWidth - width * 0.025);
+                motherNature.setLayoutX(islandWidth - pageWidth * 0.025);
                 motherNature.setLayoutY(islandHeight / 3);
                 bp.getChildren().add(motherNature);
             }
         }
     }
 
+    /**
+     * Draws the assistants accordingly to the given {@code GameState}
+     *
+     * @param gameState  the {@code GameState} to fetch the information about the assistants from
+     * @param pageWidth  the width of the screen
+     * @param pageHeight the height of the screen
+     * @param root       the {@code AnchorPane} to attach the islands to
+     * @param username   the username of the player who owns the assistants
+     */
     private static void drawAssistants(GameState gameState, double pageWidth, double pageHeight, AnchorPane root, String username) {
         PlayerState player = gameState.getPlayers().stream().filter(p -> p.getName().equals(username)).findAny().orElse(null);
         if (player != null && player.getAssistants() != null) {
@@ -330,6 +402,16 @@ public class DrawingComponents {
         }
     }
 
+    /**
+     * Returns a {@code GridPane} containing the assistants to be drawn
+     *
+     * @param assistants the {@code Array} of the assistants to be drawn
+     * @param pageWidth  the width of the screen
+     * @param pageHeight the height of the screen
+     * @param initialX   the initial X coordinate for the assistants
+     * @param finalX     the final X coordinate for the assistants
+     * @return a {@code GridPane} containing the assistants to be drawn
+     */
     private static GridPane getAssistants(int[] assistants, double pageWidth, double pageHeight, double initialX, double finalX) {
         if (assistants.length == 0) return new GridPane();
         double initialY = pageHeight * 0.77;
@@ -357,7 +439,14 @@ public class DrawingComponents {
         return gridPane;
     }
 
-
+    /**
+     * Draws the given clouds with the correct students on each one
+     *
+     * @param clouds     the {@code List} of clouds to be drawn
+     * @param pageWidth  the width of the screen
+     * @param pageHeight the height of the screen
+     * @param root       the {@code AnchorPane} to attach the clouds to
+     */
     private static void drawClouds(List<CloudState> clouds, double pageWidth, double pageHeight, AnchorPane root) {
         GridPane cloudGrid = new GridPane();
         double layoutX = dashboardHeight / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH + pageWidth * DrawingConstants.OFFSET_OF_CLOUD_FROM_BORDER;
@@ -377,10 +466,18 @@ public class DrawingComponents {
         root.getChildren().add(cloudGrid);
     }
 
-    private static AnchorPane getCloudWithStudents(CloudState cloud, double width, double height) {
+    /**
+     * Returns an {@code AnchorPane} containing the given cloud with the correct students on it
+     *
+     * @param cloud      the cloud to put te correct students on
+     * @param pageWidth  the width of the screen
+     * @param pageHeight the height of the screen
+     * @return an {@code AnchorPane} containing the given cloud with the correct students on it
+     */
+    private static AnchorPane getCloudWithStudents(CloudState cloud, double pageWidth, double pageHeight) {
         ImageView cloudBackground = new ImageView(new Image("/gameboard/clouds/cloud_card.png"));
         cloudBackground.setPreserveRatio(true);
-        cloudBackground.setFitHeight(height * DrawingConstants.CLOUD_HEIGHT);
+        cloudBackground.setFitHeight(pageHeight * DrawingConstants.CLOUD_HEIGHT);
 
         GridPane studentsPane = new GridPane();
         Bounds imageBounds = cloudBackground.boundsInParentProperty().get();
@@ -395,7 +492,7 @@ public class DrawingComponents {
                         cloud.getStudents().get(j).getColor().toString().toLowerCase() + ".png";
                 ImageView student = new ImageView(new Image(studentPath));
                 student.setPreserveRatio(true);
-                student.setFitWidth(width * 0.4 / 25);
+                student.setFitWidth(pageWidth * 0.4 / 25);
 
                 studentsPane.add(student, j % 2, j / 2);
             }
@@ -404,6 +501,14 @@ public class DrawingComponents {
         return new AnchorPane(cloudBackground, studentsPane);
     }
 
+    /**
+     * Draws the given characters with the correct students on each one (if they have some)
+     *
+     * @param characters the {@code List} of characters to be drawn
+     * @param pageWidth  the width of the screen
+     * @param pageHeight the height of the screen
+     * @param root       the {@code AnchorPane} to attach the clouds to
+     */
     private static void drawCharacters(List<CharacterState> characters, double pageWidth, double pageHeight, AnchorPane root) {
         double coordX = dashboardHeight / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH + pageWidth * DrawingConstants.CHARACTERS_BEGINNING_PROPORTION;
         int heightProportion = 13;
@@ -461,6 +566,15 @@ public class DrawingComponents {
         }
     }
 
+    /**
+     * Returns an {@code ImageView} containing the {@code Image} from the given path
+     *
+     * @param path     the path which the image to draw is at
+     * @param x        the starting X coordinate of the {@code ImageView}
+     * @param y        the starting Y coordinate of the {@code ImageView}
+     * @param fitWidth the witdth to be set to the {@code ImageView}
+     * @return an {@code ImageView} containing the {@code Image} from the given path
+     */
     private static ImageView getImageView(String path, double x, double y, double fitWidth) {
         ImageView iv = new ImageView(new Image(path));
         iv.setPreserveRatio(true);
@@ -470,6 +584,15 @@ public class DrawingComponents {
         return iv;
     }
 
+    /**
+     * Returns a {@code GridPane} accordingly to the given parameters
+     *
+     * @param x    the starting X coordinate of the {@code GridPane}
+     * @param y    the starting Y coordinate of the {@code GridPane}
+     * @param hgap the gap to be set horizontally between two elements of the {@code GridPane}
+     * @param vgap the gap to be set vertically between two elements of the {@code GridPane}
+     * @return a {@code GridPane} accordingly to the given parameters
+     */
     private static GridPane getGridPane(double x, double y, double hgap, double vgap) {
         GridPane grid = new GridPane();
         grid.setLayoutX(x);
@@ -479,56 +602,91 @@ public class DrawingComponents {
         return grid;
     }
 
-    public static void setCurrentActions(List<String> currentActions) {
+    /**
+     * Highlights with the correct color the given actions
+     *
+     * @param currentActions the list of actions to be highlighted
+     */
+    public static void highlightCurrentActions(List<String> currentActions) {
         lastActions = currentActions;
-        // TODO highlight the corresponding parts
         for (String action : currentActions) {
-            highlightAction(action);
-        }
-    }
-
-    private static void highlightAction(String action) {
-        switch (action) {
-            case "MOVE_STUDENT_TO_DINING", "MOVE_STUDENT_TO_ISLAND" -> {
-                entranceStudents.forEach(DrawingComponents::setGoldenBorder);
-                diningGaps.forEach(DrawingComponents::setGoldenBorder);
-                islands.forEach(DrawingComponents::setGoldenBorder);
+            switch (action) {
+                case "MOVE_STUDENT_TO_DINING", "MOVE_STUDENT_TO_ISLAND" -> {
+                    entranceStudents.forEach(DrawingComponents::setGoldenBorder);
+                    diningGaps.forEach(DrawingComponents::setGoldenBorder);
+                    islands.forEach(DrawingComponents::setGoldenBorder);
+                }
+                case "PLAY_ASSISTANT" -> assistantCards.forEach(DrawingComponents::setGoldenBorder);
+                case "PLAY_CHARACTER" -> characterImages.forEach(DrawingComponents::setGoldenBorder);
+                case "MOVE_MN" -> islands.forEach(DrawingComponents::setGoldenBorder);
+                case "FILL_FROM_CLOUD" -> cloudImages.forEach(DrawingComponents::setGoldenBorder);
             }
-            case "PLAY_ASSISTANT" -> assistantCards.forEach(DrawingComponents::setGoldenBorder);
-            case "PLAY_CHARACTER" -> characterImages.forEach(DrawingComponents::setGoldenBorder);
-            case "MOVE_MN" -> islands.forEach(DrawingComponents::setGoldenBorder);
-            case "FILL_FROM_CLOUD" -> cloudImages.forEach(DrawingComponents::setGoldenBorder);
         }
     }
 
+    /**
+     * Removes the golden border from all {@code Characters}
+     */
     public static void removeGoldenBordersFromAllCharacters() {
         characterImages.forEach(character -> character.getStyleClass().clear());
     }
 
+    /**
+     * Sets a golden border to the given element
+     *
+     * @param element the element to set the golden border to
+     */
     private static void setGoldenBorder(Node element) {
         element.getStyleClass().add("highlight_element");
     }
 
+    /**
+     * Sets a golden blue to the given element
+     *
+     * @param element the element to set the golden border to
+     */
     private static void setBlueBorders(Node element) {
         element.getStyleClass().add("element_active_for_swap_character");
     }
 
+    /**
+     * Sets a green border to the given element
+     *
+     * @param element the element to set the golden border to
+     */
     private static void setGreenBorders(Node element) {
         element.getStyleClass().add("element_active_for_moving_character");
     }
 
-    public static void addBlueBordersToEntranceStudents() {
+    /**
+     * Sets a blue border to the students in the {@code Entrance}
+     */
+    public static void setBlueBordersToEntranceStudents() {
         entranceStudents.forEach(DrawingComponents::setBlueBorders);
     }
 
-    public static void addBlueBordersToCharacterStudents(CharacterName name) {
+    /**
+     * Sets a blue border on the students on the given {@code Character}
+     *
+     * @param name the name of the {@code Character} whose students to set a blue border to
+     */
+    public static void setBlueBordersToCharacterStudents(CharacterName name) {
         studentsOnCharacter.get(name).forEach(DrawingComponents::setBlueBorders);
     }
 
-    public static void addBlueBordersToDiningStudents() {
+    /**
+     * Sets a blue border to the students in the {@code DinigRoom}
+     */
+    public static void setBlueBordersToDiningStudents() {
         diningStudents.forEach(DrawingComponents::setBlueBorders);
     }
 
+    /**
+     * Moves the selected {@code Student} away from the {@code Character} card to an {@code Island} or to the {@code DiningRoom}
+     *
+     * @param name     the name of the {@code Character} to move the selected {@code Student} from
+     * @param toIsland true if the selected {@code Student} should be moved to an {@code Island}, false if it should be moved to the {@code DiningRoom}
+     */
     public static void moveStudentAwayFromCard(CharacterName name, boolean toIsland) {
         if (studentsOnCharacter.containsKey(name)) {
             removeGoldenBordersFromAllElements();
@@ -542,11 +700,17 @@ public class DrawingComponents {
         }
     }
 
+    /**
+     * Makes every island able to be chosen by the user to fulfill an effect of a {@code Character} which involves an {@code Island}
+     */
     public static void askIslandIndex() {
         removeGoldenBordersFromAllElements();
         islands.forEach(island -> island.getStyleClass().add("element_active_for_island_character"));
     }
 
+    /**
+     * Removes the golden border from all the elements in the gameboard
+     */
     public static void removeGoldenBordersFromAllElements() {
         diningGaps.forEach(gap -> gap.getStyleClass().clear());
         entranceStudents.forEach(student -> student.getStyleClass().clear());
@@ -558,6 +722,11 @@ public class DrawingComponents {
         characterImages.forEach(character -> character.getStyleClass().clear());
     }
 
+    /**
+     * Clears every static list of elements which could be highlighted and also clears the given {@code AnchorPane}
+     *
+     * @param root the {@code AnchorPane} to be cleared
+     */
     public static void clearAll(AnchorPane root) {
         root.getChildren().clear();
 

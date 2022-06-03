@@ -26,7 +26,7 @@ public class ActionController implements GuiController {
     @Override
     public void receiveData(GameLobby lobby, GameState gameState, List<String> actions, String username) {
         if (actions != null) {
-            Platform.runLater(() -> DrawingComponents.setCurrentActions(actions));
+            Platform.runLater(() -> DrawingComponents.highlightCurrentActions(actions));
         }
 
         if (gameState == null) return;
@@ -48,6 +48,12 @@ public class ActionController implements GuiController {
         }
     }
 
+    /**
+     * Draws the given {@code GameState} on the GUI
+     *
+     * @param gameState the {@code GameState} to be drawn
+     * @param username  the username of the {@code Player} whose GUI will be drawn the given {@code GameState} on
+     */
     private void drawGameState(GameState gameState, String username) {
         DrawingComponents.clearAll(root);
         switch (gameState.getPlayers().size()) {

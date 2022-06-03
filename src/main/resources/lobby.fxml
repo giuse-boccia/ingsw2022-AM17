@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -8,10 +10,22 @@
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
             xmlns="http://javafx.com/javafx/18" fx:controller="it.polimi.ingsw.client.gui.LobbyController">
    <children>
-      <Label layoutX="220.0" layoutY="32.0" text="GAME LOBBY">
+      <ImageView fitHeight="613.0" fitWidth="600.0" layoutY="-6.0" opacity="0.67" pickOnBounds="true"
+                 preserveRatio="true">
+         <image>
+            <Image url="@gameboard/backgrounds/login_background.png"/>
+         </image>
+      </ImageView>
+      <Label layoutX="220.0" layoutY="139.0" text="GAME LOBBY">
          <font>
             <Font name="Baskerville Old Face" size="24.0"/>
          </font>
       </Label>
+      <ImageView fitHeight="77.0" fitWidth="79.0" layoutX="8.0" layoutY="315.0" pickOnBounds="true"
+                 preserveRatio="true">
+         <image>
+            <Image url="@gameboard/cranio_logo.png"/>
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

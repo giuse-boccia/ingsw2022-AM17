@@ -64,23 +64,6 @@ public class CLI extends Client {
         getCurrentObserverHandler().notifyAllGameParametersObservers(numPlayers, isGameExpert);
     }
 
-    /**
-     * Asks the player to choose whether to play in expert mode or not
-     *
-     * @return true if the player wants to play in expert mode, false otherwise
-     */
-    public boolean askExpertMode() throws IOException {
-        String res;
-
-        do {
-            System.out.print("Do you want to play in expert mode? [Y/n] ");
-            res = stdIn.readLine();
-            res = res.toLowerCase(Locale.ROOT);
-        } while (!res.equals("y") && !res.equals("n") && !res.equals(""));
-
-        return res.equals("y") || res.equals("");
-    }
-
     @Override
     public void showCurrentLobby(GameLobby lobby) {
         printBlueLine();
@@ -212,23 +195,6 @@ public class CLI extends Client {
         getCurrentObserverHandler().notifyMoveStudentObservers(color, null);
     }
 
-    public Color askForColor() throws IOException {
-        String res;
-        Color color;
-        do {
-            System.out.print("Write the color of the student: ");
-            res = stdIn.readLine();
-            try {
-                color = Color.valueOf(res.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                System.out.println("Color not recognised [blue | green | yellow | red | pink]");
-                color = null;
-            }
-        } while (color == null);
-
-        return color;
-    }
-
     @Override
     public void askNumStepsOfMotherNature() throws IOException {
         int steps = askForInteger(0, 15, "Insert number of steps of mother nature: ", "Number of steps");
@@ -249,7 +215,6 @@ public class CLI extends Client {
         }
     }
 
-
     @Override
     public void showMessage(String message) {
         printBlueLine();
@@ -266,6 +231,12 @@ public class CLI extends Client {
      */
     private void printBlueLine() {
         System.out.println(CliView.BLUE_LINE);
+    }
+
+    @Override
+    public void updateGameState(GameState gameState) {
+        printBlueLine();
+        CliView.printGameState(gameState, getUsername());
     }
 
     /**
@@ -294,9 +265,42 @@ public class CLI extends Client {
         return res;
     }
 
-    @Override
-    public void updateGameState(GameState gameState) {
-        printBlueLine();
-        CliView.printGameState(gameState, getUsername());
+    /**
+     * Asks the user for a {@code Color}
+     *
+     * @return the {@code Color} picked by the user
+     */
+    public Color askForColor() throws IOException {
+        String res;
+        Color color;
+        do {
+            System.out.print("Write the color of the student: ");
+            res = stdIn.readLine();
+            try {
+                color = Color.valueOf(res.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Color not recognised [blue | green | yellow | red | pink]");
+                color = null;
+            }
+        } while (color == null);
+
+        return color;
+    }
+
+    /**
+     * Asks the player to choose whether to play in expert mode or not
+     *
+     * @return true if the player wants to play in expert mode, false otherwise
+     */
+    public boolean askExpertMode() throws IOException {
+        String res;
+
+        do {
+            System.out.print("Do you want to play in expert mode? [Y/n] ");
+            res = stdIn.readLine();
+            res = res.toLowerCase(Locale.ROOT);
+        } while (!res.equals("y") && !res.equals("n") && !res.equals(""));
+
+        return res.equals("y") || res.equals("");
     }
 }
