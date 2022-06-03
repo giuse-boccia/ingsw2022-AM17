@@ -88,8 +88,12 @@ public class Controller {
     private String getMessageStatus(String json) {
         Type type = new TypeToken<Message>() {
         }.getType();
-        Message msg = gson.fromJson(json, type);
-        return msg.getStatus();
+        try {
+            Message msg = gson.fromJson(json, type);
+            return msg.getStatus();
+        } catch (JsonSyntaxException e) {
+            return "";
+        }
     }
 
     /**
