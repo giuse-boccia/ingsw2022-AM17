@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.characters;
+package it.polimi.ingsw.model.characters.moving;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.exceptions.InvalidActionException;
@@ -6,6 +6,9 @@ import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.exceptions.StudentNotOnTheCardException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.TestGameFactory;
+import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.model.characters.CharacterName;
+import it.polimi.ingsw.model.characters.MovingCharacter;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
