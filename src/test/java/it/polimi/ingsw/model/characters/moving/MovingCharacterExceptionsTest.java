@@ -4,6 +4,7 @@ import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidCharacterException;
 import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.characters.MovingCharacter;
@@ -13,6 +14,9 @@ import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -69,4 +73,18 @@ public class MovingCharacterExceptionsTest {
                 character.useEffect(pap, null, Color.YELLOW, null, null));
     }
 
+    /**
+     * Tries to play a character in a non-expert Game
+     */
+    @Test
+    void testCharacterInNonExpertMode() {
+        MovingCharacter character = new MovingCharacter(CharacterName.move1FromCardToIsland, gb, 0, 2);
+        ArrayList<Player> players = new ArrayList<>(List.of(new Player("Clod", 8), new Player("Giuse", 8)));
+        Game newGame = new Game(players, false);
+
+        PlayerActionPhase pap = new PlayerActionPhase(
+                new Assistant(4, 8, newGame.getPlayers().get(0)), newGame.getGameBoard()
+        );
+        assertThrows(InvalidActionException.class, () -> pap.playCharacter(character, null, null, List.of(Color.YELLOW), null));
+    }
 }
