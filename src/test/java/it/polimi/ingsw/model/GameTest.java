@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.game_actions.Round;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
@@ -48,6 +49,8 @@ public class GameTest {
     private void playFirstRound() {
         Round firstRound = game.getCurrentRound();
 
+        assertNull(firstRound.getPlayedAssistants());
+        assertEquals(0, game.getRoundsPlayed());
         assertFalse(firstRound.isLastRound());
         // Now clouds are full and there are 93 students
 
@@ -57,6 +60,8 @@ public class GameTest {
         assertThrows(InvalidActionException.class, () -> playAssistant(clod, 4));
         assertThrows(InvalidActionException.class, () -> playAssistant(giuse, 2));
         // Player0 has the right to play and plays 3rd assistant
+        assertEquals("Rick", rick.getName());
+        assertEquals(0, firstRound.getFirstPlayerIndex());
         assertDoesNotThrow(() -> playAssistant(rick, 8));
         // Player 0 has in hand 9 Assistants
 
@@ -67,8 +72,10 @@ public class GameTest {
         assertThrows(SameAssistantPlayedException.class, () -> playAssistant(giuse, 5));
         assertDoesNotThrow(() -> playAssistant(giuse, 7));
 
+        assertEquals(3, firstRound.getPlayedAssistants().size());
         //Now the PlanningPhase has ended and the PlayerActionPhase of clod has been created
         PlayerActionPhase pap = firstRound.getCurrentPlayerActionPhase();
+        assertEquals(Messages.ACTION_MOVE_STUDENT, firstRound.getCurrentPlayerActionPhase().getExpectedAction());
         assertEquals(clod, pap.getCurrentPlayer());
 
         //Now several clients can call PlayerActionPhase
@@ -240,6 +247,7 @@ public class GameTest {
 
         // FIXME what happens when a player chooses a Wizard that is already been chosen? Maybe thrown an Exception - but in Game class, not in Player
         players.get(0).pickWizard(Wizard.KING);
+        assertEquals(Wizard.KING, rick.getWizard());
         players.get(1).pickWizard(Wizard.MAGE);
         players.get(2).pickWizard(Wizard.MONK);
 
