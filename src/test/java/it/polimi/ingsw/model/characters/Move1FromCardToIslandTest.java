@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.exceptions.InvalidActionException;
+import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.exceptions.StudentNotOnTheCardException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.TestGameFactory;
@@ -26,26 +27,12 @@ public class Move1FromCardToIslandTest {
 
 
     /**
-     * Private method to find out if the array of Characters contains the one called "move1FromCardToIsland"
-     *
-     * @param characters the array of characters to check
-     * @return the index of the {@code Character} called "move1FromCardToIsland" in the array
-     */
-    private int containsCard(Character[] characters) {
-        for (int i = 0; i < characters.length; i++) {
-            if (characters[i].getCardName() == CharacterName.move1FromCardToIsland)
-                return i;
-        }
-        return -1;
-    }
-
-    /**
      * Tests the effect of the {@code Character} called "testMove1FromCardToIsland1"
      *
      * @throws EmptyBagException if the {@code Bag} is empty
      */
     @Test
-    void testMove1FromCardToIsland1() throws EmptyBagException {
+    void testMove1FromCardToIsland1() throws EmptyBagException, InvalidStudentException {
 
         gb.setCharacters(c);
 
@@ -54,7 +41,9 @@ public class Move1FromCardToIslandTest {
                 new Assistant(4, 8, game.getPlayers().get(0)), gb
         );
         Island island = gb.getIslands().get(4);
-        int initialStudentsOnIsland = island.getStudents().size();
+        if (island.getStudents().size() != 0) {
+            island.giveStudent(gb.getBag(), island.getStudents().get(0));
+        }
         island.receiveStudent(new Student(Color.PINK));
         island.receiveStudent(new Student(Color.BLUE));
         character.fillCardFromBag();
@@ -65,11 +54,14 @@ public class Move1FromCardToIslandTest {
         character.setStudents(createListOfStudents());
 
         assertEquals(4, character.getStudents().size());
+        assertFalse(character.hasCoin());
 
         assertDoesNotThrow(() -> pap.playCharacter(character, island, null, List.of(Color.PINK), null));
 
+        assertTrue(character.hasCoin());
         assertEquals(4, character.getStudents().size());
-        assertEquals(3 + initialStudentsOnIsland, island.getStudents().size());
+        assertEquals(3, island.getStudents().size());
+        assertEquals(2, Students.countColor(island.getStudents(), Color.PINK));
     }
 
     /**
@@ -78,7 +70,7 @@ public class Move1FromCardToIslandTest {
      * @throws EmptyBagException if the {@code Bag} is empty
      */
     @Test
-    void testMove1FromCardToIsland2() throws EmptyBagException {
+    void testMove1FromCardToIsland2() throws EmptyBagException, InvalidStudentException {
         gb.setCharacters(c);
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         character.fillCardFromBag();
@@ -88,7 +80,9 @@ public class Move1FromCardToIslandTest {
         character.setStudents(createListOfStudents());
 
         Island island = gb.getIslands().get(3);
-        int initialStudents = island.getStudents().size();
+        if (island.getStudents().size() != 0) {
+            island.giveStudent(gb.getBag(), island.getStudents().get(0));
+        }
         island.receiveStudent(new Student(Color.GREEN));
 
         PlayerActionPhase pap = new PlayerActionPhase(
@@ -99,18 +93,19 @@ public class Move1FromCardToIslandTest {
                 character, island, null, List.of(Color.BLUE), null
         ));
 
-        assertEquals(initialStudents + 2, island.getStudents().size());
-        assertTrue(Students.countColor(island.getStudents(), Color.BLUE) >= 1);
+        assertEquals(2, island.getStudents().size());
+        assertEquals(1, Students.countColor(island.getStudents(), Color.BLUE));
         assertEquals(4, character.getStudents().size());
     }
 
     /**
-     * Tests the effect of the {@code Character} called "testMove1FromCardToIsland1"
+     * Tests the effect of the {@code Character} called "testMove1FromCardToIsland1" when the selected
+     * student is not on the card
      *
      * @throws EmptyBagException if the {@code Bag} is empty
      */
     @Test
-    void testMove1FromCardToIsland3() throws EmptyBagException {
+    void testStudentNotPresentMove1FromCardToIsland() throws EmptyBagException {
         gb.setCharacters(c);
 
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
@@ -129,12 +124,13 @@ public class Move1FromCardToIslandTest {
     }
 
     /**
-     * Tests the effect of the {@code Character} called "testMove1FromCardToIsland1"
+     * Tests the effect of the {@code Character} called "testMove1FromCardToIsland1" when two students are passed
+     * to the method
      *
      * @throws EmptyBagException if the {@code Bag} is empty
      */
     @Test
-    void testMove1FromCardToIsland4() throws EmptyBagException {
+    void testInvalidSizeMove1FromCardToIsland() throws EmptyBagException {
         gb.setCharacters(c);
 
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];

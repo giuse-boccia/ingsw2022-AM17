@@ -60,24 +60,12 @@ public class MovingCharacter extends GameboardCharacter implements Place {
                 Entrance curEntrance = currentPlayerActionPhase.getCurrentPlayer().getDashboard().getEntrance();
                 ArrayList<Student> srcStudents = getStudentListFromColorList(srcColors, curEntrance);
                 ArrayList<Student> dstStudents = getStudentListFromColorList(dstColors, this);
-                if (!this.students.containsAll(dstStudents)) {
-                    throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_FOUND);
-                }
-                if (!curEntrance.getStudents().containsAll(srcStudents)) {
-                    throw new InvalidActionException(Messages.STUDENT_NOT_FOUND);
-                }
                 swapStudents(curEntrance, this, srcStudents, dstStudents);
             }
             case swapUpTo2FromEntranceToDiningRoom -> {
                 Dashboard curDashBoard = currentPlayerActionPhase.getCurrentPlayer().getDashboard();
                 ArrayList<Student> srcStudents = getStudentListFromColorList(srcColors, curDashBoard.getEntrance());
                 ArrayList<Student> dstStudents = getStudentListFromColorList(dstColors, curDashBoard.getDiningRoom());
-                if (!curDashBoard.getEntrance().getStudents().containsAll(srcStudents)) {
-                    throw new InvalidActionException(Messages.STUDENT_NOT_IN_ENTRANCE);
-                }
-                if (!curDashBoard.getDiningRoom().getStudents().containsAll(dstStudents)) {
-                    throw new InvalidActionException(Messages.STUDENT_NOT_IN_DINING_ROOM);
-                }
                 swapStudents(curDashBoard.getEntrance(), curDashBoard.getDiningRoom(), srcStudents, dstStudents);
             }
             default -> throw new InvalidCharacterException(Messages.INVALID_CHARACTER);
@@ -136,9 +124,6 @@ public class MovingCharacter extends GameboardCharacter implements Place {
             throw new InvalidActionException(Messages.INVALID_ARGUMENT);
         }
         ArrayList<Student> srcStudents = getStudentListFromColorList(srcColors, this);
-        if (!students.containsAll(srcStudents)) {
-            throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_FOUND);
-        }
         if (srcStudents.size() != 1) {
             throw new InvalidActionException(Messages.MOVE_JUST_ONE);
         }
