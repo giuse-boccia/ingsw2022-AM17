@@ -222,9 +222,9 @@ public class PlayerActionPhase {
      */
     public void playPassiveCharacter(PassiveCharacter playedCharacter) {
         switch (playedCharacter.getCardName()) {
-            case plus2MNMoves -> this.mnStrategy = new MNBonus();
+            case plus2MNMoves -> this.mnStrategy = new MNBonus(Constants.MN_BONUS);
             case takeProfWithEqualStudents -> this.professorStrategy = new ProfessorWithDraw();
-            case plus2Influence -> this.influenceStrategy = new InfluenceBonus(assistant.getPlayer());
+            case plus2Influence -> this.influenceStrategy = new InfluenceBonus(assistant.getPlayer(), Constants.INFLUENCE_BONUS);
             case ignoreTowers -> this.influenceStrategy = new InfluenceIgnoreTowers();
         }
     }
