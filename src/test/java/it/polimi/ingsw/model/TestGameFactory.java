@@ -12,7 +12,8 @@ import java.util.List;
 public class TestGameFactory {
 
     /**
-     * Creates an expert {@code Game}
+     * Creates an expert {@code Game} for three players, whose nicknames are Rick, Clod and Giuse
+     * All the entrances of the players are empty
      *
      * @return the created {@code Game}
      */
@@ -85,6 +86,12 @@ public class TestGameFactory {
         }
     }
 
+    /**
+     * Utility function that converts a list of student to a list of the corresponding colors
+     *
+     * @param students a {@code List} of students
+     * @return the corresponding {@code List} of colors
+     */
     public static List<Color> fromListOfStudentToListOfColor(List<Student> students) {
         List<Color> colors = new ArrayList<>();
         for (Student student : students) {
