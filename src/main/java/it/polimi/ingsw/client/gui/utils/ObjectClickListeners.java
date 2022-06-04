@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.game_objects.Color;
 import javafx.scene.Node;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ObjectClickListeners {
@@ -16,8 +15,6 @@ public class ObjectClickListeners {
     private static Color studentOnCardClickedColor;
     private static Node studentOnCardClicked;
     private static CharacterName lastCharacterPlayed;
-    private static Node islandClicked;
-    private static int islandIndex;
     private static Node cloudClicked;
     private static final List<Color> srcStudentColorsForCharacter = new ArrayList<>();
     private static final List<Color> dstStudentColorsForCharacter = new ArrayList<>();
@@ -53,10 +50,6 @@ public class ObjectClickListeners {
     public static void setDiningRoomClicked() {
         if (studentOnCardClicked != null && lastCharacterPlayed == CharacterName.move1FromCardToDining) {
             // Character move1FromCardToDining has been played
-            if (studentClicked != null) {
-                setElementHighlighted(studentClicked);
-            }
-            setElementHighlighted(studentOnCardClicked);
             GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
                     lastCharacterPlayed, null, null, List.of(studentOnCardClickedColor), null
             );
@@ -115,10 +108,6 @@ public class ObjectClickListeners {
                 dstStudentsForCharacter.size() != studentsToSwapForSwapCharacters) {
             return;
         }
-        System.out.println("About to send info: " + Arrays.toString(new List[]{srcStudentColorsForCharacter}) + "and " +
-                Arrays.toString(new List[]{dstStudentsForCharacter}));
-        srcStudentsForCharacter.forEach(element -> element.getStyleClass().clear());
-        dstStudentsForCharacter.forEach(element -> element.getStyleClass().clear());
 
         GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
                 lastCharacterPlayed, null, null, srcStudentColorsForCharacter, dstStudentColorsForCharacter
@@ -161,7 +150,6 @@ public class ObjectClickListeners {
             GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
                     lastCharacterPlayed, null, islandIndex, List.of(studentOnCardClickedColor), null
             );
-            setElementHighlighted(studentOnCardClicked);
             studentOnCardClicked = null;
             studentOnCardClickedColor = null;
             resetToCurrentHighlighting();
@@ -169,7 +157,6 @@ public class ObjectClickListeners {
             GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
                     lastCharacterPlayed, null, islandIndex, null, null
             );
-            setElementHighlighted(studentOnCardClicked);
             studentOnCardClicked = null;
             studentOnCardClickedColor = null;
             resetToCurrentHighlighting();
@@ -226,7 +213,6 @@ public class ObjectClickListeners {
 
     public static void setStudentOnIslandClicked(Node element, Color color, int islandIndex) {
         setStudentsOnCardClicked(color, element);
-        ObjectClickListeners.islandIndex = islandIndex;
     }
 
     private static void resetToCurrentHighlighting() {
