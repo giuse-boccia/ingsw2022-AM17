@@ -24,7 +24,6 @@ public class NetworkClient extends Thread {
     private final String serverAddress;
     private final int serverPort;
 
-    private Socket server;
     private BufferedReader socketIn;
     private PrintWriter socketOut;
 
@@ -43,7 +42,7 @@ public class NetworkClient extends Thread {
      */
     public void connectToServer() {
         try {
-            server = new Socket(serverAddress, serverPort);
+            Socket server = new Socket(serverAddress, serverPort);
             socketIn = new BufferedReader(new InputStreamReader(server.getInputStream()));
             socketOut = new PrintWriter(server.getOutputStream(), true);
 
