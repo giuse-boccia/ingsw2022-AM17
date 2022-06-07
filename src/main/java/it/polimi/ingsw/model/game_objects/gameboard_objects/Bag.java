@@ -9,16 +9,21 @@ import it.polimi.ingsw.model.utils.Students;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * A bag initially containing 120 students.
  * The bag is shuffled at its creation and every time it receives a new {@code Student}
  */
 public class Bag implements Place {
-    private final ArrayList<Student> students;
+    private final List<Student> students;
 
-    public Bag(){
+    public Bag() {
         this.students = Students.getSomeStudents(Constants.INITIAL_STUDENTS_IN_BAG_OF_EACH_COLOR);
+    }
+
+    public Bag(List<Student> students) {
+        this.students = students;
     }
 
     /**

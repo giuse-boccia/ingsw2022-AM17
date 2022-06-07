@@ -7,23 +7,20 @@ import it.polimi.ingsw.model.game_objects.TowerColor;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.utils.RandomGenerator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class Game {
-    private final ArrayList<Player> players;
-    private final GameBoard gameBoard;
+    private final List<Player> players;
     private final boolean isExpert;
+    private final RandomGenerator rng;
+    private GameBoard gameBoard;
     private Round currentRound;
     private int roundsPlayed;
     private boolean isEnded;
-    private final RandomGenerator rng;
-    private ArrayList<Player> winners;
+    private List<Player> winners;
 
-    public Game(ArrayList<Player> players, boolean isExpert, int seed) {
+    public Game(List<Player> players, boolean isExpert, int seed) {
         this.players = players;
         gameBoard = new GameBoard(this);
         this.isExpert = isExpert;
@@ -33,7 +30,7 @@ public class Game {
         winners = null;
     }
 
-    public Game(ArrayList<Player> players, boolean isExpert) {
+    public Game(List<Player> players, boolean isExpert) {
         this(players, isExpert, new Random().nextInt());
     }
 
@@ -204,19 +201,31 @@ public class Game {
         return gameBoard;
     }
 
+    public void setGameBoard(GameBoard gameBoard) {
+        this.gameBoard = gameBoard;
+    }
+
     public Round getCurrentRound() {
         return currentRound;
+    }
+
+    public void setCurrentRound(Round currentRound) {
+        this.currentRound = currentRound;
     }
 
     public boolean isExpert() {
         return isExpert;
     }
 
-    public ArrayList<Player> getWinners() {
+    public List<Player> getWinners() {
         return winners;
     }
 
     public int getRoundsPlayed() {
         return roundsPlayed;
+    }
+
+    public void setRoundsPlayed(int roundsPlayed) {
+        this.roundsPlayed = roundsPlayed;
     }
 }

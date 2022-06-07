@@ -9,12 +9,17 @@ import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.utils.Students;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DiningRoom implements Place {
-    private final ArrayList<Student> students;
+    private final List<Student> students;
 
     public DiningRoom() {
         students = new ArrayList<>();
+    }
+
+    public DiningRoom(List<Student> students) {
+        this.students = students;
     }
 
     /**

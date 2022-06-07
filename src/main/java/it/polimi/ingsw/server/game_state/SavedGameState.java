@@ -2,11 +2,14 @@ package it.polimi.ingsw.server.game_state;
 
 
 import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
 import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.game_actions.Round;
 import it.polimi.ingsw.model.game_objects.Student;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Bag;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -14,7 +17,6 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -60,17 +62,43 @@ public class SavedGameState extends GameState {
         }
     }
 
-
+    /**
+     * Loads a Game from disk
+     *
+     * @return the loaded game
+     */
     public static Game loadFromFile() throws IOException {
-        SavedGameState gs = null;
+        SavedGameState savedGame;
         Gson gson = new Gson();
         Reader reader = Files.newBufferedReader(Paths.get(Constants.SAVED_GAME_PATH));
-        gs = gson.fromJson(reader, SavedGameState.class);
+        savedGame = gson.fromJson(reader, SavedGameState.class);
         reader.close();
 
+        // Create Game from saved game state
+        List<Player> players = PlayerState.loadPlayers(savedGame);
+        Game game = new Game(players, savedGame.isExpert());
+        game.setRoundsPlayed(savedGame.roundsPlayed);
+        // game.setGameBoard(loadGameBoard(savedGame, game));
+        // game.setCurrentRound(new Round());
 
-        // TODO: create the Game from the SavedStateGame
+        return game;
+    }
 
-        return null;
+    /**
+     * Loads a GameBoard object form a saved game, and assigns it to a Game
+     *
+     * @param savedGame the SavedGame from which to load the GameBoard
+     * @param game      the Game to assign the new GameBoard to
+     * @return the loaded GameBoard
+     */
+    public static GameBoard loadGameBoard(SavedGameState savedGame, Game game) {
+        GameBoard gameBoard = new GameBoard(game);
+        gameBoard.setBag(new Bag(savedGame.bag));
+        gameBoard.setIslands(IslandState.loadIslands(savedGame));
+        gameBoard.setClouds(CloudState.loadClouds(savedGame));
+
+        // also load characters, professors map and MN index
+
+        return gameBoard;
     }
 }

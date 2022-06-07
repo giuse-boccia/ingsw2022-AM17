@@ -394,7 +394,7 @@ public class GameController {
      */
     private void alertGameEnded() {
         //TODO Show everyone who won the game (if i lose i want to know who won)
-        ArrayList<Player> winners = game.getWinners();
+        List<Player> winners = game.getWinners();
         String winnersText;
         if (winners.size() == 2) {
             winnersText = winners.get(0).getName() + " and " + winners.get(1).getName() + Messages.BROADCAST_GAME_WON;
