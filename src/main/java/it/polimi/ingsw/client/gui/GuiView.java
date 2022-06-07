@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
@@ -211,7 +212,10 @@ public class GuiView extends Application {
     public void showToast(String message) {
         if (scene == null) return;
         Platform.runLater(() ->
-                Notifications.create().owner(stage).text(message).hideAfter(Duration.seconds(3)).position(Pos.BOTTOM_CENTER).show()
+                Notifications.create().owner(stage).text(message)
+                        .hideAfter(Duration.seconds(Constants.TOAST_DURATION_SECONDS))
+                        .position(Pos.BOTTOM_CENTER)
+                        .show()
         );
     }
 
