@@ -57,7 +57,7 @@ public class GUI extends Client {
     public void endGame(String message) {
         isGameEnded = true;
         MessageHandler.getServerUpTask().cancel();
-        GuiView.endGame(message);
+        guiView.endGame(message);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class GUI extends Client {
         if (MessageHandler.getServerUpTask() != null) {
             MessageHandler.getServerUpTask().cancel();
         }
-        GuiView.showErrorDialog(message, true);
+        guiView.showErrorDialog(message, true);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class GUI extends Client {
 
     @Override
     public void showWarningMessage(String message) {
-        GuiView.showErrorDialog(message, false);
+        guiView.showErrorDialog(message, false);
     }
 
     @Override
