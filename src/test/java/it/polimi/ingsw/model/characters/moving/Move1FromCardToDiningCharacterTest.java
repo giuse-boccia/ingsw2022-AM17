@@ -1,12 +1,12 @@
-package it.polimi.ingsw.model.characters;
+package it.polimi.ingsw.model.characters.moving;
 
-import it.polimi.ingsw.exceptions.EmptyBagException;
-import it.polimi.ingsw.exceptions.InvalidActionException;
-import it.polimi.ingsw.exceptions.InvalidStudentException;
-import it.polimi.ingsw.exceptions.StudentNotOnTheCardException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
+import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.model.characters.CharacterName;
+import it.polimi.ingsw.model.characters.MovingCharacter;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.game_objects.Color;
@@ -56,6 +56,10 @@ public class Move1FromCardToDiningCharacterTest {
         assertEquals(4, character.getStudents().size());
         assertEquals(1, rick.getDashboard().getDiningRoom().getStudents().size());
         assertEquals(1, Students.countColor(rick.getDashboard().getDiningRoom().getStudents(), Color.PINK));
+
+        assertThrows(CharacterAlreadyPlayedException.class,
+                () -> pap.playCharacter(character, null, null, List.of(Color.PINK), null));
+
     }
 
     /**

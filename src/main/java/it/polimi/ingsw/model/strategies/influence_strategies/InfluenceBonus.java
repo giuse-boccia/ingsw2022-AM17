@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.strategies.influence_strategies;
 
-import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.model.Player;
 
@@ -13,11 +12,6 @@ public class InfluenceBonus implements InfluenceStrategy {
     public InfluenceBonus(Player buffedPlayer, int bonus) {
         this.buffedPlayer = buffedPlayer;
         this.bonus = bonus;
-    }
-
-    public InfluenceBonus(Player buffedPlayer) {
-        this.buffedPlayer = buffedPlayer;
-        this.bonus = Constants.INFLUENCE_BONUS;
     }
 
     /**
