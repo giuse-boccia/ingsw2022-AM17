@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.gui.controllers.ActionController;
+import it.polimi.ingsw.client.gui.controllers.GuiController;
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;

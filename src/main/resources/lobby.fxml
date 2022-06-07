@@ -8,7 +8,7 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
-            xmlns="http://javafx.com/javafx/18" fx:controller="it.polimi.ingsw.client.gui.LobbyController">
+            xmlns="http://javafx.com/javafx/18" fx:controller="it.polimi.ingsw.client.gui.controllers.LobbyController">
    <children>
       <ImageView fitHeight="613.0" fitWidth="600.0" layoutY="-6.0" opacity="0.67" pickOnBounds="true"
                  preserveRatio="true">
