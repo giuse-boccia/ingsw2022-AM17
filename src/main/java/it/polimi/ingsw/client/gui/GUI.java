@@ -6,17 +6,12 @@ import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
-
 import java.util.List;
 
 public class GUI extends Client {
 
     private static final GuiView guiView = new GuiView();
     private boolean isGameEnded = false, isGameStarted = false;
-
-    public static void main(String[] args) {
-
-    }
 
     @Override
     public void showPossibleActions(List<String> actions) {
@@ -29,16 +24,6 @@ public class GUI extends Client {
     }
 
     @Override
-    public void chooseAction(List<String> actions) {
-
-    }
-
-    @Override
-    public void askMoveStudentToDining() {
-
-    }
-
-    @Override
     public void askNumStepsOfMotherNature() {
         guiView.sendMessageToController(null, null, List.of("MOVE_MN"), getUsername());
     }
@@ -46,11 +31,6 @@ public class GUI extends Client {
     @Override
     public void askCloudIndex() {
         guiView.sendMessageToController(null, null, List.of("FILL_FROM_CLOUD"), getUsername());
-    }
-
-    @Override
-    public void askCharacterIndex() {
-
     }
 
     @Override
@@ -72,11 +52,6 @@ public class GUI extends Client {
     @Override
     public void askColorListForSwapCharacters(int maxBound, String secondElement, CharacterName characterName) {
         guiView.askCharacterParameters(characterName, GuiCharacterType.SWAP);
-    }
-
-    @Override
-    public void showAllCharactersWithIndex() {
-
     }
 
 
@@ -111,11 +86,6 @@ public class GUI extends Client {
     }
 
     @Override
-    public void askMoveStudentToIsland() {
-
-    }
-
-    @Override
     public void askToMoveOneStudentFromCard(boolean toIsland) {
         CharacterName name = toIsland ? CharacterName.move1FromCardToIsland : CharacterName.move1FromCardToDining;
         guiView.askCharacterParameters(name, GuiCharacterType.MOVE_ONE_STUDENT_AWAY);
@@ -132,11 +102,6 @@ public class GUI extends Client {
     }
 
     @Override
-    public void askUsername() {
-
-    }
-
-    @Override
     public void playCharacterWithoutArguments(CharacterName characterName) {
         getCurrentObserverHandler().notifyPlayCharacterObservers(characterName, null, null, null, null);
     }
@@ -146,4 +111,33 @@ public class GUI extends Client {
         // TODO: implement
     }
 
+    @Override
+    public void askUsername() {
+
+    }
+
+    @Override
+    public void chooseAction(List<String> actions) {
+
+    }
+
+    @Override
+    public void askMoveStudentToDining() {
+
+    }
+
+    @Override
+    public void askCharacterIndex() {
+
+    }
+
+    @Override
+    public void showAllCharactersWithIndex() {
+
+    }
+
+    @Override
+    public void askMoveStudentToIsland() {
+
+    }
 }
