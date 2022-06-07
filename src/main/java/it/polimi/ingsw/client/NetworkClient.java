@@ -10,6 +10,7 @@ import it.polimi.ingsw.client.observers.game_actions.play_character.SendPlayChar
 import it.polimi.ingsw.client.observers.login.game_parameters.SendGameParametersObserver;
 import it.polimi.ingsw.client.observers.login.load_game.ExecuteLoadGameObserver;
 import it.polimi.ingsw.client.observers.login.username.SendUsernameObserver;
+import it.polimi.ingsw.constants.Messages;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class NetworkClient extends Thread {
             socketOut = new PrintWriter(server.getOutputStream(), true);
 
         } catch (IOException e) {
-            client.gracefulTermination("Cannot connect to server, check server_address argument");
+            client.gracefulTermination(Messages.CANNOT_CONNECT_TO_SERVER);
         }
     }
 
@@ -86,6 +87,9 @@ public class NetworkClient extends Thread {
         try {
             mh.askUsernameAndSend();
             mh.startPongThread();
+
+            // Couldn't connect to server, application will be shut down
+            if (socketIn == null) return;
 
             while (true) {
                 String jsonMessage = socketIn.readLine();
