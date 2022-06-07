@@ -327,35 +327,40 @@ public class DrawingComponents {
             bp.setLayoutY(startingYIsland);
             root.getChildren().add(bp);
 
-            GridPane elementsOnIsland = new GridPane();
+            VBox elementsOnIsland = new VBox();
+            GridPane studentsOnIsland = new GridPane();
+            HBox towersOnIsland = new HBox();
+            HBox noEntryOnIsland = new HBox();
             elementsOnIsland.setLayoutX(pageWidth * 0.019);
             elementsOnIsland.setLayoutY(pageHeight * 0.025);
+            elementsOnIsland.getChildren().add(studentsOnIsland);
+            elementsOnIsland.getChildren().add(towersOnIsland);
+            elementsOnIsland.getChildren().add(noEntryOnIsland);
 
             for (int j = 0; j < islands.get(i).getNumOfTowers(); j++) {
                 String towerPath = "/gameboard/towers/" + islands.get(i).getTowerColor().toString().toLowerCase() + "_tower.png";
                 ImageView tower = new ImageView(new Image(towerPath));
                 tower.setPreserveRatio(true);
-                tower.setFitWidth(islandWidth / 4);
-                elementsOnIsland.add(tower, j, 0);
+                tower.setFitWidth(islandWidth / 6);
+                towersOnIsland.getChildren().add(tower);
             }
 
             int lastRow = 1;
-            List<BorderPane> studentsOnIsland = new ArrayList<>();
+            List<BorderPane> studentsToDraw = new ArrayList<>();
             for (int j = 0; j < islands.get(i).getStudents().size(); j++) {
                 Student s = islands.get(i).getStudents().get(j);
                 String studentPath = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
                 ImageView student = new ImageView(new Image(studentPath));
                 student.setPreserveRatio(true);
                 student.setFitWidth(islandWidth / 8);
-                lastRow = j / 4 + 1;
                 BorderPane studentBorderPane = new BorderPane(student);
                 studentBorderPane.setOnMouseClicked(event ->
                         ObjectClickListeners.setStudentOnIslandClicked(studentBorderPane, s.getColor(), islandIndex));
-                studentsOnIsland.add(studentBorderPane);
+                studentsToDraw.add(studentBorderPane);
 
-                elementsOnIsland.add(studentBorderPane, j % 4, lastRow);
+                studentsOnIsland.add(studentBorderPane, j % 4, j / 4 + 1);
             }
-            DrawingComponents.studentsOnIslands.put(i, studentsOnIsland);
+            DrawingComponents.studentsOnIslands.put(i, studentsToDraw);
 
             for (int j = 0; j < islands.get(i).getNoEntryNum(); j++) {
                 ImageView noEntry = new ImageView(new Image("/gameboard/deny_island_icon.png"));
@@ -366,7 +371,7 @@ public class DrawingComponents {
                 noEntryBorderPane.setOnMouseClicked(event -> {
                 }); // TODO remember to pass island index
                 noEntriesOnIslands.add(noEntryBorderPane);
-                elementsOnIsland.add(noEntryBorderPane, j % 4, lastRow + 1);
+                noEntryOnIsland.getChildren().add(noEntryBorderPane);
             }
 
             bp.getChildren().add(elementsOnIsland);
@@ -376,7 +381,7 @@ public class DrawingComponents {
                 MN.setPreserveRatio(true);
                 MN.setFitWidth(islandWidth * 0.3);
                 BorderPane motherNature = new BorderPane(MN);
-                motherNature.setLayoutX(islandWidth - pageWidth * 0.025);
+                motherNature.setLayoutX(0);
                 motherNature.setLayoutY(islandHeight / 3);
                 bp.getChildren().add(motherNature);
             }
