@@ -550,7 +550,7 @@ public class DrawingComponents {
                     BorderPane studentPane = new BorderPane(student);
                     int index = i;
                     studentPane.setOnMouseClicked(event ->
-                            ObjectClickListeners.setStudentsOnCardClicked(
+                            ObjectClickListeners.setStudentOnCharacterClicked(
                                     character.getStudents().get(index).getColor(), studentPane))
                     ;
                     studentOnCharacter.add(studentPane);

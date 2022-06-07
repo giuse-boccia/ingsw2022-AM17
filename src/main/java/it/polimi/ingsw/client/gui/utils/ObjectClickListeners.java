@@ -8,6 +8,10 @@ import javafx.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This static class contains all the methods that are called when one element in the dining room
+ * is clicked
+ */
 public class ObjectClickListeners {
 
     private static Color studentClickedColor;
@@ -24,13 +28,13 @@ public class ObjectClickListeners {
     private static Integer studentsToSwapForSwapCharacters;
 
     public static void setAssistantClicked(int value, Node element) {
-        if (isMoveValid(element)) {
+        if (isOrdinaryMoveValid(element)) {
             GuiView.getGui().getCurrentObserverHandler().notifyPlayAssistantObservers(value);
         }
     }
 
     public static void setStudentClicked(Color color, Node element) {
-        if (isMoveValid(element)) {
+        if (isOrdinaryMoveValid(element)) {
             if (studentClicked != null) {
                 setElementHighlighted(studentClicked);
             }
@@ -40,6 +44,7 @@ public class ObjectClickListeners {
             studentOnCardClicked = null;
             studentOnCardClickedColor = null;
         } else if (hasSwapCharacterBeenPlayed(element) && srcStudentColorsForCharacter.size() < studentsToSwapForSwapCharacters) {
+            // The student is selectable for a swap action
             element.getStyleClass().add("element_selected_for_swap_character");
             srcStudentColorsForCharacter.add(color);
             srcStudentsForCharacter.add(element);
@@ -75,16 +80,17 @@ public class ObjectClickListeners {
     }
 
     public static void setCharacterClicked(CharacterName name, Node element) {
-        if (!isMoveValid(element)) return;
+        if (!isOrdinaryMoveValid(element)) return;
         DrawingComponents.removeGoldenBordersFromAllCharacters();
         lastCharacterPlayed = name;
         lastCharacterPlayedNode = element;
         GuiView.getGui().getCurrentObserverHandler().notifyCharacterChoiceObservers(name);
     }
 
-    public static void setStudentsOnCardClicked(Color color, Node element) {
+    public static void setStudentOnCharacterClicked(Color color, Node element) {
         if (hasMovingCharacterBeenPlayed(element)) {
             if (studentOnCardClicked != null) {
+                // Restore old highlighting for the previously selected student on character
                 studentOnCardClicked.getStyleClass().clear();
                 studentOnCardClicked.getStyleClass().add("element_active_for_moving_character");
             }
@@ -93,13 +99,11 @@ public class ObjectClickListeners {
             studentOnCardClicked.getStyleClass().add("element_selected_for_moving_character");
             studentClicked = null;
             studentClickedColor = null;
-        } else if (hasSwapCharacterBeenPlayed(element)) {
-            if (dstStudentsForCharacter.size() < studentsToSwapForSwapCharacters) {
-                element.getStyleClass().add("element_selected_for_swap_character");
-                dstStudentColorsForCharacter.add(color);
-                dstStudentsForCharacter.add(element);
-                sendSwapCharacterPlayedMessage();
-            }
+        } else if (hasSwapCharacterBeenPlayed(element) && dstStudentsForCharacter.size() < studentsToSwapForSwapCharacters) {
+            element.getStyleClass().add("element_selected_for_swap_character");
+            dstStudentColorsForCharacter.add(color);
+            dstStudentsForCharacter.add(element);
+            sendSwapCharacterPlayedMessage();
         }
     }
 
@@ -135,7 +139,7 @@ public class ObjectClickListeners {
     }
 
     public static void setCloudClicked(Node element, int cloudIndex) {
-        if (isMoveValid(element)) {
+        if (isOrdinaryMoveValid(element)) {
             if (cloudClicked != null) {
                 setElementHighlighted(cloudClicked);
             }
@@ -147,6 +151,7 @@ public class ObjectClickListeners {
 
     public static void setIslandClicked(Node element, int numSteps, int islandIndex) {
         if (hasMovingCharacterBeenPlayed(element) && studentOnCardClicked != null && lastCharacterPlayed == CharacterName.move1FromCardToIsland) {
+            // Character move1FromCardToIsland has been played: the student previously selected has to be moved
             GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
                     lastCharacterPlayed, null, islandIndex, List.of(studentOnCardClickedColor), null
             );
@@ -154,20 +159,23 @@ public class ObjectClickListeners {
             studentOnCardClickedColor = null;
             resetToCurrentHighlighting();
         } else if (hasIslandCharacterBeenPlayed(element)) {
+            // Play island-related character passing this island index as argument
             GuiView.getGui().getCurrentObserverHandler().notifyPlayCharacterObservers(
                     lastCharacterPlayed, null, islandIndex, null, null
             );
             studentOnCardClicked = null;
             studentOnCardClickedColor = null;
             resetToCurrentHighlighting();
-        } else if (isMoveValid(element)) {
+        } else if (isOrdinaryMoveValid(element)) {
             if (studentClicked != null && studentClickedColor != null) {
+                // Move selected student to island
                 setElementHighlighted(studentClicked);
                 GuiView.getGui().getCurrentObserverHandler().notifyMoveStudentObservers(studentClickedColor, islandIndex);
 
                 studentClicked = null;
                 studentClickedColor = null;
             } else {
+                // Move mother nature
                 element.getStyleClass().add("highlight_element");
                 GuiView.getGui().getCurrentObserverHandler().notifyMoveMNObservers(numSteps);
             }
@@ -179,7 +187,13 @@ public class ObjectClickListeners {
         element.getStyleClass().add("highlight_element");
     }
 
-    private static boolean isMoveValid(Node element) {
+    /**
+     * Checks if the given {@code Node} is highlighted with gold, meaning that it's clickable
+     * to perform a game action not related to the play of a character
+     *
+     * @param element a {@code Node} to check highlighting of
+     */
+    private static boolean isOrdinaryMoveValid(Node element) {
         if (element.getStyleClass().contains("highlight_element")) {
             element.getStyleClass().clear();
             return true;
@@ -212,7 +226,7 @@ public class ObjectClickListeners {
     }
 
     public static void setStudentOnIslandClicked(Node element, Color color, int islandIndex) {
-        setStudentsOnCardClicked(color, element);
+        setStudentOnCharacterClicked(color, element);
     }
 
     private static void resetToCurrentHighlighting() {
