@@ -6,7 +6,7 @@ import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.game_actions.Round;
+import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Bag;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
@@ -17,7 +17,9 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Immutable class that represents the current status of the game.
@@ -78,7 +80,7 @@ public class SavedGameState extends GameState {
         List<Player> players = PlayerState.loadPlayers(savedGame);
         Game game = new Game(players, savedGame.isExpert());
         game.setRoundsPlayed(savedGame.roundsPlayed);
-        // game.setGameBoard(loadGameBoard(savedGame, game));
+        game.setGameBoard(loadGameBoard(savedGame, game));
         // game.setCurrentRound(new Round());
 
         return game;
@@ -96,9 +98,38 @@ public class SavedGameState extends GameState {
         gameBoard.setBag(new Bag(savedGame.bag));
         gameBoard.setIslands(IslandState.loadIslands(savedGame));
         gameBoard.setClouds(CloudState.loadClouds(savedGame));
-
-        // also load characters, professors map and MN index
+        gameBoard.setMotherNatureIndex(savedGame.getMNIndex());
+        gameBoard.setProfessors(loadProfessors(savedGame.getPlayers(), game.getPlayers()));
+        // also load characters
 
         return gameBoard;
+    }
+
+    /**
+     * Infers a professor map from a list of Player states.
+     * Assumes the list is correct: a professor is not owned by more than one player
+     *
+     * @param playerStates a list of player states from a loaded game
+     * @param players      a list of players from the game
+     * @return an object which maps each color with the player who owns the professor of that color
+     */
+    private static Map<Color, Player> loadProfessors(List<PlayerState> playerStates, ArrayList<Player> players) {
+        Map<Color, Player> res = new HashMap<>();
+        for (Color color : Color.values()) {
+            res.put(color, null);
+        }
+
+        for (PlayerState playerState : playerStates) {
+            // Get corresponding Player (game model object)
+            Player player = players.stream()
+                    .filter(p -> p.getName().equals(playerState.getName()))
+                    .findFirst()
+                    .orElseThrow();
+            for (Color ownedProf : playerState.getOwnedProfessors()) {
+                res.put(ownedProf, player);
+            }
+        }
+
+        return res;
     }
 }
