@@ -100,8 +100,9 @@ public class SavedGameState extends GameState {
         gameBoard.setClouds(CloudState.loadClouds(savedGame));
         gameBoard.setMotherNatureIndex(savedGame.getMNIndex());
         gameBoard.setProfessors(loadProfessors(savedGame.getPlayers(), game.getPlayers()));
-        // also load characters
+        gameBoard.setCharacters(CharacterState.loadCharacters(savedGame, gameBoard));
 
+        // TODO: visto che gli passo la GB a sto punto loadX fa GB.setX ???
         return gameBoard;
     }
 

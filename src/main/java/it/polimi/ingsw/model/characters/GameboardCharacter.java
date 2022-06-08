@@ -14,6 +14,11 @@ public abstract class GameboardCharacter extends Character {
         this.gb = gb;
     }
 
+    public GameboardCharacter(CharacterName characterName, GameBoard gb, boolean hasCoin) {
+        super(characterName, hasCoin);
+        this.gb = gb;
+    }
+
     public GameBoard getGameBoard() {
         return gb;
     }

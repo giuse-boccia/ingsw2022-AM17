@@ -25,7 +25,14 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         super(characterName, gb);
         this.numStudents = numStudents;
         this.initialStudents = initialStudents;
-        students = new ArrayList<>();
+        this.students = new ArrayList<>();
+    }
+
+    public MovingCharacter(CharacterName characterName, GameBoard gb, int initialStudents, int numStudents, boolean hasCoin, ArrayList<Student> students) {
+        super(characterName, gb, hasCoin);
+        this.numStudents = numStudents;
+        this.initialStudents = initialStudents;
+        this.students = students;
     }
 
     /**

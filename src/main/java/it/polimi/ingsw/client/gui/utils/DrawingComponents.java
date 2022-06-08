@@ -526,7 +526,7 @@ public class DrawingComponents {
             characterImages.add(characterToAdd);
             root.getChildren().add(characterToAdd);
 
-            if (character.isHasCoin()) {
+            if (character.hasCoin()) {
                 double imageWidth = pageWidth * DrawingConstants.COIN_PROPORTION;
                 ImageView coin = new ImageView(new Image("/gameboard/Moneta_base.png"));
                 coin.setPreserveRatio(true);

@@ -14,11 +14,11 @@ public class NoEntryCharacter extends GameboardCharacter {
 
     public NoEntryCharacter(CharacterName characterName, GameBoard gb) {
         super(characterName, gb);
-        noEntryNum = 4;
+        this.noEntryNum = 4;
     }
 
-    public NoEntryCharacter(CharacterName characterName, GameBoard gb, int noEntryNum) {
-        super(characterName, gb);
+    public NoEntryCharacter(CharacterName characterName, GameBoard gb, boolean hasCoin, int noEntryNum) {
+        super(characterName, gb, hasCoin);
         this.noEntryNum = noEntryNum;
     }
 
@@ -53,5 +53,9 @@ public class NoEntryCharacter extends GameboardCharacter {
     private void removeNoEntry() throws InvalidActionException {
         if (noEntryNum == 0) throw new InvalidActionException(Messages.NO_NOENTRY);
         noEntryNum--;
+    }
+
+    public int getNoEntryNum() {
+        return noEntryNum;
     }
 }

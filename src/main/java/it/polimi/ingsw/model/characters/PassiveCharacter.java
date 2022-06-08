@@ -15,6 +15,10 @@ public class PassiveCharacter extends Character {
         super(characterName);
     }
 
+    public PassiveCharacter(CharacterName characterName, boolean hasCoin) {
+        super(characterName, hasCoin);
+    }
+
     /**
      * Uses the correct effect of a {@code PassiveCharacter}
      *
