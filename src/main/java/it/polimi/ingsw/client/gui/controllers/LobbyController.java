@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client.gui;
+package it.polimi.ingsw.client.gui.controllers;
 
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
@@ -24,6 +24,9 @@ public class LobbyController implements GuiController {
     @FXML
     AnchorPane root;
 
+    /**
+     * Initializes the lobby page in the login phase
+     */
     @FXML
     void initialize() {
         width = Screen.getPrimary().getVisualBounds().getWidth();
@@ -51,6 +54,11 @@ public class LobbyController implements GuiController {
 
     }
 
+    /**
+     * Shows the lobby on the user screen
+     *
+     * @param lobby the {@code GameLobby} to be drawn
+     */
     private void drawLobby(GameLobby lobby) {
         // Remove all elements set previously
         gridPane.getChildren().removeIf(node -> true);

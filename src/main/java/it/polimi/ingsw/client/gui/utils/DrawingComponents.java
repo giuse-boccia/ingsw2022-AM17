@@ -143,9 +143,7 @@ public class DrawingComponents {
         for (int i = 0; i < player.getEntrance().size(); i++) {
             Student s = player.getEntrance().get(i);
             String resourceName = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
-            ImageView student = new ImageView(new Image(resourceName));
-            student.setPreserveRatio(true);
-            student.setFitWidth(dashboardWidth / 25);
+            ImageView student = getImageView(resourceName, dashboardWidth / 25);
             student.setOnMouseClicked(mouseEvent -> ObjectClickListeners.setStudentClicked(s.getColor(), student));
 
             BorderPane studentPane = new BorderPane(student);
@@ -169,9 +167,7 @@ public class DrawingComponents {
         for (int i = 0; i < player.getDining().size(); i++) {
             Student s = player.getDining().get(i);
             String resourceName = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
-            ImageView student = new ImageView(new Image(resourceName));
-            student.setPreserveRatio(true);
-            student.setFitWidth(dashboardWidth / 25);
+            ImageView student = getImageView(resourceName, dashboardWidth / 25);
 
             int row = colorsInOrder.indexOf(s.getColor());
             Integer column = diningStudents.get(s.getColor());
@@ -218,9 +214,7 @@ public class DrawingComponents {
             Color color = colorsInOrder.get(i);
             if (player.getOwnedProfessors().contains(color)) {
                 String path = "/gameboard/professors/teacher_" + color.toString().toLowerCase() + ".png";
-                ImageView professor = new ImageView(new Image(path));
-                professor.setPreserveRatio(true);
-                professor.setFitWidth(dashboardWidth / 20);
+                ImageView professor = getImageView(path, dashboardWidth / 20);
                 professor.setRotate(90);
 
                 professorRoom.add(professor, 0, i);
@@ -242,9 +236,7 @@ public class DrawingComponents {
         );
         for (int i = 0; i < player.getRemainingTowers(); i++) {
             String path = "/gameboard/towers/" + player.getTowerColor().toString().toLowerCase() + "_tower.png";
-            ImageView tower = new ImageView(new Image(path));
-            tower.setPreserveRatio(true);
-            tower.setFitWidth(dashboardWidth * DrawingConstants.TOWERS_SIZE);
+            ImageView tower = getImageView(path, dashboardWidth * DrawingConstants.TOWERS_SIZE);
 
             towers.add(tower, i % 2, i / 2);
         }
@@ -288,7 +280,7 @@ public class DrawingComponents {
             text.setY(y);
             text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.TITLE_FONT_SIZE));
             root.getChildren().add(text);
-            ImageView coin = getImageView("/gameboard/Moneta_base.png", startingX + text.getLayoutBounds().getWidth(),
+            ImageView coin = getCoinImageView(startingX + text.getLayoutBounds().getWidth(),
                     y - pageHeight / 24, pageWidth * DrawingConstants.COIN_PROPORTION);
             root.getChildren().add(coin);
         }
@@ -308,9 +300,7 @@ public class DrawingComponents {
         double radius = pageHeight * 0.32;
         for (int i = 0; i < islands.size(); i++) {
             String path = "/gameboard/islands/Isola_" + ((i % 3) + 1) + ".png";
-            ImageView island = new ImageView(path);
-            island.setPreserveRatio(true);
-            island.setFitWidth(pageWidth * 0.1);
+            ImageView island = getImageView(path, pageWidth * 0.1);
             Bounds imageBounds = island.boundsInParentProperty().get();
             double islandWidth = imageBounds.getWidth();
             double islandHeight = imageBounds.getHeight();
@@ -327,56 +317,53 @@ public class DrawingComponents {
             bp.setLayoutY(startingYIsland);
             root.getChildren().add(bp);
 
-            GridPane elementsOnIsland = new GridPane();
+            VBox elementsOnIsland = new VBox();
+            GridPane studentsOnIsland = new GridPane();
+            HBox towersOnIsland = new HBox();
+            HBox noEntryOnIsland = new HBox();
             elementsOnIsland.setLayoutX(pageWidth * 0.019);
             elementsOnIsland.setLayoutY(pageHeight * 0.025);
+            elementsOnIsland.getChildren().add(studentsOnIsland);
+            elementsOnIsland.getChildren().add(towersOnIsland);
+            elementsOnIsland.getChildren().add(noEntryOnIsland);
 
             for (int j = 0; j < islands.get(i).getNumOfTowers(); j++) {
                 String towerPath = "/gameboard/towers/" + islands.get(i).getTowerColor().toString().toLowerCase() + "_tower.png";
-                ImageView tower = new ImageView(new Image(towerPath));
-                tower.setPreserveRatio(true);
-                tower.setFitWidth(islandWidth / 4);
-                elementsOnIsland.add(tower, j, 0);
+                ImageView tower = getImageView(towerPath, islandWidth / 6);
+                towersOnIsland.getChildren().add(tower);
             }
 
             int lastRow = 1;
-            List<BorderPane> studentsOnIsland = new ArrayList<>();
+            List<BorderPane> studentsToDraw = new ArrayList<>();
             for (int j = 0; j < islands.get(i).getStudents().size(); j++) {
                 Student s = islands.get(i).getStudents().get(j);
                 String studentPath = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
-                ImageView student = new ImageView(new Image(studentPath));
-                student.setPreserveRatio(true);
-                student.setFitWidth(islandWidth / 8);
-                lastRow = j / 4 + 1;
+                ImageView student = getImageView(studentPath, islandWidth / 8);
                 BorderPane studentBorderPane = new BorderPane(student);
                 studentBorderPane.setOnMouseClicked(event ->
                         ObjectClickListeners.setStudentOnIslandClicked(studentBorderPane, s.getColor(), islandIndex));
-                studentsOnIsland.add(studentBorderPane);
+                studentsToDraw.add(studentBorderPane);
 
-                elementsOnIsland.add(studentBorderPane, j % 4, lastRow);
+                studentsOnIsland.add(studentBorderPane, j % 4, j / 4 + 1);
             }
-            DrawingComponents.studentsOnIslands.put(i, studentsOnIsland);
+            DrawingComponents.studentsOnIslands.put(i, studentsToDraw);
 
             for (int j = 0; j < islands.get(i).getNoEntryNum(); j++) {
-                ImageView noEntry = new ImageView(new Image("/gameboard/deny_island_icon.png"));
-                noEntry.setPreserveRatio(true);
-                noEntry.setFitWidth(islandWidth / 8);
+                ImageView noEntry = getImageView("/gameboard/deny_island_icon.png", islandWidth / 8);
 
                 BorderPane noEntryBorderPane = new BorderPane(noEntry);
                 noEntryBorderPane.setOnMouseClicked(event -> {
                 }); // TODO remember to pass island index
                 noEntriesOnIslands.add(noEntryBorderPane);
-                elementsOnIsland.add(noEntryBorderPane, j % 4, lastRow + 1);
+                noEntryOnIsland.getChildren().add(noEntryBorderPane);
             }
 
             bp.getChildren().add(elementsOnIsland);
 
             if (i == gameState.getMNIndex()) {
-                ImageView MN = new ImageView(new Image("/gameboard/mother_nature.png"));
-                MN.setPreserveRatio(true);
-                MN.setFitWidth(islandWidth * 0.3);
-                BorderPane motherNature = new BorderPane(MN);
-                motherNature.setLayoutX(islandWidth - pageWidth * 0.025);
+                ImageView mn = getImageView("/gameboard/mother_nature.png", islandWidth * 0.3);
+                BorderPane motherNature = new BorderPane(mn);
+                motherNature.setLayoutX(0);
                 motherNature.setLayoutY(islandHeight / 3);
                 bp.getChildren().add(motherNature);
             }
@@ -424,10 +411,8 @@ public class DrawingComponents {
 
         for (int value : assistants) {
             String path = "/gameboard/assistants/Assistente (" + value + ").png";
-            ImageView assistant = new ImageView(new Image(path));
-            assistant.setPreserveRatio(true);
             double minWidth = DrawingConstants.ASSISTANT_MAX_WIDTH_SINGLE_LINE;
-            assistant.setFitWidth(spaceForAssistants * Math.min((double) 2 / assistants.length, minWidth));
+            ImageView assistant = getImageView(path, spaceForAssistants * Math.min((double) 2 / assistants.length, minWidth));
 
             BorderPane assistantPane = new BorderPane(assistant);
             assistantPane.setOnMouseClicked(event -> ObjectClickListeners.setAssistantClicked(value, assistantPane));
@@ -490,9 +475,7 @@ public class DrawingComponents {
             for (int j = 0; j < cloud.getStudents().size(); j++) {
                 String studentPath = "/gameboard/students/student_" +
                         cloud.getStudents().get(j).getColor().toString().toLowerCase() + ".png";
-                ImageView student = new ImageView(new Image(studentPath));
-                student.setPreserveRatio(true);
-                student.setFitWidth(pageWidth * 0.4 / 25);
+                ImageView student = getImageView(studentPath, pageWidth * 0.4 / 25);
 
                 studentsPane.add(student, j % 2, j / 2);
             }
@@ -515,9 +498,7 @@ public class DrawingComponents {
 
         for (CharacterState character : characters) {
             String imagePath = "/gameboard/characters/" + character.getCharacterName() + ".jpg";
-            ImageView characterImage = new ImageView(new Image(imagePath));
-            characterImage.setPreserveRatio(true);
-            characterImage.setFitWidth(pageWidth * DrawingConstants.CHARACTER_CARD_PROPORTION);
+            ImageView characterImage = getImageView(imagePath, pageWidth * DrawingConstants.CHARACTER_CARD_PROPORTION);
 
             BorderPane characterToAdd = new BorderPane(characterImage);
             characterToAdd.setLayoutX(coordX);
@@ -528,11 +509,10 @@ public class DrawingComponents {
 
             if (character.hasCoin()) {
                 double imageWidth = pageWidth * DrawingConstants.COIN_PROPORTION;
-                ImageView coin = new ImageView(new Image("/gameboard/Moneta_base.png"));
-                coin.setPreserveRatio(true);
-                coin.setX(coordX + pageWidth * (DrawingConstants.CHARACTER_CARD_PROPORTION) - imageWidth);
-                coin.setY(pageHeight * 0.21);
-                coin.setFitWidth(imageWidth);
+                ImageView coin = getCoinImageView(
+                        coordX + pageWidth * (DrawingConstants.CHARACTER_CARD_PROPORTION) - imageWidth,
+                        pageHeight * 0.21,
+                        imageWidth);
                 root.getChildren().add(coin);
             }
             if (character.getStudents() != null) {
@@ -543,14 +523,12 @@ public class DrawingComponents {
                 for (int i = 0; i < character.getStudents().size(); i++) {
                     String studentPath = "/gameboard/students/student_" +
                             character.getStudents().get(i).getColor().toString().toLowerCase() + ".png";
-                    ImageView student = new ImageView(new Image(studentPath));
-                    student.setPreserveRatio(true);
-                    student.setFitWidth(pageWidth * 0.4 / 25);
+                    ImageView student = getImageView(studentPath, pageWidth * 0.4 / 25);
 
                     BorderPane studentPane = new BorderPane(student);
                     int index = i;
                     studentPane.setOnMouseClicked(event ->
-                            ObjectClickListeners.setStudentsOnCardClicked(
+                            ObjectClickListeners.setStudentOnCharacterClicked(
                                     character.getStudents().get(index).getColor(), studentPane))
                     ;
                     studentOnCharacter.add(studentPane);
@@ -569,18 +547,24 @@ public class DrawingComponents {
     /**
      * Returns an {@code ImageView} containing the {@code Image} from the given path
      *
-     * @param path     the path which the image to draw is at
      * @param x        the starting X coordinate of the {@code ImageView}
      * @param y        the starting Y coordinate of the {@code ImageView}
      * @param fitWidth the witdth to be set to the {@code ImageView}
      * @return an {@code ImageView} containing the {@code Image} from the given path
      */
-    private static ImageView getImageView(String path, double x, double y, double fitWidth) {
-        ImageView iv = new ImageView(new Image(path));
+    private static ImageView getCoinImageView(double x, double y, double fitWidth) {
+        ImageView iv = new ImageView(new Image("/gameboard/Moneta_base.png"));
         iv.setPreserveRatio(true);
         iv.setFitWidth(fitWidth);
         iv.setX(x);
         iv.setY(y);
+        return iv;
+    }
+
+    private static ImageView getImageView(String path, double fitWidth) {
+        ImageView iv = new ImageView(new Image(path));
+        iv.setPreserveRatio(true);
+        iv.setFitWidth(fitWidth);
         return iv;
     }
 

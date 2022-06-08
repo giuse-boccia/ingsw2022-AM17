@@ -1,9 +1,12 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.gui.controllers.ActionController;
+import it.polimi.ingsw.client.gui.controllers.GuiController;
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
@@ -19,9 +22,9 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -57,55 +60,11 @@ public class GuiView extends Application {
         return gui;
     }
 
-    public void changeScene(String resourceName, boolean fullscreen) {
-        if (Objects.equals(currentSceneName, resourceName)) {
-            return;
-        }
-
-        currentSceneName = resourceName;
-        FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/" + resourceName + ".fxml"));
-        Platform.runLater(() -> {
-            try {
-                scene = new Scene(fxmlLoader.load());
-            } catch (IOException e) {
-                gui.gracefulTermination("Connection to server lost");
-            }
-            stage.setResizable(fullscreen);
-            stage.setFullScreen(false);
-            stage.setScene(scene);
-            currentController = fxmlLoader.getController();
-        });
-    }
-
-    public void startGameScene() {
-        Platform.runLater(() -> {
-            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-            double screenWidth = bounds.getWidth();
-            double screenHeight = bounds.getHeight();
-            AnchorPane root = new AnchorPane();
-            root.setId(DrawingConstants.ID_ROOT_GAME);
-            scene = new Scene(root, screenWidth, screenHeight);
-            scene.getStylesheets().add("/css/style.css");
-
-            ActionController newController = new ActionController();
-            newController.setRoot(root);
-            newController.initialize();
-            currentController = newController;
-
-            stage.setResizable(false);
-            stage.setMaximized(true);
-            stage.setScene(scene);
-        });
-    }
-
-    public void sendMessageToController(GameLobby lobby, GameState gameState, List<String> actions, String username) {
-        Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, username));
-    }
-
-    public void askCharacterParameters(CharacterName name, GuiCharacterType characterType) {
-        Platform.runLater(() -> currentController.askCharacterParameters(name, characterType));
-    }
-
+    /**
+     * Shows a pop-up window for the user to choose a color or the number of students to swap/move
+     *
+     * @param bound the maximum number of students to move | -1 if the user has to choose a color
+     */
     public static void showPopupForColorOrBound(int bound) {
         Stage popupStage = getNewUndecoratedStage();
         double width = DrawingConstants.CHARACTER_POPUP_WIDTH;
@@ -160,7 +119,106 @@ public class GuiView extends Application {
         popupStage.show();
     }
 
-    public static void showErrorDialog(String message, boolean closeApplication) {
+    /**
+     * Returns an undecorated {@code Stage}
+     *
+     * @return an undecorated {@code Stage}
+     */
+    private static Stage getNewUndecoratedStage() {
+        Stage newStage = new Stage();
+        newStage.initModality(Modality.WINDOW_MODAL);
+        newStage.initOwner(scene.getWindow());
+        newStage.initStyle(StageStyle.UNDECORATED);
+        return newStage;
+    }
+
+    /**
+     * Changes the scene showed on the gui
+     *
+     * @param resourceName the name of the scene to show (part of the .fxml file path)
+     * @param fullscreen   true if the scene has to be in full screen mode
+     */
+    public void changeScene(String resourceName, boolean fullscreen) {
+        if (Objects.equals(currentSceneName, resourceName)) {
+            return;
+        }
+
+        currentSceneName = resourceName;
+        FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/" + resourceName + ".fxml"));
+        Platform.runLater(() -> {
+            try {
+                scene = new Scene(fxmlLoader.load());
+            } catch (IOException e) {
+                gui.gracefulTermination("Connection to server lost");
+            }
+            stage.setResizable(fullscreen);
+            stage.setFullScreen(false);
+            stage.setScene(scene);
+            currentController = fxmlLoader.getController();
+        });
+    }
+
+    /**
+     * Draws the scene at the start of the game
+     */
+    public void startGameScene() {
+        Platform.runLater(() -> {
+            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+            double screenWidth = bounds.getWidth();
+            double screenHeight = bounds.getHeight();
+            AnchorPane root = new AnchorPane();
+            root.setId(DrawingConstants.ID_ROOT_GAME);
+            scene = new Scene(root, screenWidth, screenHeight);
+            scene.getStylesheets().add("/css/style.css");
+
+            ActionController newController = new ActionController();
+            newController.setRoot(root);
+            newController.initialize();
+            currentController = newController;
+
+            stage.setResizable(false);
+            stage.setMaximized(true);
+            stage.setScene(scene);
+        });
+    }
+
+    /**
+     * Sends a message to the controller containing the current {@code GameLobby}, {@code GameState}, list of action for the player to choose from and the username of the player
+     *
+     * @param lobby     the current {@code GameLobby} - null if not needed
+     * @param gameState the current {@code GameState} - null if not needed
+     * @param actions   the list of actions for the player to choose from
+     * @param username  the name of the player
+     */
+    public void sendMessageToController(GameLobby lobby, GameState gameState, List<String> actions, String username) {
+        Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, username));
+    }
+
+    /**
+     * Calls a controller method to ask the user the parameters to play the selected character
+     *
+     * @param name          the name of the character to play
+     * @param characterType the {@code GuiCharacterType} of the selected character
+     */
+    public void askCharacterParameters(CharacterName name, GuiCharacterType characterType) {
+        Platform.runLater(() -> currentController.askCharacterParameters(name, characterType));
+    }
+
+    /**
+     * Shows a pop-up window with an error message
+     *
+     * @param message          the message to be shown
+     * @param closeApplication true if the application has to be closed
+     */
+    public void showErrorDialog(String message, boolean closeApplication) {
+        // If there's a connection error the app should be closed without showing the alert - also to avoid
+        // showing the login screen when the app can't start
+        if (Objects.equals(message, Messages.USAGE) || Objects.equals(message, Messages.JSON_NOT_FOUND)
+                || Objects.equals(message, Messages.INVALID_SERVER_PORT) || Objects.equals(message, Messages.PORT_NOT_AVAILABLE)
+                || Objects.equals(message, Messages.CANNOT_CONNECT_TO_SERVER)) {
+            closeAppWithErrorMessage(message);
+            return;
+        }
         Alert.AlertType alertType = closeApplication ? Alert.AlertType.ERROR : Alert.AlertType.WARNING;
 
         Platform.runLater(() -> {
@@ -168,25 +226,67 @@ public class GuiView extends Application {
             alert.setTitle("Error");
             alert.setHeaderText(message);
             alert.setContentText(null);
+            alert.initOwner(stage);
 
             alert.showAndWait();
 
             if (closeApplication) {
-                System.out.println(message);
-                System.out.println("The application will now close...");
-                System.exit(-1);
+                closeAppWithErrorMessage(message);
             }
         });
     }
 
+    /**
+     * Closes the application showing the given message
+     *
+     * @param message the message to show
+     */
+    private void closeAppWithErrorMessage(String message) {
+        System.out.println(message);
+        System.out.println(Messages.APPLICATION_CLOSING);
+        System.exit(-1);
+    }
+
+    /**
+     * Shows a window asking the user if they are sure to close the game
+     */
+    private void confirmCloseApp() {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle(Messages.CLOSE_GAME_TITLE);
+            alert.setHeaderText(Messages.CONFIRM_CLOSE_GAME);
+
+            alert.showAndWait();
+
+            if (alert.getResult() == ButtonType.OK) {
+                stage.close();
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+    }
+
+    /**
+     * Shows a toast (a small pop-up window) at the bottom of the screen with a message
+     *
+     * @param message the message to show
+     */
     public void showToast(String message) {
         if (scene == null) return;
         Platform.runLater(() ->
-                Notifications.create().owner(stage).text(message).hideAfter(Duration.seconds(3)).position(Pos.BOTTOM_CENTER).show()
+                Notifications.create().owner(stage).text(message)
+                        .hideAfter(Duration.seconds(Constants.TOAST_DURATION_SECONDS))
+                        .position(Pos.BOTTOM_CENTER)
+                        .show()
         );
     }
 
-    public static void endGame(String message) {
+    /**
+     * Ends the game showing a message
+     *
+     * @param message the message to be shown
+     */
+    public void endGame(String message) {
         Platform.runLater(() -> {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -209,14 +309,6 @@ public class GuiView extends Application {
         });
     }
 
-    private static Stage getNewUndecoratedStage() {
-        Stage newStage = new Stage();
-        newStage.initModality(Modality.WINDOW_MODAL);
-        newStage.initOwner(scene.getWindow());
-        newStage.initStyle(StageStyle.UNDECORATED);
-        return newStage;
-    }
-
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -225,19 +317,14 @@ public class GuiView extends Application {
         currentSceneName = "login";
         FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/login.fxml"));
 
-        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
-        double width = screen.getWidth();
-        double height = screen.getHeight();
-
         scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setTitle("Eriantys");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.setOnCloseRequest(windowEvent -> {
             // TODO add a dialog that asks if the player wants to exit or not
-            stage.close();
-            Platform.exit();
-            System.exit(0);
+            windowEvent.consume();
+            confirmCloseApp();
         });
         stage.show();
     }

@@ -27,6 +27,7 @@ public class Messages {
     public static final String JSON_NOT_FOUND = "File settings.json not found. Please check documentation";
     public static final String INVALID_SERVER_PORT = "Invalid server_port";
     public static final String PORT_NOT_AVAILABLE = "The selected port is not available at the moment";
+    public static final String CANNOT_CONNECT_TO_SERVER = "Cannot connect to server, check server_address argument";
     public static final String APPLICATION_CLOSING = "Application will now close...";
     public static final String UNRECOGNISED_TYPE = "Unrecognised type";
     public static final String ERROR = "[ERROR] ";
@@ -138,4 +139,8 @@ public class Messages {
     public static final String BROADCAST_FOR_MOTHER_NATURE = " moved mother nature of ";
     public static final String BROADCAST_FILL_FROM_CLOUD = " chose cloud number ";
     public static final String BROADCAST_GAME_WON = " won the game";
+
+    // Alert messages in GUI
+    public static final String CLOSE_GAME_TITLE = "Close game";
+    public static final String CONFIRM_CLOSE_GAME = "Are you sure you want to close Eriantys?";
 }

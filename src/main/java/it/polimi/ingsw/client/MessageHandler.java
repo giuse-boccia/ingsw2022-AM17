@@ -262,14 +262,17 @@ public class MessageHandler implements ObserverHandler {
         chooseCloudObservers.forEach(observer -> observer.onCloudChosen(index));
     }
 
+    @Override
     public void notifyAllUsernameObservers(String message) {
         usernameObservers.forEach(observer -> observer.onUsernameEntered(message));
     }
 
+    @Override
     public void notifyAllGameParametersObservers(int numPlayers, boolean isExpert) {
         gameParametersObservers.forEach(observer -> observer.onGameParametersSet(numPlayers, isExpert));
     }
 
+    @Override
     public void notifyMoveStudentObservers(Color color, Integer islandIndex) {
         moveStudentObservers.forEach(observer -> observer.onStudentMoved(color, islandIndex));
     }
