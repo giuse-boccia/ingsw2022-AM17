@@ -76,13 +76,21 @@ public class SavedGameState extends GameState {
         savedGame = gson.fromJson(reader, SavedGameState.class);
         reader.close();
 
-        // Create Game from saved game state
+        return loadGame(savedGame);
+    }
+
+    /**
+     * Creates and returns a {@code Game} (complete model object) from the given savedGame
+     *
+     * @param savedGame a saved game
+     * @return the loaded game
+     */
+    public static Game loadGame(SavedGameState savedGame) {
         List<Player> players = PlayerState.loadPlayers(savedGame);
         Game game = new Game(players, savedGame.isExpert());
         game.setRoundsPlayed(savedGame.roundsPlayed);
         game.setGameBoard(loadGameBoard(savedGame, game));
-        // game.setCurrentRound(new Round());
-
+        game.setCurrentRound(RoundState.loadRound(savedGame, game));
         return game;
     }
 
@@ -102,7 +110,6 @@ public class SavedGameState extends GameState {
         gameBoard.setProfessors(loadProfessors(savedGame.getPlayers(), game.getPlayers()));
         gameBoard.setCharacters(CharacterState.loadCharacters(savedGame, gameBoard));
 
-        // TODO: visto che gli passo la GB a sto punto loadX fa GB.setX ???
         return gameBoard;
     }
 
@@ -132,5 +139,17 @@ public class SavedGameState extends GameState {
         }
 
         return res;
+    }
+
+    public int getRoundsPlayed() {
+        return roundsPlayed;
+    }
+
+    public List<Student> getBag() {
+        return bag;
+    }
+
+    public RoundState getRoundState() {
+        return roundState;
     }
 }

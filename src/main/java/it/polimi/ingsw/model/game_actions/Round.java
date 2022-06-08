@@ -11,11 +11,10 @@ import java.util.List;
 
 public class Round {
     private final int firstPlayerIndex;
-    private int currentPlayerIndex = -1;
-    private int currentAssistantIndex = -1;
     private final Game game;
+    private int currentAssistantIndex = -1;
     private PlanningPhase planningPhase;
-    private ArrayList<Assistant> playedAssistants;
+    private List<Assistant> playedAssistants;
     private PlayerActionPhase currentPlayerActionPhase;
     private boolean isLastRound;
 
@@ -29,6 +28,14 @@ public class Round {
         this.firstPlayerIndex = firstPlayerIndex;
         this.game = game;
         this.isLastRound = isLastRound;
+    }
+
+    public int getCurrentAssistantIndex() {
+        return currentAssistantIndex;
+    }
+
+    public void setCurrentAssistantIndex(int currentAssistantIndex) {
+        this.currentAssistantIndex = currentAssistantIndex;
     }
 
     /**
@@ -73,12 +80,8 @@ public class Round {
             game.nextRound(game.getPlayers().indexOf(nextFirstPlayer));
         } else {
             Player currentPlayer = playedAssistants.get(currentAssistantIndex).getPlayer();
-            currentPlayerIndex = game.getPlayers().indexOf(currentPlayer);
             currentPlayerActionPhase = new PlayerActionPhase(playedAssistants.get(currentAssistantIndex), game.getGameBoard());
         }
-
-        // TODO: save the current state of the game here
-        // una roba tipo game.save() (così se questo round è finito salva quello dopo)
     }
 
     /**
@@ -110,7 +113,7 @@ public class Round {
      *
      * @return the {@code ArrayList} containing the players in the order they should play the {@code PlanningPhase} in
      */
-    private ArrayList<Player> createPlayersArray() {
+    public ArrayList<Player> createPlayersArray() {
         ArrayList<Player> playersInOrder = new ArrayList<>();
         int numPlayers = game.getPlayers().size();
         for (int i = 0; i < numPlayers; i++) {
@@ -123,8 +126,16 @@ public class Round {
         return planningPhase;
     }
 
+    public void setPlanningPhase(PlanningPhase planningPhase) {
+        this.planningPhase = planningPhase;
+    }
+
     public PlayerActionPhase getCurrentPlayerActionPhase() {
         return currentPlayerActionPhase;
+    }
+
+    public void setCurrentPlayerActionPhase(PlayerActionPhase currentPlayerActionPhase) {
+        this.currentPlayerActionPhase = currentPlayerActionPhase;
     }
 
     public int getFirstPlayerIndex() {
@@ -136,5 +147,9 @@ public class Round {
             return null;
         }
         return new ArrayList<>(playedAssistants);
+    }
+
+    public void setPlayedAssistants(List<Assistant> playedAssistants) {
+        this.playedAssistants = playedAssistants;
     }
 }

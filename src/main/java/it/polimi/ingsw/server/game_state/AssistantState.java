@@ -1,7 +1,11 @@
 package it.polimi.ingsw.server.game_state;
 
 
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.game_objects.Assistant;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AssistantState {
     private final int numSteps;
@@ -20,6 +24,34 @@ public class AssistantState {
                 assistant.getValue(),
                 assistant.getPlayer().getName()
         );
+    }
+
+    /**
+     * Loads a list of assistants from a list of assistant states
+     *
+     * @param savedAssistants a list of saved assistants
+     * @param players         a list of real players (model objects)
+     * @return a list of assistants (model objects)
+     */
+    public static List<Assistant> loadAssistants(List<AssistantState> savedAssistants, ArrayList<Player> players) {
+        return savedAssistants.stream()
+                .map(sa -> sa.loadAssistant(players))
+                .toList();
+    }
+
+    /**
+     * Loads an assistant from this assistant state
+     *
+     * @param players a list of players containing the player who owns this assistant
+     * @return the loaded assistant
+     * @throws java.util.NoSuchElementException if the given list of players doesn't contain the player who owns the loaded assistant
+     */
+    private Assistant loadAssistant(ArrayList<Player> players) {
+        Player myPlayer = players.stream()
+                .filter(p -> p.getName().equals(this.playerName))
+                .findFirst()
+                .orElseThrow();
+        return new Assistant(this.numSteps, this.value, myPlayer);
     }
 
     public int getNumSteps() {
