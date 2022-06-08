@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.InvalidStudentException;
-import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class TestGameFactory {
      * @return the created {@code Game}
      */
     public static Game getNewGame() {
-        ArrayList<Player> players = createPlayers();
+        ArrayList<Player> players = createThreePlayers();
         Game res = new Game(players, true);
         res.start(0);
         for (Player player : players) {
@@ -46,11 +46,23 @@ public class TestGameFactory {
     }
 
     /**
+     * A helper method to add two players to the {@code Game}
+     *
+     * @return the {@code ArrayList} of players added
+     */
+    public static ArrayList<Player> createTwoPlayers() {
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(new Player("Rick", 8));
+        players.add(new Player("Clod", 8));
+        return players;
+    }
+
+    /**
      * A helper method add three players to the {@code Game}
      *
      * @return the {@code ArrayList} of players added
      */
-    private static ArrayList<Player> createPlayers() {
+    private static ArrayList<Player> createThreePlayers() {
         ArrayList<Player> players = new ArrayList<>();
         players.add(new Player("Rick", 6));
         players.add(new Player("Clod", 6));
@@ -99,5 +111,4 @@ public class TestGameFactory {
         }
         return colors;
     }
-
 }

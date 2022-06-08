@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.game_objects.Assistant;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class AssistantState {
@@ -31,11 +32,12 @@ public class AssistantState {
      *
      * @param savedAssistants a list of saved assistants
      * @param players         a list of real players (model objects)
-     * @return a list of assistants (model objects)
+     * @return a list of assistants (model objects) ordered by value
      */
     public static List<Assistant> loadAssistants(List<AssistantState> savedAssistants, ArrayList<Player> players) {
         return savedAssistants.stream()
                 .map(sa -> sa.loadAssistant(players))
+                .sorted(Comparator.comparingInt(Assistant::getValue))
                 .toList();
     }
 
