@@ -1,9 +1,12 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.gui.controllers.ActionController;
+import it.polimi.ingsw.client.gui.controllers.GuiController;
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
@@ -19,9 +22,9 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -160,7 +163,15 @@ public class GuiView extends Application {
         popupStage.show();
     }
 
-    public static void showErrorDialog(String message, boolean closeApplication) {
+    public void showErrorDialog(String message, boolean closeApplication) {
+        // If there's a connection error the app should be closed without showing the alert - also to avoid
+        // showing the login screen when the app can't start
+        if (Objects.equals(message, Messages.USAGE) || Objects.equals(message, Messages.JSON_NOT_FOUND)
+                || Objects.equals(message, Messages.INVALID_SERVER_PORT) || Objects.equals(message, Messages.PORT_NOT_AVAILABLE)
+                || Objects.equals(message, Messages.CANNOT_CONNECT_TO_SERVER)) {
+            closeAppWithErrorMessage(message);
+            return;
+        }
         Alert.AlertType alertType = closeApplication ? Alert.AlertType.ERROR : Alert.AlertType.WARNING;
 
         Platform.runLater(() -> {
@@ -168,13 +179,34 @@ public class GuiView extends Application {
             alert.setTitle("Error");
             alert.setHeaderText(message);
             alert.setContentText(null);
+            alert.initOwner(stage);
 
             alert.showAndWait();
 
             if (closeApplication) {
-                System.out.println(message);
-                System.out.println("The application will now close...");
-                System.exit(-1);
+                closeAppWithErrorMessage(message);
+            }
+        });
+    }
+
+    private void closeAppWithErrorMessage(String message) {
+        System.out.println(message);
+        System.out.println(Messages.APPLICATION_CLOSING);
+        System.exit(-1);
+    }
+
+    private void confirmCloseApp() {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle(Messages.CLOSE_GAME_TITLE);
+            alert.setHeaderText(Messages.CONFIRM_CLOSE_GAME);
+
+            alert.showAndWait();
+
+            if (alert.getResult() == ButtonType.OK) {
+                stage.close();
+                Platform.exit();
+                System.exit(0);
             }
         });
     }
@@ -182,11 +214,14 @@ public class GuiView extends Application {
     public void showToast(String message) {
         if (scene == null) return;
         Platform.runLater(() ->
-                Notifications.create().owner(stage).text(message).hideAfter(Duration.seconds(3)).position(Pos.BOTTOM_CENTER).show()
+                Notifications.create().owner(stage).text(message)
+                        .hideAfter(Duration.seconds(Constants.TOAST_DURATION_SECONDS))
+                        .position(Pos.BOTTOM_CENTER)
+                        .show()
         );
     }
 
-    public static void endGame(String message) {
+    public void endGame(String message) {
         Platform.runLater(() -> {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -225,19 +260,14 @@ public class GuiView extends Application {
         currentSceneName = "login";
         FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/login.fxml"));
 
-        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
-        double width = screen.getWidth();
-        double height = screen.getHeight();
-
         scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setTitle("Eriantys");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.setOnCloseRequest(windowEvent -> {
             // TODO add a dialog that asks if the player wants to exit or not
-            stage.close();
-            Platform.exit();
-            System.exit(0);
+            windowEvent.consume();
+            confirmCloseApp();
         });
         stage.show();
     }

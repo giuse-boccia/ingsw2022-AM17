@@ -28,5 +28,8 @@ public class Constants {
     public static final int MN_BONUS = 2;
     public static final int INFLUENCE_BONUS = 2;
 
+    // Gui constants
+    public static final int TOAST_DURATION_SECONDS = 4;
+
 
 }

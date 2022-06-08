@@ -11,7 +11,7 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18"
-            fx:controller="it.polimi.ingsw.client.gui.LoginController">
+            fx:controller="it.polimi.ingsw.client.gui.controllers.LoginController">
    <children>
       <ImageView fitHeight="602.0" fitWidth="870.0" layoutX="-1.0" opacity="0.67" pickOnBounds="true"
                  preserveRatio="true">

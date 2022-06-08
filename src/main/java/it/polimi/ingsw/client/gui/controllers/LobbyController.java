@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client.gui;
+package it.polimi.ingsw.client.gui.controllers;
 
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
