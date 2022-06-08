@@ -6,12 +6,17 @@ import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Entrance implements Place {
-    private final ArrayList<Student> students;
+    private final List<Student> students;
 
     public Entrance() {
         students = new ArrayList<>();
+    }
+
+    public Entrance(List<Student> students) {
+        this.students = students;
     }
 
     @Override

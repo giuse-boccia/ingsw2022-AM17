@@ -41,10 +41,10 @@ public class CLI extends Client {
         String res;
 
         do {
-            System.out.print(Messages.NO_GAME_RUNNING);
+            System.out.println(Messages.NO_GAME_RUNNING);
             System.out.println(Messages.CREATE_GAME);
             System.out.println(Messages.LOAD_GAME);
-            System.out.println("> ");
+            System.out.print("> ");
             res = stdIn.readLine();
         } while (!res.equals("1") && !res.equals("2"));
 
@@ -67,8 +67,33 @@ public class CLI extends Client {
 
     @Override
     public void showCurrentLobby(GameLobby lobby) {
+        if (lobby.isFromSavedGame()) {
+            printSavedGameLobby(lobby);
+        } else {
+            printNewGameLobby(lobby);
+        }
+    }
+
+    private void printSavedGameLobby(GameLobby lobby) {
         printBlueLine();
-        String message = "GAME: " + lobby.getPlayers().length;
+        String message = "GAME: " + lobby.getPlayers().size();
+        message += "/" + lobby.getNumPlayers();
+        message += " players | ";
+        message += "Expert mode: " + (lobby.isExpert() ? "Active" : "Not active");
+        System.out.println(message);
+
+        List<String> ready = lobby.getPlayers();
+        for (String name : lobby.getPlayersFromSavedGame()) {
+            String playerString = ready.contains(name) ? "[READY]" : "[WAITING]";
+            playerString += "  " + name;
+            System.out.println(playerString);
+        }
+        System.out.println();
+    }
+
+    private void printNewGameLobby(GameLobby lobby) {
+        printBlueLine();
+        String message = "GAME: " + lobby.getPlayers().size();
         if (lobby.getNumPlayers() != -1) {
             message += "/" + lobby.getNumPlayers();
         }

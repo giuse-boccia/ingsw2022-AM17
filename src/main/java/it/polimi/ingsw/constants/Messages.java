@@ -46,6 +46,8 @@ public class Messages {
     public static final String INVALID_NUM_PLAYERS = "Num players must be between 2 and 4";
     public static final String INVALID_PLAYER_CREATING_GAME = "You can't set this game's parameters";
     public static final String INVALID_FORMAT_NUM_PLAYER = "Num players must be a number";
+    public static final String USERNAME_NOT_IN_LOADED_GAME = "Username doesn't match: login with the same username or create a new game";
+    public static final String LOAD_GAME_FAILED = "Missing or corrupted save file, create a new game";
 
     // Connection errors
     public static final String ALERTING_OTHER_CLIENTS = "Connection to client lost, alerting other clients...";

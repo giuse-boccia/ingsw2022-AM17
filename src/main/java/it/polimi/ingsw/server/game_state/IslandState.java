@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.TowerColor;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,6 +27,32 @@ public class IslandState {
                 island.getTowerColor(),
                 island.getNoEntryNum(),
                 island.getNumOfTowers()
+        );
+    }
+
+    /**
+     * Loads the islands from the given saved game
+     *
+     * @param savedGame the saved game state
+     * @return a list of islands
+     */
+    public static List<Island> loadIslands(SavedGameState savedGame) {
+        List<Island> islands = new ArrayList<>();
+        savedGame.getIslands().forEach(islandState -> islands.add(islandState.loadIsland()));
+        return islands;
+    }
+
+    /**
+     * Loads an Island from this IslandState
+     *
+     * @return the loaded island
+     */
+    public Island loadIsland() {
+        return new Island(
+                students,
+                towerColor,
+                noEntryNum,
+                numOfTowers
         );
     }
 

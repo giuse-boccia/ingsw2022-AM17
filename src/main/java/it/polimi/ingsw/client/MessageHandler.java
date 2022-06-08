@@ -123,14 +123,22 @@ public class MessageHandler implements ObserverHandler {
                     client.gracefulTermination(Messages.SERVER_LOST);
                 }
             }).start();
+        } else if (message.getError() == 4) {
+            client.showWarningMessage(message.getDisplayText());    // error while loading saved game
+            new Thread(() -> {
+                try {
+                    client.askCreateOrLoad();
+                } catch (IOException e) {
+                    client.gracefulTermination("Connection to server went down");
+                }
+            }).start();
         } else if (message.getError() != 0) {
             client.gracefulTermination(message.getDisplayText());
         } else if (message.getAction() != null && message.getAction().equals(Messages.ACTION_CREATE_GAME)) {
             client.setUsername(client.getTmpUsername());
             new Thread(() -> {
                 try {
-                    // client.askCreateOrLoad();
-                    client.askNumPlayersAndExpertMode();
+                    client.askCreateOrLoad();
                 } catch (IOException e) {
                     client.gracefulTermination(Messages.SERVER_LOST);
                 }
@@ -157,6 +165,7 @@ public class MessageHandler implements ObserverHandler {
      */
     public void sendLoadGame() {
         ClientLoginMessage msg = new ClientLoginMessage();
+        msg.setUsername(client.getUsername());
         msg.setAction(Messages.ACTION_LOAD_GAME);
         nc.sendMessageToServer(msg.toJson());
     }

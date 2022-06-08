@@ -17,6 +17,10 @@ public class EveryOneMovesCharacter extends GameboardCharacter {
         super(characterName, gb);
     }
 
+    public EveryOneMovesCharacter(CharacterName characterName, GameBoard gb, boolean hasCoin) {
+        super(characterName, gb, hasCoin);
+    }
+
     /**
      * Every {@code Player} moves 3 students (if they have them) of the selected {@code Color} from their
      * {@code DiningRoom} to the {@code Bag}

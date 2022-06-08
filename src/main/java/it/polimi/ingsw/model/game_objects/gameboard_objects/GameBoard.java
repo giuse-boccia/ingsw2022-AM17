@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 
 public class GameBoard {
     private final Game game;
-    private final Bag bag;
-    private ArrayList<Island> islands;
-    private ArrayList<Cloud> clouds;
+    private Bag bag;
+    private List<Island> islands;
+    private List<Cloud> clouds;
     private Character[] characters;
     private Map<Color, Player> professors;
     private int motherNatureIndex;
@@ -34,6 +34,22 @@ public class GameBoard {
         this.clouds = initClouds();
         this.islands = initIslands();
         this.characters = initCharacters();
+    }
+
+    public void setBag(Bag bag) {
+        this.bag = bag;
+    }
+
+    public void setIslands(List<Island> islands) {
+        this.islands = islands;
+    }
+
+    public void setClouds(List<Cloud> clouds) {
+        this.clouds = clouds;
+    }
+
+    public void setProfessors(Map<Color, Player> professors) {
+        this.professors = professors;
     }
 
     /**

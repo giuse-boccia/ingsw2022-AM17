@@ -65,7 +65,7 @@ public class LobbyController implements GuiController {
         // Remove all elements set previously
         gridPane.getChildren().removeIf(node -> true);
 
-        String text = "PLAYERS: " + lobby.getPlayers().length;
+        String text = "PLAYERS: " + lobby.getPlayers().size();
         if (lobby.getNumPlayers() != -1) {
             text += "/" + lobby.getNumPlayers() + "| Expert mode: " + (lobby.isExpert() ? " " : "not ") + "active";
         }
@@ -74,8 +74,8 @@ public class LobbyController implements GuiController {
         playersTitle.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.TITLE_FONT_SIZE));
         gridPane.add(playersTitle, 0, 0);
 
-        for (int i = 0; i < lobby.getPlayers().length; i++) {
-            Text newPlayerText = new Text(lobby.getPlayers()[i]);
+        for (int i = 0; i < lobby.getPlayers().size(); i++) {
+            Text newPlayerText = new Text(lobby.getPlayers().get(i));
             newPlayerText.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.TITLE_FONT_SIZE));
             gridPane.add(newPlayerText, 0, i + 1);
         }

@@ -6,9 +6,10 @@ import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Cloud implements Place {
-    private final ArrayList<Student> students;
+    private final List<Student> students;
     private final int maxStudents;
 
     public Cloud(int maxStudents) {
@@ -16,8 +17,14 @@ public class Cloud implements Place {
         this.maxStudents = maxStudents;
     }
 
+    public Cloud(List<Student> students, int maxStudents) {
+        this.students = students;
+        this.maxStudents = maxStudents;
+    }
+
     /**
      * Give the students contained in the Cloud to the destination
+     *
      * @param destination the Entrance which the Cloud gives students to
      */
     public void emptyTo(Entrance destination) {

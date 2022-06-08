@@ -13,6 +13,10 @@ public class ResolveIslandCharacter extends GameboardCharacter {
         super(characterName, gb);
     }
 
+    public ResolveIslandCharacter(CharacterName characterName, GameBoard gb, boolean hasCoin) {
+        super(characterName, gb, hasCoin);
+    }
+
     /**
      * Resolves the selected {@code Island} as if MotherNature stopped on it
      *

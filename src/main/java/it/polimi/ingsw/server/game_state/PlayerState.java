@@ -1,8 +1,11 @@
 package it.polimi.ingsw.server.game_state;
 
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.game_objects.*;
+import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -82,5 +85,38 @@ public class PlayerState {
 
     public List<Color> getOwnedProfessors() {
         return ownedProfessors;
+    }
+
+    /**
+     * Loads the players from the given saved game state
+     *
+     * @param gs the saved game state
+     * @return a list of players
+     */
+    public static List<Player> loadPlayers(SavedGameState gs) {
+        List<Player> res = new ArrayList<>();
+        int initialTowers = gs.getPlayers().size() % 2 == 0 ? Constants.STUDENTS_IN_ENTRANCE_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.STUDENTS_IN_ENTRANCE_IN_THREE_PLAYER_GAME;
+
+        gs.getPlayers().forEach(playerState -> res.add(playerState.loadPlayer(initialTowers)));
+
+        return res;
+    }
+
+    /**
+     * Loads a player from this PlayerState
+     *
+     * @param initialTowers the initial amount of towers that the player should have
+     * @return the loaded Player
+     */
+    public Player loadPlayer(int initialTowers) {
+        return new Player(
+                assistants,
+                new Dashboard(entrance, dining),
+                name,
+                numCoins,
+                wizard,
+                towerColor,
+                initialTowers
+        );
     }
 }

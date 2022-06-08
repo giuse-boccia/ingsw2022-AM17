@@ -2,7 +2,6 @@ package it.polimi.ingsw.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.GameEndedException;
@@ -16,29 +15,27 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.server.Communicable;
 import it.polimi.ingsw.server.PlayerClient;
+import it.polimi.ingsw.server.game_state.SavedGameState;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.io.IOException;
+import java.util.*;
 
 public class Controller {
     private final Gson gson;
-
-    private final ArrayList<PlayerClient> loggedUsers;
     private final Object boundLock = new Object();
-    private int desiredNumberOfPlayers;
+    private final ArrayList<PlayerClient> loggedUsers;
+    private final GameLobby gameLobby;
     private GameController gameController;
+    private Game loadedGame;
     private int pongCount;
-    private boolean isExpert;
     private int bound = 0;
 
     public Controller() {
-        loggedUsers = new ArrayList<>();
-        gson = new Gson();
-        gameController = null;
-        desiredNumberOfPlayers = -1;
+        this.loggedUsers = new ArrayList<>();
+        this.gson = new Gson();
+        this.gameLobby = new GameLobby();
+        this.loadedGame = null;
+        this.gameController = null;
     }
 
     /**
@@ -86,10 +83,8 @@ public class Controller {
      * @return the status field of the given json message
      */
     private String getMessageStatus(String json) {
-        Type type = new TypeToken<Message>() {
-        }.getType();
         try {
-            Message msg = gson.fromJson(json, type);
+            Message msg = Message.fromJson(json);
             return msg.getStatus();
         } catch (JsonSyntaxException e) {
             return "";
@@ -124,6 +119,7 @@ public class Controller {
                 case Messages.ACTION_SET_USERNAME -> addUser(ch, loginMessage.getUsername());
                 case Messages.ACTION_CREATE_GAME ->
                         setGameParameters(ch, loginMessage.getNumPlayers(), loginMessage.isExpert());
+                case Messages.ACTION_LOAD_GAME -> setLoadedGameParameters(ch, loginMessage.getUsername());
                 default -> sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.BAD_REQUEST, 3);
 
             }
@@ -133,7 +129,7 @@ public class Controller {
     }
 
     /**
-     * Sets the desired number of players of the game if possible
+     * Sets the desired number of players of the game and whether to play in expert mode
      *
      * @param ch         the {@code Communicable} interface of the client who sent the message
      * @param numPlayers the value contained in the message received
@@ -148,15 +144,55 @@ public class Controller {
             return;
         }
 
-        desiredNumberOfPlayers = numPlayers;
-        this.isExpert = isExpert;
+        gameLobby.setNumPlayers(numPlayers);
+        gameLobby.setIsExpert(isExpert);
         System.out.println("GAME CREATED | " + numPlayers + " players | " + (isExpert ? "expert" : "non expert") + " mode");
 
-        if (!isGameReady()) {
+        if (!startGameIfReady()) {
             ServerLoginMessage message = getServerLoginMessage(Messages.GAME_CREATED);
             for (PlayerClient player : loggedUsers) {
                 player.getCommunicable().sendMessageToClient(message.toJson());
             }
+        }
+    }
+
+    private void setLoadedGameParameters(Communicable ch, String username) {
+        // Only the "host" loggedUsers[0] can load a game
+        if (loggedUsers.isEmpty() || loggedUsers.get(0).getCommunicable() != ch) {
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INVALID_PLAYER_CREATING_GAME, 3);
+            return;
+        }
+
+        // try to load the saved game, in case of failure send error
+        try {
+            loadedGame = SavedGameState.loadFromFile();
+            String[] loadedPlayers = loadedGame.getPlayers().stream().map(Player::getName).toArray(String[]::new);
+            gameLobby.setPlayersFromSavedGame(loadedPlayers);
+            if (!Arrays.asList(loadedPlayers).contains(username)) {
+                loadedGame = null;
+                gameLobby.resetPreferences();
+
+                // send "you are not present in the loaded game" error and logout user (he has to log in again)
+                sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.USERNAME_NOT_IN_LOADED_GAME, 5);
+                System.out.println("Removed player" + loggedUsers.get(0).getUsername());
+                loggedUsers.remove(0);
+                gameLobby.removePlayer(0);
+            } else {
+                gameLobby.setNumPlayers(loadedPlayers.length);
+                gameLobby.setIsExpert(loadedGame.isExpert());
+                System.out.println("GAME LOADED FROM FILE | " + gameLobby.getNumPlayers() + " players | " + (gameLobby.isExpert() ? "expert" : "non expert") + " mode");
+
+                if (!startGameIfReady()) {
+                    ServerLoginMessage message = getServerLoginMessage(Messages.GAME_CREATED);
+                    for (PlayerClient player : loggedUsers) {
+                        player.getCommunicable().sendMessageToClient(message.toJson());
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // send "load failed" error
+            System.out.println(Messages.LOAD_ERR);
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.LOAD_GAME_FAILED, 4);
         }
     }
 
@@ -167,10 +203,9 @@ public class Controller {
      * @param username the username of the user to be added
      */
     private void addUser(Communicable ch, String username) {
-
         if (username == null || username.trim().equals("")) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INVALID_USERNAME, 3);
-        } else if ((desiredNumberOfPlayers != -1 && loggedUsers.size() >= desiredNumberOfPlayers) || loggedUsers.size() >= 4 || gameController != null) {
+        } else if ((gameLobby.getNumPlayers() != -1 && loggedUsers.size() >= gameLobby.getNumPlayers()) || loggedUsers.size() >= 4 || gameController != null) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.LOBBY_FULL, 1);
         } else if (username.length() > Constants.MAX_USERNAME_LENGTH) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.USERNAME_TOO_LONG, 3);
@@ -179,13 +214,15 @@ public class Controller {
         } else {
             PlayerClient newUser = new PlayerClient(ch, username);
             loggedUsers.add(newUser);
+            gameLobby.addPlayer(username);
             System.out.println(Messages.ADDED_PLAYER + newUser.getUsername());
 
             if (newUser == loggedUsers.get(0)) {
                 askDesiredNumberOfPlayers(ch);
                 return;
             }
-            if (!isGameReady()) {
+
+            if (!startGameIfReady()) {
                 sendBroadcastMessage();     // signals everyone that a new player has joined
             }
         }
@@ -197,10 +234,10 @@ public class Controller {
      * of the game, which can be -1 (not specified yet), 2, 3 or 4
      */
     private void sendBroadcastMessage() {
-
         ServerLoginMessage res = getServerLoginMessage(Messages.NEW_PLAYER_JOINED);
 
-        if (desiredNumberOfPlayers != -1) {
+        // Notify the "host" only if he already picked the game preferences
+        if (gameLobby.getNumPlayers() != -1) {
             loggedUsers.get(0).getCommunicable().sendMessageToClient(res.toJson());
         }
 
@@ -218,9 +255,7 @@ public class Controller {
     private ServerLoginMessage getServerLoginMessage(String message) {
         ServerLoginMessage res = new ServerLoginMessage();
         res.setDisplayText(message);
-        Collection<String> playersList = loggedUsers.stream().map(PlayerClient::getUsername).toList();
-        String[] playersArray = playersList.toArray(new String[0]);
-        res.setGameLobby(new GameLobby(playersArray, desiredNumberOfPlayers, isExpert));
+        res.setGameLobby(gameLobby);
         return res;
     }
 
@@ -241,18 +276,21 @@ public class Controller {
     /**
      * Checks if a game can be started; if so, every client in the lobby is notified
      */
-    private boolean isGameReady() {
-        if (desiredNumberOfPlayers == -1 || loggedUsers.size() < desiredNumberOfPlayers) return false;
+    private boolean startGameIfReady() {
+        int numberOfPlayers = gameLobby.getNumPlayers();
+        boolean isExpert = gameLobby.isExpert();
 
-        while (desiredNumberOfPlayers < loggedUsers.size()) {
+        if (numberOfPlayers == -1 || loggedUsers.size() < numberOfPlayers) return false;
+
+        while (numberOfPlayers < loggedUsers.size()) {
             // Alert player that game is full and removes him
-            PlayerClient toRemove = loggedUsers.get(desiredNumberOfPlayers);
-            String errorMessage = "A new game for " + desiredNumberOfPlayers + " players is starting. Your connection will be closed";
+            PlayerClient toRemove = loggedUsers.get(numberOfPlayers);
+            String errorMessage = "A new game for " + numberOfPlayers + " players is starting. Your connection will be closed";
             sendErrorMessage(toRemove.getCommunicable(), Messages.STATUS_LOGIN, errorMessage, 1);
             loggedUsers.remove(toRemove);
         }
         String message = Messages.GAME_STARTING;
-        if (desiredNumberOfPlayers == 4) {
+        if (numberOfPlayers == 4) {
             message += ". The teams are: " + loggedUsers.get(0).getUsername() + " and " + loggedUsers.get(2).getUsername() +
                     " [WHITE team]  VS  " + loggedUsers.get(1).getUsername() + " and " + loggedUsers.get(3).getUsername() + " [BLACK team]";
         }
@@ -261,12 +299,13 @@ public class Controller {
         for (PlayerClient playerClient : loggedUsers) {
             // Alert player that game is starting
             playerClient.getCommunicable().sendMessageToClient(toSend.toJson());
-            playerClient.setPlayer(new Player(playerClient.getUsername(), desiredNumberOfPlayers % 2 == 0 ? Constants.TOWERS_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.TOWES_IN_THREE_PLAYER_GAME));
+            playerClient.setPlayer(new Player(playerClient.getUsername(), numberOfPlayers % 2 == 0 ? Constants.TOWERS_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.TOWES_IN_THREE_PLAYER_GAME));
         }
 
-        //Start a new Game
+        // TODO: check if it is a loaded game
         gameController = new GameController(loggedUsers, isExpert);
         gameController.start();
+        // gameController.resume() (?)
 
 
         return true;
@@ -309,8 +348,8 @@ public class Controller {
                             sendErrorMessage(user.getCommunicable(), Messages.STATUS_LOGIN, Messages.CONNECTION_WITH_CLIENT_LOST, 3);
                         }
                         loggedUsers.clear();
+                        gameLobby.clear();
                         gameController = null;
-                        desiredNumberOfPlayers = -1;
                         System.out.println(Messages.CLEARING_GAME);
                     }
                 }

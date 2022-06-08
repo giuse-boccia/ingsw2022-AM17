@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Cloud;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Player {
@@ -29,6 +30,25 @@ public class Player {
         for (int i = 1; i <= Constants.MAX_ASSISTANT_VALUE; i++) {
             hand[i - 1] = new Assistant(i % 2 != 0 ? i / 2 + 1 : i / 2, i, this);
         }
+    }
+
+    // For Game loading
+    public Player(int[] assistants, Dashboard dashboard, String name, int numCoins, Wizard wizard, TowerColor towerColor, int initialTowers) {
+        this.hand = new Assistant[10];
+        for (int i = 1; i <= 10; i++) {
+            final int check = i;
+            if (Arrays.stream(assistants).anyMatch(a -> a == check)) {
+                hand[i - 1] = new Assistant(i % 2 != 0 ? i / 2 + 1 : i / 2, i, this);
+            } else {
+                hand[i - 1] = null;
+            }
+        }
+        this.dashboard = dashboard;
+        this.name = name;
+        this.numCoins = numCoins;
+        this.wizard = wizard;
+        this.towerColor = towerColor;
+        this.initialTowers = initialTowers;
     }
 
     /**

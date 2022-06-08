@@ -23,6 +23,13 @@ public class Island implements Place {
         numOfTowers = 0;
     }
 
+    public Island(Collection<Student> students, TowerColor towerColor, int noEntryNum, int numOfTowers) {
+        this.students = students;
+        this.towerColor = towerColor;
+        this.noEntryNum = noEntryNum;
+        this.numOfTowers = numOfTowers;
+    }
+
     public TowerColor getTowerColor() {
         return towerColor;
     }

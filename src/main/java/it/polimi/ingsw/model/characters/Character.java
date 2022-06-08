@@ -19,6 +19,13 @@ public abstract class Character {
         this.hasCoin = false;
     }
 
+    // for game loading
+    public Character(CharacterName characterName, boolean hasCoin) {
+        this.characterName = characterName;
+        this.cost = characterName.getInitialCost();
+        this.hasCoin = hasCoin;
+    }
+
     public int getCost() {
         return hasCoin ? cost + 1 : cost;
     }

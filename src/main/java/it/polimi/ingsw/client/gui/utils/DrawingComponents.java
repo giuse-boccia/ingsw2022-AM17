@@ -509,7 +509,7 @@ public class DrawingComponents {
             characterImages.add(characterToAdd);
             root.getChildren().add(characterToAdd);
 
-            if (character.isHasCoin()) {
+            if (character.hasCoin()) {
                 double imageWidth = pageWidth * DrawingConstants.COIN_PROPORTION;
                 ImageView coin = getCoinImageView(
                         coordX + pageWidth * (DrawingConstants.CHARACTER_CARD_PROPORTION) - imageWidth,
