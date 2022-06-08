@@ -20,6 +20,11 @@ public class LoginController implements GuiController {
 
     }
 
+    /**
+     * Notifies all the correct attached observers when the user clicks on the login button
+     *
+     * @param event the user's click on the login button
+     */
     public void onLoginBtnPressed(ActionEvent event) {
         String username = usernameTextField.getText();
         GuiView.getGui().setTmpUsername(username);

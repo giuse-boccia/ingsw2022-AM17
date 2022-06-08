@@ -27,12 +27,24 @@ public class ObjectClickListeners {
     private static Node lastCharacterPlayedNode;
     private static Integer studentsToSwapForSwapCharacters;
 
+    /**
+     * This method gets triggered when the user clicks on an assistant
+     *
+     * @param value   the value of the assistant clicked
+     * @param element the {@code Node} wrapping the assistant image
+     */
     public static void setAssistantClicked(int value, Node element) {
         if (isOrdinaryMoveValid(element)) {
             GuiView.getGui().getCurrentObserverHandler().notifyPlayAssistantObservers(value);
         }
     }
 
+    /**
+     * This method gets triggered when the user clicks on a student
+     *
+     * @param color   the color of the selected student
+     * @param element the {@code Node} wrapping the student image
+     */
     public static void setStudentClicked(Color color, Node element) {
         if (isOrdinaryMoveValid(element)) {
             if (studentClicked != null) {
@@ -52,6 +64,9 @@ public class ObjectClickListeners {
         }
     }
 
+    /**
+     * This method gets triggered when the user clicks on their Dining Room
+     */
     public static void setDiningRoomClicked() {
         if (studentOnCardClicked != null && lastCharacterPlayed == CharacterName.move1FromCardToDining) {
             // Character move1FromCardToDining has been played
@@ -70,6 +85,12 @@ public class ObjectClickListeners {
         }
     }
 
+    /**
+     * This method gets triggered when the user clicks on a student in their Dining Room
+     *
+     * @param color   the color of the selected student
+     * @param element the {@code Node} wrapping the student image
+     */
     public static void setStudentOnDiningClicked(Color color, Node element) {
         if (!hasSwapCharacterBeenPlayed(element)) return;
         if (dstStudentColorsForCharacter.size() >= studentsToSwapForSwapCharacters) return;
@@ -79,6 +100,12 @@ public class ObjectClickListeners {
         sendSwapCharacterPlayedMessage();
     }
 
+    /**
+     * This method gets triggered when the user clicks on a character
+     *
+     * @param name    the name of the selected character
+     * @param element the {@code Node} wrapping the character image
+     */
     public static void setCharacterClicked(CharacterName name, Node element) {
         if (!isOrdinaryMoveValid(element)) return;
         DrawingComponents.removeGoldenBordersFromAllCharacters();
@@ -87,6 +114,12 @@ public class ObjectClickListeners {
         GuiView.getGui().getCurrentObserverHandler().notifyCharacterChoiceObservers(name);
     }
 
+    /**
+     * This method gets triggered when the user clicks on a student on a character
+     *
+     * @param color   the color of the selected student
+     * @param element the {@code Node} wrapping the student image
+     */
     public static void setStudentOnCharacterClicked(Color color, Node element) {
         if (hasMovingCharacterBeenPlayed(element)) {
             if (studentOnCardClicked != null) {
@@ -107,6 +140,9 @@ public class ObjectClickListeners {
         }
     }
 
+    /**
+     * Sends the server the message containing the correct students to swap
+     */
     private static void sendSwapCharacterPlayedMessage() {
         if (srcStudentsForCharacter.size() != studentsToSwapForSwapCharacters ||
                 dstStudentsForCharacter.size() != studentsToSwapForSwapCharacters) {
@@ -124,6 +160,11 @@ public class ObjectClickListeners {
         dstStudentColorsForCharacter.clear();
     }
 
+    /**
+     * This method gets triggered when the user clicks on a swap character
+     *
+     * @param studentsToMove the number of students to swap
+     */
     public static void setSwapCharacterPlayed(int studentsToMove) {
         lastCharacterPlayedNode.getStyleClass().clear();
         lastCharacterPlayedNode.getStyleClass().add("element_active_for_swap_character");
@@ -138,6 +179,12 @@ public class ObjectClickListeners {
         studentsToSwapForSwapCharacters = studentsToMove;
     }
 
+    /**
+     * This method gets triggered when the user clicks on a cloud
+     *
+     * @param element    the {@code Node} wrapping the cloud image
+     * @param cloudIndex the index of the selected cloud
+     */
     public static void setCloudClicked(Node element, int cloudIndex) {
         if (isOrdinaryMoveValid(element)) {
             if (cloudClicked != null) {
@@ -149,6 +196,13 @@ public class ObjectClickListeners {
 
     }
 
+    /**
+     * This method gets triggered when the user clicks on an island
+     *
+     * @param element     the {@code Node} wrapping the island image
+     * @param numSteps    the number of steps Mother Nature should be moved of
+     * @param islandIndex the index of the selected island
+     */
     public static void setIslandClicked(Node element, int numSteps, int islandIndex) {
         if (hasMovingCharacterBeenPlayed(element) && studentOnCardClicked != null && lastCharacterPlayed == CharacterName.move1FromCardToIsland) {
             // Character move1FromCardToIsland has been played: the student previously selected has to be moved
@@ -182,6 +236,11 @@ public class ObjectClickListeners {
         }
     }
 
+    /**
+     * Highlights the given {@code Node}
+     *
+     * @param element the {@code Node} to be highlighted
+     */
     private static void setElementHighlighted(Node element) {
         element.getStyleClass().clear();
         element.getStyleClass().add("highlight_element");
@@ -201,6 +260,12 @@ public class ObjectClickListeners {
         return false;
     }
 
+    /**
+     * Checks if a swap character has been played this turn
+     *
+     * @param element the {@code Node} wrapping the element to swap
+     * @return true if a swap character has been played this turn
+     */
     private static boolean hasSwapCharacterBeenPlayed(Node element) {
         if (element.getStyleClass().contains("element_active_for_swap_character")) {
             element.getStyleClass().clear();
@@ -209,6 +274,12 @@ public class ObjectClickListeners {
         return false;
     }
 
+    /**
+     * Checks if a moving character has been played this turn
+     *
+     * @param element the {@code Node} wrapping the element to move
+     * @return true if a moving character has been played this turn
+     */
     private static boolean hasMovingCharacterBeenPlayed(Node element) {
         if (element.getStyleClass().contains("element_active_for_moving_character")) {
             element.getStyleClass().clear();
@@ -217,6 +288,12 @@ public class ObjectClickListeners {
         return false;
     }
 
+    /**
+     * Checks if a character related to islands has been played this turn
+     *
+     * @param element the {@code Node} wrapping the selected island
+     * @return true if a character related to islands has been played this turn
+     */
     private static boolean hasIslandCharacterBeenPlayed(Node element) {
         return element.getStyleClass().contains("element_active_for_island_character");
     }
@@ -225,10 +302,20 @@ public class ObjectClickListeners {
         return lastCharacterPlayed;
     }
 
+    /**
+     * This method gets triggered when the user clicks on a student on an island
+     *
+     * @param color       the color of the selected student
+     * @param element     the {@code Node} wrapping the student image
+     * @param islandIndex the index of the selected island
+     */
     public static void setStudentOnIslandClicked(Node element, Color color, int islandIndex) {
         setStudentOnCharacterClicked(color, element);
     }
 
+    /**
+     * Eliminates all previous highlighting and highlights the current playable actions
+     */
     private static void resetToCurrentHighlighting() {
         DrawingComponents.removeGoldenBordersFromAllElements();
         DrawingComponents.highlightCurrentActions(DrawingComponents.getLastActions());

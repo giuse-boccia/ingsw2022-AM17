@@ -60,55 +60,11 @@ public class GuiView extends Application {
         return gui;
     }
 
-    public void changeScene(String resourceName, boolean fullscreen) {
-        if (Objects.equals(currentSceneName, resourceName)) {
-            return;
-        }
-
-        currentSceneName = resourceName;
-        FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/" + resourceName + ".fxml"));
-        Platform.runLater(() -> {
-            try {
-                scene = new Scene(fxmlLoader.load());
-            } catch (IOException e) {
-                gui.gracefulTermination("Connection to server lost");
-            }
-            stage.setResizable(fullscreen);
-            stage.setFullScreen(false);
-            stage.setScene(scene);
-            currentController = fxmlLoader.getController();
-        });
-    }
-
-    public void startGameScene() {
-        Platform.runLater(() -> {
-            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-            double screenWidth = bounds.getWidth();
-            double screenHeight = bounds.getHeight();
-            AnchorPane root = new AnchorPane();
-            root.setId(DrawingConstants.ID_ROOT_GAME);
-            scene = new Scene(root, screenWidth, screenHeight);
-            scene.getStylesheets().add("/css/style.css");
-
-            ActionController newController = new ActionController();
-            newController.setRoot(root);
-            newController.initialize();
-            currentController = newController;
-
-            stage.setResizable(false);
-            stage.setMaximized(true);
-            stage.setScene(scene);
-        });
-    }
-
-    public void sendMessageToController(GameLobby lobby, GameState gameState, List<String> actions, String username) {
-        Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, username));
-    }
-
-    public void askCharacterParameters(CharacterName name, GuiCharacterType characterType) {
-        Platform.runLater(() -> currentController.askCharacterParameters(name, characterType));
-    }
-
+    /**
+     * Shows a pop-up window for the user to choose a color or the number of students to swap/move
+     *
+     * @param bound the maximum number of students to move | -1 if the user has to choose a color
+     */
     public static void showPopupForColorOrBound(int bound) {
         Stage popupStage = getNewUndecoratedStage();
         double width = DrawingConstants.CHARACTER_POPUP_WIDTH;
@@ -163,6 +119,97 @@ public class GuiView extends Application {
         popupStage.show();
     }
 
+    /**
+     * Returns an undecorated {@code Stage}
+     *
+     * @return an undecorated {@code Stage}
+     */
+    private static Stage getNewUndecoratedStage() {
+        Stage newStage = new Stage();
+        newStage.initModality(Modality.WINDOW_MODAL);
+        newStage.initOwner(scene.getWindow());
+        newStage.initStyle(StageStyle.UNDECORATED);
+        return newStage;
+    }
+
+    /**
+     * Changes the scene showed on the gui
+     *
+     * @param resourceName the name of the scene to show (part of the .fxml file path)
+     * @param fullscreen   true if the scene has to be in full screen mode
+     */
+    public void changeScene(String resourceName, boolean fullscreen) {
+        if (Objects.equals(currentSceneName, resourceName)) {
+            return;
+        }
+
+        currentSceneName = resourceName;
+        FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/" + resourceName + ".fxml"));
+        Platform.runLater(() -> {
+            try {
+                scene = new Scene(fxmlLoader.load());
+            } catch (IOException e) {
+                gui.gracefulTermination("Connection to server lost");
+            }
+            stage.setResizable(fullscreen);
+            stage.setFullScreen(false);
+            stage.setScene(scene);
+            currentController = fxmlLoader.getController();
+        });
+    }
+
+    /**
+     * Draws the scene at the start of the game
+     */
+    public void startGameScene() {
+        Platform.runLater(() -> {
+            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+            double screenWidth = bounds.getWidth();
+            double screenHeight = bounds.getHeight();
+            AnchorPane root = new AnchorPane();
+            root.setId(DrawingConstants.ID_ROOT_GAME);
+            scene = new Scene(root, screenWidth, screenHeight);
+            scene.getStylesheets().add("/css/style.css");
+
+            ActionController newController = new ActionController();
+            newController.setRoot(root);
+            newController.initialize();
+            currentController = newController;
+
+            stage.setResizable(false);
+            stage.setMaximized(true);
+            stage.setScene(scene);
+        });
+    }
+
+    /**
+     * Sends a message to the controller containing the current {@code GameLobby}, {@code GameState}, list of action for the player to choose from and the username of the player
+     *
+     * @param lobby     the current {@code GameLobby} - null if not needed
+     * @param gameState the current {@code GameState} - null if not needed
+     * @param actions   the list of actions for the player to choose from
+     * @param username  the name of the player
+     */
+    public void sendMessageToController(GameLobby lobby, GameState gameState, List<String> actions, String username) {
+        Platform.runLater(() -> currentController.receiveData(lobby, gameState, actions, username));
+    }
+
+    /**
+     * Calls a controller method to ask the user the parameters to play the selected character
+     *
+     * @param name          the name of the character to play
+     * @param characterType the {@code GuiCharacterType} of the selected character
+     */
+    public void askCharacterParameters(CharacterName name, GuiCharacterType characterType) {
+        Platform.runLater(() -> currentController.askCharacterParameters(name, characterType));
+    }
+
+    /**
+     * Shows a pop-up window with an error message
+     *
+     * @param message          the message to be shown
+     * @param closeApplication true if the application has to be closed
+     */
     public void showErrorDialog(String message, boolean closeApplication) {
         // If there's a connection error the app should be closed without showing the alert - also to avoid
         // showing the login screen when the app can't start
@@ -189,12 +236,20 @@ public class GuiView extends Application {
         });
     }
 
+    /**
+     * Closes the application showing the given message
+     *
+     * @param message the message to show
+     */
     private void closeAppWithErrorMessage(String message) {
         System.out.println(message);
         System.out.println(Messages.APPLICATION_CLOSING);
         System.exit(-1);
     }
 
+    /**
+     * Shows a window asking the user if they are sure to close the game
+     */
     private void confirmCloseApp() {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -211,6 +266,11 @@ public class GuiView extends Application {
         });
     }
 
+    /**
+     * Shows a toast (a small pop-up window) at the bottom of the screen with a message
+     *
+     * @param message the message to show
+     */
     public void showToast(String message) {
         if (scene == null) return;
         Platform.runLater(() ->
@@ -221,6 +281,11 @@ public class GuiView extends Application {
         );
     }
 
+    /**
+     * Ends the game showing a message
+     *
+     * @param message the message to be shown
+     */
     public void endGame(String message) {
         Platform.runLater(() -> {
             Stage stage = new Stage();
@@ -242,14 +307,6 @@ public class GuiView extends Application {
             stage.setScene(new Scene(vBox, DrawingConstants.END_GAME_POPUP_WIDTH, DrawingConstants.END_GAME_POPUP_HEIGHT));
             stage.show();
         });
-    }
-
-    private static Stage getNewUndecoratedStage() {
-        Stage newStage = new Stage();
-        newStage.initModality(Modality.WINDOW_MODAL);
-        newStage.initOwner(scene.getWindow());
-        newStage.initStyle(StageStyle.UNDECORATED);
-        return newStage;
     }
 
 

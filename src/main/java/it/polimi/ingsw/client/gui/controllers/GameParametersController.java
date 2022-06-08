@@ -25,6 +25,9 @@ public class GameParametersController implements GuiController {
     @FXML
     private Label title;
 
+    /**
+     * Initializes the page which the user selects the game parameters from
+     */
     @FXML
     void initialize() {
         title.setText("Welcome, " + GuiView.getGui().getUsername());
@@ -38,6 +41,11 @@ public class GameParametersController implements GuiController {
     public GameParametersController() {
     }
 
+    /**
+     * Notifies all the correct attached observers when the user clicks the start button
+     *
+     * @param event the user's click on the start button
+     */
     public void onStartButtonClicked(ActionEvent event) {
         GuiView.getGui().getCurrentObserverHandler().notifyAllGameParametersObservers(
                 numPlayersChoiceBox.getValue(), isGameExpert.isSelected()
