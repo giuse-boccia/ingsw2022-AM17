@@ -63,12 +63,12 @@ public class MessageHandler implements ObserverHandler {
         if (message == null) return;
 
         switch (message.getStatus()) {
-            case "PING" -> handlePing();
-            case "LOGIN" -> handleLogin(jsonMessage);
-            case "ACTION" -> parseAction(jsonMessage);
-            case "UPDATE" -> handleUpdate(jsonMessage);
-            case "END" -> handleEndGame(jsonMessage);
-            default -> client.gracefulTermination("Invalid response from server");
+            case Messages.STATUS_PING -> handlePing();
+            case Messages.STATUS_LOGIN -> handleLogin(jsonMessage);
+            case Messages.STATUS_ACTION -> parseAction(jsonMessage);
+            case Messages.STATUS_UPDATE -> handleUpdate(jsonMessage);
+            case Messages.STATUS_END -> handleEndGame(jsonMessage);
+            default -> client.gracefulTermination(Messages.INVALID_SERVER_MESSAGE);
         }
     }
 
@@ -95,7 +95,7 @@ public class MessageHandler implements ObserverHandler {
      */
     private void sendPong() {
         Message pong = new Message();
-        pong.setStatus("PONG");
+        pong.setStatus(Messages.STATUS_PONG);
         nc.sendMessageToServer(pong.toJson());
     }
 
@@ -106,12 +106,12 @@ public class MessageHandler implements ObserverHandler {
         ServerLoginMessage message = ServerLoginMessage.fromJson(jsonMessage);
 
         if (message.getError() == 2) {
-            client.showWarningMessage("Username already taken");
+            client.showWarningMessage(Messages.USERNAME_ALREADY_TAKEN);
             new Thread(() -> {
                 try {
                     askUsernameAndSend();
                 } catch (IOException e) {
-                    client.gracefulTermination("Connection to server went down");
+                    client.gracefulTermination(Messages.SERVER_LOST);
                 }
             }).start();
         } else if (message.getError() == 5) {
@@ -120,19 +120,19 @@ public class MessageHandler implements ObserverHandler {
                 try {
                     askUsernameAndSend();
                 } catch (IOException e) {
-                    client.gracefulTermination("Connection to server went down");
+                    client.gracefulTermination(Messages.SERVER_LOST);
                 }
             }).start();
         } else if (message.getError() != 0) {
             client.gracefulTermination(message.getDisplayText());
-        } else if (message.getAction() != null && message.getAction().equals("CREATE_GAME")) {
+        } else if (message.getAction() != null && message.getAction().equals(Messages.ACTION_CREATE_GAME)) {
             client.setUsername(client.getTmpUsername());
             new Thread(() -> {
                 try {
                     // client.askCreateOrLoad();
                     client.askNumPlayersAndExpertMode();
                 } catch (IOException e) {
-                    client.gracefulTermination("Connection to server went down");
+                    client.gracefulTermination(Messages.SERVER_LOST);
                 }
             }).start();
 
@@ -148,7 +148,7 @@ public class MessageHandler implements ObserverHandler {
      */
     public void askUsernameAndSend() throws IOException {
         client.setCurrentObserverHandler(this);
-        client.showMessage("Connecting to server...");
+        client.showMessage(Messages.CONNECTING);
         client.askUsername();
     }
 
@@ -203,7 +203,7 @@ public class MessageHandler implements ObserverHandler {
             try {
                 observer.onCharacterChosen(name);
             } catch (IOException e) {
-                client.gracefulTermination(Messages.SERVER_CRASHED);
+                client.gracefulTermination(Messages.SERVER_LOST);
             }
         });
     }
@@ -314,16 +314,16 @@ public class MessageHandler implements ObserverHandler {
         new Thread(() -> {
             try {
                 switch (chosenAction) {
-                    case "PLAY_ASSISTANT" -> ActionHandler.handlePlayAssistant(nc);
-                    case "MOVE_STUDENT_TO_DINING" -> ActionHandler.handleMoveStudentToDining(nc);
-                    case "MOVE_STUDENT_TO_ISLAND" -> ActionHandler.handleMoveStudentToIsland(nc);
-                    case "MOVE_MN" -> ActionHandler.handleMoveMotherNature(nc);
-                    case "FILL_FROM_CLOUD" -> ActionHandler.handleFillFromCloud(nc);
-                    case "PLAY_CHARACTER" -> ActionHandler.handlePlayCharacter(nc);
-                    default -> client.gracefulTermination("Invalid message coming from server");
+                    case Messages.ACTION_PLAY_ASSISTANT -> ActionHandler.handlePlayAssistant(nc);
+                    case Messages.ACTION_MOVE_STUDENT_TO_DINING -> ActionHandler.handleMoveStudentToDining(nc);
+                    case Messages.ACTION_MOVE_STUDENT_TO_ISLAND -> ActionHandler.handleMoveStudentToIsland(nc);
+                    case Messages.ACTION_MOVE_MN -> ActionHandler.handleMoveMotherNature(nc);
+                    case Messages.ACTION_FILL_FROM_CLOUD -> ActionHandler.handleFillFromCloud(nc);
+                    case Messages.ACTION_PLAY_CHARACTER -> ActionHandler.handlePlayCharacter(nc);
+                    default -> client.gracefulTermination(Messages.INVALID_SERVER_MESSAGE);
                 }
             } catch (IOException e) {
-                client.gracefulTermination("Connection lost");
+                client.gracefulTermination(Messages.SERVER_LOST);
             }
 
         }).start();
@@ -340,7 +340,7 @@ public class MessageHandler implements ObserverHandler {
                 client.showPossibleActions(actions);
                 client.chooseAction(actions);
             } catch (IOException e) {
-                client.gracefulTermination("Connection lost");
+                client.gracefulTermination(Messages.SERVER_LOST);
             }
         }).start();
     }
@@ -364,7 +364,7 @@ public class MessageHandler implements ObserverHandler {
             @Override
             public void run() {
                 if (serverUpCalls >= Constants.MAX_ATTEMPTS_TO_CONTACT_SERVER && client.getUsername() != null) {
-                    client.gracefulTermination("Server crashed");
+                    client.gracefulTermination(Messages.SERVER_LOST);
                     this.cancel();
                 } else if (client.getUsername() != null) {
                     serverUpCalls++;

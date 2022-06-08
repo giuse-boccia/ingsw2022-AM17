@@ -154,7 +154,7 @@ public class Game {
      * @param nextFirstPlayerIndex the index of the {@code Player} who starts the first {@code Round}
      */
     public void start(int nextFirstPlayerIndex) {
-        int motherNatureIndex = rng.getRandomInteger(12);
+        int motherNatureIndex = rng.getRandomInteger(Constants.MAX_ISLANDS);
 
         for (Player player : players) {
             player.addToGame(this);

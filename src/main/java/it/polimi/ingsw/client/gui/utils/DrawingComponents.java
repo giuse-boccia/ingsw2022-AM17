@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client.gui.utils;
 
+import it.polimi.ingsw.constants.Constants;
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
@@ -60,8 +62,8 @@ public class DrawingComponents {
         List<PlayerState> players = gameState.getPlayers();
         drawGameComponentsForTwo(pageWidth, pageHeight, root, gameState, username);
 
-        drawDashboard(players.get(2), pageHeight * 0.5, root, username);
-        drawDashboardText(players.get(2), 0 - pageWidth * 0.03, 3 * dashboardHeight + pageHeight * 0.095, pageWidth, pageHeight, root, gameState.isExpert());
+        drawDashboard(players.get(2), pageHeight * DrawingConstants.THIRD_DASHBOARD_Y, root, username);
+        drawDashboardText(players.get(2), 0 - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT, 3 * dashboardHeight + pageHeight * DrawingConstants.LOWER_YOFFSET_DASH_TEXT, pageWidth, pageHeight, root, gameState.isExpert());
 
         drawAssistants(gameState, pageWidth, pageHeight, root, username);
     }
@@ -79,11 +81,11 @@ public class DrawingComponents {
         List<PlayerState> players = gameState.getPlayers();
         drawGameComponentsForTwo(pageWidth, pageHeight, root, gameState, username);
 
-        drawDashboard(players.get(2), pageHeight * 0.50, root, username);
-        drawDashboardText(players.get(2), 0 - pageWidth * 0.03, 3 * dashboardHeight + pageHeight * 0.095, pageWidth, pageHeight, root, gameState.isExpert());
+        drawDashboard(players.get(2), pageHeight * DrawingConstants.THIRD_DASHBOARD_Y, root, username);
+        drawDashboardText(players.get(2), 0 - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT, 3 * dashboardHeight + pageHeight * DrawingConstants.LOWER_YOFFSET_DASH_TEXT, pageWidth, pageHeight, root, gameState.isExpert());
 
-        drawDashboard(players.get(3), pageHeight * 0.78, root, username);
-        drawDashboardText(players.get(3), dashboardHeight / (2 * DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH) - pageWidth * 0.03, 3 * dashboardHeight + pageHeight * 0.095, pageWidth, pageHeight, root, gameState.isExpert());
+        drawDashboard(players.get(3), pageHeight * DrawingConstants.FOURTH_DASHBOARD_Y, root, username);
+        drawDashboardText(players.get(3), dashboardHeight / (2 * DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH) - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT, 3 * dashboardHeight + pageHeight * DrawingConstants.LOWER_YOFFSET_DASH_TEXT, pageWidth, pageHeight, root, gameState.isExpert());
 
         drawAssistants(gameState, pageWidth, pageHeight, root, username);
     }
@@ -100,14 +102,14 @@ public class DrawingComponents {
     private static void drawGameComponentsForTwo(double pageWidth, double pageHeight, AnchorPane root, GameState gameState, String username) {
         root.getStylesheets().add("/css/game_elements.css");
 
-        dashboardHeight = pageHeight * 0.22;
+        dashboardHeight = pageHeight * DrawingConstants.DASHBOARD_HEIGHT;
         List<PlayerState> players = gameState.getPlayers();
 
         drawDashboard(players.get(0), 0, root, username);
-        drawDashboardText(players.get(0), 0 - pageWidth * 0.03, dashboardHeight + pageHeight * 0.035, pageWidth, pageHeight, root, gameState.isExpert());
+        drawDashboardText(players.get(0), 0 - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT, dashboardHeight + pageHeight * DrawingConstants.UPPER_YOFFSET_DASH_TEXT, pageWidth, pageHeight, root, gameState.isExpert());
 
-        drawDashboard(players.get(1), pageHeight * 0.28, root, username);
-        drawDashboardText(players.get(1), dashboardHeight / (2 * DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH) - pageWidth * 0.03, dashboardHeight + pageHeight * 0.035, pageWidth, pageHeight, root, gameState.isExpert());
+        drawDashboard(players.get(1), pageHeight * DrawingConstants.SECOND_DASHBOARD_Y, root, username);
+        drawDashboardText(players.get(1), dashboardHeight / (2 * DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH) - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT, dashboardHeight + pageHeight * DrawingConstants.UPPER_YOFFSET_DASH_TEXT, pageWidth, pageHeight, root, gameState.isExpert());
 
         drawClouds(gameState.getClouds(), pageWidth, pageHeight, root);
         drawIslands(gameState, pageWidth, pageHeight, root);
@@ -143,7 +145,7 @@ public class DrawingComponents {
         for (int i = 0; i < player.getEntrance().size(); i++) {
             Student s = player.getEntrance().get(i);
             String resourceName = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
-            ImageView student = getImageView(resourceName, dashboardWidth / 25);
+            ImageView student = getImageView(resourceName, dashboardWidth / DrawingConstants.STUDENT_DIMENSION_DIVISOR);
             student.setOnMouseClicked(mouseEvent -> ObjectClickListeners.setStudentClicked(s.getColor(), student));
 
             BorderPane studentPane = new BorderPane(student);
@@ -167,7 +169,7 @@ public class DrawingComponents {
         for (int i = 0; i < player.getDining().size(); i++) {
             Student s = player.getDining().get(i);
             String resourceName = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
-            ImageView student = getImageView(resourceName, dashboardWidth / 25);
+            ImageView student = getImageView(resourceName, dashboardWidth / DrawingConstants.STUDENT_DIMENSION_DIVISOR);
 
             int row = colorsInOrder.indexOf(s.getColor());
             Integer column = diningStudents.get(s.getColor());
@@ -193,8 +195,8 @@ public class DrawingComponents {
             // If you want to change to a circle, the radius is width / 25 * 0,55
             BorderPane emptySpace = new BorderPane();
             emptySpace.setOnMouseClicked(mouseEvent -> ObjectClickListeners.setDiningRoomClicked());
-            emptySpace.setMaxSize(dashboardWidth / 25, dashboardWidth / 25);
-            emptySpace.setMinSize(dashboardWidth / 25, dashboardWidth / 25);
+            emptySpace.setMaxSize(dashboardWidth / DrawingConstants.STUDENT_DIMENSION_DIVISOR, dashboardWidth / DrawingConstants.STUDENT_DIMENSION_DIVISOR);
+            emptySpace.setMinSize(dashboardWidth / DrawingConstants.STUDENT_DIMENSION_DIVISOR, dashboardWidth / DrawingConstants.STUDENT_DIMENSION_DIVISOR);
 
             newDiningRoom.add(emptySpace, positionOfEmptySpace, colorsInOrder.indexOf(color));
 
@@ -214,14 +216,14 @@ public class DrawingComponents {
             Color color = colorsInOrder.get(i);
             if (player.getOwnedProfessors().contains(color)) {
                 String path = "/gameboard/professors/teacher_" + color.toString().toLowerCase() + ".png";
-                ImageView professor = getImageView(path, dashboardWidth / 20);
-                professor.setRotate(90);
+                ImageView professor = getImageView(path, dashboardWidth / DrawingConstants.PROFESSOR_DIMENSION_DIVISOR);
+                professor.setRotate(DrawingConstants.PROFESSOR_ROTATION);
 
                 professorRoom.add(professor, 0, i);
             } else {
                 Pane emptyPlace = new Pane();
-                emptyPlace.setMaxSize(dashboardWidth / 20, dashboardWidth / 20);
-                emptyPlace.setMinSize(dashboardWidth / 20, dashboardWidth / 20);
+                emptyPlace.setMaxSize(dashboardWidth / DrawingConstants.PROFESSOR_DIMENSION_DIVISOR, dashboardWidth / DrawingConstants.PROFESSOR_DIMENSION_DIVISOR);
+                emptyPlace.setMinSize(dashboardWidth / DrawingConstants.PROFESSOR_DIMENSION_DIVISOR, dashboardWidth / DrawingConstants.PROFESSOR_DIMENSION_DIVISOR);
                 professorRoom.add(emptyPlace, 0, i);
             }
 
@@ -261,7 +263,7 @@ public class DrawingComponents {
         Text text;
 
         if (!isExpert) {
-            if (x == 0 - pageWidth * 0.03) {
+            if (x == 0 - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT) {
                 text = new Text("↑ | " + player.getName());
             } else {
                 text = new Text("↓ | " + player.getName());
@@ -271,7 +273,7 @@ public class DrawingComponents {
             text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.TITLE_FONT_SIZE));
             root.getChildren().add(text);
         } else {
-            if (x == 0 - pageWidth * 0.03) {
+            if (x == 0 - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT) {
                 text = new Text("↑ | " + player.getName() + " | " + player.getNumCoins() + "x");
             } else {
                 text = new Text("↓ | " + player.getName() + " | " + player.getNumCoins() + "x");
@@ -281,7 +283,7 @@ public class DrawingComponents {
             text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.TITLE_FONT_SIZE));
             root.getChildren().add(text);
             ImageView coin = getCoinImageView(startingX + text.getLayoutBounds().getWidth(),
-                    y - pageHeight / 24, pageWidth * DrawingConstants.COIN_PROPORTION);
+                    y - pageHeight / DrawingConstants.COIN_DIMENSION_IN_TEXT_DIVISOR, pageWidth * DrawingConstants.COIN_PROPORTION);
             root.getChildren().add(coin);
         }
     }
@@ -296,11 +298,11 @@ public class DrawingComponents {
      */
     private static void drawIslands(GameState gameState, double pageWidth, double pageHeight, AnchorPane root) {
         List<IslandState> islands = gameState.getIslands();
-        double deltaAngle = (2 * 3.14) / islands.size();
-        double radius = pageHeight * 0.32;
+        double deltaAngle = (2 * Constants.PI) / islands.size();
+        double radius = pageHeight * DrawingConstants.ISLAND_RADIUS;
         for (int i = 0; i < islands.size(); i++) {
             String path = "/gameboard/islands/Isola_" + ((i % 3) + 1) + ".png";
-            ImageView island = getImageView(path, pageWidth * 0.1);
+            ImageView island = getImageView(path, pageWidth * DrawingConstants.ISLAND_DIMENSION);
             Bounds imageBounds = island.boundsInParentProperty().get();
             double islandWidth = imageBounds.getWidth();
             double islandHeight = imageBounds.getHeight();
@@ -311,8 +313,8 @@ public class DrawingComponents {
             DrawingComponents.islands.add(bp);
             double X = Math.cos(deltaAngle * i) * radius;
             double Y = Math.sin(deltaAngle * i) * radius;
-            double startingXIsland = pageWidth * 0.73 - islandWidth / 2 + X;
-            double startingYIsland = pageHeight * 0.4 - islandHeight / 2 + Y;
+            double startingXIsland = pageWidth * DrawingConstants.ISLAND_X - islandWidth / 2 + X;
+            double startingYIsland = pageHeight * DrawingConstants.ISLAND_Y - islandHeight / 2 + Y;
             bp.setLayoutX(startingXIsland);
             bp.setLayoutY(startingYIsland);
             root.getChildren().add(bp);
@@ -321,15 +323,15 @@ public class DrawingComponents {
             GridPane studentsOnIsland = new GridPane();
             HBox towersOnIsland = new HBox();
             HBox noEntryOnIsland = new HBox();
-            elementsOnIsland.setLayoutX(pageWidth * 0.019);
-            elementsOnIsland.setLayoutY(pageHeight * 0.025);
+            elementsOnIsland.setLayoutX(pageWidth * DrawingConstants.ISLAND_ELEMENTS_X);
+            elementsOnIsland.setLayoutY(pageHeight * DrawingConstants.ISLAND_ELEMENTS_Y);
             elementsOnIsland.getChildren().add(studentsOnIsland);
             elementsOnIsland.getChildren().add(towersOnIsland);
             elementsOnIsland.getChildren().add(noEntryOnIsland);
 
             for (int j = 0; j < islands.get(i).getNumOfTowers(); j++) {
                 String towerPath = "/gameboard/towers/" + islands.get(i).getTowerColor().toString().toLowerCase() + "_tower.png";
-                ImageView tower = getImageView(towerPath, islandWidth / 6);
+                ImageView tower = getImageView(towerPath, islandWidth / DrawingConstants.ISLAND_TOWER_DIVISOR);
                 towersOnIsland.getChildren().add(tower);
             }
 
@@ -338,7 +340,7 @@ public class DrawingComponents {
             for (int j = 0; j < islands.get(i).getStudents().size(); j++) {
                 Student s = islands.get(i).getStudents().get(j);
                 String studentPath = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
-                ImageView student = getImageView(studentPath, islandWidth / 8);
+                ImageView student = getImageView(studentPath, islandWidth / DrawingConstants.ISLAND_STUDENT_DIVISOR);
                 BorderPane studentBorderPane = new BorderPane(student);
                 studentBorderPane.setOnMouseClicked(event ->
                         ObjectClickListeners.setStudentOnIslandClicked(studentBorderPane, s.getColor(), islandIndex));
@@ -349,7 +351,7 @@ public class DrawingComponents {
             DrawingComponents.studentsOnIslands.put(i, studentsToDraw);
 
             for (int j = 0; j < islands.get(i).getNoEntryNum(); j++) {
-                ImageView noEntry = getImageView("/gameboard/deny_island_icon.png", islandWidth / 8);
+                ImageView noEntry = getImageView("/gameboard/deny_island_icon.png", islandWidth / DrawingConstants.ISLAND_NOENTRY_DIVISOR);
 
                 BorderPane noEntryBorderPane = new BorderPane(noEntry);
                 noEntryBorderPane.setOnMouseClicked(event -> {
@@ -361,10 +363,10 @@ public class DrawingComponents {
             bp.getChildren().add(elementsOnIsland);
 
             if (i == gameState.getMNIndex()) {
-                ImageView mn = getImageView("/gameboard/mother_nature.png", islandWidth * 0.3);
+                ImageView mn = getImageView("/gameboard/mother_nature.png", islandWidth * DrawingConstants.ISLAND_MN_DIM);
                 BorderPane motherNature = new BorderPane(mn);
                 motherNature.setLayoutX(0);
-                motherNature.setLayoutY(islandHeight / 3);
+                motherNature.setLayoutY(islandHeight / DrawingConstants.ISLAND_MN_Y_DIVISOR);
                 bp.getChildren().add(motherNature);
             }
         }
@@ -401,7 +403,7 @@ public class DrawingComponents {
      */
     private static GridPane getAssistants(int[] assistants, double pageWidth, double pageHeight, double initialX, double finalX) {
         if (assistants.length == 0) return new GridPane();
-        double initialY = pageHeight * 0.77;
+        double initialY = pageHeight * DrawingConstants.ASSISTANT_Y;
         double spaceForAssistants = finalX - initialX - (assistants.length - 1) * pageWidth * DrawingConstants.OFFSET_BETWEEN_ASSISTANTS;
         GridPane gridPane = new GridPane();
         gridPane.setLayoutX(initialX);
@@ -475,7 +477,7 @@ public class DrawingComponents {
             for (int j = 0; j < cloud.getStudents().size(); j++) {
                 String studentPath = "/gameboard/students/student_" +
                         cloud.getStudents().get(j).getColor().toString().toLowerCase() + ".png";
-                ImageView student = getImageView(studentPath, pageWidth * 0.4 / 25);
+                ImageView student = getImageView(studentPath, pageWidth * DrawingConstants.CLOUD_STUDENT_DIM);
 
                 studentsPane.add(student, j % 2, j / 2);
             }
@@ -511,19 +513,19 @@ public class DrawingComponents {
                 double imageWidth = pageWidth * DrawingConstants.COIN_PROPORTION;
                 ImageView coin = getCoinImageView(
                         coordX + pageWidth * (DrawingConstants.CHARACTER_CARD_PROPORTION) - imageWidth,
-                        pageHeight * 0.21,
+                        pageHeight * DrawingConstants.CHARACTER_COIN_DIM,
                         imageWidth);
                 root.getChildren().add(coin);
             }
             if (character.getStudents() != null) {
                 GridPane grid = new GridPane();
                 grid.setLayoutX(coordX + pageWidth * DrawingConstants.SPACE_BETWEEN_STUDENTS_ON_CHARACTERS);
-                grid.setLayoutY(pageHeight / heightProportion - 2 * pageWidth * 0.4 / 25);
+                grid.setLayoutY(pageHeight / heightProportion - 2 * pageWidth * DrawingConstants.CHARACTER_STUDENT_DIM);
                 List<BorderPane> studentOnCharacter = new ArrayList<>();
                 for (int i = 0; i < character.getStudents().size(); i++) {
                     String studentPath = "/gameboard/students/student_" +
                             character.getStudents().get(i).getColor().toString().toLowerCase() + ".png";
-                    ImageView student = getImageView(studentPath, pageWidth * 0.4 / 25);
+                    ImageView student = getImageView(studentPath, pageWidth * DrawingConstants.CHARACTER_STUDENT_DIM);
 
                     BorderPane studentPane = new BorderPane(student);
                     int index = i;
@@ -595,15 +597,15 @@ public class DrawingComponents {
         lastActions = currentActions;
         for (String action : currentActions) {
             switch (action) {
-                case "MOVE_STUDENT_TO_DINING", "MOVE_STUDENT_TO_ISLAND" -> {
+                case Messages.ACTION_MOVE_STUDENT_TO_DINING, Messages.ACTION_MOVE_STUDENT_TO_ISLAND -> {
                     entranceStudents.forEach(DrawingComponents::setGoldenBorder);
                     diningGaps.forEach(DrawingComponents::setGoldenBorder);
                     islands.forEach(DrawingComponents::setGoldenBorder);
                 }
-                case "PLAY_ASSISTANT" -> assistantCards.forEach(DrawingComponents::setGoldenBorder);
-                case "PLAY_CHARACTER" -> characterImages.forEach(DrawingComponents::setGoldenBorder);
-                case "MOVE_MN" -> islands.forEach(DrawingComponents::setGoldenBorder);
-                case "FILL_FROM_CLOUD" -> cloudImages.forEach(DrawingComponents::setGoldenBorder);
+                case Messages.ACTION_PLAY_ASSISTANT -> assistantCards.forEach(DrawingComponents::setGoldenBorder);
+                case Messages.ACTION_PLAY_CHARACTER -> characterImages.forEach(DrawingComponents::setGoldenBorder);
+                case Messages.ACTION_MOVE_MN -> islands.forEach(DrawingComponents::setGoldenBorder);
+                case Messages.ACTION_FILL_FROM_CLOUD -> cloudImages.forEach(DrawingComponents::setGoldenBorder);
             }
         }
     }
@@ -621,7 +623,7 @@ public class DrawingComponents {
      * @param element the element to set the golden border to
      */
     private static void setGoldenBorder(Node element) {
-        element.getStyleClass().add("highlight_element");
+        element.getStyleClass().add(DrawingConstants.STYLE_HIGHLIGHT);
     }
 
     /**
@@ -630,7 +632,7 @@ public class DrawingComponents {
      * @param element the element to set the golden border to
      */
     private static void setBlueBorders(Node element) {
-        element.getStyleClass().add("element_active_for_swap_character");
+        element.getStyleClass().add(DrawingConstants.STYLE_SWAP_CHARACTER_A);
     }
 
     /**
@@ -639,7 +641,7 @@ public class DrawingComponents {
      * @param element the element to set the golden border to
      */
     private static void setGreenBorders(Node element) {
-        element.getStyleClass().add("element_active_for_moving_character");
+        element.getStyleClass().add(DrawingConstants.STYLE_MOVING_CHARACTER_A);
     }
 
     /**
@@ -689,7 +691,7 @@ public class DrawingComponents {
      */
     public static void askIslandIndex() {
         removeGoldenBordersFromAllElements();
-        islands.forEach(island -> island.getStyleClass().add("element_active_for_island_character"));
+        islands.forEach(island -> island.getStyleClass().add(DrawingConstants.STYLE_ISLAND_CHARACTER_A));
     }
 
     /**

@@ -51,13 +51,13 @@ public class ObjectClickListeners {
                 setElementHighlighted(studentClicked);
             }
             studentClicked = element;
-            studentClicked.getStyleClass().add("selected_element");
+            studentClicked.getStyleClass().add(DrawingConstants.STYLE_SELECTED);
             studentClickedColor = color;
             studentOnCardClicked = null;
             studentOnCardClickedColor = null;
         } else if (hasSwapCharacterBeenPlayed(element) && srcStudentColorsForCharacter.size() < studentsToSwapForSwapCharacters) {
             // The student is selectable for a swap action
-            element.getStyleClass().add("element_selected_for_swap_character");
+            element.getStyleClass().add(DrawingConstants.STYLE_SWAP_CHARACTER_S);
             srcStudentColorsForCharacter.add(color);
             srcStudentsForCharacter.add(element);
             sendSwapCharacterPlayedMessage();
@@ -94,7 +94,7 @@ public class ObjectClickListeners {
     public static void setStudentOnDiningClicked(Color color, Node element) {
         if (!hasSwapCharacterBeenPlayed(element)) return;
         if (dstStudentColorsForCharacter.size() >= studentsToSwapForSwapCharacters) return;
-        element.getStyleClass().add("element_selected_for_swap_character");
+        element.getStyleClass().add(DrawingConstants.STYLE_SWAP_CHARACTER_S);
         dstStudentsForCharacter.add(element);
         dstStudentColorsForCharacter.add(color);
         sendSwapCharacterPlayedMessage();
@@ -125,15 +125,15 @@ public class ObjectClickListeners {
             if (studentOnCardClicked != null) {
                 // Restore old highlighting for the previously selected student on character
                 studentOnCardClicked.getStyleClass().clear();
-                studentOnCardClicked.getStyleClass().add("element_active_for_moving_character");
+                studentOnCardClicked.getStyleClass().add(DrawingConstants.STYLE_MOVING_CHARACTER_A);
             }
             studentOnCardClickedColor = color;
             studentOnCardClicked = element;
-            studentOnCardClicked.getStyleClass().add("element_selected_for_moving_character");
+            studentOnCardClicked.getStyleClass().add(DrawingConstants.STYLE_MOVING_CHARACTER_S);
             studentClicked = null;
             studentClickedColor = null;
         } else if (hasSwapCharacterBeenPlayed(element) && dstStudentsForCharacter.size() < studentsToSwapForSwapCharacters) {
-            element.getStyleClass().add("element_selected_for_swap_character");
+            element.getStyleClass().add(DrawingConstants.STYLE_SWAP_CHARACTER_S);
             dstStudentColorsForCharacter.add(color);
             dstStudentsForCharacter.add(element);
             sendSwapCharacterPlayedMessage();
@@ -167,7 +167,7 @@ public class ObjectClickListeners {
      */
     public static void setSwapCharacterPlayed(int studentsToMove) {
         lastCharacterPlayedNode.getStyleClass().clear();
-        lastCharacterPlayedNode.getStyleClass().add("element_active_for_swap_character");
+        lastCharacterPlayedNode.getStyleClass().add(DrawingConstants.STYLE_SWAP_CHARACTER_A);
 
         DrawingComponents.setBlueBordersToEntranceStudents();
         if (lastCharacterPlayed == CharacterName.swapUpTo3FromEntranceToCard) {
@@ -230,7 +230,7 @@ public class ObjectClickListeners {
                 studentClickedColor = null;
             } else {
                 // Move mother nature
-                element.getStyleClass().add("highlight_element");
+                element.getStyleClass().add(DrawingConstants.STYLE_HIGHLIGHT);
                 GuiView.getGui().getCurrentObserverHandler().notifyMoveMNObservers(numSteps);
             }
         }
@@ -243,7 +243,7 @@ public class ObjectClickListeners {
      */
     private static void setElementHighlighted(Node element) {
         element.getStyleClass().clear();
-        element.getStyleClass().add("highlight_element");
+        element.getStyleClass().add(DrawingConstants.STYLE_HIGHLIGHT);
     }
 
     /**
@@ -253,7 +253,7 @@ public class ObjectClickListeners {
      * @param element a {@code Node} to check highlighting of
      */
     private static boolean isOrdinaryMoveValid(Node element) {
-        if (element.getStyleClass().contains("highlight_element")) {
+        if (element.getStyleClass().contains(DrawingConstants.STYLE_HIGHLIGHT)) {
             element.getStyleClass().clear();
             return true;
         }
@@ -267,7 +267,7 @@ public class ObjectClickListeners {
      * @return true if a swap character has been played this turn
      */
     private static boolean hasSwapCharacterBeenPlayed(Node element) {
-        if (element.getStyleClass().contains("element_active_for_swap_character")) {
+        if (element.getStyleClass().contains(DrawingConstants.STYLE_SWAP_CHARACTER_A)) {
             element.getStyleClass().clear();
             return true;
         }
@@ -281,7 +281,7 @@ public class ObjectClickListeners {
      * @return true if a moving character has been played this turn
      */
     private static boolean hasMovingCharacterBeenPlayed(Node element) {
-        if (element.getStyleClass().contains("element_active_for_moving_character")) {
+        if (element.getStyleClass().contains(DrawingConstants.STYLE_MOVING_CHARACTER_A)) {
             element.getStyleClass().clear();
             return true;
         }
@@ -295,7 +295,7 @@ public class ObjectClickListeners {
      * @return true if a character related to islands has been played this turn
      */
     private static boolean hasIslandCharacterBeenPlayed(Node element) {
-        return element.getStyleClass().contains("element_active_for_island_character");
+        return element.getStyleClass().contains(DrawingConstants.STYLE_ISLAND_CHARACTER_A);
     }
 
     public static CharacterName getLastCharacterPlayed() {

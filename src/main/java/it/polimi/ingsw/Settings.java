@@ -2,6 +2,8 @@ package it.polimi.ingsw;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import it.polimi.ingsw.constants.Constants;
+import it.polimi.ingsw.constants.Messages;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,13 +32,13 @@ public class Settings {
     public static Settings readPrefsFromFile() throws IOException, NumberFormatException {
         Gson gson = new Gson();
 
-        Reader reader = Files.newBufferedReader(Paths.get("./settings.json"));
+        Reader reader = Files.newBufferedReader(Paths.get(Constants.SETTINGS_PATH));
         Type type = new TypeToken<Map<String, String>>() {
         }.getType();
         Map<String, String> map = gson.fromJson(reader, type);
         reader.close();
-        int port = Integer.parseInt(map.get("server_port"));
-        String address = map.get("server_address");
+        int port = Integer.parseInt(map.get(Messages.SERVER_PORT));
+        String address = map.get(Messages.SERVER_ADDRESS);
         return new Settings(port, address);
     }
 

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.gui.controllers;
 
+import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.messages.login.GameLobby;
@@ -14,6 +15,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
+import org.w3c.dom.ranges.DocumentRange;
 
 import java.util.List;
 
@@ -34,11 +36,11 @@ public class LobbyController implements GuiController {
 
         gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
-        gridPane.setHgap(width / 64);
-        gridPane.setVgap(width / 64);
-        AnchorPane.setLeftAnchor(gridPane, width / 64);
-        AnchorPane.setRightAnchor(gridPane, width / 64);
-        AnchorPane.setTopAnchor(gridPane, height / 4.5);
+        gridPane.setHgap(width * DrawingConstants.LOBBY_HGAP);
+        gridPane.setVgap(width * DrawingConstants.LOBBY_VGAP);
+        AnchorPane.setLeftAnchor(gridPane, width * DrawingConstants.LOBBY_LEFT);
+        AnchorPane.setRightAnchor(gridPane, width * DrawingConstants.LOBBY_RIGHT);
+        AnchorPane.setTopAnchor(gridPane, height / DrawingConstants.LOBBY_TOP);
         root.getChildren().add(1, gridPane);
     }
 

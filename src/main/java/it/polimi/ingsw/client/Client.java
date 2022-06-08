@@ -4,6 +4,7 @@ import it.polimi.ingsw.Settings;
 import it.polimi.ingsw.client.cli.CLI;
 import it.polimi.ingsw.client.gui.GUI;
 import it.polimi.ingsw.client.gui.GuiView;
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.CharacterState;
@@ -39,26 +40,26 @@ public abstract class Client {
             try {
                 Settings settings = Settings.readPrefsFromFile();
                 if (settings.getAddress() == null) {
-                    client.gracefulTermination("Invalid server_address argument in settings.json");
+                    client.gracefulTermination(Messages.CANNOT_CONNECT_TO_SERVER);
                 }
                 serverPort = settings.getPort();
                 serverAddress = settings.getAddress();
             } catch (IOException e) {
-                client.gracefulTermination("File settings.json not found. Please check documentation");
+                client.gracefulTermination(Messages.JSON_NOT_FOUND);
             } catch (NumberFormatException e) {
-                client.gracefulTermination("Invalid server_port argument in settings.json");
+                client.gracefulTermination(Messages.INVALID_SERVER_PORT);
             }
         } else {
             try {
                 serverPort = Integer.parseInt(args[1]);
                 serverAddress = args[2];
             } catch (NumberFormatException e) {
-                client.gracefulTermination("Invalid server_port argument in settings.json");
+                client.gracefulTermination(Messages.INVALID_SERVER_PORT);
             }
         }
 
         if (serverPort < 1024 || serverPort > 65535) {
-            client.gracefulTermination("Invalid server_port argument. The port number has to be between 1024 and 65535");
+            client.gracefulTermination(Messages.INVALID_SERVER_PORT);
         }
 
         nc = new NetworkClient(client, serverAddress, serverPort);

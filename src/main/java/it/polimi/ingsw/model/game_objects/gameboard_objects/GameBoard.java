@@ -91,9 +91,9 @@ public class GameBoard {
         ArrayList<Island> result = new ArrayList<>();
 
         ArrayList<Student> students = Students.getSomeStudents(2);
-        for (int i = 0; i < Constants.ISLANDS; i++) {
+        for (int i = 0; i < Constants.MAX_ISLANDS; i++) {
             Island newIsland = new Island();
-            if (i != motherNatureIndex && i != ((motherNatureIndex + (Constants.ISLANDS / 2)) % Constants.ISLANDS)) {
+            if (i != motherNatureIndex && i != ((motherNatureIndex + (Constants.MAX_ISLANDS / 2)) % Constants.MAX_ISLANDS)) {
                 newIsland.receiveStudent(students.get(0));
                 students.remove(0);
             }
