@@ -205,7 +205,7 @@ public class Controller {
     private void addUser(Communicable ch, String username) {
         if (username == null || username.trim().equals("")) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INVALID_USERNAME, 3);
-        } else if ((gameLobby.getNumPlayers() != -1 && loggedUsers.size() >= gameLobby.getNumPlayers()) || loggedUsers.size() >= 4 || gameController != null) {
+        } else if ((gameLobby.getNumPlayers() != -1 && loggedUsers.size() >= gameLobby.getNumPlayers()) || loggedUsers.size() >= Constants.MAX_PLAYERS || gameController != null) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.LOBBY_FULL, 1);
         } else if (username.length() > Constants.MAX_USERNAME_LENGTH) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.USERNAME_TOO_LONG, 3);

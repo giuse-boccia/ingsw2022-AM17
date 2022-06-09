@@ -30,11 +30,11 @@ public abstract class Client {
         String serverAddress = null;
         int serverPort = -1;
 
-        if (args[0].equalsIgnoreCase("cli")) {
-            client = new CLI();
-        } else {
+        if (args.length == 0 || args[0].equalsIgnoreCase("gui")) {
             client = new GUI();
             new Thread(() -> GuiView.main((GUI) client)).start();
+        } else {
+            client = new CLI();
         }
         if (args.length < 3) {
             try {
