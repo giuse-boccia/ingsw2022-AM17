@@ -68,11 +68,12 @@ public class PersistenceTest {
         SavedGameState loadedGameState = gson.fromJson(reader, SavedGameState.class);
         reader.close();
 
-        Game game = SavedGameState.loadGame(loadedGameState);
+        Game game1 = SavedGameState.loadGame(loadedGameState);
+        game1.resume();
+        SavedGameState tmp = new SavedGameState(game1);
+        Game game2 = SavedGameState.loadGame(tmp);
+        game2.resume();
 
-        // TODO: a bunch of assertions on savedGame
-
-
-        // We could also create a new game from scratch (with getters and setters), save it, then assert on that
+        assertEquals(game1, game2);
     }
 }

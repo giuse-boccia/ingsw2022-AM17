@@ -34,6 +34,7 @@ public class Assistant {
 
         if (numSteps != assistant.numSteps) return false;
         if (value != assistant.value) return false;
+        // comparing only player name to avoid infinite recursion
         return player.getName().equals(assistant.getPlayer().getName());
     }
 }
