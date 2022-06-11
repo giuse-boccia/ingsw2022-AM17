@@ -2,13 +2,13 @@ package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
 import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidStudentException;
-import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.TowerColor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class Island implements Place {
 
@@ -85,6 +85,21 @@ public class Island implements Place {
         this.students.addAll(other.students);
         this.noEntryNum += other.noEntryNum;
         this.numOfTowers += other.numOfTowers;
+    }
+
+    /**
+     * Returns the index of this island in the given list of islands, or -1 if the island is not in the given list.
+     * Unlike List.indexOf(), this method uses pointer comparison (==) and not equals()
+     *
+     * @param islands a list of islands
+     * @return the index of this island in the given list
+     */
+    public int getIndexIn(List<Island> islands) {
+        for (int i = 0; i < islands.size(); i++) {
+            if (this == islands.get(i)) return i;
+        }
+
+        return -1;
     }
 
     @Override

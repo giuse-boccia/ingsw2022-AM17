@@ -172,7 +172,7 @@ public class GameBoard {
      * @param island the {@code Island} to be checked
      */
     private void mergeIfPossible(Island island) {
-        int indexOfIsland = islands.indexOf(island);
+        int indexOfIsland = island.getIndexIn(islands);
         Island right = islands.get((indexOfIsland + 1) % islands.size());
         Island left = islands.get((indexOfIsland + islands.size() - 1) % islands.size());
         if (left.getTowerColor() != null && left.getTowerColor() == island.getTowerColor()) {
@@ -200,9 +200,9 @@ public class GameBoard {
 
         // Move mother nature accordingly
         if (mnIsland == right) {
-            motherNatureIndex = islands.indexOf(left);
+            motherNatureIndex = left.getIndexIn(islands);
         } else {
-            motherNatureIndex = islands.indexOf(mnIsland);
+            motherNatureIndex = mnIsland.getIndexIn(islands);
         }
 
     }
