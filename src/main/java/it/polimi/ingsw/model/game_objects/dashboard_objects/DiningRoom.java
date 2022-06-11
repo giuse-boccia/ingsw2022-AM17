@@ -58,4 +58,14 @@ public class DiningRoom implements Place {
         }
         students.add(student);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DiningRoom dining = (DiningRoom) o;
+
+        return students.equals(dining.students);
+    }
 }

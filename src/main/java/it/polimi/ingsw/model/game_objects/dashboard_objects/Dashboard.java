@@ -25,4 +25,15 @@ public class Dashboard {
     public DiningRoom getDiningRoom() {
         return diningRoom;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Dashboard dashboard = (Dashboard) o;
+
+        if (!entrance.equals(dashboard.entrance)) return false;
+        return diningRoom.equals(dashboard.diningRoom);
+    }
 }

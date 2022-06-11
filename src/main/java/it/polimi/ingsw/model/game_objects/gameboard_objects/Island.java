@@ -100,4 +100,17 @@ public class Island implements Place {
     public void receiveStudent(Student student) {
         students.add(student);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Island island = (Island) o;
+
+        if (noEntryNum != island.noEntryNum) return false;
+        if (numOfTowers != island.numOfTowers) return false;
+        if (!students.equals(island.students)) return false;
+        return towerColor == island.towerColor;
+    }
 }

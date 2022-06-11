@@ -95,4 +95,16 @@ public class PlanningPhase {
         return playedAssistants.size() == playersInOrder.size();
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PlanningPhase that = (PlanningPhase) o;
+
+        if (!Objects.equals(playersInOrder, that.playersInOrder))
+            return false;
+        return playedAssistants.equals(that.playedAssistants);
+    }
 }

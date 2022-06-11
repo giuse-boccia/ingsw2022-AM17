@@ -61,4 +61,14 @@ public class Bag implements Place {
         this.students.clear();
         this.students.addAll(students);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Bag bag = (Bag) o;
+
+        return students.equals(bag.students);
+    }
 }

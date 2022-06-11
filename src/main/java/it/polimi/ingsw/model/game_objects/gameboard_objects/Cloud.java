@@ -83,4 +83,15 @@ public class Cloud implements Place {
     public int getMaxStudents() {
         return maxStudents;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Cloud cloud = (Cloud) o;
+
+        if (maxStudents != cloud.maxStudents) return false;
+        return students.equals(cloud.students);
+    }
 }

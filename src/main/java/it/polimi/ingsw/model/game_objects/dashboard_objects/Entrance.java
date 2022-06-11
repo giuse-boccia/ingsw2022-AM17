@@ -44,4 +44,14 @@ public class Entrance implements Place {
     public void receiveStudent(Student student) {
         students.add(student);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Entrance entrance = (Entrance) o;
+
+        return students.equals(entrance.students);
+    }
 }

@@ -156,4 +156,20 @@ public class Player {
     public void setTowerColor(TowerColor towerColor) {
         this.towerColor = towerColor;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Player player = (Player) o;
+
+        if (numCoins != player.numCoins) return false;
+        if (initialTowers != player.initialTowers) return false;
+        if (!Arrays.equals(hand, player.hand)) return false;
+        if (!dashboard.equals(player.dashboard)) return false;
+        if (!name.equals(player.name)) return false;
+        if (wizard != player.wizard) return false;
+        return towerColor == player.towerColor;
+    }
 }

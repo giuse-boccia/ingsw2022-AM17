@@ -21,10 +21,7 @@ import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorStrategy;
 import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorWithDraw;
 import it.polimi.ingsw.model.utils.Students;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PlayerActionPhase {
     private final Assistant assistant;
@@ -352,4 +349,18 @@ public class PlayerActionPhase {
         return playedCharacter == null;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PlayerActionPhase that = (PlayerActionPhase) o;
+
+        if (numStudentsMoved != that.numStudentsMoved) return false;
+        if (mnMoved != that.mnMoved) return false;
+        if (!assistant.equals(that.assistant)) return false;
+        if (!Objects.equals(playedCharacter, that.playedCharacter))
+            return false;
+        return Objects.equals(expectedMove, that.expectedMove);
+    }
 }

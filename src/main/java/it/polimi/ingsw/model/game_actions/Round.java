@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.game_objects.gameboard_objects.Cloud;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class Round {
     private final int firstPlayerIndex;
@@ -151,5 +152,22 @@ public class Round {
 
     public void setPlayedAssistants(List<Assistant> playedAssistants) {
         this.playedAssistants = playedAssistants;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Round round = (Round) o;
+
+        if (firstPlayerIndex != round.firstPlayerIndex) return false;
+        if (currentAssistantIndex != round.currentAssistantIndex) return false;
+        if (isLastRound != round.isLastRound) return false;
+        if (!Objects.equals(planningPhase, round.planningPhase))
+            return false;
+        if (!Objects.equals(playedAssistants, round.playedAssistants))
+            return false;
+        return Objects.equals(currentPlayerActionPhase, round.currentPlayerActionPhase);
     }
 }

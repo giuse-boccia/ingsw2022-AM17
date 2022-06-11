@@ -180,6 +180,15 @@ public class Game {
     }
 
     /**
+     * attaches players to this Game
+     */
+    public void resume() {
+        for (Player player : players) {
+            player.addToGame(this);
+        }
+    }
+
+    /**
      * Sets the {@code TowerColor} attribute for every player depending on how many players are in the game
      */
     private void setTeams() {
@@ -228,5 +237,21 @@ public class Game {
 
     public void setRoundsPlayed(int roundsPlayed) {
         this.roundsPlayed = roundsPlayed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Game game = (Game) o;
+
+        if (isExpert != game.isExpert) return false;
+        if (roundsPlayed != game.roundsPlayed) return false;
+        if (isEnded != game.isEnded) return false;
+        if (!players.equals(game.players)) return false;
+        if (!gameBoard.equals(game.gameBoard)) return false;
+        if (!currentRound.equals(game.currentRound)) return false;
+        return Objects.equals(winners, game.winners);
     }
 }

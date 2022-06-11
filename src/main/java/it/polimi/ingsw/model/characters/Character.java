@@ -64,4 +64,16 @@ public abstract class Character {
             PlayerActionPhase currentPlayerActionPhase, Island island, Color color,
             List<Color> srcColors, List<Color> dstColors
     ) throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException, EmptyBagException;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Character character = (Character) o;
+
+        if (cost != character.cost) return false;
+        if (hasCoin != character.hasCoin) return false;
+        return characterName == character.characterName;
+    }
 }

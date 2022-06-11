@@ -287,4 +287,19 @@ public class GameBoard {
                 .filter(color -> professors.get(color) == player)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GameBoard gameBoard = (GameBoard) o;
+
+        if (motherNatureIndex != gameBoard.motherNatureIndex) return false;
+        if (!bag.equals(gameBoard.bag)) return false;
+        if (!islands.equals(gameBoard.islands)) return false;
+        if (!clouds.equals(gameBoard.clouds)) return false;
+        if (!Arrays.equals(characters, gameBoard.characters)) return false;
+        return professors.equals(gameBoard.professors);
+    }
 }
