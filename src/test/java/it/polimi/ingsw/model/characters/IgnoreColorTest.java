@@ -87,7 +87,7 @@ public class IgnoreColorTest {
      * Makes sure that all the islands don't have student except for the second one - which has two green students
      * and a red student
      */
-    private void fillJustFirstIsland() throws InvalidStudentException {
+    private void fillJustFirstIsland() throws InvalidStudentException, InvalidActionException {
         for (Island island : gb.getIslands()) {
             if (island.getStudents().size() != 0) {
                 island.giveStudent(gb.getBag(), island.getStudents().get(0));

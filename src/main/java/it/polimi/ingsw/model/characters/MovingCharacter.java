@@ -88,7 +88,11 @@ public class MovingCharacter extends GameboardCharacter implements Place {
     public void fillCardFromBag() throws EmptyBagException {
         Bag bag = getGameBoard().getBag();
         while (students.size() < initialStudents) {
-            bag.giveStudent(this, bag.getRandStudent());
+            try {
+                bag.giveStudent(this, bag.getRandStudent());
+            } catch (InvalidActionException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -164,7 +168,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
     }
 
     @Override
-    public void giveStudent(Place destination, Student student) throws InvalidStudentException {
+    public void giveStudent(Place destination, Student student) throws InvalidStudentException, InvalidActionException {
         if (student == null || !students.contains(student)) {
             throw new InvalidStudentException(Messages.STUDENT_NOT_ON_CHARACTER);
         }

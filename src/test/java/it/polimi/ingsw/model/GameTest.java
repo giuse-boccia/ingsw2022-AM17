@@ -28,7 +28,7 @@ public class GameTest {
      * Tries to play wrong moves and asserts proper exceptions are thrown
      */
     @Test
-    void testFullNonExpertGame() throws InvalidStudentException {
+    void testFullNonExpertGame() throws InvalidStudentException, InvalidActionException {
 
         int originalMNIndex = game.getGameBoard().getMotherNatureIndex();
         prepareIslands(originalMNIndex);
@@ -260,7 +260,7 @@ public class GameTest {
      *
      * @param mnIndex the index of the {@code Island} where MotherNature is
      */
-    private void prepareIslands(int mnIndex) throws InvalidStudentException {
+    private void prepareIslands(int mnIndex) throws InvalidStudentException, InvalidActionException {
         ArrayList<Island> islands = game.getGameBoard().getIslands();
         assertEquals(12, islands.size());
         for (int i = 0; i < 12; i++) {

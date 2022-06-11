@@ -55,7 +55,7 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
      * @param entrance the {@code Entrance} to fill
      * @param dining   the {@code DiningRoom} to fill
      */
-    private void fillEntranceAndDining(Entrance entrance, DiningRoom dining) {
+    private void fillEntranceAndDining(Entrance entrance, DiningRoom dining) throws InvalidActionException {
         for (int i = 0; i < 3; i++) {
             entrance.receiveStudent(new Student(Color.PINK));
             entrance.receiveStudent(new Student(Color.YELLOW));
@@ -72,7 +72,7 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
      * @throws EmptyBagException if the {@code Bag} is empty
      */
     @Test
-    void testCharacter() throws EmptyBagException {
+    void testCharacter() throws EmptyBagException, InvalidActionException {
         gb.setCharacters(c);
 
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
@@ -142,7 +142,7 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
      * @throws EmptyBagException if the {@code Bag} is empty
      */
     @Test
-    void testInvalidSource() throws EmptyBagException {
+    void testInvalidSource() throws EmptyBagException, InvalidActionException {
         gb.setCharacters(c);
 
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
@@ -173,7 +173,7 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
      * @throws EmptyBagException if the {@code Bag} is empty
      */
     @Test
-    void testInvalidDestination() throws EmptyBagException {
+    void testInvalidDestination() throws EmptyBagException, InvalidActionException {
         gb.setCharacters(c);
 
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
@@ -206,7 +206,7 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
      * @throws EmptyBagException if the {@code Bag} is empty
      */
     @Test
-    void testInvalidSize1() throws EmptyBagException {
+    void testInvalidSize1() throws EmptyBagException, InvalidActionException {
         gb.setCharacters(c);
 
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
@@ -241,7 +241,7 @@ public class SwapUpTo2FromEntranceToDiningCharacterTest {
      * @throws EmptyBagException if the {@code Bag} is empty
      */
     @Test
-    void testInvalidSize2() throws EmptyBagException {
+    void testInvalidSize2() throws EmptyBagException, InvalidActionException {
         gb.setCharacters(c);
 
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];

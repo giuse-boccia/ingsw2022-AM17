@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.characters;
 
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
@@ -28,7 +29,7 @@ public class EveryOneMovesCharacterTest {
      * - Clod has three green students
      * - Giuse has seven green students
      */
-    private void fillDiningRooms() {
+    private void fillDiningRooms() throws InvalidActionException {
         rick.getDashboard().getDiningRoom().receiveStudent(new Student(Color.GREEN));
         for (int i = 0; i < 3; i++) {
             clod.getDashboard().getDiningRoom().receiveStudent(new Student(Color.GREEN));
@@ -42,7 +43,7 @@ public class EveryOneMovesCharacterTest {
      * Tests the effect of the {@code Character} called "everyOneMove3FromDiningRoomToBag"
      */
     @Test
-    void testEveryOneMovesCharacter() {
+    void testEveryOneMovesCharacter() throws InvalidActionException {
 
         gb.setCharacters(c);
         fillDiningRooms();

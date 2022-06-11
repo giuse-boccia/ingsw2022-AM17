@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.strategies;
 
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TestGameFactory;
@@ -24,7 +25,7 @@ class ProfessorStrategyTest {
      * Tests the default strategy to check if a {@code Player} can steal a {@code Professor} from another {@code Player}
      */
     @Test
-    public void professorDefaultTest() {
+    public void professorDefaultTest() throws InvalidActionException {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
         Player clod = g.getPlayers().get(1);        // Clod is player 1
 
@@ -74,7 +75,7 @@ class ProfessorStrategyTest {
      * effect of the {@code Player} called "takeProfWithEqualStudents" is active
      */
     @Test
-    public void professorOnDrawTest() {
+    public void professorOnDrawTest() throws InvalidActionException {
         Player rick = g.getPlayers().get(0);        // Rick is player 0
         Player clod = g.getPlayers().get(1);        // Clod is player 1
 

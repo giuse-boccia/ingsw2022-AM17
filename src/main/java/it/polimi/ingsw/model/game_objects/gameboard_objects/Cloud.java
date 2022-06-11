@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
@@ -27,7 +28,7 @@ public class Cloud implements Place {
      *
      * @param destination the Entrance which the Cloud gives students to
      */
-    public void emptyTo(Entrance destination) {
+    public void emptyTo(Entrance destination) throws InvalidActionException {
         for (int i = 0; i < students.size(); ) {
             giveStudent(destination, students.get(i));
         }
@@ -40,7 +41,11 @@ public class Cloud implements Place {
      */
     public void fillFromBag(Bag bag) throws EmptyBagException {
         while (students.size() < maxStudents) {
-            bag.giveStudent(this, bag.getRandStudent());
+            try {
+                bag.giveStudent(this, bag.getRandStudent());
+            } catch (InvalidActionException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -54,7 +59,7 @@ public class Cloud implements Place {
     }
 
     @Override
-    public void giveStudent(Place destination, Student student) {
+    public void giveStudent(Place destination, Student student) throws InvalidActionException {
         students.remove(student);
         destination.receiveStudent(student);
     }

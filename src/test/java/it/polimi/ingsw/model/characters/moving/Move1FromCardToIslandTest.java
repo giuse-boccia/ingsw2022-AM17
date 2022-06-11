@@ -35,7 +35,7 @@ public class Move1FromCardToIslandTest {
      * @throws EmptyBagException if the {@code Bag} is empty
      */
     @Test
-    void testMove1FromCardToIsland1() throws EmptyBagException, InvalidStudentException {
+    void testMove1FromCardToIsland1() throws EmptyBagException, InvalidStudentException, InvalidActionException {
 
         gb.setCharacters(c);
 
@@ -73,7 +73,7 @@ public class Move1FromCardToIslandTest {
      * @throws EmptyBagException if the {@code Bag} is empty
      */
     @Test
-    void testMove1FromCardToIsland2() throws EmptyBagException, InvalidStudentException {
+    void testMove1FromCardToIsland2() throws EmptyBagException, InvalidStudentException, InvalidActionException {
         gb.setCharacters(c);
         MovingCharacter character = (MovingCharacter) gb.getCharacters()[0];
         character.fillCardFromBag();

@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.game_objects.gameboard_objects;
 import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.EmptyBagException;
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.utils.Students;
@@ -39,7 +40,7 @@ public class Bag implements Place {
     }
 
     @Override
-    public void giveStudent(Place destination, Student student) {
+    public void giveStudent(Place destination, Student student) throws InvalidActionException {
         students.remove(student);
         destination.receiveStudent(student);
     }

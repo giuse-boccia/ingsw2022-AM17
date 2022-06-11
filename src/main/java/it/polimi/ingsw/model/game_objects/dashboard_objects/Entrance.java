@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.game_objects.dashboard_objects;
 
 import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
@@ -31,7 +32,7 @@ public class Entrance implements Place {
     }
 
     @Override
-    public void giveStudent(Place destination, Student student) throws InvalidStudentException {
+    public void giveStudent(Place destination, Student student) throws InvalidStudentException, InvalidActionException {
         if (student == null || !students.contains(student)) {
             throw new InvalidStudentException(Messages.ENTRANCE_DOESNT_CONTAIN_STUDENT);
         }

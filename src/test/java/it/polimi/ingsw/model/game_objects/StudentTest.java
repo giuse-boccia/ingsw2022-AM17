@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.game_objects;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
@@ -28,7 +29,7 @@ class StudentTest {
      * @throws InvalidStudentException if the {@code Student} is not valid
      */
     @Test
-    void testEntranceToDining() throws EmptyBagException, InvalidStudentException {
+    void testEntranceToDining() throws EmptyBagException, InvalidStudentException, InvalidActionException {
         Bag gameBag = game.getGameBoard().getBag();
         for (int i = 0; i < game.getPlayers().size(); i++) {
             Dashboard selectedPlayerDashboard = game.getPlayers().get(i).getDashboard();
@@ -61,7 +62,7 @@ class StudentTest {
      * @throws InvalidStudentException if the {@code Student} is not valid
      */
     @Test
-    void testEntranceToIsland() throws EmptyBagException, InvalidStudentException {
+    void testEntranceToIsland() throws EmptyBagException, InvalidStudentException, InvalidActionException {
         Bag bag = game.getGameBoard().getBag();
         for (Player player : game.getPlayers()) {
             Entrance playerEntrance = player.getDashboard().getEntrance();

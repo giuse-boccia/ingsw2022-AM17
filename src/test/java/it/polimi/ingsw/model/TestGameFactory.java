@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
@@ -26,7 +27,7 @@ public class TestGameFactory {
             for (int i = 0; i < 9; i++) {
                 try {
                     entrance.giveStudent(res.getGameBoard().getBag(), entrance.getStudents().get(0));
-                } catch (InvalidStudentException e) {
+                } catch (InvalidStudentException | InvalidActionException e) {
                     e.printStackTrace();
                 }
             }

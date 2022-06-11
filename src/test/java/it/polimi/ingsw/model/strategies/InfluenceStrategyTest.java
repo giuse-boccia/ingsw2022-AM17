@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.strategies;
 
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
@@ -214,7 +215,7 @@ class InfluenceStrategyTest {
      * Tests the default strategy to calculate the influence on an {@code Island} when on a 4 player game (two teams)
      */
     @Test
-    public void fourPlayerGameDefault() throws InvalidStudentException {
+    public void fourPlayerGameDefault() throws InvalidStudentException, InvalidActionException {
         Player rick = g2.getPlayers().get(0);        // Rick is player 0
         Player clod = g2.getPlayers().get(1);        // Clod is player 1
         Player giuse = g2.getPlayers().get(2);        // Clod is player 1

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Place;
@@ -87,7 +88,7 @@ public class Island implements Place {
     }
 
     @Override
-    public void giveStudent(Place destination, Student student) throws InvalidStudentException {
+    public void giveStudent(Place destination, Student student) throws InvalidStudentException, InvalidActionException {
         if (student == null || !students.contains(student)) {
             throw new InvalidStudentException("This island doesn't contain this student");
         }

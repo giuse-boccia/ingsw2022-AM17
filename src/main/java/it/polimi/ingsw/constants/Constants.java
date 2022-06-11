@@ -27,6 +27,7 @@ public class Constants {
     public static final int STUDENTS_TO_MOVE_IN_TWO_OR_FOUR_PLAYER_GAME = 3;
     public static final int MN_BONUS = 2;
     public static final int INFLUENCE_BONUS = 2;
+    public static final int MAX_STUDENTS_IN_DINING = 10;
 
     // Gui constants
     public static final int TOAST_DURATION_SECONDS = 4;
