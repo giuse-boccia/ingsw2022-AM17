@@ -86,7 +86,7 @@ public class CliView {
             }
             System.out.println();
         } else {
-            System.out.println(ConsoleColors.WHITE + "No assistants left" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.WHITE + Messages.NO_ASSISTANT_LEFT + ConsoleColors.RESET);
         }
 
         // Dashboards

@@ -2,7 +2,9 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.MessageHandler;
+import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
@@ -20,17 +22,17 @@ public class GUI extends Client {
 
     @Override
     public void getAssistantValue() {
-        guiView.sendMessageToController(null, null, List.of("PLAY_ASSISTANT"), getUsername());
+        guiView.sendMessageToController(null, null, List.of(Messages.ACTION_PLAY_ASSISTANT), getUsername());
     }
 
     @Override
     public void askNumStepsOfMotherNature() {
-        guiView.sendMessageToController(null, null, List.of("MOVE_MN"), getUsername());
+        guiView.sendMessageToController(null, null, List.of(Messages.ACTION_MOVE_MN), getUsername());
     }
 
     @Override
     public void askCloudIndex() {
-        guiView.sendMessageToController(null, null, List.of("FILL_FROM_CLOUD"), getUsername());
+        guiView.sendMessageToController(null, null, List.of(Messages.ACTION_FILL_FROM_CLOUD), getUsername());
     }
 
     @Override
@@ -54,15 +56,14 @@ public class GUI extends Client {
         guiView.askCharacterParameters(characterName, GuiCharacterType.SWAP);
     }
 
-
     @Override
     public void askNumPlayersAndExpertMode() {
-        guiView.changeScene("game_parameters", false);
+        guiView.changeScene(DrawingConstants.RESOURCE_PARAMETERS, false);
     }
 
     @Override
     public void showCurrentLobby(GameLobby gameLobby) {
-        guiView.changeScene("lobby", false);
+        guiView.changeScene(DrawingConstants.RESOURCE_LOBBY, false);
         guiView.sendMessageToController(gameLobby, null, null, getUsername());
     }
 

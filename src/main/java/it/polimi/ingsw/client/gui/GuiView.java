@@ -81,7 +81,7 @@ public class GuiView extends Application {
         titleStackPane.setLayoutY(height * DrawingConstants.CHARACTER_POPUP_TITLE_OFFSET_Y);
         anchorPane.getChildren().add(titleStackPane);
 
-        Button confirmBtn = new Button("Confirm");
+        Button confirmBtn = new Button(Messages.CONFIRM);
         confirmBtn.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.SUBTITLE_FONT_SIZE));
         StackPane confirmStackPane = new StackPane(confirmBtn);
         confirmStackPane.setPrefWidth(width);
@@ -149,7 +149,7 @@ public class GuiView extends Application {
             try {
                 scene = new Scene(fxmlLoader.load());
             } catch (IOException e) {
-                gui.gracefulTermination("Connection to server lost");
+                gui.gracefulTermination(Messages.SERVER_LOST);
             }
             stage.setResizable(fullscreen);
             stage.setFullScreen(false);
@@ -223,7 +223,7 @@ public class GuiView extends Application {
 
         Platform.runLater(() -> {
             Alert alert = new Alert(alertType);
-            alert.setTitle("Error");
+            alert.setTitle(Messages.GUI_ERROR);
             alert.setHeaderText(message);
             alert.setContentText(null);
             alert.initOwner(stage);
@@ -314,11 +314,11 @@ public class GuiView extends Application {
     public void start(Stage stage) throws Exception {
         GuiView.stage = stage;
         stage.getIcons().add(new Image("/gameboard/cranio_logo.png"));
-        currentSceneName = "login";
+        currentSceneName = DrawingConstants.RESOURCE_LOGIN;
         FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/login.fxml"));
 
         scene = new Scene(fxmlLoader.load(), 600, 400);
-        stage.setTitle("Eriantys");
+        stage.setTitle(Constants.ERIANTYS);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.setOnCloseRequest(windowEvent -> {

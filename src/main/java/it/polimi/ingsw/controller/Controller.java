@@ -139,7 +139,7 @@ public class Controller {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INVALID_PLAYER_CREATING_GAME, 3);
             return;
         }
-        if (numPlayers < 2 || numPlayers > 4) {
+        if (numPlayers < Constants.MIN_PLAYERS || numPlayers > Constants.MAX_PLAYERS) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INVALID_NUM_PLAYERS, 3);
             return;
         }
@@ -205,9 +205,9 @@ public class Controller {
     private void addUser(Communicable ch, String username) {
         if (username == null || username.trim().equals("")) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INVALID_USERNAME, 3);
-        } else if ((gameLobby.getNumPlayers() != -1 && loggedUsers.size() >= gameLobby.getNumPlayers()) || loggedUsers.size() >= 4 || gameController != null) {
+        } else if ((gameLobby.getNumPlayers() != -1 && loggedUsers.size() >= gameLobby.getNumPlayers()) || loggedUsers.size() >= Constants.MAX_PLAYERS || gameController != null) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.LOBBY_FULL, 1);
-        } else if (username.length() > 32) {
+        } else if (username.length() > Constants.MAX_USERNAME_LENGTH) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.USERNAME_TOO_LONG, 3);
         } else if (loggedUsers.stream().anyMatch(u -> u.getUsername().equals(username))) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.USERNAME_ALREADY_TAKEN, 2);
@@ -299,7 +299,7 @@ public class Controller {
         for (PlayerClient playerClient : loggedUsers) {
             // Alert player that game is starting
             playerClient.getCommunicable().sendMessageToClient(toSend.toJson());
-            playerClient.setPlayer(new Player(playerClient.getUsername(), numberOfPlayers % 2 == 0 ? 8 : 6));
+            playerClient.setPlayer(new Player(playerClient.getUsername(), numberOfPlayers % 2 == 0 ? Constants.TOWERS_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.TOWES_IN_THREE_PLAYER_GAME));
         }
 
         // TODO: check if it is a loaded game

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.messages.action.Action;
@@ -108,7 +109,7 @@ public class GameController {
      */
     private void handleAssistantPlayed(Action action, PlayerClient player) {
         Integer value = action.getArgs().getValue();
-        if (value < 1 || value > 10) {
+        if (value < Constants.MIN_ASSISTANT_VALUE || value > Constants.MAX_ASSISTANT_VALUE) {
             sendActionErrorMessage(player.getCommunicable(), Messages.INVALID_ARGUMENT, 2, action.getName());
             return;
         }

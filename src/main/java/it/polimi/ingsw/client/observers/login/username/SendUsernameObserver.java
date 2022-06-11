@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.observers.login.username;
 
 import it.polimi.ingsw.client.MessageHandler;
+import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 
 public class SendUsernameObserver implements UsernameObserver {
@@ -17,7 +18,7 @@ public class SendUsernameObserver implements UsernameObserver {
         if (username != null) {
             ClientLoginMessage loginMessage = new ClientLoginMessage();
             loginMessage.setUsername(username);
-            loginMessage.setAction("SET_USERNAME");
+            loginMessage.setAction(Messages.ACTION_SET_USERNAME);
 
             mh.getNetworkClient().sendMessageToServer(loginMessage.toJson());
         }

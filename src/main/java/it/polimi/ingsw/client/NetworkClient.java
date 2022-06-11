@@ -96,7 +96,7 @@ public class NetworkClient extends Thread {
             }
         } catch (IOException e) {
             // Server connection error
-            client.gracefulTermination("Connection to server lost");
+            client.gracefulTermination(Messages.SERVER_LOST);
         }
     }
 }

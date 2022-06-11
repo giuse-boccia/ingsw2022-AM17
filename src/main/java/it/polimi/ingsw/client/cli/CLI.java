@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
@@ -23,7 +24,7 @@ public class CLI extends Client {
 
     @Override
     public void getAssistantValue() throws IOException {
-        int value = askForInteger(1, 10, "Insert value of the selected assistant [1-10]: ", "Assistant value");
+        int value = askForInteger(1, 10, Messages.ASK_ASSISTANT, "Assistant value");
         getCurrentObserverHandler().notifyPlayAssistantObservers(value);
     }
 
@@ -40,9 +41,9 @@ public class CLI extends Client {
         String res;
 
         do {
-            System.out.println("No game on server ");
-            System.out.println("1. Create a new game");
-            System.out.println("2. Load a previous game");
+            System.out.println(Messages.NO_GAME_RUNNING);
+            System.out.println(Messages.CREATE_GAME);
+            System.out.println(Messages.LOAD_GAME);
             System.out.print("> ");
             res = stdIn.readLine();
         } while (!res.equals("1") && !res.equals("2"));
@@ -59,7 +60,7 @@ public class CLI extends Client {
 
     @Override
     public void askNumPlayersAndExpertMode() throws IOException {
-        int numPlayers = askForInteger(2, 4, "Insert desired number of players (2, 3 or 4): ", "Number of players");
+        int numPlayers = askForInteger(Constants.MIN_PLAYERS, Constants.MAX_PLAYERS, Messages.ASK_NUM_PLAYERS, "Number of players");
         boolean isGameExpert = askExpertMode();
         getCurrentObserverHandler().notifyAllGameParametersObservers(numPlayers, isGameExpert);
     }
@@ -126,13 +127,13 @@ public class CLI extends Client {
         int res;
         int size = actions.size();
         do {
-            System.out.print("Select the corresponding number: ");
+            System.out.print(Messages.SELECT_NUMBER);
             String string = stdIn.readLine();
             try {
                 res = Integer.parseInt(string);
             } catch (NumberFormatException e) {
                 res = -1;       // remains in the do-while cycle
-                System.out.println("Action identifier must be a number!");
+                System.out.println(Messages.ACTION_MUST_NUMBER);
             }
 
         } while (res < 1 || res > size);
@@ -142,7 +143,7 @@ public class CLI extends Client {
 
     @Override
     public void askIslandIndexForCharacter(CharacterName characterName) throws IOException {
-        int islandIndex = askForInteger(1, 12, "Insert number of the selected island: ", "Island index");
+        int islandIndex = askForInteger(1, Constants.MAX_ISLANDS, Messages.ASK_ISLAND, "Island index");
         getCurrentObserverHandler().notifyPlayCharacterObservers(characterName, null, islandIndex - 1, null, null);
     }
 
@@ -158,7 +159,7 @@ public class CLI extends Client {
         Integer islandIndex = null;
         CharacterName characterName = CharacterName.move1FromCardToDining;
         if (toIsland) {
-            islandIndex = askForInteger(1, 12, "Insert number of the selected island: ", "Island index")
+            islandIndex = askForInteger(1, 12, Messages.ASK_ISLAND, "Island index")
                     - 1;
             characterName = CharacterName.move1FromCardToIsland;
         }
@@ -167,14 +168,14 @@ public class CLI extends Client {
 
     @Override
     public void askMoveStudentToIsland() throws IOException {
-        int island = askForInteger(1, 12, "Insert number of the selected island: ", "Island index");
+        int island = askForInteger(1, Constants.MAX_ISLANDS, Messages.ASK_ISLAND, "Island index");
         Color color = askForColor();
         getCurrentObserverHandler().notifyMoveStudentObservers(color, island - 1);
     }
 
     @Override
     public void askCharacterIndex() throws IOException {
-        int index = askForInteger(1, 3, "Insert the number of the character you want to play [1-3]: ", "Character index");
+        int index = askForInteger(1, Constants.NUM_CHARACTERS, Messages.ASK_CHARACTER, "Character index");
         getCurrentObserverHandler().notifyCharacterChoiceObservers(getCharacters().get(index - 1).getCharacterName());
     }
 
@@ -198,7 +199,7 @@ public class CLI extends Client {
 
     @Override
     public void askColorListForSwapCharacters(int maxBound, String secondElement, CharacterName characterName) throws IOException {
-        int size = askForInteger(0, maxBound, "Choose how many students you want to swap: ", "Number of students");
+        int size = askForInteger(0, maxBound, Messages.ASK_NUM_STUDENTS, "Number of students");
         System.out.println("Select " + size + " students from your entrance");
         ArrayList<Color> srcColors = new ArrayList<>();
         for (int i = 0; i < size; i++) {
@@ -222,19 +223,19 @@ public class CLI extends Client {
 
     @Override
     public void askNumStepsOfMotherNature() throws IOException {
-        int steps = askForInteger(0, 15, "Insert number of steps of mother nature: ", "Number of steps");
+        int steps = askForInteger(0, Constants.MAX_MN_STEPS, Messages.ASK_MN, "Number of steps");
         getCurrentObserverHandler().notifyMoveMNObservers(steps);
     }
 
     @Override
     public void askCloudIndex() throws IOException {
-        int cloud = askForInteger(1, 4, "Insert number of the cloud you want to pick: ", "Cloud index");
+        int cloud = askForInteger(1, Constants.MAX_CLOUDS, Messages.ASK_CLOUD, "Cloud index");
         getCurrentObserverHandler().notifyChooseCloudObservers(cloud - 1);
     }
 
     @Override
     public void showPossibleActions(List<String> actions) {
-        showMessage("You have the following actions: ");
+        showMessage(Messages.POSSIBLE_ACTIONS);
         for (int i = 0; i < actions.size(); i++) {
             System.out.println((i + 1) + ". " + actions.get(i));
         }
@@ -283,7 +284,7 @@ public class CLI extends Client {
                 res = Integer.parseInt(string);
             } catch (NumberFormatException e) {
                 res = -1;       // remains in the do-while cycle
-                System.out.println(numberFormatErrMsgBeginning + " must be a number!");
+                System.out.println(numberFormatErrMsgBeginning + Messages.MUST_NUMBER);
             }
         } while (res < lowerBound || res > upperBound);
 
@@ -299,12 +300,12 @@ public class CLI extends Client {
         String res;
         Color color;
         do {
-            System.out.print("Write the color of the student: ");
+            System.out.print(Messages.ASK_COLOR);
             res = stdIn.readLine();
             try {
                 color = Color.valueOf(res.toUpperCase());
             } catch (IllegalArgumentException e) {
-                System.out.println("Color not recognised [blue | green | yellow | red | pink]");
+                System.out.println(Messages.POSSIBLE_COLORS);
                 color = null;
             }
         } while (color == null);
@@ -321,7 +322,7 @@ public class CLI extends Client {
         String res;
 
         do {
-            System.out.print("Do you want to play in expert mode? [Y/n] ");
+            System.out.print(Messages.ASK_EXPERT);
             res = stdIn.readLine();
             res = res.toLowerCase(Locale.ROOT);
         } while (!res.equals("y") && !res.equals("n") && !res.equals(""));

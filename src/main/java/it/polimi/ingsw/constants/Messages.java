@@ -3,7 +3,10 @@ package it.polimi.ingsw.constants;
 public class Messages {
     public static final String ASK_USERNAME = "Insert username: ";
     public static final String GRACEFUL_TERM = "Application will now close...";
-    public static final String SERVER_CRASHED = "Connection to server lost";
+    public static final String SERVER_LOST = "Connection to server lost";
+    public static final String CONNECTING = "Connecting to server...";
+    public static final String SERVER_PORT = "server_port";
+    public static final String SERVER_ADDRESS = "server_address";
 
     // public static final String STUDENT_CHAR = "●";       // in Windows Terminal is '?' unless you run "chcp 65001" beforehand
     public static final String STUDENT_CHAR = "*";
@@ -33,6 +36,7 @@ public class Messages {
     public static final String ERROR = "[ERROR] ";
     public static final String BAD_REQUEST = "Bad request";
     public static final String BAD_REQUEST_SYNTAX = "Bad request (syntax error)";
+    public static final String INVALID_SERVER_MESSAGE = "Invalid message from server";
 
     // Errors while joining game
     public static final String INVALID_USERNAME = "Invalid username field";
@@ -57,6 +61,11 @@ public class Messages {
     public static final String GAME_CREATED = "A new game was created!";
     public static final String SERVER_READY = "Server ready, waiting for clients...";
     public static final String NEW_SOCKET = "New socket: ";
+    public static final String NO_GAME_RUNNING = "No game on server ";
+    public static final String CREATE_GAME = "1. Create a new game";
+    public static final String LOAD_GAME = "2. Load a previous game";
+    public static final String ASK_NUM_PLAYERS = "Insert desired number of players (2, 3 or 4): ";
+    public static final String ASK_EXPERT = "Do you want to play in expert mode? [Y/n] ";
 
     // Errors in action phase
     public static final String GAME_NOT_STARTED = "Game is not started yet";
@@ -88,6 +97,9 @@ public class Messages {
     public static final String EMPTY_BAG = "The bag is empty!";
     public static final String NOT_ENOUGH_COINS = "You don't have enough coins to play this character";
     public static final String INVALID_ISLAND = "Invalid island index";
+    public static final String ACTION_MUST_NUMBER = "Action identifier must be a number!";
+    public static final String MUST_NUMBER = " must be a number!";
+    public static final String POSSIBLE_COLORS = "Color not recognised [blue | green | yellow | red | pink]";
 
     // Actions
     public static final String ACTION_SET_USERNAME = "SET_USERNAME";
@@ -103,6 +115,8 @@ public class Messages {
 
     // Messages in planning phase
     public static final String PLANNING_PHASE_ENDED = "Planning phase is ended";
+    public static final String ASK_ASSISTANT = "Insert value of the selected assistant [1-10]: ";
+    public static final String NO_ASSISTANT_LEFT = "No assistants left";
 
     // Messages in action phase
     public static final String LAST_ROUND = "Be aware! This is the last round";
@@ -110,6 +124,14 @@ public class Messages {
     public static final String GAME_WON = "Congratulations, you won the game!";
     public static final String GAME_LOST = "Unfortunately you lost.";
     public static final String IS_PLAYING = " is playing...";
+    public static final String ASK_CHARACTER = "Insert the number of the character you want to play [1-3]: ";
+    public static final String ASK_MN = "Insert number of steps of mother nature: ";
+    public static final String ASK_CLOUD = "Insert number of the cloud you want to pick: ";
+    public static final String ASK_ISLAND = "Insert number of the selected island: ";
+    public static final String ASK_NUM_STUDENTS = "Choose how many students you want to swap: ";
+    public static final String ASK_COLOR = "Write the color of the student: ";
+    public static final String POSSIBLE_ACTIONS = "You have the following actions: ";
+    public static final String SELECT_NUMBER = "Select the corresponding number: ";
 
     // Server log messages
     public static final String SAVE_OK = "Game saved to file";
@@ -121,6 +143,7 @@ public class Messages {
 
     // Errors for GUI
     public static final String GENERIC_ERROR_GUI = "Error while loading the scene";
+    public static final String GUI_ERROR = "Error";
 
     // Character messages
     public static final String CHOOSE_BOUND_CHARACTER = "Choose how many students do you want to swap";
@@ -130,6 +153,7 @@ public class Messages {
     public static final String END_GAME_TITLE = "Game is ended";
     public static final String END_GAME_BUTTON_TEXT = "Close application";
     public static final String GAME_ENDED_MESSAGE = "The game is ended. See you at the next match!";
+    public static final String CONFIRM = "Confirm";
 
     // Broadcast messages to notify that a player did a specific action
     public static final String BROADCAST_SEPARATOR = ". Now ";
