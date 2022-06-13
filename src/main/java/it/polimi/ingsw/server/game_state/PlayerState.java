@@ -95,7 +95,7 @@ public class PlayerState {
      */
     public static List<Player> loadPlayers(SavedGameState gs) {
         List<Player> res = new ArrayList<>();
-        int initialTowers = gs.getPlayers().size() % 2 == 0 ? Constants.STUDENTS_IN_ENTRANCE_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.STUDENTS_IN_ENTRANCE_IN_THREE_PLAYER_GAME;
+        int initialTowers = gs.getPlayers().size() % 2 == 0 ? Constants.TOWERS_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.TOWERS_IN_THREE_PLAYER_GAME;
 
         gs.getPlayers().forEach(playerState -> res.add(playerState.loadPlayer(initialTowers)));
 

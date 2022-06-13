@@ -299,7 +299,7 @@ public class Controller {
         for (PlayerClient playerClient : loggedUsers) {
             // Alert player that game is starting
             playerClient.getCommunicable().sendMessageToClient(toSend.toJson());
-            playerClient.setPlayer(new Player(playerClient.getUsername(), numberOfPlayers % 2 == 0 ? Constants.TOWERS_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.TOWES_IN_THREE_PLAYER_GAME));
+            playerClient.setPlayer(new Player(playerClient.getUsername(), numberOfPlayers % 2 == 0 ? Constants.TOWERS_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.TOWERS_IN_THREE_PLAYER_GAME));
         }
 
         // TODO: check if it is a loaded game

@@ -15,7 +15,7 @@ public class Dashboard {
 
     public Dashboard(List<Student> entranceStudents, List<Student> diningStudents) {
         this.entrance = new Entrance(entranceStudents);
-        this.diningRoom = new DiningRoom(entranceStudents);
+        this.diningRoom = new DiningRoom(diningStudents);
     }
 
     public Entrance getEntrance() {

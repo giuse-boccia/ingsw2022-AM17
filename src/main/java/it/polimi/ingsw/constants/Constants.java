@@ -30,7 +30,7 @@ public class Constants {
     public static final int STUDENTS_ON_CLOUD_IN_TWO_OR_FOUR_PLAYER_GAME = 3;
     public static final int STUDENTS_TO_MOVE_IN_TWO_OR_FOUR_PLAYER_GAME = 3;
     public static final int TOWERS_IN_TWO_OR_FOUR_PLAYER_GAME = 8;
-    public static final int TOWES_IN_THREE_PLAYER_GAME = 6;
+    public static final int TOWERS_IN_THREE_PLAYER_GAME = 6;
     public static final int MN_BONUS = 2;
     public static final int INFLUENCE_BONUS = 2;
     public static final int MIN_PLAYERS = 2;
