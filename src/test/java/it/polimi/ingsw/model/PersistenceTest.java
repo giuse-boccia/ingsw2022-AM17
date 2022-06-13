@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.characters.MovingCharacter;
 import it.polimi.ingsw.model.game_actions.Round;
 import it.polimi.ingsw.model.game_objects.Assistant;
+import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Cloud;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.server.game_state.*;
@@ -80,6 +81,19 @@ public class PersistenceTest {
         RoundState roundState = gameState.getRoundState();
         Round round = game.getCurrentRound();
         assertRoundWasLoadedCorrectly(roundState, round);
+
+        // assert professors have been loaded correctly
+        for (Color professor : Color.values()) {
+            Player owner = game.getGameBoard().getOwnerOfProfessor(professor);
+            if (owner != null) {
+                String ownerName = owner.getName();
+                assertTrue(gameState.getPlayers().stream()
+                        .filter(playerState -> playerState.getName().equals(ownerName))
+                        .findFirst().orElseThrow()
+                        .getOwnedProfessors()
+                        .contains(professor));
+            }
+        }
 
         // assert players have been loaded correctly (and order is maintained)
         int numberOfPlayers = game.getPlayers().size();
