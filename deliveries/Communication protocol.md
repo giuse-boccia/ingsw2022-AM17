@@ -2,7 +2,7 @@
 
 This is a list of all possible messages that can be exchanged between client and server. We decided to use JSON to encode messages.
 
-Every message has a **type** field which is either *ping/pong*, *login* or *action*
+Every message has a **type** field which is either *ping/pong*, *login*, *action*, *end* or *update*.
 
 # Ping / pong
 
@@ -38,7 +38,7 @@ When a new client connects to the server, the former sends a message containing 
 
 - if a game is already in progress, the server responds with an error and the connection is closed
 - if a game is present but not started the server adds him to the lobby and sends a broadcast message to everyone with the new players list
-- if no game is present, one is automatically created and the server asks for the number of players
+- if no game is present, the player can either create a new game or ask the server to load a previous save
 
 ### L.1 - Creating a new game
 
@@ -115,6 +115,52 @@ When a new client connects to the server, the former sends a message containing 
 }
 ```
 
+### L.3 - Load previous save
+
+```
++--------+                                         +--------+
+| Client |                                         | Server |    
++--------+                                         +--------+
+    |                                                   |
+    |                     message L.1.1                 | 
+    |                ----------------------->           | 
+    |                                                   |
+    |                     message L.1.2                 |
+    |                <-----------------------           |
+    |                                                   |
+    |                     message L.3.3                 | 
+    |                ----------------------->           |
+    |                                                   |
+    |                   [OK] message L.B.1              | 
+    |              <-------------------------           |
+    |                  [ERR] message L.E.*              |
+    |              <-------------------------           |
+    |                                                   |
+```
+#### message L.1.1
+```json
+{
+    "status": "LOGIN",
+    "action": "SET_USERNAME",
+	"username": "Rick"
+}
+```
+#### message L.1.2
+```json
+{
+	"status": "LOGIN",
+	"action": "CREATE_GAME",
+	"displayText": "You are the first player. Set the game parameters"
+}
+```
+#### message L.3.3
+```json
+{
+	"status": "LOGIN",
+	"action": "LOAD_GAME"
+}
+```
+
 ### L.E - Login errors
 Every message contains an “error” number field. If this field in not 0, then the message is an error message and the client must act accordingly (retry, gracefull termination, ...)
 #### message L.E.1
@@ -143,24 +189,61 @@ Every message contains an “error” number field. If this field in not 0, then
 }
 ```
 
+#### message L.E.4
+```json
+{
+	"status" : "LOGIN",
+	"action" : "CREATE_GAME",
+	"error" : 4,
+	"displayText" : "Missing or corrupted save file, create a new game"
+}
+```
+
+#### message L.E.5
+This message is displayed if an user tries to load a game but the loaded game doesn't have a player with the same username
+```json
+{
+	"status" : "LOGIN",
+	"error" : 5,
+	"displayText" : "Username doesn't match: login with the same username or create a new game"
+}
+```
+
 ### L.B - Login Broadcast messages
 #### message L.B.1
 ```json
 {
 	"status": "LOGIN",
 	"displayText": "A new player has joined",
-	"game": {
+	"lobby": {
+		"isSaved": false,
 		"players": ["Clod", "Rick"],
 		"num layers": 3,
 	}
 }
 ```
+
 #### message L.B.2
 ```json
 {
 	"status" : "LOGIN",
 	"displayText" : "A new game is starting",
 	"game": {
+		"isSaved": false,
+		"players": ["Clod", "Rick", "Giuse"],
+		"numPlayers": 3,
+	}
+}
+```
+
+#### message L.B.3
+```json
+{
+	"status" : "LOGIN",
+	"displayText" : "Loading a saved game",
+	"game": {
+		"isSaved": true,
+		"playersFromSavedGame": ["Clod", "Rick", "Giuse"],
 		"players": ["Clod", "Rick", "Giuse"],
 		"numPlayers": 3,
 	}
@@ -277,7 +360,6 @@ Every player has to play an assistant.
     |                                                  |
 ```
 
-
 #### message A.0.2
 ```json
 {
@@ -365,70 +447,6 @@ Every player has to play an assistant.
 }
 ```
 
-### A.B - Action Broadcast messages
-
-#### message A.B.1
-```json
-{
-	"status": "ACTION",
-	"player": "Rick",
-	"displayText": "Rick played assistant 5",
-	"action": {
-		"name": "PLAY_ASSISTANT",
-		"args": {
-			"value": 5
-		}
-	}
-}
-```
-
-#### message A.B.2
-```json
-{
-	"status": "ACTION",
-	"player": "Rick",
-	"displayText": "Rick moved...",
-	"action": {
-		"name": "MOVE_STUDENT_TO_ISLAND",
-		"args": {
-			"color": "GREEN"
-			"island": 0
-		}
-	}
-}
-```
-
-#### message A.B.3
-```json
-{
-	"status": "ACTION",
-	"player": "Rick",
-	"displayText": "Rick moved mother nature by 5 steps",
-	"action": {
-		"name": "MOVE_MN",
-		"args": {
-			"num_steps": 5
-		}
-	}
-}
-
-```
-
-#### message A.B.4
-```json
-{
-	"status": "ACTION",
-	"player": "Rick",
-	"displayText": "Rick picked cloud 1",
-	"action": {
-		"name": "FILL_FROM_CLOUD",
-		"args": {
-			"cloud": 1
-		}
-	}
-}
-```
-
 ### A.E - Action Error messages
 
 #### message A.E.1
@@ -445,5 +463,199 @@ Every player has to play an assistant.
 	"status" : "ACTION",
 	"error" : 2,
 	"displayText" : "Bad args"	
+}
+```
+
+# Update
+Update messages are sent to every client every time the game model changes (i.e. after a player action) 
+
+### Broadcast messages
+
+#### message A.B.1
+```json
+{
+	"status": "UPDATE",
+	"player": "Rick",
+	"displayText": "Rick played assistant 5",
+	"game_status": {...}
+}
+```
+
+#### message A.B.2
+```json
+{
+	"status": "UPDATE",
+	"player": "Rick",
+	"displayText": "Rick moved...",
+	"game_status": {...}
+}
+```
+
+#### message A.B.3
+```json
+{
+	"status": "UPDATE",
+	"player": "Rick",
+	"displayText": "Rick moved mother nature by 5 steps",
+	"game_status": {...}
+}
+
+```
+
+#### message A.B.4
+```json
+{
+	"status": "UPDATE",
+	"player": "Rick",
+	"displayText": "Rick picked cloud 1",
+	"game_status": {...}
+}
+```
+
+### Game status
+The *game_status* field in every update message is a JSON rappresentation of the game state, here is an example of a game status object:
+
+```json
+{
+    "roundsPlayed": 0,
+    "bag": [
+        { "color": "RED" },
+        { "color": "GREEN" },
+        { "color": "PINK" },
+        ...
+    ],
+    "roundState": {
+        "playedAssistants": [
+            { "numSteps": 2, "value": 4, "playerName": "giuse" },
+            { "numSteps": 3, "value": 5, "playerName": "rick" }
+        ],
+        "firstPlayerIndex": 1,
+        "currentAssistantIndex": 0,
+        "isLastRound": false
+    },
+    "isExpert": true,
+    "MNIndex": 4,
+    "players": [
+        {
+            "name": "rick",
+            "towerColor": "WHITE",
+            "remainingTowers": 8,
+            "numCoins": 1,
+            "assistants": [1, 2, 3, 4, 6, 7, 8, 9, 10],
+            "entrance": [
+                { "color": "RED" },
+                { "color": "RED" },
+                { "color": "PINK" },
+                { "color": "YELLOW" },
+                { "color": "GREEN" },
+                { "color": "PINK" },
+                { "color": "BLUE" }
+            ],
+            "dining": [],
+            "ownedProfessors": []
+        },
+        {
+            "name": "giuse",
+            "towerColor": "BLACK",
+            "remainingTowers": 8,
+            "numCoins": 1,
+            "assistants": [1, 2, 3, 5, 6, 7, 8, 9, 10],
+            "entrance": [
+                { "color": "YELLOW" },
+                { "color": "PINK" },
+                { "color": "PINK" },
+                { "color": "GREEN" },
+                { "color": "PINK" },
+                { "color": "GREEN" },
+                { "color": "BLUE" }
+            ],
+            "dining": [],
+            "ownedProfessors": []
+        }
+    ],
+    "islands": [
+        {
+            "students": [{ "color": "BLUE" }],
+            "noEntryNum": 0,
+            "numOfTowers": 0
+        },
+        {
+            "students": [{ "color": "PINK" }],
+            "noEntryNum": 0,
+            "numOfTowers": 0
+        },
+        {
+            "students": [{ "color": "BLUE" }],
+            "noEntryNum": 0,
+            "numOfTowers": 0
+        },
+        { "students": [{ "color": "RED" }], "noEntryNum": 0, "numOfTowers": 0 },
+        { "students": [], "noEntryNum": 0, "numOfTowers": 0 },
+        { "students": [{ "color": "RED" }], "noEntryNum": 0, "numOfTowers": 0 },
+        {
+            "students": [{ "color": "YELLOW" }],
+            "noEntryNum": 0,
+            "numOfTowers": 0
+        },
+        {
+            "students": [{ "color": "GREEN" }],
+            "noEntryNum": 0,
+            "numOfTowers": 0
+        },
+        {
+            "students": [{ "color": "PINK" }],
+            "noEntryNum": 0,
+            "numOfTowers": 0
+        },
+        {
+            "students": [{ "color": "GREEN" }],
+            "noEntryNum": 0,
+            "numOfTowers": 0
+        },
+        { "students": [], "noEntryNum": 0, "numOfTowers": 0 },
+        {
+            "students": [{ "color": "YELLOW" }],
+            "noEntryNum": 0,
+            "numOfTowers": 0
+        }
+    ],
+    "characters": [
+        {
+            "characterName": "noEntry",
+            "cost": 2,
+            "hasCoin": false,
+            "noEntryNum": 4
+        },
+        {
+            "characterName": "ignoreTowers",
+            "cost": 3,
+            "hasCoin": false,
+            "noEntryNum": 0
+        },
+        {
+            "characterName": "everyOneMove3FromDiningRoomToBag",
+            "cost": 3,
+            "hasCoin": false,
+            "noEntryNum": 0
+        }
+    ],
+    "clouds": [
+        {
+            "students": [
+                { "color": "RED" },
+                { "color": "PINK" },
+                { "color": "BLUE" }
+            ],
+            "maxStudents": 3
+        },
+        {
+            "students": [
+                { "color": "YELLOW" },
+                { "color": "YELLOW" },
+                { "color": "RED" }
+            ],
+            "maxStudents": 3
+        }
+    ]
 }
 ```
