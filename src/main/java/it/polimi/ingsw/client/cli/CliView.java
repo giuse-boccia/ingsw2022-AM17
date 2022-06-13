@@ -320,25 +320,6 @@ public class CliView {
     }
 
     /**
-     * Counts the number of printed lines and if less than 47 prints void lines
-     *
-     * @param gameState the state of the game
-     */
-    private static void addEmptyLines(GameState gameState) {
-        // TODO: check if correct
-        int printedLines = 26;   // headers, dashboards and assistants are always printed
-        printedLines += gameState.getIslands().size();      // one line per island
-        printedLines += gameState.getClouds().size();
-        printedLines += gameState.isExpert() ? 1 + gameState.getCharacters().size() : 0;    // one line per character + header
-
-        while (printedLines < 47) {
-            System.out.println();
-            printedLines++;
-        }
-    }
-
-
-    /**
      * Returns a String from a student.
      * The string is composed by a console color sequence, the student char and the console color reset sequence
      *
