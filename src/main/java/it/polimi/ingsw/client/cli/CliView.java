@@ -126,7 +126,7 @@ public class CliView {
 
         // Students
         if (islandState.getStudents().size() != 0) {
-            System.out.print(Students.getStringFromStudentList(islandState.getStudents()));
+            System.out.print(getStringFromStudentList(islandState.getStudents()));
         } else {
             System.out.print(ConsoleColors.WHITE + "empty" + ConsoleColors.RESET);
         }
@@ -163,7 +163,7 @@ public class CliView {
 
         // Students (if any)
         if (characterState.getStudents() != null && !characterState.getStudents().isEmpty()) {
-            System.out.print(" | " + Students.getStringFromStudentList(characterState.getStudents()));
+            System.out.print(" | " + getStringFromStudentList(characterState.getStudents()));
         }
 
         System.out.println();
@@ -208,7 +208,7 @@ public class CliView {
 
         // Students
         if (cloudState.getStudents().size() != 0) {
-            System.out.print(Students.getStringFromStudentList(cloudState.getStudents()));
+            System.out.print(getStringFromStudentList(cloudState.getStudents()));
         } else {
             System.out.print(ConsoleColors.WHITE + "empty" + ConsoleColors.RESET);
         }
@@ -250,7 +250,7 @@ public class CliView {
         // something like:      |    ●  ●   |    ● ● ●                |   ▲   |
         System.out.println("|      " +
                 entranceHelper(entrance, 0) + "   |   " +
-                (Students.getStringFromStudent(new Student(Color.GREEN)) + " ").repeat(Students.countColor(dining, Color.GREEN)) +
+                (getStringFromStudent(new Student(Color.GREEN)) + " ").repeat(Students.countColor(dining, Color.GREEN)) +
                 "  ".repeat(10 - Students.countColor(dining, Color.GREEN)) + "      |   " +
                 (player.getOwnedProfessors().contains(Color.GREEN) ? (ConsoleColors.GREEN + Messages.PROF_CHAR + ConsoleColors.RESET) : " ") + "   |");
 
@@ -258,7 +258,7 @@ public class CliView {
         System.out.println("|   " +
                 entranceHelper(entrance, 1) + "  " +
                 entranceHelper(entrance, 2) + "   |   " +
-                (Students.getStringFromStudent(new Student(Color.RED)) + " ").repeat(Students.countColor(dining, Color.RED)) +
+                (getStringFromStudent(new Student(Color.RED)) + " ").repeat(Students.countColor(dining, Color.RED)) +
                 "  ".repeat(10 - Students.countColor(dining, Color.RED)) + "      |   " +
                 (player.getOwnedProfessors().contains(Color.RED) ? (ConsoleColors.RED + Messages.PROF_CHAR + ConsoleColors.RESET) : " ") + "   |");
 
@@ -266,7 +266,7 @@ public class CliView {
         System.out.println("|   " +
                 entranceHelper(entrance, 3) + "  " +
                 entranceHelper(entrance, 4) + "   |   " +
-                (Students.getStringFromStudent(new Student(Color.YELLOW)) + " ").repeat(Students.countColor(dining, Color.YELLOW)) +
+                (getStringFromStudent(new Student(Color.YELLOW)) + " ").repeat(Students.countColor(dining, Color.YELLOW)) +
                 "  ".repeat(10 - Students.countColor(dining, Color.YELLOW)) + "      |   " +
                 (player.getOwnedProfessors().contains(Color.YELLOW) ? (ConsoleColors.YELLOW + Messages.PROF_CHAR + ConsoleColors.RESET) : " ") + "   |");
 
@@ -274,7 +274,7 @@ public class CliView {
         System.out.println("|   " +
                 entranceHelper(entrance, 5) + "  " +
                 entranceHelper(entrance, 6) + "   |   " +
-                (Students.getStringFromStudent(new Student(Color.PINK)) + " ").repeat(Students.countColor(dining, Color.PINK)) +
+                (getStringFromStudent(new Student(Color.PINK)) + " ").repeat(Students.countColor(dining, Color.PINK)) +
                 "  ".repeat(10 - Students.countColor(dining, Color.PINK)) + "      |   " +
                 (player.getOwnedProfessors().contains(Color.PINK) ? (ConsoleColors.PURPLE + Messages.PROF_CHAR + ConsoleColors.RESET) : " ") + "   |");
 
@@ -282,7 +282,7 @@ public class CliView {
         System.out.println("|   " +
                 entranceHelper(entrance, 7) + "  " +
                 entranceHelper(entrance, 8) + "   |   " +
-                (Students.getStringFromStudent(new Student(Color.BLUE)) + " ").repeat(Students.countColor(dining, Color.BLUE)) +
+                (getStringFromStudent(new Student(Color.BLUE)) + " ").repeat(Students.countColor(dining, Color.BLUE)) +
                 "  ".repeat(10 - Students.countColor(dining, Color.BLUE)) + "      |   " +
                 (player.getOwnedProfessors().contains(Color.BLUE) ? (ConsoleColors.BLUE + Messages.PROF_CHAR + ConsoleColors.RESET) : " ") + "   |");
 
@@ -316,7 +316,7 @@ public class CliView {
             return " ";
         }
 
-        return Students.getStringFromStudent(entrance.get(i));
+        return getStringFromStudent(entrance.get(i));
     }
 
     /**
@@ -335,6 +335,44 @@ public class CliView {
             System.out.println();
             printedLines++;
         }
+    }
+
+
+    /**
+     * Returns a String from a student.
+     * The string is composed by a console color sequence, the student char and the console color reset sequence
+     *
+     * @param student a {@code Student}
+     * @return a string containing only one printable char
+     */
+    public static String getStringFromStudent(Student student) {
+        String consoleColor = "";
+        switch (student.getColor()) {
+            case GREEN -> consoleColor = ConsoleColors.GREEN;
+            case PINK -> consoleColor = ConsoleColors.PURPLE;
+            case RED -> consoleColor = ConsoleColors.RED;
+            case BLUE -> consoleColor = ConsoleColors.BLUE;
+            case YELLOW -> consoleColor = ConsoleColors.YELLOW;
+        }
+
+        return consoleColor + Messages.STUDENT_CHAR + ConsoleColors.RESET;
+    }
+
+    /**
+     * Returns a String from a list of students
+     *
+     * @param students a {@code List} of students
+     * @return a string
+     */
+    public static String getStringFromStudentList(List<Student> students) {
+        if (students == null || students.isEmpty()) return "";
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Student student : students) {
+            stringBuilder.append(getStringFromStudent(student)).append(" ");
+        }
+
+        return stringBuilder.toString();
     }
 }
 

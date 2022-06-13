@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model.utils;
 
-import it.polimi.ingsw.constants.ConsoleColors;
-import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 
@@ -66,43 +64,6 @@ public class Students {
                 return student;
         }
         return null;
-    }
-
-    /**
-     * Returns a String from a student.
-     * The string is composed by a console color sequence, the student char and the console color reset sequence
-     *
-     * @param student a {@code Student}
-     * @return a string containing only one printable char
-     */
-    public static String getStringFromStudent(Student student) {
-        String consoleColor = "";
-        switch (student.getColor()) {
-            case GREEN -> consoleColor = ConsoleColors.GREEN;
-            case PINK -> consoleColor = ConsoleColors.PURPLE;
-            case RED -> consoleColor = ConsoleColors.RED;
-            case BLUE -> consoleColor = ConsoleColors.BLUE;
-            case YELLOW -> consoleColor = ConsoleColors.YELLOW;
-        }
-
-        return consoleColor + Messages.STUDENT_CHAR + ConsoleColors.RESET;
-    }
-
-    /**
-     * Returns a String from a list of students
-     *
-     * @param students a {@code List} of students
-     * @return a string
-     */
-    public static String getStringFromStudentList(List<Student> students) {
-        if (students == null || students.isEmpty()) return "";
-
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Student student : students) {
-            stringBuilder.append(getStringFromStudent(student)).append(" ");
-        }
-
-        return stringBuilder.toString();
     }
 
 }
