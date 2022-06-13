@@ -37,6 +37,7 @@ public class Messages {
     public static final String BAD_REQUEST = "Bad request";
     public static final String BAD_REQUEST_SYNTAX = "Bad request (syntax error)";
     public static final String INVALID_SERVER_MESSAGE = "Invalid message from server";
+    public static final String INTERNAL_SERVER_ERROR = "Internal server error";
 
     // Errors while joining game
     public static final String INVALID_USERNAME = "Invalid username field";
@@ -47,6 +48,7 @@ public class Messages {
     public static final String INVALID_PLAYER_CREATING_GAME = "You can't set this game's parameters";
     public static final String INVALID_FORMAT_NUM_PLAYER = "Num players must be a number";
     public static final String USERNAME_NOT_IN_LOADED_GAME = "Username doesn't match: login with the same username or create a new game";
+    public static final String PLAYER_NOT_IN_LOADED_GAME = "The lobby is currently loading a saved game, if you were part of the saved game please login with your old username";
     public static final String LOAD_GAME_FAILED = "Missing or corrupted save file, create a new game";
 
     // Connection errors
@@ -58,7 +60,9 @@ public class Messages {
     public static final String SET_GAME_PARAMETERS = "Added player ";
     public static final String NEW_PLAYER_JOINED = "A new player has joined";
     public static final String GAME_STARTING = "A new game is starting";
+    public static final String GAME_RESUMING = "The game is resuming";
     public static final String GAME_CREATED = "A new game was created!";
+    public static final String GAME_LOADED = "A saved game was loaded!";
     public static final String SERVER_READY = "Server ready, waiting for clients...";
     public static final String NEW_SOCKET = "New socket: ";
     public static final String NO_GAME_RUNNING = "No game on server ";
@@ -134,6 +138,7 @@ public class Messages {
     public static final String SELECT_NUMBER = "Select the corresponding number: ";
 
     // Server log messages
+    public static final String GAME_IS_STARTING = "Game is starting";
     public static final String SAVE_OK = "Game saved to file";
     public static final String SAVE_ERR = "Error while saving the game";
     public static final String LOAD_OK = "Game loaded from file";

@@ -23,7 +23,7 @@ import java.util.*;
 public class Controller {
     private final Gson gson;
     private final Object boundLock = new Object();
-    private final ArrayList<PlayerClient> loggedUsers;
+    private final List<PlayerClient> loggedUsers;
     private final GameLobby gameLobby;
     private GameController gameController;
     private Game loadedGame;
@@ -116,15 +116,31 @@ public class Controller {
             }
 
             switch (loginMessage.getAction()) {
-                case Messages.ACTION_SET_USERNAME -> addUser(ch, loginMessage.getUsername());
+                case Messages.ACTION_SET_USERNAME -> handleSetUsername(ch, loginMessage.getUsername());
                 case Messages.ACTION_CREATE_GAME ->
                         setGameParameters(ch, loginMessage.getNumPlayers(), loginMessage.isExpert());
-                case Messages.ACTION_LOAD_GAME -> setLoadedGameParameters(ch, loginMessage.getUsername());
+                case Messages.ACTION_LOAD_GAME -> setLoadedGameParameters(ch);
                 default -> sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.BAD_REQUEST, 3);
 
             }
         } catch (JsonSyntaxException e) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INVALID_FORMAT_NUM_PLAYER, 3);
+        }
+    }
+
+    /**
+     * Handles the SET_USERNAME login message.
+     * If the user is not authenticated, tries to add him to loggedUsers.
+     * If the user is already authenticated, tries to change his username
+     *
+     * @param ch       the {@code Communicable} interface of the client who sent the message
+     * @param username a username
+     */
+    private void handleSetUsername(Communicable ch, String username) {
+        if (loggedUsers.stream().anyMatch(user -> user.getCommunicable() == ch)) {
+            renameUser(ch, username);
+        } else {
+            addUser(ch, username);
         }
     }
 
@@ -156,7 +172,7 @@ public class Controller {
         }
     }
 
-    private void setLoadedGameParameters(Communicable ch, String username) {
+    private void setLoadedGameParameters(Communicable ch) {
         // Only the "host" loggedUsers[0] can load a game
         if (loggedUsers.isEmpty() || loggedUsers.get(0).getCommunicable() != ch) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INVALID_PLAYER_CREATING_GAME, 3);
@@ -165,6 +181,7 @@ public class Controller {
 
         // try to load the saved game, in case of failure send error
         try {
+            String username = loggedUsers.get(0).getUsername();
             loadedGame = SavedGameState.loadFromFile();
             String[] loadedPlayers = loadedGame.getPlayers().stream().map(Player::getName).toArray(String[]::new);
             gameLobby.setPlayersFromSavedGame(loadedPlayers);
@@ -174,22 +191,20 @@ public class Controller {
 
                 // send "you are not present in the loaded game" error and logout user (he has to log in again)
                 sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.USERNAME_NOT_IN_LOADED_GAME, 5);
-                System.out.println("Removed player" + loggedUsers.get(0).getUsername());
-                loggedUsers.remove(0);
-                gameLobby.removePlayer(0);
             } else {
                 gameLobby.setNumPlayers(loadedPlayers.length);
                 gameLobby.setIsExpert(loadedGame.isExpert());
                 System.out.println("GAME LOADED FROM FILE | " + gameLobby.getNumPlayers() + " players | " + (gameLobby.isExpert() ? "expert" : "non expert") + " mode");
+                sanitizePlayers();  // ensures players are in the same order as in the loaded game
 
                 if (!startGameIfReady()) {
-                    ServerLoginMessage message = getServerLoginMessage(Messages.GAME_CREATED);
+                    ServerLoginMessage message = getServerLoginMessage(Messages.GAME_LOADED);
                     for (PlayerClient player : loggedUsers) {
                         player.getCommunicable().sendMessageToClient(message.toJson());
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | NoSuchElementException e) {
             // send "load failed" error
             System.out.println(Messages.LOAD_ERR);
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.LOAD_GAME_FAILED, 4);
@@ -197,7 +212,7 @@ public class Controller {
     }
 
     /**
-     * Adds the user who sent the message to the loggedUsers {@code ArrayList} if possible
+     * Adds the user who sent the message to the list of logged users
      *
      * @param ch       the {@code Communicable} interface of the client who sent the message
      * @param username the username of the user to be added
@@ -211,6 +226,8 @@ public class Controller {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.USERNAME_TOO_LONG, 3);
         } else if (loggedUsers.stream().anyMatch(u -> u.getUsername().equals(username))) {
             sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.USERNAME_ALREADY_TAKEN, 2);
+        } else if (gameLobby.isFromSavedGame() && !Arrays.asList(gameLobby.getPlayersFromSavedGame()).contains(username)) {
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.PLAYER_NOT_IN_LOADED_GAME, 5);
         } else {
             PlayerClient newUser = new PlayerClient(ch, username);
             loggedUsers.add(newUser);
@@ -224,6 +241,51 @@ public class Controller {
 
             if (!startGameIfReady()) {
                 sendBroadcastMessage();     // signals everyone that a new player has joined
+            }
+        }
+    }
+
+    /**
+     * Changes the username of the user who sent the message
+     *
+     * @param ch          the {@code Communicable} interface of the client who sent the message
+     * @param newUsername the username of the user to be added
+     */
+    private void renameUser(Communicable ch, String newUsername) {
+        if (newUsername == null || newUsername.trim().equals("")) {
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INVALID_USERNAME, 5);
+        } else if ((gameLobby.getNumPlayers() != -1 && loggedUsers.size() >= gameLobby.getNumPlayers()) || loggedUsers.size() >= Constants.MAX_PLAYERS || gameController != null) {
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.LOBBY_FULL, 5);
+        } else if (newUsername.length() > Constants.MAX_USERNAME_LENGTH) {
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.USERNAME_TOO_LONG, 5);
+        } else if (loggedUsers.stream().anyMatch(u -> u.getUsername().equals(newUsername))) {
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.USERNAME_ALREADY_TAKEN, 5);
+        } else if (gameLobby.isFromSavedGame() && !Arrays.asList(gameLobby.getPlayersFromSavedGame()).contains(newUsername)) {
+            sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.USERNAME_NOT_IN_LOADED_GAME, 5);
+        } else {
+            try {
+                PlayerClient userToRename = loggedUsers.stream()
+                        .filter(user -> user.getCommunicable() == ch)
+                        .findFirst().orElseThrow();
+
+                String oldUsername = userToRename.getUsername();
+
+                userToRename.setUsername(newUsername);
+
+                // replaces old username with new one in game lobby
+                gameLobby.removePlayer(oldUsername);
+                gameLobby.addPlayer(newUsername);
+                System.out.println("player " + oldUsername + " is now player " + newUsername);
+
+                if (userToRename == loggedUsers.get(0)) {
+                    askDesiredNumberOfPlayers(ch);
+                }
+
+                if (!startGameIfReady()) {
+                    sendBroadcastMessage();
+                }
+            } catch (Exception e) {
+                sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INTERNAL_SERVER_ERROR, 5);
             }
         }
     }
@@ -275,6 +337,8 @@ public class Controller {
 
     /**
      * Checks if a game can be started; if so, every client in the lobby is notified
+     *
+     * @return true if the game was started, false otherwise
      */
     private boolean startGameIfReady() {
         int numberOfPlayers = gameLobby.getNumPlayers();
@@ -289,6 +353,28 @@ public class Controller {
             sendErrorMessage(toRemove.getCommunicable(), Messages.STATUS_LOGIN, errorMessage, 1);
             loggedUsers.remove(toRemove);
         }
+
+        if (gameLobby.isFromSavedGame()) {
+            String message = Messages.GAME_RESUMING;
+            ServerLoginMessage toSend = getServerLoginMessage(message);
+
+            for (PlayerClient playerClient : loggedUsers) {
+                // Alert player that game is resuming
+                playerClient.getCommunicable().sendMessageToClient(toSend.toJson());
+                playerClient.setPlayer(
+                        loadedGame.getPlayers().stream()
+                                .filter(player -> player.getName().equals(playerClient.getUsername()))
+                                .findFirst().orElseThrow()
+                );
+            }
+
+            gameController = new GameController(loggedUsers, loadedGame);
+            gameController.resume();
+
+            System.out.println(Messages.GAME_RESUMING);
+            return true;
+        }
+
         String message = Messages.GAME_STARTING;
         if (numberOfPlayers == 4) {
             message += ". The teams are: " + loggedUsers.get(0).getUsername() + " and " + loggedUsers.get(2).getUsername() +
@@ -302,13 +388,44 @@ public class Controller {
             playerClient.setPlayer(new Player(playerClient.getUsername(), numberOfPlayers % 2 == 0 ? Constants.TOWERS_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.TOWERS_IN_THREE_PLAYER_GAME));
         }
 
-        // TODO: check if it is a loaded game
         gameController = new GameController(loggedUsers, isExpert);
         gameController.start();
-        // gameController.resume() (?)
 
-
+        System.out.println(Messages.GAME_IS_STARTING);
         return true;
+    }
+
+    /**
+     * If loading from a saved game, assures that the loggedUsers are in the same order as in the loaded game
+     * and kicks any player who was not in the loaded game
+     */
+    private void sanitizePlayers() {
+        if (!gameLobby.isFromSavedGame()) return;
+
+        List<PlayerClient> loggedUsersInOrder = new ArrayList<>();
+        // Add each player client to the list in the same order as they appear in the loaded game
+        for (int i = 0; i < gameLobby.getNumPlayers(); i++) {
+            String playerName = gameLobby.getPlayersFromSavedGame()[i];
+            if (gameLobby.getPlayers().contains(playerName)) {
+                loggedUsersInOrder.add(loggedUsers.stream()
+                        .filter(u -> u.getUsername().equals(playerName))
+                        .findAny()
+                        .orElseThrow());
+            }
+        }
+
+        // Kick all clients who are not in the loaded game
+        List<PlayerClient> clientsToKick = loggedUsers.stream()
+                .filter(user -> !loggedUsersInOrder.contains(user))
+                .toList();
+
+        clientsToKick.forEach(clientToKill -> {
+            String errorMessage = "A new game for " + gameLobby.getNumPlayers() + " players is starting. Your connection will be closed";
+            sendErrorMessage(clientToKill.getCommunicable(), Messages.STATUS_LOGIN, errorMessage, 1);
+        });
+
+        loggedUsers.clear();
+        loggedUsers.addAll(loggedUsersInOrder);
     }
 
     /**

@@ -63,6 +63,10 @@ public class GameLobby {
         players.remove(toRemove);
     }
 
+    public void removePlayer(String toRemove) {
+        players.remove(toRemove);
+    }
+
     public int getNumPlayers() {
         return numPlayers;
     }

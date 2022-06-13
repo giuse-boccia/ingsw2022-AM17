@@ -18,8 +18,6 @@ public class CLI extends Client {
 
     public CLI() {
         stdIn = new BufferedReader(new InputStreamReader(System.in));
-        // TODO: move the following comment in Project WIKI
-        // NOTE: for correct visualization in Windows Terminal, run command "chcp 65001" before "java -jar ..."
     }
 
     @Override
@@ -52,8 +50,6 @@ public class CLI extends Client {
             askNumPlayersAndExpertMode();
         }
         if (res.equals("2")) {
-            gracefulTermination("not implemented yet!");
-            // TODO: remove graceTerm
             getCurrentObserverHandler().notifyAllLoadGameObservers();
         }
     }

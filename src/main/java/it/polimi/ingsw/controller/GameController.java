@@ -39,6 +39,11 @@ public class GameController {
         this.players = players;
     }
 
+    public GameController(List<PlayerClient> players, Game game) {
+        this.game = game;
+        this.players = players;
+    }
+
     private ArrayList<Player> getPlayers(List<PlayerClient> players) {
         List<Player> playersList = players.stream().map(PlayerClient::getPlayer).toList();
         return new ArrayList<>(playersList);
@@ -53,6 +58,44 @@ public class GameController {
         PlayerClient firstPlayer = players.get(currentPlayerIndex);
         sendBroadcastUpdateMessage(firstPlayer.getUsername() + Messages.IS_PLAYING);
         askForAssistant(firstPlayer);
+    }
+
+    /**
+     * Resumes the  {@code Game} and asks the next player to play
+     */
+    public void resume() {
+        game.resume();
+
+        if (game.getCurrentRound().getPlayedAssistants() != null) {
+            // We are in someone's action phase
+            String nextPlayerName = game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer().getName();
+            currentPlayerIndex = getIndexFromPlayerName(nextPlayerName);
+            PlayerClient nextPlayer = players.get(currentPlayerIndex);
+            sendBroadcastUpdateMessage(nextPlayer.getUsername() + Messages.IS_PLAYING);
+            askForMoveInPAP(nextPlayer);
+        } else {
+            // We are in the planning phase
+            currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
+            PlayerClient nextPlayer = players.get(currentPlayerIndex);
+            sendBroadcastUpdateMessage(nextPlayer.getUsername() + Messages.IS_PLAYING);
+            askForAssistant(nextPlayer);
+        }
+    }
+
+    /**
+     * Given a player name, return his index in the players array
+     *
+     * @param playerToFind the name of the player to find
+     * @return the index of the found player
+     */
+    private int getIndexFromPlayerName(String playerToFind) {
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getPlayer().getName().equals(playerToFind)) {
+                return i;
+            }
+        }
+
+        throw new RuntimeException(playerToFind + " not in players!");    // shouldn't happen, just for debugging
     }
 
     /**

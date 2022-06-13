@@ -118,7 +118,7 @@ public class MessageHandler implements ObserverHandler {
             client.showWarningMessage(message.getDisplayText());    // username doesn't match in saved_game.json
             new Thread(() -> {
                 try {
-                    askUsernameAndSend();
+                    changeUsernameAndSend();
                 } catch (IOException e) {
                     client.gracefulTermination(Messages.SERVER_LOST);
                 }
@@ -129,7 +129,7 @@ public class MessageHandler implements ObserverHandler {
                 try {
                     client.askCreateOrLoad();
                 } catch (IOException e) {
-                    client.gracefulTermination("Connection to server went down");
+                    client.gracefulTermination(Messages.SERVER_LOST);
                 }
             }).start();
         } else if (message.getError() != 0) {
@@ -156,6 +156,14 @@ public class MessageHandler implements ObserverHandler {
      */
     public void askUsernameAndSend() throws IOException {
         client.setCurrentObserverHandler(this);
+        client.showMessage(Messages.CONNECTING);
+        client.askUsername();
+    }
+
+    /**
+     * Asks for a username and sends a login message to the server
+     */
+    public void changeUsernameAndSend() throws IOException {
         client.showMessage(Messages.CONNECTING);
         client.askUsername();
     }
