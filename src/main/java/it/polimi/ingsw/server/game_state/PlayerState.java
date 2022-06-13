@@ -42,7 +42,7 @@ public class PlayerState {
                 player.getName(),
                 player.getTowerColor(),
                 player.getWizard(),
-                player.getNumberOfTowers(),
+                player.getRemainingTowers(),
                 player.getNumCoins(),
                 Arrays.stream(player.getHand()).filter(Objects::nonNull).mapToInt(Assistant::getValue).toArray(),
                 player.getDashboard().getEntrance().getStudents(),

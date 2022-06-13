@@ -262,8 +262,8 @@ class InfluenceStrategyTest {
         // Island is resolved, island tower should be white
         pap.resolveIsland(island);
         assertSame(island.getTowerColor(), TowerColor.WHITE);
-        assertEquals(7, rick.getNumberOfTowers());
-        assertEquals(7, giuse.getNumberOfTowers());
+        assertEquals(7, rick.getRemainingTowers());
+        assertEquals(7, giuse.getRemainingTowers());
 
         //-----------------------Clod's turn--------------------------------------------
         Assistant a2 = new Assistant(1, 2, clod);

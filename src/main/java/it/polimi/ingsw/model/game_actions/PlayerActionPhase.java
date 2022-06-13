@@ -280,7 +280,7 @@ public class PlayerActionPhase {
         resolveIsland();
 
         for (Player player : gb.getGame().getPlayers()) {
-            if (player.getNumberOfTowers() <= 0) {
+            if (player.getRemainingTowers() <= 0) {
                 gb.getGame().end();
             }
         }

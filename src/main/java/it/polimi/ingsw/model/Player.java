@@ -1,11 +1,8 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.constants.Constants;
-import it.polimi.ingsw.exceptions.InvalidStudentException;
-import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
-import it.polimi.ingsw.model.game_objects.gameboard_objects.Cloud;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 
 import java.util.Arrays;
@@ -84,7 +81,7 @@ public class Player {
      *
      * @return the remaining towers in the player dashboard
      */
-    public int getNumberOfTowers() {
+    public int getRemainingTowers() {
         int res = initialTowers;
         for (Island island : game.getGameBoard().getIslands()) {
             if (island.getTowerColor() == towerColor) {

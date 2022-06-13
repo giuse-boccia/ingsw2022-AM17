@@ -304,7 +304,7 @@ public class GameTest {
                 assertEquals(i / 2 + i % 2, player.getHand()[i - 1].getNumSteps());
             }
             assertEquals(1, player.getNumCoins());
-            assertEquals(6, player.getNumberOfTowers());
+            assertEquals(6, player.getRemainingTowers());
         }
     }
 

@@ -9,7 +9,6 @@ import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.utils.RandomGenerator;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class Game {
     private final List<Player> players;
@@ -75,7 +74,7 @@ public class Game {
             int[] towersOfColor = players
                     .stream()
                     .filter(player -> player.getTowerColor() == color)
-                    .mapToInt(Player::getNumberOfTowers)
+                    .mapToInt(Player::getRemainingTowers)
                     .toArray();
 
             if (towersOfColor.length != 0) {
