@@ -8,6 +8,8 @@ import it.polimi.ingsw.server.game_state.GameState;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.util.List;
 
@@ -18,6 +20,18 @@ public class LoginController implements GuiController {
 
     public LoginController() {
 
+    }
+
+    /**
+     * This function is called when the username TextField is focused and the user presses a key
+     * Pressing the Enter key has the same effect of clicking the Login button
+     *
+     * @param keyEvent the user's press of a key
+     */
+    public void onKeyPressed(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+            onLoginBtnPressed(null);
+        }
     }
 
     /**
