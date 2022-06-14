@@ -17,6 +17,9 @@
    <ImageView fitHeight="600.0" fitWidth="600.0" opacity="0.67" pickOnBounds="true" preserveRatio="true">
       <Image url="@gameboard/backgrounds/login_background.png"/>
    </ImageView>
+   <ImageView fitHeight="79.0" fitWidth="77.0" layoutY="323.0" pickOnBounds="true" preserveRatio="true">
+      <Image url="/gameboard/cranio_logo.png"/>
+   </ImageView>
    <Text layoutX="209.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0" text="What do you want to do?">
       <font>
          <Font name="Baskerville Old Face" size="18.0"/>
