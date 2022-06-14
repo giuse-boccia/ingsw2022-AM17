@@ -15,16 +15,12 @@
    <children>
       <ImageView fitHeight="602.0" fitWidth="870.0" layoutX="-1.0" opacity="0.67" pickOnBounds="true"
                  preserveRatio="true">
-         <image>
-            <Image url="/gameboard/backgrounds/login_background.png"/>
-         </image>
+         <Image url="/gameboard/backgrounds/login_background.png"/>
       </ImageView>
       <ImageView fitHeight="79.0" fitWidth="77.0" layoutY="323.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="/gameboard/cranio_logo.png"/>
-         </image>
+         <Image url="/gameboard/cranio_logo.png"/>
       </ImageView>
-      <Button fx:id="loginBtn" alignment="CENTER" layoutX="242.0" layoutY="256.0" mnemonicParsing="false"
+      <Button alignment="CENTER" layoutX="242.0" layoutY="256.0" mnemonicParsing="false"
               onAction="#onLoginBtnPressed" text="LOGIN" textAlignment="CENTER">
          <font>
             <Font name="Baskerville Old Face" size="20.0"/>
@@ -38,7 +34,8 @@
             <Font name="Baskerville Old Face" size="22.0"/>
          </font>
       </Text>
-      <TextField fx:id="usernameTextField" layoutX="183.0" layoutY="200.0" promptText="Username...">
+      <TextField fx:id="usernameTextField" layoutX="183.0" layoutY="200.0" promptText="Username..."
+                 onKeyPressed="#onKeyPressed">
          <font>
             <Font name="Baskerville Old Face" size="17.0"/>
          </font>
