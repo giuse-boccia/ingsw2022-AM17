@@ -12,12 +12,12 @@
 | :--------------- | :------: | :---: |
 | Complete rules   | No       | 🟢 |
 | Socket           | No       | 🟢 |
-| GUI              | No       | 🟡 |
+| GUI              | No       | 🟢 |
 | CLI              | No       | 🟢 |
 | 12 Characters    | Yes      | 🟢 |
 | 4 Players Game   | Yes      | 🟢 |
 | Multiple Games   | Yes      | ⚫ |
-| Persistence      | Yes      | 🟡 |
+| Persistence      | Yes      | 🟢 |
 | Disconnection resilience      | Yes      | ⚫ |
 
 🔴 -> Not started
