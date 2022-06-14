@@ -109,8 +109,7 @@ public class GUI extends Client {
 
     @Override
     public void askCreateOrLoad() {
-        // TODO: implement
-        askNumPlayersAndExpertMode();
+        guiView.changeScene(DrawingConstants.RESOURCE_CREATE_OR_LOAD_GAME, false);
     }
 
     @Override

@@ -128,4 +128,5 @@ public class DrawingConstants {
     public static final String RESOURCE_PARAMETERS = "game_parameters";
     public static final String RESOURCE_LOBBY = "lobby";
     public static final String RESOURCE_LOGIN = "login";
+    public static final String RESOURCE_CREATE_OR_LOAD_GAME = "create_or_load";
 }
