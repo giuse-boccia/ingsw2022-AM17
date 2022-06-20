@@ -10,9 +10,6 @@ import java.util.Locale;
 
 public class Main {
 
-    private static int port;
-    private static String address;
-
     public static void main(String[] args) {
         if (args.length > 3) {
             System.out.println(Messages.USAGE);
@@ -20,7 +17,7 @@ public class Main {
         }
 
         if (args.length == 0) {
-            Client.main(args);
+            Client.main(new String[]{"gui"});
         } else {
             // Args that will be passed to the main() method of Server, CLI or GUI
             String[] config = Arrays.copyOfRange(args, 1, args.length);

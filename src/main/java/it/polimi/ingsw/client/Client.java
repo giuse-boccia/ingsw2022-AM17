@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.List;
 
 public abstract class Client {
-    private static NetworkClient nc;
     private String username;
     private String tmpUsername;
     private List<CharacterState> characters;
@@ -30,7 +29,7 @@ public abstract class Client {
         String serverAddress = null;
         int serverPort = -1;
 
-        if (args.length == 0 || args[0].equalsIgnoreCase("gui")) {
+        if (args[0].equalsIgnoreCase("gui")) {
             client = new GUI();
             new Thread(() -> GuiView.main((GUI) client)).start();
         } else {
@@ -62,7 +61,7 @@ public abstract class Client {
             client.gracefulTermination(Messages.INVALID_SERVER_PORT);
         }
 
-        nc = new NetworkClient(client, serverAddress, serverPort);
+        NetworkClient nc = new NetworkClient(client, serverAddress, serverPort);
         nc.connectToServer();
         nc.start();
     }
