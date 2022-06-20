@@ -6,9 +6,9 @@ public class Constants {
     public static final double PI = 3.14;
 
     // Server Constants
-    public static final int PING_INTERVAL = 2000;
-    public static final int PONG_INITIAL_DELAY = 3000;
-    public static final int PONG_INTERVAL = 2500;
+    public static final int PING_INTERVAL = 5000;
+    public static final int PONG_INITIAL_DELAY = 5500;
+    public static final int PONG_INTERVAL = 5500;
     public static final int MAX_ATTEMPTS_TO_CONTACT_SERVER = 2;
     public static final int MAX_USERNAME_LENGTH = 16;
     public static final int LOWER_BOUND_SERVER_PORT = 1024;
