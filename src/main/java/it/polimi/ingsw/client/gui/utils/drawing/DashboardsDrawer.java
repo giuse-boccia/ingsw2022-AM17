@@ -30,7 +30,7 @@ public class DashboardsDrawer {
      * @param username the username of the player who owns the {@code DashBoard}
      */
     public static void drawDashboard(PlayerState player, double y, double dashboardHeight, AnchorPane root, String username) {
-        ImageView dashboardImage = new ImageView(new Image("/gameboard/Plancia_DEF_circles.png"));
+        ImageView dashboardImage = new ImageView(new Image("/gameboard/Plancia_DEF.png"));
         dashboardImage.setPreserveRatio(true);
         dashboardImage.setFitHeight(dashboardHeight);
         double dashboardWidth = dashboardImage.getBoundsInParent().getWidth();
