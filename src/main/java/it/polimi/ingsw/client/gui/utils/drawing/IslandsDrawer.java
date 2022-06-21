@@ -8,8 +8,10 @@ import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.server.game_state.GameState;
 import it.polimi.ingsw.server.game_state.IslandState;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
