@@ -1,7 +1,5 @@
 #root {
-    -fx-background-image: url("/gameboard/backgrounds/sky_background.jpg");
-    /*-fx-background-repeat: stretch;
-    fx-background-size: 1920 1080;*/
+    -fx-background-color: linear-gradient(rgb(143, 238, 241), #2bd8f8);
     -fx-background-position: center center;
     -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
 }
