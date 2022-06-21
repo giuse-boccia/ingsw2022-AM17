@@ -1,8 +1,15 @@
 package it.polimi.ingsw.client.gui.utils.drawing;
 
+import it.polimi.ingsw.client.gui.utils.DrawingConstants;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Popup;
 
 public class UtilsDrawer {
     /**
@@ -52,5 +59,30 @@ public class UtilsDrawer {
         grid.setHgap(hgap);
         grid.setVgap(vgap);
         return grid;
+    }
+
+    /**
+     * Returns a {@code Popup} containing the name and the description of a character
+     *
+     * @param name        the name of the characters
+     * @param description the description of the character
+     * @return a {@code Popup} containing the name and the description of a character
+     */
+    public static Popup getCharactersHoverPanel(String name, String description) {
+        Popup popup = new Popup();
+
+        Text characterName = new Text(name);
+        characterName.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.SUBTITLE_FONT_SIZE));
+        Label characterDescription = new Label(description);
+        characterDescription.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.PARAGRAPH_FONT_SIZE));
+        characterDescription.setWrapText(true);
+        VBox vBox = new VBox(characterName, characterDescription);
+        vBox.setPrefSize(DrawingConstants.CHARACTER_HOVER_POPUP_WIDTH, DrawingConstants.CHARACTER_HOVER_POPUP_HEIGHT);
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setStyle("-fx-background-image: url('/gameboard/backgrounds/parchment_bacgkround.png'); -fx-padding: 10");
+
+        popup.setAutoHide(true);
+        popup.getContent().add(vBox);
+        return popup;
     }
 }
