@@ -4,10 +4,13 @@ import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
 import it.polimi.ingsw.server.game_state.CharacterState;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Popup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,7 @@ public class CharactersDrawer {
     public static void drawCharacters(List<CharacterState> characters, double pageWidth, double pageHeight, double dashboardHeight, AnchorPane root) {
         double coordX = dashboardHeight / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH + pageWidth * DrawingConstants.CHARACTERS_BEGINNING_PROPORTION;
         int heightProportion = 13;
+        double characterY = pageHeight / heightProportion;
 
         for (CharacterState character : characters) {
             String imagePath = "/gameboard/characters/" + character.getCharacterName() + ".jpg";
@@ -32,9 +36,20 @@ public class CharactersDrawer {
 
             BorderPane characterToAdd = new BorderPane(characterImage);
             characterToAdd.setLayoutX(coordX);
-            characterToAdd.setLayoutY(pageHeight / heightProportion);
+            characterToAdd.setLayoutY(characterY);
             characterToAdd.setOnMouseClicked(event -> ObjectClickListeners.setCharacterClicked(character.getCharacterName(), characterToAdd));
             DrawingComponents.addCharacterImage(characterToAdd);
+            Popup characterPopup = UtilsDrawer.getCharactersHoverPanel(character.getCharacterName().toString(), character.getCharacterName().getDescription());
+            double characterXCoord = coordX;
+            double characterYCoord = characterY + characterToAdd.getBoundsInParent().getHeight();
+            characterImage.hoverProperty().addListener((observableValue, oldValue, newValue) -> {
+                if (newValue) {
+                    characterPopup.show(characterToAdd, characterXCoord, characterYCoord);
+                } else {
+                    characterPopup.hide();
+                }
+            });
+
             root.getChildren().add(characterToAdd);
 
             if (character.hasCoin()) {
