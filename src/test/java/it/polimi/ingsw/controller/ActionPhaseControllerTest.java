@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.model.utils.Students;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -25,6 +26,11 @@ class ActionPhaseControllerTest {
     ClientHandlerStub rickCh = new ClientHandlerStub();
     ClientHandlerStub giuseCh = new ClientHandlerStub();
     Player rick, giuse;
+
+    @BeforeAll
+    static void initializeMessagesResourceBundle() {
+        MessageResourceBundle.initializeBundle("en");
+    }
 
     /**
      * In this test a player tries to play when it's not his turn

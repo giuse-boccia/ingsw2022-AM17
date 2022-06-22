@@ -1,9 +1,11 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -16,6 +18,11 @@ class ControllerTest {
     Controller controller = new Controller();
     ClientHandlerStub ch = new ClientHandlerStub();
     ClientHandlerStub secondCh = new ClientHandlerStub();
+
+    @BeforeAll
+    static void initializeMessagesResourceBundle() {
+        MessageResourceBundle.initializeBundle("en");
+    }
 
     /**
      * Tests the effect of a pong message on the controller - that is incrementing by 1 the variable pongCount

@@ -5,6 +5,7 @@ import it.polimi.ingsw.exceptions.GameEndedException;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.model.Player;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -18,6 +19,11 @@ class PlanningPhaseControllerTest {
     ClientHandlerStub rickCh = new ClientHandlerStub();
     ClientHandlerStub giuseCh = new ClientHandlerStub();
     ClientHandlerStub clodCh = new ClientHandlerStub();
+
+    @BeforeAll
+    static void initializeMessagesResourceBundle() {
+        MessageResourceBundle.initializeBundle("en");
+    }
 
     /**
      * Tests what happens when a player attempts to send an action message but the game is not started yet
