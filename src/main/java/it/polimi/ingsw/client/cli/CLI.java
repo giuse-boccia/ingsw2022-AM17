@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.cli;
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
@@ -28,7 +29,7 @@ public class CLI extends Client {
 
     @Override
     public void askUsername() throws IOException {
-        System.out.print(Messages.ASK_USERNAME);
+        System.out.print(MessageResourceBundle.getMessage("ASK_USERNAME"));
         String username = stdIn.readLine();
         setTmpUsername(username);
         getCurrentObserverHandler().notifyAllUsernameObservers(username);
