@@ -8,6 +8,7 @@ import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
 import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
@@ -149,7 +150,7 @@ public class GuiView extends Application {
             try {
                 scene = new Scene(fxmlLoader.load());
             } catch (IOException e) {
-                gui.gracefulTermination(Messages.SERVER_LOST);
+                gui.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
             }
             stage.setResizable(fullscreen);
             stage.setFullScreen(false);

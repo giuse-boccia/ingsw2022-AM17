@@ -29,7 +29,7 @@ public class CLI extends Client {
 
     @Override
     public void askUsername() throws IOException {
-        System.out.print(MessageResourceBundle.getMessage("ASK_USERNAME"));
+        System.out.print(MessageResourceBundle.getMessage("ask_username"));
         String username = stdIn.readLine();
         setTmpUsername(username);
         getCurrentObserverHandler().notifyAllUsernameObservers(username);
@@ -109,7 +109,7 @@ public class CLI extends Client {
     public void gracefulTermination(String message) {
         printBlueLine();
         System.out.println(message);
-        System.out.println(Messages.GRACEFUL_TERM);
+        System.out.println(MessageResourceBundle.getMessage("graceful_term"));
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {

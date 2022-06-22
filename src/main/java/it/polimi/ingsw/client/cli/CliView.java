@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.constants.ConsoleColors;
 import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.server.game_state.*;
@@ -252,7 +253,7 @@ public class CliView {
                 entranceHelper(entrance, 0) + "   |   " +
                 (getStringFromStudent(new Student(Color.GREEN)) + " ").repeat(Students.countColor(dining, Color.GREEN)) +
                 "  ".repeat(10 - Students.countColor(dining, Color.GREEN)) + "      |   " +
-                (player.getOwnedProfessors().contains(Color.GREEN) ? (ConsoleColors.GREEN + Messages.PROF_CHAR + ConsoleColors.RESET) : " ") + "   |");
+                (player.getOwnedProfessors().contains(Color.GREEN) ? (ConsoleColors.GREEN + MessageResourceBundle.getMessage("prof_char") + ConsoleColors.RESET) : " ") + "   |");
 
         // Second line (2nd and 3rd entrance students + red dining
         System.out.println("|   " +
@@ -260,7 +261,7 @@ public class CliView {
                 entranceHelper(entrance, 2) + "   |   " +
                 (getStringFromStudent(new Student(Color.RED)) + " ").repeat(Students.countColor(dining, Color.RED)) +
                 "  ".repeat(10 - Students.countColor(dining, Color.RED)) + "      |   " +
-                (player.getOwnedProfessors().contains(Color.RED) ? (ConsoleColors.RED + Messages.PROF_CHAR + ConsoleColors.RESET) : " ") + "   |");
+                (player.getOwnedProfessors().contains(Color.RED) ? (ConsoleColors.RED + MessageResourceBundle.getMessage("prof_char") + ConsoleColors.RESET) : " ") + "   |");
 
         // Third line (4th and 5th entrance students + yellow dining
         System.out.println("|   " +
@@ -268,7 +269,7 @@ public class CliView {
                 entranceHelper(entrance, 4) + "   |   " +
                 (getStringFromStudent(new Student(Color.YELLOW)) + " ").repeat(Students.countColor(dining, Color.YELLOW)) +
                 "  ".repeat(10 - Students.countColor(dining, Color.YELLOW)) + "      |   " +
-                (player.getOwnedProfessors().contains(Color.YELLOW) ? (ConsoleColors.YELLOW + Messages.PROF_CHAR + ConsoleColors.RESET) : " ") + "   |");
+                (player.getOwnedProfessors().contains(Color.YELLOW) ? (ConsoleColors.YELLOW + MessageResourceBundle.getMessage("prof_char") + ConsoleColors.RESET) : " ") + "   |");
 
         // Fourth line (6th and 7th entrance students + pink dining
         System.out.println("|   " +
@@ -276,7 +277,7 @@ public class CliView {
                 entranceHelper(entrance, 6) + "   |   " +
                 (getStringFromStudent(new Student(Color.PINK)) + " ").repeat(Students.countColor(dining, Color.PINK)) +
                 "  ".repeat(10 - Students.countColor(dining, Color.PINK)) + "      |   " +
-                (player.getOwnedProfessors().contains(Color.PINK) ? (ConsoleColors.PURPLE + Messages.PROF_CHAR + ConsoleColors.RESET) : " ") + "   |");
+                (player.getOwnedProfessors().contains(Color.PINK) ? (ConsoleColors.PURPLE + MessageResourceBundle.getMessage("prof_char") + ConsoleColors.RESET) : " ") + "   |");
 
         // Last line (8th and 9th students + blue dining
         System.out.println("|   " +
@@ -284,7 +285,7 @@ public class CliView {
                 entranceHelper(entrance, 8) + "   |   " +
                 (getStringFromStudent(new Student(Color.BLUE)) + " ").repeat(Students.countColor(dining, Color.BLUE)) +
                 "  ".repeat(10 - Students.countColor(dining, Color.BLUE)) + "      |   " +
-                (player.getOwnedProfessors().contains(Color.BLUE) ? (ConsoleColors.BLUE + Messages.PROF_CHAR + ConsoleColors.RESET) : " ") + "   |");
+                (player.getOwnedProfessors().contains(Color.BLUE) ? (ConsoleColors.BLUE + MessageResourceBundle.getMessage("prof_char") + ConsoleColors.RESET) : " ") + "   |");
 
 
         System.out.println(DASHBOARD_LINE_50);
@@ -336,7 +337,7 @@ public class CliView {
             case YELLOW -> consoleColor = ConsoleColors.YELLOW;
         }
 
-        return consoleColor + Messages.STUDENT_CHAR + ConsoleColors.RESET;
+        return consoleColor + MessageResourceBundle.getMessage("student_char") + ConsoleColors.RESET;
     }
 
     /**

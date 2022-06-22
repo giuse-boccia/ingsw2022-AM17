@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Type;
@@ -37,8 +37,8 @@ public class Settings {
         }.getType();
         Map<String, String> map = gson.fromJson(reader, type);
         reader.close();
-        int port = Integer.parseInt(map.get(Messages.SERVER_PORT));
-        String address = map.get(Messages.SERVER_ADDRESS);
+        int port = Integer.parseInt(map.get(MessageResourceBundle.getMessage("server_port")));
+        String address = map.get(MessageResourceBundle.getMessage("server_address"));
         return new Settings(port, address);
     }
 

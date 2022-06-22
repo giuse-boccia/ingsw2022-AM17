@@ -11,6 +11,7 @@ import it.polimi.ingsw.client.observers.login.game_parameters.SendGameParameters
 import it.polimi.ingsw.client.observers.login.load_game.ExecuteLoadGameObserver;
 import it.polimi.ingsw.client.observers.login.username.SendUsernameObserver;
 import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -96,7 +97,7 @@ public class NetworkClient extends Thread {
             }
         } catch (IOException e) {
             // Server connection error
-            client.gracefulTermination(Messages.SERVER_LOST);
+            client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
         }
     }
 }

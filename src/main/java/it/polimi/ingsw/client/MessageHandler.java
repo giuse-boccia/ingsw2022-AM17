@@ -12,6 +12,7 @@ import it.polimi.ingsw.client.observers.login.load_game.LoadGameObserver;
 import it.polimi.ingsw.client.observers.login.username.UsernameObserver;
 import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
@@ -111,7 +112,7 @@ public class MessageHandler implements ObserverHandler {
                 try {
                     askUsernameAndSend();
                 } catch (IOException e) {
-                    client.gracefulTermination(Messages.SERVER_LOST);
+                    client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
                 }
             }).start();
         } else if (message.getError() == 5) {
@@ -120,7 +121,7 @@ public class MessageHandler implements ObserverHandler {
                 try {
                     changeUsernameAndSend();
                 } catch (IOException e) {
-                    client.gracefulTermination(Messages.SERVER_LOST);
+                    client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
                 }
             }).start();
         } else if (message.getError() == 4) {
@@ -129,7 +130,7 @@ public class MessageHandler implements ObserverHandler {
                 try {
                     client.askCreateOrLoad();
                 } catch (IOException e) {
-                    client.gracefulTermination(Messages.SERVER_LOST);
+                    client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
                 }
             }).start();
         } else if (message.getError() != 0) {
@@ -140,7 +141,7 @@ public class MessageHandler implements ObserverHandler {
                 try {
                     client.askCreateOrLoad();
                 } catch (IOException e) {
-                    client.gracefulTermination(Messages.SERVER_LOST);
+                    client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
                 }
             }).start();
 
@@ -156,7 +157,7 @@ public class MessageHandler implements ObserverHandler {
      */
     public void askUsernameAndSend() throws IOException {
         client.setCurrentObserverHandler(this);
-        client.showMessage(Messages.CONNECTING);
+        client.showMessage(MessageResourceBundle.getMessage("connecting"));
         client.askUsername();
     }
 
@@ -164,7 +165,7 @@ public class MessageHandler implements ObserverHandler {
      * Asks for a username and sends a login message to the server
      */
     public void changeUsernameAndSend() throws IOException {
-        client.showMessage(Messages.CONNECTING);
+        client.showMessage(MessageResourceBundle.getMessage("connecting"));
         client.askUsername();
     }
 
@@ -220,7 +221,7 @@ public class MessageHandler implements ObserverHandler {
             try {
                 observer.onCharacterChosen(name);
             } catch (IOException e) {
-                client.gracefulTermination(Messages.SERVER_LOST);
+                client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
             }
         });
     }
@@ -340,7 +341,7 @@ public class MessageHandler implements ObserverHandler {
                     default -> client.gracefulTermination(Messages.INVALID_SERVER_MESSAGE);
                 }
             } catch (IOException e) {
-                client.gracefulTermination(Messages.SERVER_LOST);
+                client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
             }
 
         }).start();
@@ -357,7 +358,7 @@ public class MessageHandler implements ObserverHandler {
                 client.showPossibleActions(actions);
                 client.chooseAction(actions);
             } catch (IOException e) {
-                client.gracefulTermination(Messages.SERVER_LOST);
+                client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
             }
         }).start();
     }
@@ -381,7 +382,7 @@ public class MessageHandler implements ObserverHandler {
             @Override
             public void run() {
                 if (serverUpCalls >= Constants.MAX_ATTEMPTS_TO_CONTACT_SERVER && client.getUsername() != null) {
-                    client.gracefulTermination(Messages.SERVER_LOST);
+                    client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
                     this.cancel();
                 } else if (client.getUsername() != null) {
                     serverUpCalls++;
