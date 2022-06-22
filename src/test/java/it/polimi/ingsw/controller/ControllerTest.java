@@ -85,7 +85,7 @@ class ControllerTest {
         assertDoesNotThrow(() -> controller.handleMessage(jsonEmptyUsername, ch));
         ServerLoginMessage msg = ServerLoginMessage.fromJson(ch.getJson());
         assertEquals(3, msg.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_USERNAME, msg.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_username"), msg.getDisplayText());
     }
 
     /**
@@ -97,7 +97,7 @@ class ControllerTest {
         assertDoesNotThrow(() -> controller.handleMessage(json, ch));
         ServerLoginMessage msg = ServerLoginMessage.fromJson(ch.getJson());
         assertEquals(3, msg.getError());
-        assertEquals("[ERROR] " + Messages.USERNAME_TOO_LONG, msg.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("username_too_long"), msg.getDisplayText());
     }
 
     /**
@@ -113,7 +113,7 @@ class ControllerTest {
 
         ServerLoginMessage errorResponse = ServerLoginMessage.fromJson(secondCh.getJson());
         assertEquals(2, errorResponse.getError());
-        assertEquals("[ERROR] " + Messages.USERNAME_ALREADY_TAKEN, errorResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("username_already_taken"), errorResponse.getDisplayText());
 
         assertEquals(1, controller.getLoggedUsers().size());
     }
@@ -142,7 +142,7 @@ class ControllerTest {
 
         // The second player should have received a broadcast message telling him he's in the lobby
         ServerLoginMessage secondMsg = ServerLoginMessage.fromJson(secondCh.getJson());
-        assertEquals(Messages.NEW_PLAYER_JOINED, secondMsg.getDisplayText());
+        assertEquals(MessageResourceBundle.getMessage("new_player_joined"), secondMsg.getDisplayText());
         assertEquals("clod", secondMsg.getGameLobby().getPlayers().get(0));
         assertEquals("rick", secondMsg.getGameLobby().getPlayers().get(1));
         assertEquals(-1, secondMsg.getGameLobby().getNumPlayers());
@@ -177,7 +177,7 @@ class ControllerTest {
         ServerLoginMessage clodMessage = ServerLoginMessage.fromJson(ch.getJson());
         ServerLoginMessage giuseMessage = ServerLoginMessage.fromJson(secondCh.getJson());
 
-        assertEquals(Messages.NEW_PLAYER_JOINED, clodMessage.getDisplayText(), giuseMessage.getDisplayText());
+        assertEquals(MessageResourceBundle.getMessage("new_player_joined"), clodMessage.getDisplayText(), giuseMessage.getDisplayText());
         assertEquals(new ArrayList<String>(List.of(new String[]{"clod", "giuse"})), clodMessage.getGameLobby().getPlayers());
     }
 
@@ -195,7 +195,7 @@ class ControllerTest {
 
         ServerLoginMessage response = ServerLoginMessage.fromJson(ch.getJson());
         assertEquals(3, response.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_NUM_PLAYERS, response.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_num_players"), response.getDisplayText());
         assertNull(response.getGameLobby());
         assertNull(controller.getGame());
 
@@ -205,14 +205,14 @@ class ControllerTest {
 
         ServerLoginMessage secondResponse = ServerLoginMessage.fromJson(ch.getJson());
         assertEquals(3, secondResponse.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_NUM_PLAYERS, response.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_num_players"), response.getDisplayText());
 
         // Second player is trying to set game parameters -> invalid
         String invalidPlayerJson = "{status:LOGIN,username:rick,action:CREATE_GAME,expert:true,numPlayers:2}";
         assertDoesNotThrow(() -> controller.handleMessage(invalidPlayerJson, secondCh));
         ServerLoginMessage thirdResponse = ServerLoginMessage.fromJson(secondCh.getJson());
         assertEquals(3, thirdResponse.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_PLAYER_CREATING_GAME, thirdResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_player_creating_game"), thirdResponse.getDisplayText());
         assertNull(thirdResponse.getGameLobby());
         assertNull(controller.getGame());
     }
@@ -261,7 +261,7 @@ class ControllerTest {
 
         ServerLoginMessage errorResponse = ServerLoginMessage.fromJson(fourthCh.getJson());
         assertEquals(1, errorResponse.getError());
-        assertEquals("[ERROR] " + Messages.LOBBY_FULL, errorResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("lobby_full"), errorResponse.getDisplayText());
     }
 
     /**

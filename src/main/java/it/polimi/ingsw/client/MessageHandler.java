@@ -107,7 +107,7 @@ public class MessageHandler implements ObserverHandler {
         ServerLoginMessage message = ServerLoginMessage.fromJson(jsonMessage);
 
         if (message.getError() == 2) {
-            client.showWarningMessage(Messages.USERNAME_ALREADY_TAKEN);
+            client.showWarningMessage(MessageResourceBundle.getMessage("username_already_taken"));
             new Thread(() -> {
                 try {
                     askUsernameAndSend();
