@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.gui.controllers;
 
 import it.polimi.ingsw.client.gui.GuiView;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
@@ -10,13 +11,21 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Text;
 
 import java.util.List;
 
 public class LoginController implements GuiController {
 
     @FXML
+    private Text usernameText;
+    @FXML
     private TextField usernameTextField;
+
+    @FXML
+    private void initialize() {
+        usernameText.setText(MessageResourceBundle.getMessage("insert_username_title"));
+    }
 
     public LoginController() {
 
