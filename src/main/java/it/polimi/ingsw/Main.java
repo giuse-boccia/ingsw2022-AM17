@@ -1,8 +1,8 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.client.Client;
-import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.server.Server;
 
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public class Main {
         } else {
             // Args that will be passed to the main() method of Server, CLI or GUI
             String[] config = Arrays.copyOfRange(args, 1, args.length);
-
+            MessageResourceBundle.initializeBundle("en");
             switch (args[0].toLowerCase(Locale.ROOT)) {
                 case "server" -> Server.main(config);
                 case "cli", "gui" -> Client.main(args);
