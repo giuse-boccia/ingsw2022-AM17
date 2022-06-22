@@ -214,9 +214,9 @@ public class GuiView extends Application {
     public void showErrorDialog(String message, boolean closeApplication) {
         // If there's a connection error the app should be closed without showing the alert - also to avoid
         // showing the login screen when the app can't start
-        if (Objects.equals(message, Messages.USAGE) || Objects.equals(message, Messages.JSON_NOT_FOUND)
-                || Objects.equals(message, Messages.INVALID_SERVER_PORT) || Objects.equals(message, Messages.PORT_NOT_AVAILABLE)
-                || Objects.equals(message, Messages.CANNOT_CONNECT_TO_SERVER)) {
+        if (Objects.equals(message, MessageResourceBundle.getMessage("wrong_usage")) || Objects.equals(message, MessageResourceBundle.getMessage("json_not_found"))
+                || Objects.equals(message, MessageResourceBundle.getMessage("invalid_server_port")) || Objects.equals(message, MessageResourceBundle.getMessage("port_not_available"))
+                || Objects.equals(message, MessageResourceBundle.getMessage("cannot_connect_to_server"))) {
             closeAppWithErrorMessage(message);
             return;
         }
@@ -244,7 +244,7 @@ public class GuiView extends Application {
      */
     private void closeAppWithErrorMessage(String message) {
         System.out.println(message);
-        System.out.println(Messages.APPLICATION_CLOSING);
+        System.out.println(MessageResourceBundle.getMessage("application_closing"));
         System.exit(-1);
     }
 

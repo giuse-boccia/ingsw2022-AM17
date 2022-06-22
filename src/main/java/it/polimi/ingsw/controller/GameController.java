@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.action.ActionArgs;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
@@ -119,7 +120,7 @@ public class GameController {
         PlayerClient player = playersMatchingCh.get(0);
 
         if (!Objects.equals(player.getPlayer().getName(), message.getPlayer())) {
-            sendActionErrorMessage(ch, Messages.INVALID_IDENTITY, 3, "");
+            sendActionErrorMessage(ch, MessageResourceBundle.getMessage("invalid_identity"), 3, "");
             return;
         }
 
@@ -373,7 +374,7 @@ public class GameController {
     private void sendActionErrorMessage(Communicable ch, String errorMessage, int errorCode, String action) {
         ServerActionMessage message = new ServerActionMessage();
         message.setError(errorCode);
-        message.setDisplayText(Messages.ERROR + errorMessage);
+        message.setDisplayText(MessageResourceBundle.getMessage("error_tag") + errorMessage);
         if (action.equals(Messages.ACTION_PLAY_CHARACTER)) {
             String expectedAction = game.getCurrentRound().getCurrentPlayerActionPhase().getExpectedAction();
             if (expectedAction.equals(Messages.ACTION_MOVE_STUDENT)) {

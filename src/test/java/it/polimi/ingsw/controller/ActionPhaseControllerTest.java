@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.GameEndedException;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import it.polimi.ingsw.model.Player;
@@ -54,7 +55,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage response = ServerActionMessage.fromJson(rickCh.getJson());
         assertEquals(3, response.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_IDENTITY, response.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_identity"), response.getDisplayText());
     }
 
     /**
@@ -130,7 +131,7 @@ class ActionPhaseControllerTest {
 
         ServerLoginMessage invalidRes = ServerLoginMessage.fromJson(giuseCh.getJson());
         assertEquals(3, invalidRes.getError());
-        assertEquals("[ERROR] " + Messages.UNRECOGNISED_TYPE, invalidRes.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("unrecognised_type"), invalidRes.getDisplayText());
 
         // Invalid island index: there's a word instead of a number
         String json = "{status:ACTION,player:giuse,action:{name:MOVE_STUDENT_TO_ISLAND,args:{color:RED,island:word}}}";
@@ -138,7 +139,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage invalidSyntaxRes = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(3, invalidSyntaxRes.getError());
-        assertEquals("[ERROR] " + Messages.BAD_REQUEST_SYNTAX, invalidSyntaxRes.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("bad_request_syntax"), invalidSyntaxRes.getDisplayText());
     }
 
     /**
@@ -392,7 +393,7 @@ class ActionPhaseControllerTest {
      * Rick plays assistant number 5 and Giuse assistant number 4.
      * That means Giuse has to play his PlayerActionPhase
      *
-     * @param lastRound
+     * @param lastRound a {@code boolean} set to true if this is the last round of the game
      */
     private void startActionPhase(boolean lastRound) throws GameEndedException {
         String rickLoginJson = "{status:LOGIN,username:rick,action:SET_USERNAME,error:0}";

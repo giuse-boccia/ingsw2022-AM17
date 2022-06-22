@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.GameEndedException;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.model.Player;
 import org.junit.jupiter.api.Test;
@@ -89,7 +90,7 @@ class PlanningPhaseControllerTest {
         controller.handleMessage(invalidJson, rickCh);
 
         ServerActionMessage response = ServerActionMessage.fromJson(rickCh.getJson());
-        assertEquals("[ERROR] " + Messages.INVALID_IDENTITY, response.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_identity"), response.getDisplayText());
         assertEquals(3, response.getError());
     }
 

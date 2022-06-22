@@ -4,7 +4,7 @@ import it.polimi.ingsw.Settings;
 import it.polimi.ingsw.client.cli.CLI;
 import it.polimi.ingsw.client.gui.GUI;
 import it.polimi.ingsw.client.gui.GuiView;
-import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.CharacterState;
@@ -39,26 +39,26 @@ public abstract class Client {
             try {
                 Settings settings = Settings.readPrefsFromFile();
                 if (settings.getAddress() == null) {
-                    client.gracefulTermination(Messages.CANNOT_CONNECT_TO_SERVER);
+                    client.gracefulTermination(MessageResourceBundle.getMessage("cannot_connect_to_server"));
                 }
                 serverPort = settings.getPort();
                 serverAddress = settings.getAddress();
             } catch (IOException e) {
-                client.gracefulTermination(Messages.JSON_NOT_FOUND);
+                client.gracefulTermination(MessageResourceBundle.getMessage("json_not_found"));
             } catch (NumberFormatException e) {
-                client.gracefulTermination(Messages.INVALID_SERVER_PORT);
+                client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
             }
         } else {
             try {
                 serverPort = Integer.parseInt(args[1]);
                 serverAddress = args[2];
             } catch (NumberFormatException e) {
-                client.gracefulTermination(Messages.INVALID_SERVER_PORT);
+                client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
             }
         }
 
         if (serverPort < 1024 || serverPort > 65535) {
-            client.gracefulTermination(Messages.INVALID_SERVER_PORT);
+            client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
         }
 
         NetworkClient nc = new NetworkClient(client, serverAddress, serverPort);

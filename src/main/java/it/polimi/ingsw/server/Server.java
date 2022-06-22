@@ -4,11 +4,11 @@ import it.polimi.ingsw.Settings;
 import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,20 +26,20 @@ public class Server {
                 Settings settings = Settings.readPrefsFromFile();
                 port = settings.getPort();
             } catch (IOException e) {
-                gracefulTermination(Messages.JSON_NOT_FOUND);
+                gracefulTermination(MessageResourceBundle.getMessage("json_not_found"));
             } catch (NumberFormatException e) {
-                gracefulTermination(Messages.INVALID_SERVER_PORT);
+                gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
             }
         } else {
             try {
                 port = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                gracefulTermination(Messages.INVALID_SERVER_PORT);
+                gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
             }
         }
 
         if (port < Constants.LOWER_BOUND_SERVER_PORT || port > Constants.UPPER_BOUND_SERVER_PORT) {
-            gracefulTermination(Messages.INVALID_SERVER_PORT);
+            gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
         }
 
         Server server = new Server();
@@ -53,7 +53,7 @@ public class Server {
      */
     private static void gracefulTermination(String message) {
         System.out.println(message);
-        System.out.println(Messages.APPLICATION_CLOSING);
+        System.out.println(MessageResourceBundle.getMessage("application_closing"));
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -84,7 +84,7 @@ public class Server {
             }
             executor.shutdown();
         } catch (IOException e) {
-            gracefulTermination(Messages.PORT_NOT_AVAILABLE);
+            gracefulTermination(MessageResourceBundle.getMessage("port_not_available"));
         }
     }
 

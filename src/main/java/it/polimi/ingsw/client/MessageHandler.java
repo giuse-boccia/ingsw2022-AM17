@@ -69,7 +69,7 @@ public class MessageHandler implements ObserverHandler {
             case Messages.STATUS_ACTION -> parseAction(jsonMessage);
             case Messages.STATUS_UPDATE -> handleUpdate(jsonMessage);
             case Messages.STATUS_END -> handleEndGame(jsonMessage);
-            default -> client.gracefulTermination(Messages.INVALID_SERVER_MESSAGE);
+            default -> client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_message"));
         }
     }
 
@@ -338,7 +338,7 @@ public class MessageHandler implements ObserverHandler {
                     case Messages.ACTION_MOVE_MN -> ActionHandler.handleMoveMotherNature(nc);
                     case Messages.ACTION_FILL_FROM_CLOUD -> ActionHandler.handleFillFromCloud(nc);
                     case Messages.ACTION_PLAY_CHARACTER -> ActionHandler.handlePlayCharacter(nc);
-                    default -> client.gracefulTermination(Messages.INVALID_SERVER_MESSAGE);
+                    default -> client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_message"));
                 }
             } catch (IOException e) {
                 client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));

@@ -5,6 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.GameEndedException;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
@@ -21,7 +22,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class Controller {
-    private final Gson gson;
     private final Object boundLock = new Object();
     private final List<PlayerClient> loggedUsers;
     private final GameLobby gameLobby;
@@ -32,7 +32,6 @@ public class Controller {
 
     public Controller() {
         this.loggedUsers = new ArrayList<>();
-        this.gson = new Gson();
         this.gameLobby = new GameLobby();
         this.loadedGame = null;
         this.gameController = null;
@@ -50,12 +49,12 @@ public class Controller {
         if (status.equals(Messages.STATUS_LOGIN)) {
             ServerLoginMessage message = new ServerLoginMessage();
             message.setError(errorCode);
-            message.setDisplayText(Messages.ERROR + errorMessage);
+            message.setDisplayText(MessageResourceBundle.getMessage("error_tag") + errorMessage);
             ch.sendMessageToClient(message.toJson());
         } else if (status.equals(Messages.STATUS_ACTION)) {
             ServerActionMessage message = new ServerActionMessage();
             message.setError(errorCode);
-            message.setDisplayText(Messages.ERROR + errorMessage);
+            message.setDisplayText(MessageResourceBundle.getMessage("error_tag") + errorMessage);
             ch.sendMessageToClient(message.toJson());
         }
 
@@ -72,7 +71,7 @@ public class Controller {
             case Messages.STATUS_LOGIN -> handleLoginMessage(jsonMessage, ch);
             case Messages.STATUS_ACTION -> handleActionMessage(jsonMessage, ch);
             case Messages.STATUS_PONG -> handlePong();
-            default -> sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.UNRECOGNISED_TYPE, 3);
+            default -> sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("unrecognised_type"), 3);
         }
     }
 
@@ -111,7 +110,7 @@ public class Controller {
             ClientLoginMessage loginMessage = ClientLoginMessage.fromJSON(jsonMessage);
 
             if (loginMessage.getAction() == null) {
-                sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.BAD_REQUEST, 3);
+                sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("bad_request"), 3);
                 return;
             }
 
@@ -120,7 +119,7 @@ public class Controller {
                 case Messages.ACTION_CREATE_GAME ->
                         setGameParameters(ch, loginMessage.getNumPlayers(), loginMessage.isExpert());
                 case Messages.ACTION_LOAD_GAME -> setLoadedGameParameters(ch);
-                default -> sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.BAD_REQUEST, 3);
+                default -> sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("bad_request"), 3);
 
             }
         } catch (JsonSyntaxException e) {
@@ -285,7 +284,7 @@ public class Controller {
                     sendBroadcastMessage();
                 }
             } catch (Exception e) {
-                sendErrorMessage(ch, Messages.STATUS_LOGIN, Messages.INTERNAL_SERVER_ERROR, 5);
+                sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("internal_server_error"), 5);
             }
         }
     }
@@ -444,7 +443,7 @@ public class Controller {
             ClientActionMessage actionMessage = ClientActionMessage.fromJSON(jsonMessage);
             gameController.handleActionMessage(actionMessage, ch);
         } catch (JsonSyntaxException e) {
-            sendErrorMessage(ch, Messages.STATUS_ACTION, Messages.BAD_REQUEST_SYNTAX, 3);
+            sendErrorMessage(ch, Messages.STATUS_ACTION, MessageResourceBundle.getMessage("bad_request_syntax"), 3);
         }
     }
 

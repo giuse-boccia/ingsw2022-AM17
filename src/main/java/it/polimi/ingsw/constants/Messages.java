@@ -10,21 +10,6 @@ public class Messages {
     public static final String STATUS_UPDATE = "UPDATE";
     public static final String STATUS_END = "END";
 
-    // Generic errors
-    public static final String INVALID_IDENTITY = "You are not who you are pretending to be";
-    public static final String USAGE = "Usage: java -jar eriantys.jar [SERVER | CLI | GUI] [<PORT_NUMBER>] [<HOST_ADDRESS>]";
-    public static final String JSON_NOT_FOUND = "File settings.json not found. Please check documentation";
-    public static final String INVALID_SERVER_PORT = "Invalid server_port";
-    public static final String PORT_NOT_AVAILABLE = "The selected port is not available at the moment";
-    public static final String CANNOT_CONNECT_TO_SERVER = "Cannot connect to server, check server_address argument";
-    public static final String APPLICATION_CLOSING = "Application will now close...";
-    public static final String UNRECOGNISED_TYPE = "Unrecognised type";
-    public static final String ERROR = "[ERROR] ";
-    public static final String BAD_REQUEST = "Bad request";
-    public static final String BAD_REQUEST_SYNTAX = "Bad request (syntax error)";
-    public static final String INVALID_SERVER_MESSAGE = "Invalid message from server";
-    public static final String INTERNAL_SERVER_ERROR = "Internal server error";
-
     // Errors while joining game
     public static final String INVALID_USERNAME = "Invalid username field";
     public static final String USERNAME_TOO_LONG = "Username is too long (max 32 characters)";
