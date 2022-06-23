@@ -21,13 +21,15 @@ import java.util.List;
 
 public class DashboardsDrawer {
 
+    private static final List<Color> colorsInOrder = List.of(Color.GREEN, Color.RED, Color.YELLOW, Color.PINK, Color.BLUE);
+
     /**
      * Draws a {@code DashBoard} with all the students in the {@code Entrance} and {@code DiningRoom}, the professors and the towers
      *
-     * @param player   the player to draw the {@code DashBoard} of
-     * @param y        the starting Y coordinate of the {@code DashBoard}
-     * @param root     the {@code AnchorPane} to attach the {@code DashBoard} to
-     * @param username the username of the player who owns the {@code DashBoard}
+     * @param player   the player to draw the {@code Dashboard} of
+     * @param y        the starting Y coordinate of the {@code Dashboard}
+     * @param root     the {@code AnchorPane} to attach the {@code Dashboard} to
+     * @param username the username of the player who owns the {@code Dashboard}
      */
     public static void drawDashboard(PlayerState player, double y, double dashboardHeight, AnchorPane root, String username) {
         ImageView dashboardImage = new ImageView(new Image("/gameboard/Plancia_DEF.png"));
@@ -44,6 +46,47 @@ public class DashboardsDrawer {
                 dashboardWidth * DrawingConstants.INITIAL_X_OFFSET_ENTRANCE, dashboardWidth * DrawingConstants.INITIAL_Y_OFFSET_ENTRANCE,
                 dashboardWidth * DrawingConstants.ENTRANCE_HGAP, dashboardWidth * DrawingConstants.ENTRANCE_VGAP
         );
+        addStudentsToEntrance(player, username, dashboardWidth, newEntrance);
+        // Students in entrance are attached to the gameboard and not to the root directly
+        dashboard.getChildren().add(newEntrance);
+
+        // Add students to dining room
+        GridPane newDiningRoom = UtilsDrawer.getGridPane(dashboardWidth * DrawingConstants.INITIAL_X_OFFSET_DINING_ROOM,
+                dashboardWidth * DrawingConstants.INITIAL_Y_OFFSET_DINING_ROOM, dashboardWidth * DrawingConstants.DINING_ROOM_HGAP,
+                dashboardWidth * DrawingConstants.DINING_ROOM_VGAP);
+        addStudentsToDiningRoom(player, username, dashboardWidth, newDiningRoom);
+        // Students in dining room are attached to the dashboard and not to the root directly
+        dashboard.getChildren().add(newDiningRoom);
+
+        // Add professors
+        GridPane professorRoom = UtilsDrawer.getGridPane(
+                dashboardWidth * DrawingConstants.INITIAL_X_OFFSET_PROFESSOR_ROOM, dashboardWidth * DrawingConstants.INITIAL_Y_OFFSET_PROFESSOR_ROOM,
+                0, dashboardWidth * DrawingConstants.PROFESSOR_ROOM_VGAP
+        );
+        addProfessorsToProfessorRoom(player, dashboardWidth, professorRoom);
+        // Professors are attached to the gameboard and not to the root directly
+        dashboard.getChildren().add(professorRoom);
+
+        // Add towers
+        GridPane towers = UtilsDrawer.getGridPane(
+                dashboardWidth * DrawingConstants.INITIAL_X_OFFSET_TOWERS, dashboardWidth * DrawingConstants.INITIAL_Y_OFFSET_TOWERS,
+                dashboardWidth * DrawingConstants.TOWERS_HGAP, dashboardWidth * DrawingConstants.TOWERS_VGAP
+        );
+        addAllTowersToTowerSpace(player, dashboardWidth, towers);
+        // Towers are attached to the gameboard and not to the root directly
+        dashboard.getChildren().add(towers);
+
+    }
+
+    /**
+     * Adds all the correct students to the provided {@code GridPane}, representing the entrance of the player
+     *
+     * @param player         the player to insert in the text
+     * @param username       the username of the player who owns the {@code Dashboard}
+     * @param dashboardWidth the width of the drawn dashboard
+     * @param entrancePane   {@code GridPane} representing the entrance of the player
+     */
+    private static void addStudentsToEntrance(PlayerState player, String username, double dashboardWidth, GridPane entrancePane) {
         for (int i = 0; i < player.getEntrance().size(); i++) {
             Student s = player.getEntrance().get(i);
             String resourceName = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
@@ -56,17 +99,19 @@ public class DashboardsDrawer {
                 DrawingComponents.addEntranceStudent(studentPane);
             }
 
-            newEntrance.add(studentPane, (i + 1) % 2, i / 2 + i % 2);
+            entrancePane.add(studentPane, (i + 1) % 2, i / 2 + i % 2);
         }
-        // Students in entrance are attached to the gameboard and not to the root directly
-        dashboard.getChildren().add(newEntrance);
+    }
 
-        // Add students to dining room
-        GridPane newDiningRoom = UtilsDrawer.getGridPane(dashboardWidth * DrawingConstants.INITIAL_X_OFFSET_DINING_ROOM,
-                dashboardWidth * DrawingConstants.INITIAL_Y_OFFSET_DINING_ROOM, dashboardWidth * DrawingConstants.DINING_ROOM_HGAP,
-                dashboardWidth * DrawingConstants.DINING_ROOM_VGAP);
-
-        List<Color> colorsInOrder = List.of(Color.GREEN, Color.RED, Color.YELLOW, Color.PINK, Color.BLUE);
+    /**
+     * Adds all the correct students to the provided {@code GridPane}, representing the dining room of the player
+     *
+     * @param player         the player to insert in the text
+     * @param username       the username of the player who owns the {@code Dashboard}
+     * @param dashboardWidth the width of the drawn dashboard
+     * @param diningRoom     {@code GridPane} representing the dining room of the player
+     */
+    private static void addStudentsToDiningRoom(PlayerState player, String username, double dashboardWidth, GridPane diningRoom) {
         HashMap<Color, Integer> diningStudents = new HashMap<>();
         for (int i = 0; i < player.getDining().size(); i++) {
             Student s = player.getDining().get(i);
@@ -82,7 +127,7 @@ public class DashboardsDrawer {
             BorderPane studentWithBorder = new BorderPane(student);
             studentWithBorder.setOnMouseClicked(event -> ObjectClickListeners.setStudentOnDiningClicked(s.getColor(), studentWithBorder));
             diningStudents.put(s.getColor(), column + 1);
-            newDiningRoom.add(studentWithBorder, column, row);
+            diningRoom.add(studentWithBorder, column, row);
 
             if (username.equals(player.getName())) {
                 DrawingComponents.addDiningStudent(studentWithBorder);
@@ -100,20 +145,22 @@ public class DashboardsDrawer {
             emptySpace.setMaxSize(dashboardWidth / DrawingConstants.STUDENT_DIMENSION_DIVISOR, dashboardWidth / DrawingConstants.STUDENT_DIMENSION_DIVISOR);
             emptySpace.setMinSize(dashboardWidth / DrawingConstants.STUDENT_DIMENSION_DIVISOR, dashboardWidth / DrawingConstants.STUDENT_DIMENSION_DIVISOR);
 
-            newDiningRoom.add(emptySpace, positionOfEmptySpace, colorsInOrder.indexOf(color));
+            diningRoom.add(emptySpace, positionOfEmptySpace, colorsInOrder.indexOf(color));
 
             if (username.equals(player.getName())) {
                 DrawingComponents.addDiningGap(emptySpace);
             }
         }
-        // Students in dining room are attached to the dashboard and not to the root directly
-        dashboard.getChildren().add(newDiningRoom);
+    }
 
-        // Add professors
-        GridPane professorRoom = UtilsDrawer.getGridPane(
-                dashboardWidth * DrawingConstants.INITIAL_X_OFFSET_PROFESSOR_ROOM, dashboardWidth * DrawingConstants.INITIAL_Y_OFFSET_PROFESSOR_ROOM,
-                0, dashboardWidth * DrawingConstants.PROFESSOR_ROOM_VGAP
-        );
+    /**
+     * Adds all the professors owned by the player to the provided {@code GridPane}, representing his professor room
+     *
+     * @param player         the player to insert in the text
+     * @param dashboardWidth the width of the drawn dashboard
+     * @param professorRoom  {@code GridPane} representing the professor room of the player
+     */
+    private static void addProfessorsToProfessorRoom(PlayerState player, double dashboardWidth, GridPane professorRoom) {
         for (int i = 0; i < colorsInOrder.size(); i++) {
             Color color = colorsInOrder.get(i);
             if (player.getOwnedProfessors().contains(color)) {
@@ -128,25 +175,24 @@ public class DashboardsDrawer {
                 emptyPlace.setMinSize(dashboardWidth / DrawingConstants.PROFESSOR_DIMENSION_DIVISOR, dashboardWidth / DrawingConstants.PROFESSOR_DIMENSION_DIVISOR);
                 professorRoom.add(emptyPlace, 0, i);
             }
-
         }
-        // Professors are attached to the gameboard and not to the root directly
-        dashboard.getChildren().add(professorRoom);
+    }
 
-        // Add towers
-        GridPane towers = UtilsDrawer.getGridPane(
-                dashboardWidth * DrawingConstants.INITIAL_X_OFFSET_TOWERS, dashboardWidth * DrawingConstants.INITIAL_Y_OFFSET_TOWERS,
-                dashboardWidth * DrawingConstants.TOWERS_HGAP, dashboardWidth * DrawingConstants.TOWERS_VGAP
-        );
+
+    /**
+     * Adds all the towers owned by the player to the provided {@code GridPane}, representing his tower space
+     *
+     * @param player         the player to insert in the text
+     * @param dashboardWidth the width of the drawn dashboard
+     * @param towers         {@code GridPane} representing the tower space of the player
+     */
+    private static void addAllTowersToTowerSpace(PlayerState player, double dashboardWidth, GridPane towers) {
         for (int i = 0; i < player.getRemainingTowers(); i++) {
             String path = "/gameboard/towers/" + player.getTowerColor().toString().toLowerCase() + "_tower.png";
             ImageView tower = UtilsDrawer.getImageView(path, dashboardWidth * DrawingConstants.TOWERS_SIZE);
 
             towers.add(tower, i % 2, i / 2);
         }
-        // Towers are attached to the gameboard and not to the root directly
-        dashboard.getChildren().add(towers);
-
     }
 
     /**
