@@ -16,16 +16,12 @@
             minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18"
             fx:controller="it.polimi.ingsw.client.gui.controllers.GameParametersController">
     <ImageView fitHeight="601.0" fitWidth="720.0" opacity="0.67" pickOnBounds="true" preserveRatio="true">
-        <image>
-            <Image url="@gameboard/backgrounds/login_background.png"/>
-        </image>
+        <Image url="@gameboard/backgrounds/login_background.png"/>
     </ImageView>
     <ImageView fitHeight="77.0" fitWidth="79.0" layoutY="321.0" pickOnBounds="true" preserveRatio="true">
-        <image>
-            <Image url="@gameboard/cranio_logo.png"/>
-        </image>
+        <Image url="@gameboard/cranio_logo.png"/>
     </ImageView>
-    <Label fx:id="title" layoutX="204.0" layoutY="141.0" text="Welcome, Clod" textAlignment="CENTER" textFill="#691f52">
+    <Label fx:id="title" layoutX="204.0" layoutY="141.0" textAlignment="CENTER" textFill="#691f52">
         <font>
             <Font name="Baskerville Old Face" size="30.0"/>
         </font>
@@ -39,13 +35,13 @@
             <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES"/>
             <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES"/>
         </rowConstraints>
-        <Label prefWidth="142.0" text="Number of players">
+        <Label fx:id="numPlayersLabel" prefWidth="142.0">
             <font>
                 <Font name="Baskerville Old Face" size="17.0"/>
             </font>
         </Label>
         <ChoiceBox fx:id="numPlayersChoiceBox" prefWidth="240.0" GridPane.columnIndex="1"/>
-        <Label text="Expert mode" GridPane.rowIndex="1">
+        <Label fx:id="expertGameLabel" GridPane.rowIndex="1">
             <font>
                 <Font name="Baskerville Old Face" size="17.0"/>
             </font>

@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.gui.controllers;
 
 import it.polimi.ingsw.client.gui.GuiView;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
@@ -19,7 +20,11 @@ public class GameParametersController implements GuiController {
 
     private final ObservableList<Integer> numPlayersChoices = FXCollections.observableArrayList(2, 3, 4);
     @FXML
+    private Label numPlayersLabel;
+    @FXML
     private ChoiceBox<Integer> numPlayersChoiceBox;
+    @FXML
+    private Label expertGameLabel;
     @FXML
     private CheckBox isGameExpert;
     @FXML
@@ -30,7 +35,10 @@ public class GameParametersController implements GuiController {
      */
     @FXML
     void initialize() {
-        title.setText("Welcome, " + GuiView.getGui().getUsername());
+        title.setText(MessageResourceBundle.getMessage("welcome") + ", " + GuiView.getGui().getUsername());
+
+        numPlayersLabel.setText(MessageResourceBundle.getMessage("num_players_title"));
+        expertGameLabel.setText(MessageResourceBundle.getMessage("expert_mode_title"));
 
         numPlayersChoiceBox.setValue(2);
         numPlayersChoiceBox.setItems(numPlayersChoices);
