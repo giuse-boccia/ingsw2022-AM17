@@ -20,13 +20,13 @@
    <ImageView fitHeight="79.0" fitWidth="77.0" layoutY="323.0" pickOnBounds="true" preserveRatio="true">
       <Image url="/gameboard/cranio_logo.png"/>
    </ImageView>
-   <Text layoutX="209.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0" text="What do you want to do?">
+   <Text fx:id="askCreateOrLoadTitle" layoutX="209.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0">
       <font>
          <Font name="Baskerville Old Face" size="18.0"/>
       </font>
    </Text>
    <VBox layoutX="230.0" layoutY="200.0" prefHeight="90.0" prefWidth="140.0" spacing="10.0">
-      <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" text="New Game"
+      <Button fx:id="newGameBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0"
               onMouseClicked="#onNewGameButtonClicked">
          <font>
             <Font name="Baskerville Old Face" size="14.0"/>
@@ -35,7 +35,7 @@
             <Blend/>
          </effect>
       </Button>
-      <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" text="Load Game"
+      <Button fx:id="loadGameBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0"
               onMouseClicked="#onLoadGameButtonClicked">
          <font>
             <Font name="Baskerville Old Face" size="14.0"/>
