@@ -12,34 +12,31 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18"
             fx:controller="it.polimi.ingsw.client.gui.controllers.LoginController">
-   <children>
-      <ImageView fitHeight="602.0" fitWidth="870.0" layoutX="-1.0" opacity="0.67" pickOnBounds="true"
-                 preserveRatio="true">
-         <Image url="/gameboard/backgrounds/login_background.png"/>
-      </ImageView>
-      <ImageView fitHeight="79.0" fitWidth="77.0" layoutY="323.0" pickOnBounds="true" preserveRatio="true">
-         <Image url="/gameboard/cranio_logo.png"/>
-      </ImageView>
-      <Button alignment="CENTER" layoutX="242.0" layoutY="256.0" mnemonicParsing="false"
-              onAction="#onLoginBtnPressed" text="LOGIN" textAlignment="CENTER">
-         <font>
-            <Font name="Baskerville Old Face" size="20.0"/>
-         </font>
-         <padding>
-            <Insets bottom="10.0" left="25.0" right="25.0" top="10.0"/>
-         </padding>
-      </Button>
-      <Text fx:id="usernameText" layoutX="207.0" layoutY="185.0" strokeType="OUTSIDE" strokeWidth="0.0"
-            text="Insert your username">
-         <font>
-            <Font name="Baskerville Old Face" size="22.0"/>
-         </font>
-      </Text>
-      <TextField fx:id="usernameTextField" layoutX="183.0" layoutY="200.0" promptText="Username..."
-                 onKeyPressed="#onKeyPressed">
-         <font>
-            <Font name="Baskerville Old Face" size="17.0"/>
-         </font>
-      </TextField>
-   </children>
+   <ImageView fitHeight="602.0" fitWidth="870.0" layoutX="-1.0" opacity="0.67" pickOnBounds="true"
+              preserveRatio="true">
+      <Image url="/gameboard/backgrounds/login_background.png"/>
+   </ImageView>
+   <ImageView fitHeight="79.0" fitWidth="77.0" layoutY="323.0" pickOnBounds="true" preserveRatio="true">
+      <Image url="/gameboard/cranio_logo.png"/>
+   </ImageView>
+   <Button alignment="CENTER" layoutX="242.0" layoutY="256.0" mnemonicParsing="false"
+           onAction="#onLoginBtnPressed" text="LOGIN" textAlignment="CENTER">
+      <font>
+         <Font name="Baskerville Old Face" size="20.0"/>
+      </font>
+      <padding>
+         <Insets bottom="10.0" left="25.0" right="25.0" top="10.0"/>
+      </padding>
+   </Button>
+   <Text fx:id="usernameText" layoutX="207.0" layoutY="185.0" strokeType="OUTSIDE" strokeWidth="0.0">
+      <font>
+         <Font name="Baskerville Old Face" size="22.0"/>
+      </font>
+   </Text>
+   <TextField fx:id="usernameTextField" layoutX="183.0" layoutY="200.0" promptText="Username..."
+              onKeyPressed="#onKeyPressed">
+      <font>
+         <Font name="Baskerville Old Face" size="17.0"/>
+      </font>
+   </TextField>
 </AnchorPane>
