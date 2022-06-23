@@ -73,15 +73,18 @@ public class CLI extends Client {
 
     private void printSavedGameLobby(GameLobby lobby) {
         printBlueLine();
-        String message = "GAME: " + lobby.getPlayers().size();
+        String message = MessageResourceBundle.getMessage("game_title") + lobby.getPlayers().size();
         message += "/" + lobby.getNumPlayers();
-        message += " players | ";
-        message += "Expert mode: " + (lobby.isExpert() ? "Active" : "Not active");
+        message += " " + MessageResourceBundle.getMessage("players");
+        message += MessageResourceBundle.getMessage("expert_mode") +
+                (!lobby.isExpert() ? MessageResourceBundle.getMessage("not_with_space") : "")
+                + MessageResourceBundle.getMessage("active");
         System.out.println(message);
 
         List<String> ready = lobby.getPlayers();
         for (String name : lobby.getPlayersFromSavedGame()) {
-            String playerString = ready.contains(name) ? "[READY]" : "[WAITING]";
+            String playerString = ready.contains(name) ?
+                    MessageResourceBundle.getMessage("ready") : MessageResourceBundle.getMessage("waiting");
             playerString += "  " + name;
             System.out.println(playerString);
         }
@@ -90,13 +93,15 @@ public class CLI extends Client {
 
     private void printNewGameLobby(GameLobby lobby) {
         printBlueLine();
-        String message = "GAME: " + lobby.getPlayers().size();
+        String message = MessageResourceBundle.getMessage("game_title") + lobby.getPlayers().size();
         if (lobby.getNumPlayers() != -1) {
             message += "/" + lobby.getNumPlayers();
         }
-        message += " players | ";
+        message += " " + MessageResourceBundle.getMessage("players");
         if (lobby.getNumPlayers() != -1) {
-            message += "Expert mode: " + (lobby.isExpert() ? "Active" : "Not active");
+            message += MessageResourceBundle.getMessage("expert_mode")
+                    + (!lobby.isExpert() ? MessageResourceBundle.getMessage("not_with_space") : "")
+                    + MessageResourceBundle.getMessage("active");
         }
         System.out.println(message);
         for (String name : lobby.getPlayers()) {

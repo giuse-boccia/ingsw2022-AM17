@@ -16,7 +16,7 @@
             <Image url="@gameboard/backgrounds/login_background.png"/>
          </image>
       </ImageView>
-      <Label layoutX="220.0" layoutY="139.0" text="GAME LOBBY">
+      <Label fx:id="gameLobbyLabel" layoutX="220.0" layoutY="139.0">
          <font>
             <Font name="Baskerville Old Face" size="24.0"/>
          </font>

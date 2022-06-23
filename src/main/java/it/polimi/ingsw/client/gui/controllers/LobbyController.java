@@ -1,21 +1,21 @@
 package it.polimi.ingsw.client.gui.controllers;
 
-import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
-import org.w3c.dom.ranges.DocumentRange;
 
 import java.util.List;
 
@@ -24,13 +24,17 @@ public class LobbyController implements GuiController {
     double width, height;
     GridPane gridPane;
     @FXML
-    AnchorPane root;
+    private Label gameLobbyLabel;
+    @FXML
+    private AnchorPane root;
 
     /**
      * Initializes the lobby page in the login phase
      */
     @FXML
     void initialize() {
+        gameLobbyLabel.setText(MessageResourceBundle.getMessage("game_lobby_title"));
+
         width = Screen.getPrimary().getVisualBounds().getWidth();
         height = Screen.getPrimary().getVisualBounds().getHeight();
 
@@ -65,9 +69,10 @@ public class LobbyController implements GuiController {
         // Remove all elements set previously
         gridPane.getChildren().removeIf(node -> true);
 
-        String text = "PLAYERS: " + lobby.getPlayers().size();
+        String text = MessageResourceBundle.getMessage("players_title_create_or_load") + lobby.getPlayers().size();
         if (lobby.getNumPlayers() != -1) {
-            text += "/" + lobby.getNumPlayers() + "| Expert mode: " + (lobby.isExpert() ? " " : "not ") + "active";
+            text += "/" + lobby.getNumPlayers() + MessageResourceBundle.getMessage("expert_mode")
+                    + (lobby.isExpert() ? " " : MessageResourceBundle.getMessage("not_with_space")) + MessageResourceBundle.getMessage("active");
         }
 
         Text playersTitle = new Text(text);
