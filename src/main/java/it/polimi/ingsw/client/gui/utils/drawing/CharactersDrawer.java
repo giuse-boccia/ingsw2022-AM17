@@ -4,12 +4,16 @@ import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
 import it.polimi.ingsw.server.game_state.CharacterState;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Popup;
 
 import java.util.ArrayList;
@@ -39,7 +43,7 @@ public class CharactersDrawer {
             characterToAdd.setLayoutY(characterY);
             characterToAdd.setOnMouseClicked(event -> ObjectClickListeners.setCharacterClicked(character.getCharacterName(), characterToAdd));
             DrawingComponents.addCharacterImage(characterToAdd);
-            Popup characterPopup = UtilsDrawer.getCharactersHoverPanel(character.getCharacterName().toString(), character.getCharacterName().getDescription());
+            Popup characterPopup = getCharactersHoverPanel(character.getCharacterName().toString(), character.getCharacterName().getDescription());
             double characterXCoord = coordX;
             double characterYCoord = characterY + characterToAdd.getBoundsInParent().getHeight();
             characterImage.hoverProperty().addListener((observableValue, oldValue, newValue) -> {
@@ -87,6 +91,31 @@ public class CharactersDrawer {
 
             coordX += pageWidth * (DrawingConstants.CHARACTER_CARD_PROPORTION + DrawingConstants.SPACE_BETWEEN_CHARACTERS_PROPORTION);
         }
+    }
+
+    /**
+     * Returns a {@code Popup} containing the name and the description of a character
+     *
+     * @param name        the name of the characters
+     * @param description the description of the character
+     * @return a {@code Popup} containing the name and the description of a character
+     */
+    private static Popup getCharactersHoverPanel(String name, String description) {
+        Popup popup = new Popup();
+
+        Text characterName = new Text(name);
+        characterName.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.SUBTITLE_FONT_SIZE));
+        Label characterDescription = new Label(description);
+        characterDescription.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.PARAGRAPH_FONT_SIZE));
+        characterDescription.setWrapText(true);
+        VBox vBox = new VBox(characterName, characterDescription);
+        vBox.setPrefSize(DrawingConstants.CHARACTER_HOVER_POPUP_WIDTH, DrawingConstants.CHARACTER_HOVER_POPUP_HEIGHT);
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setStyle("-fx-background-image: url('/gameboard/backgrounds/parchment_bacgkround.png'); -fx-padding: 10");
+
+        popup.setAutoHide(true);
+        popup.getContent().add(vBox);
+        return popup;
     }
 
 }
