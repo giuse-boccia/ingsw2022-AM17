@@ -177,7 +177,7 @@ public class GuiView extends Application {
             newController.initialize();
             currentController = newController;
 
-            stage.setResizable(false);
+            stage.setResizable(true);
             stage.setMaximized(true);
             stage.setScene(scene);
         });
