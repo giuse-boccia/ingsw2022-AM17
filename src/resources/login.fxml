@@ -39,4 +39,13 @@
          <Font name="Baskerville Old Face" size="17.0"/>
       </font>
    </TextField>
+   <Button fx:id="requestUsernameButton" alignment="CENTER" layoutX="205.0" layoutY="340.0" mnemonicParsing="false"
+           onMouseClicked="#onRandomUsernameRequested" textAlignment="CENTER">
+      <font>
+         <Font name="Baskerville Old Face" size="13.0"/>
+      </font>
+      <padding>
+         <Insets bottom="10.0" left="25.0" right="25.0" top="10.0"/>
+      </padding>
+   </Button>
 </AnchorPane>
