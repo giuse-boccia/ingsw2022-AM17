@@ -23,7 +23,7 @@ public class MessageResourceBundle {
     }
 
     public static void initializeBundle(String tag) {
-        if (tag == null) {
+        if (tag == null || (!tag.equals("en") && !tag.equals("it"))) {
             tag = "en";
         }
         setLanguage(tag);
