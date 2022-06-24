@@ -30,21 +30,20 @@ public class CharactersDrawer {
      * @param root       the {@code AnchorPane} to attach the clouds to
      */
     public static void drawCharacters(List<CharacterState> characters, double pageWidth, double pageHeight, double dashboardHeight, AnchorPane root) {
-        double coordX = dashboardHeight / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH + pageWidth * DrawingConstants.CHARACTERS_BEGINNING_PROPORTION;
-        int heightProportion = 13;
-        double characterY = pageHeight / heightProportion;
+        double characterX = dashboardHeight / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH + pageWidth * DrawingConstants.CHARACTERS_BEGINNING_PROPORTION;
+        double characterY = pageHeight / DrawingConstants.CHARACTER_Y_DIVISOR;
 
         for (CharacterState character : characters) {
             String imagePath = "/gameboard/characters/" + character.getCharacterName() + ".jpg";
             ImageView characterImage = UtilsDrawer.getImageView(imagePath, pageWidth * DrawingConstants.CHARACTER_CARD_PROPORTION);
 
             BorderPane characterToAdd = new BorderPane(characterImage);
-            characterToAdd.setLayoutX(coordX);
+            characterToAdd.setLayoutX(characterX);
             characterToAdd.setLayoutY(characterY);
             characterToAdd.setOnMouseClicked(event -> ObjectClickListeners.setCharacterClicked(character.getCharacterName(), characterToAdd));
             DrawingComponents.addCharacterImage(characterToAdd);
             Popup characterPopup = getCharactersHoverPanel(character.getCharacterName().toString(), character.getCharacterName().getDescription());
-            double characterXCoord = coordX;
+            double characterXCoord = characterX;
             double characterYCoord = characterY + characterToAdd.getBoundsInParent().getHeight();
             characterImage.hoverProperty().addListener((observableValue, oldValue, newValue) -> {
                 if (newValue) {
@@ -59,15 +58,15 @@ public class CharactersDrawer {
             if (character.hasCoin()) {
                 double imageWidth = pageWidth * DrawingConstants.COIN_PROPORTION;
                 ImageView coin = UtilsDrawer.getCoinImageView(
-                        coordX + pageWidth * (DrawingConstants.CHARACTER_CARD_PROPORTION) - imageWidth,
+                        characterX + pageWidth * (DrawingConstants.CHARACTER_CARD_PROPORTION) - imageWidth,
                         pageHeight * DrawingConstants.CHARACTER_COIN_DIM,
                         imageWidth);
                 root.getChildren().add(coin);
             }
             if (character.getStudents() != null) {
                 GridPane grid = new GridPane();
-                grid.setLayoutX(coordX + pageWidth * DrawingConstants.SPACE_BETWEEN_STUDENTS_ON_CHARACTERS);
-                grid.setLayoutY(pageHeight / heightProportion - 2 * pageWidth * DrawingConstants.CHARACTER_STUDENT_DIM);
+                grid.setLayoutX(characterX + pageWidth * DrawingConstants.SPACE_BETWEEN_STUDENTS_ON_CHARACTERS);
+                grid.setLayoutY(characterY - 2 * pageWidth * DrawingConstants.CHARACTER_STUDENT_DIM);
                 List<BorderPane> studentsOnCharacter = new ArrayList<>();
                 for (int i = 0; i < character.getStudents().size(); i++) {
                     String studentPath = "/gameboard/students/student_" +
@@ -89,7 +88,7 @@ public class CharactersDrawer {
                 root.getChildren().add(grid);
             }
 
-            coordX += pageWidth * (DrawingConstants.CHARACTER_CARD_PROPORTION + DrawingConstants.SPACE_BETWEEN_CHARACTERS_PROPORTION);
+            characterX += pageWidth * (DrawingConstants.CHARACTER_CARD_PROPORTION + DrawingConstants.SPACE_BETWEEN_CHARACTERS_PROPORTION);
         }
     }
 
