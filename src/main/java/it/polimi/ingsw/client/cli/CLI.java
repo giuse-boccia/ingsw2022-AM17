@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.utils.RandomNicknameGenerator;
 import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.utils.constants.Messages;
 import it.polimi.ingsw.languages.MessageResourceBundle;
@@ -31,6 +32,9 @@ public class CLI extends Client {
     public void askUsername() throws IOException {
         System.out.print(MessageResourceBundle.getMessage("ask_username"));
         String username = stdIn.readLine();
+        if (username.isBlank() || username.equals("random")) {
+            username = RandomNicknameGenerator.getRandomNickname();
+        }
         setTmpUsername(username);
         getCurrentObserverHandler().notifyAllUsernameObservers(username);
     }
