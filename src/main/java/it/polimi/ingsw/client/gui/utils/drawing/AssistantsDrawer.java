@@ -48,7 +48,7 @@ public class AssistantsDrawer {
      */
     private static GridPane getAssistants(int[] assistants, double pageWidth, double pageHeight, double initialX, double finalX) {
         if (assistants.length == 0) return new GridPane();
-        double initialY = pageHeight * 0.77;
+        double initialY = pageHeight * DrawingConstants.ASSISTANT_Y;
         double spaceForAssistants = finalX - initialX - (assistants.length - 1) * pageWidth * DrawingConstants.OFFSET_BETWEEN_ASSISTANTS;
         GridPane gridPane = new GridPane();
         gridPane.setLayoutX(initialX);
