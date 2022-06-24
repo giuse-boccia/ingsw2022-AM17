@@ -22,11 +22,12 @@ public class CloudsDrawer {
      * @param pageHeight the height of the screen
      * @param root       the {@code AnchorPane} to attach the clouds to
      */
-    public static List<AnchorPane> drawClouds(List<CloudState> clouds, double startingX, double pageWidth, double pageHeight, AnchorPane root) {
+    public static List<AnchorPane> drawClouds(List<CloudState> clouds, double pageWidth, double pageHeight, AnchorPane root) {
         GridPane cloudGrid = new GridPane();
         List<AnchorPane> cloudImages = new ArrayList<>();
-        double layoutX = startingX + pageWidth * DrawingConstants.OFFSET_OF_CLOUD_FROM_BORDER;
-        cloudGrid.setLayoutY(pageHeight * DrawingConstants.CLOUD_STARTING_HEIGHT);
+        double layoutX = pageWidth * DrawingConstants.CLOUD_STARTING_X - pageWidth * DrawingConstants.X_OFFSET_OF_CLOUD_FROM_CENTER;
+        double layoutY = pageHeight * DrawingConstants.CLOUD_STARTING_Y - pageHeight * DrawingConstants.Y_OFFSET_OF_CLOUD_FROM_CENTER;
+        cloudGrid.setLayoutY(layoutY);
         cloudGrid.setLayoutX(layoutX);
         cloudGrid.setHgap(pageHeight * DrawingConstants.SPACE_BETWEEN_CLOUDS);
         cloudGrid.setVgap(pageHeight * DrawingConstants.SPACE_BETWEEN_CLOUDS);
