@@ -6,17 +6,22 @@ import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
+import it.polimi.ingsw.utils.RandomNicknameGenerator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
 import java.util.List;
 
 public class LoginController implements GuiController {
 
+    @FXML
+    private Button requestUsernameButton;
     @FXML
     private Text usernameText;
     @FXML
@@ -25,6 +30,7 @@ public class LoginController implements GuiController {
     @FXML
     private void initialize() {
         usernameText.setText(MessageResourceBundle.getMessage("insert_username_title"));
+        requestUsernameButton.setText(MessageResourceBundle.getMessage("get_random_username"));
     }
 
     public LoginController() {
@@ -50,6 +56,16 @@ public class LoginController implements GuiController {
      */
     public void onLoginBtnPressed(ActionEvent event) {
         String username = usernameTextField.getText();
+        if (username.isBlank()) {
+            onRandomUsernameRequested(null);
+            return;
+        }
+        GuiView.getGui().setTmpUsername(username);
+        GuiView.getGui().getCurrentObserverHandler().notifyAllUsernameObservers(username);
+    }
+
+    public void onRandomUsernameRequested(MouseEvent event) {
+        String username = RandomNicknameGenerator.getRandomNickname();
         GuiView.getGui().setTmpUsername(username);
         GuiView.getGui().getCurrentObserverHandler().notifyAllUsernameObservers(username);
     }
