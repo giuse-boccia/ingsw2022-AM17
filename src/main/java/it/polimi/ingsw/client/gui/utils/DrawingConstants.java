@@ -17,7 +17,7 @@ public class DrawingConstants {
     public static final double CHARACTER_CARD_PROPORTION = 0.06;
     public static final double CHARACTER_Y_DIVISOR = 13;
     public static final double SPACE_BETWEEN_CHARACTERS_PROPORTION = 0.005;
-    public static final double CHARACTERS_BEGINNING_PROPORTION = 0.06;
+    public static final double ASSISTANT_AND_CHARACTERS_BEGINNING_PROPORTION = 0.06;
     public static final double SPACE_BETWEEN_STUDENTS_ON_CHARACTERS = 0.007;
     public static final double CHARACTER_COIN_DIM = 0.21;
     public static final double CHARACTER_STUDENT_DIM = 0.016;
@@ -47,11 +47,10 @@ public class DrawingConstants {
     public static final double OFFSET_OF_STUDENT_FROM_CLOUD = 0.2;
     public static final double OFFSET_BETWEEN_STUDENTS_IN_CLOUD = 0.05;
 
-    // Assistants constants
-    public static final double OFFSET_OF_FIRST_ASSISTANT = 0.02;
-    public static final double OFFSET_BETWEEN_ASSISTANTS = 0.004;
-    public static final double ASSISTANT_MAX_WIDTH_SINGLE_LINE = 0.1;
-    public static final double ASSISTANT_Y = 0.8;
+    public static final double ASSISTANT_Y = 0.32;
+    public static final double ASSISTANT_BASE_WIDTH = 80;
+    public static final double OFFSET_BETWEEN_ASSISTANTS = -56;
+    public static final double ASSISTANT_HOVERED_WIDTH = 112;
 
     // Dashboard constanst
     public static final double OTHER_DASHBOARD_HEIGHT = 0.17;
@@ -117,7 +116,6 @@ public class DrawingConstants {
     public static final String STYLE_MOVING_CHARACTER_A = "element_active_for_moving_character";
     public static final String STYLE_MOVING_CHARACTER_S = "element_selected_for_moving_character";
     public static final String STYLE_ISLAND_CHARACTER_A = "element_active_for_island_character";
-    public static final String STYLE_ISLAND_CHARACTER_S = "element_selected_for_island_character";
 
     // Resources
     public static final String RESOURCE_PARAMETERS = "game_parameters";

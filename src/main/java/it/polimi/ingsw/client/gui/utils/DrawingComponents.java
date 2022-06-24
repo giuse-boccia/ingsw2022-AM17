@@ -63,14 +63,16 @@ public class DrawingComponents {
 
         root.getChildren().add(otherDashboards);
 
+        double assistantsAndCharactersStartingX = otherDashboardHeight / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH
+                + pageWidth * DrawingConstants.ASSISTANT_AND_CHARACTERS_BEGINNING_PROPORTION;
+
         cloudImages = CloudsDrawer.drawClouds(gameState.getClouds(), pageWidth, pageHeight, root);
         islands = IslandsDrawer.drawIslands(gameState, pageWidth, pageHeight, root);
-        assistantCards = AssistantsDrawer.drawAssistants(gameState, pageHeight * DrawingConstants.MEGA_DASHBOARD_HEIGHT / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH,
-                pageWidth, pageHeight, root, username);
+        assistantCards = AssistantsDrawer.drawAssistants(gameState, assistantsAndCharactersStartingX,
+                pageHeight, root, username);
         // Draw all three characters
         if (gameState.isExpert()) {
-            CharactersDrawer.drawCharacters(gameState.getCharacters(), pageWidth, pageHeight, otherDashboardHeight, root);
-
+            CharactersDrawer.drawCharacters(gameState.getCharacters(), pageWidth, pageHeight, assistantsAndCharactersStartingX, root);
         }
     }
 

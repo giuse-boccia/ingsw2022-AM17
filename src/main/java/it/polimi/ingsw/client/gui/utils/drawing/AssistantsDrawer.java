@@ -7,7 +7,7 @@ import it.polimi.ingsw.server.game_state.PlayerState;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,61 +15,70 @@ import java.util.List;
 public class AssistantsDrawer {
 
     private static final List<BorderPane> assistantCards = new ArrayList<>();
+    public static ImageView lastHoveredCard;
+    public static BorderPane lastHoveredBorderPane;
 
     /**
      * Draws the assistants accordingly to the given {@code GameState}
      *
      * @param gameState  the {@code GameState} to fetch the information about the assistants from
-     * @param pageWidth  the width of the screen
      * @param pageHeight the height of the screen
      * @param root       the {@code AnchorPane} to attach the islands to
      * @param username   the username of the player who owns the assistants
      */
-    public static List<BorderPane> drawAssistants(GameState gameState, double startingX, double pageWidth, double pageHeight, AnchorPane root, String username) {
+    public static List<BorderPane> drawAssistants(GameState gameState, double initialX, double pageHeight, AnchorPane root, String username) {
         PlayerState player = gameState.getPlayers().stream().filter(p -> p.getName().equals(username)).findAny().orElse(null);
         if (player != null && player.getAssistants() != null) {
-            double initialX = startingX + pageWidth * DrawingConstants.OFFSET_OF_FIRST_ASSISTANT;
-            double finalX = pageWidth * (1 - DrawingConstants.OFFSET_OF_FIRST_ASSISTANT);
-            GridPane assistants = getAssistants(player.getAssistants(), pageWidth, pageHeight, initialX, finalX);
+            double initialY = pageHeight * DrawingConstants.ASSISTANT_Y;
+            HBox assistants = getAssistants(player.getAssistants(), pageHeight, initialX, initialY);
             root.getChildren().add(assistants);
         }
         return assistantCards;
     }
 
     /**
-     * Returns a {@code GridPane} containing the assistants to be drawn
+     * Returns a {@code HBox} containing the assistants to be drawn
      *
      * @param assistants the {@code Array} of the assistants to be drawn
-     * @param pageWidth  the width of the screen
      * @param pageHeight the height of the screen
      * @param initialX   the initial X coordinate for the assistants
-     * @param finalX     the final X coordinate for the assistants
-     * @return a {@code GridPane} containing the assistants to be drawn
+     * @return a {@code HBox} containing the assistants to be drawn
      */
-    private static GridPane getAssistants(int[] assistants, double pageWidth, double pageHeight, double initialX, double finalX) {
-        if (assistants.length == 0) return new GridPane();
-        double initialY = pageHeight * DrawingConstants.ASSISTANT_Y;
-        double spaceForAssistants = finalX - initialX - (assistants.length - 1) * pageWidth * DrawingConstants.OFFSET_BETWEEN_ASSISTANTS;
-        GridPane gridPane = new GridPane();
-        gridPane.setLayoutX(initialX);
-        gridPane.setLayoutY(initialY);
-        gridPane.setHgap(pageWidth * DrawingConstants.OFFSET_BETWEEN_ASSISTANTS);
-        gridPane.setVgap(pageHeight * DrawingConstants.OFFSET_OF_FIRST_ASSISTANT);
+    private static HBox getAssistants(int[] assistants, double pageHeight, double initialX, double initialY) {
+        if (assistants.length == 0) return new HBox();
+        HBox assistantsHBox = new HBox();
+        assistantsHBox.setLayoutX(initialX);
+        assistantsHBox.setLayoutY(initialY);
+        assistantsHBox.setSpacing(DrawingConstants.OFFSET_BETWEEN_ASSISTANTS);
 
+        // Remember that the range of possible assistant values is between 1 and 10
         for (int value : assistants) {
             String path = "/gameboard/assistants/Assistente (" + value + ").png";
-            double minWidth = DrawingConstants.ASSISTANT_MAX_WIDTH_SINGLE_LINE;
-            ImageView assistant = UtilsDrawer.getImageView(
-                    path, spaceForAssistants * Math.min((double) 2 / assistants.length, minWidth));
+            ImageView assistant = UtilsDrawer.getImageView(path, DrawingConstants.ASSISTANT_BASE_WIDTH);
 
             BorderPane assistantPane = new BorderPane(assistant);
+
+            assistant.hoverProperty().addListener((obs, oldVal, newVal) -> {
+                if (lastHoveredCard == null || newVal) {
+                    assistant.setFitWidth(DrawingConstants.ASSISTANT_HOVERED_WIDTH);
+                    assistantPane.setViewOrder(-1);
+                    assistant.setY(-50);
+                    lastHoveredCard = assistant;
+                    lastHoveredBorderPane = assistantPane;
+                } else {
+                    lastHoveredCard.setFitWidth(DrawingConstants.ASSISTANT_BASE_WIDTH);
+                    lastHoveredBorderPane.setViewOrder(0);
+                    lastHoveredCard.setY(0);
+                }
+            });
+
             assistantPane.setOnMouseClicked(event -> ObjectClickListeners.setAssistantClicked(value, assistantPane));
             assistantCards.add(assistantPane);
 
-            gridPane.add(assistantPane, value - 1, 0);
+            assistantsHBox.getChildren().add(assistantPane);
         }
 
-        return gridPane;
+        return assistantsHBox;
     }
 
 
