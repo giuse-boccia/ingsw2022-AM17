@@ -5,9 +5,11 @@ import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
 import it.polimi.ingsw.server.game_state.PlayerState;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +17,6 @@ import java.util.List;
 
 public class DrawingComponents {
 
-    private static double dashboardHeight;
     private static final List<BorderPane> characterImages = new ArrayList<>();
     public static HashMap<Integer, List<BorderPane>> studentsOnIslands = new HashMap<>();
     private static List<AnchorPane> cloudImages = new ArrayList<>();
@@ -28,90 +29,48 @@ public class DrawingComponents {
     private static List<String> lastActions;
 
     /**
-     * Draws the given {@code GameState} of a two players {@code Game}
+     * Draws the components of the {@code Game}
      *
-     * @param gameState  the given {@code GameState} to be drawn
+     * @param gameState  the {@code GameState} to draw
      * @param pageWidth  the width of the screen
      * @param pageHeight the height of the screen
-     * @param root       the {@code AnchorPane} to attach the different components to
-     * @param username   the username of the {@code Player} whose GUI will be drawn the given {@code GameState} on
+     * @param root       the {@code AnchorPane} to draw the different components on
+     * @param username   the username of the {@code Player} who sees the screen
      */
-    public static void drawTwoPlayersGame(GameState gameState, double pageWidth, double pageHeight, AnchorPane root, String username) {
-        drawGameComponentsForTwo(pageWidth, pageHeight, root, gameState, username);
-
-        assistantCards = AssistantsDrawer.drawAssistants(gameState, dashboardHeight / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH,
-                pageWidth, pageHeight, root, username);
-    }
-
-    /**
-     * Draws the given {@code GameState} of a three players {@code Game}
-     *
-     * @param gameState  the given {@code GameState} to be drawn
-     * @param pageWidth  the width of the screen
-     * @param pageHeight the height of the screen
-     * @param root       the {@code AnchorPane} to attach the different components to
-     * @param username   the username of the {@code Player} whose GUI will be drawn the given {@code GameState} on
-     */
-    public static void drawThreePlayersGame(GameState gameState, double pageWidth, double pageHeight, AnchorPane root, String username) {
-        List<PlayerState> players = gameState.getPlayers();
-        drawGameComponentsForTwo(pageWidth, pageHeight, root, gameState, username);
-
-        DashboardsDrawer.drawDashboard(players.get(2), pageHeight * DrawingConstants.THIRD_DASHBOARD_Y, dashboardHeight, root, username);
-        DashboardsDrawer.drawDashboardText(players.get(2), 0 - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT, 3 * dashboardHeight + pageHeight * DrawingConstants.LOWER_YOFFSET_DASH_TEXT, pageWidth, pageHeight, root, gameState.isExpert());
-
-        assistantCards = AssistantsDrawer.drawAssistants(gameState, dashboardHeight / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH,
-                pageWidth, pageHeight, root, username);
-    }
-
-    /**
-     * Draws the given {@code GameState} of a four players {@code Game}
-     *
-     * @param gameState  the given {@code GameState} to be drawn
-     * @param pageWidth  the width of the screen
-     * @param pageHeight the height of the screen
-     * @param root       the {@code AnchorPane} to attach the different components to
-     * @param username   the username of the {@code Player} whose GUI will be drawn the given {@code GameState} on
-     */
-    public static void drawFourPlayersGame(GameState gameState, double pageWidth, double pageHeight, AnchorPane root, String username) {
-        List<PlayerState> players = gameState.getPlayers();
-        drawGameComponentsForTwo(pageWidth, pageHeight, root, gameState, username);
-
-        DashboardsDrawer.drawDashboard(players.get(2), pageHeight * DrawingConstants.THIRD_DASHBOARD_Y, dashboardHeight, root, username);
-        DashboardsDrawer.drawDashboardText(players.get(2), 0 - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT, 3 * dashboardHeight + pageHeight * DrawingConstants.LOWER_YOFFSET_DASH_TEXT, pageWidth, pageHeight, root, gameState.isExpert());
-
-        DashboardsDrawer.drawDashboard(players.get(3), pageHeight * DrawingConstants.FOURTH_DASHBOARD_Y, dashboardHeight, root, username);
-        DashboardsDrawer.drawDashboardText(players.get(3), dashboardHeight / (2 * DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH) - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT, 3 * dashboardHeight + pageHeight * DrawingConstants.LOWER_YOFFSET_DASH_TEXT, pageWidth, pageHeight, root, gameState.isExpert());
-
-        assistantCards = AssistantsDrawer.drawAssistants(gameState, dashboardHeight / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH,
-                pageWidth, pageHeight, root, username);
-    }
-
-    /**
-     * Draws the components of a two players {@code Game}
-     *
-     * @param pageWidth  the width of the screen
-     * @param pageHeight the height of the screen
-     * @param root       the {@code AnchorPane} to attach the different components to
-     * @param gameState  the given {@code GameState} to be drawn
-     * @param username   the username of the {@code Player} whose GUI will be drawn the given {@code GameState} on
-     */
-    private static void drawGameComponentsForTwo(double pageWidth, double pageHeight, AnchorPane root, GameState gameState, String username) {
+    public static void drawComponents(GameState gameState, double pageWidth, double pageHeight, AnchorPane root, String username) {
         root.getStylesheets().add("/css/game_elements.css");
-
-        dashboardHeight = pageHeight * DrawingConstants.DASHBOARD_HEIGHT;
         List<PlayerState> players = gameState.getPlayers();
-        DashboardsDrawer.drawDashboard(players.get(0), 0, dashboardHeight, root, username);
-        DashboardsDrawer.drawDashboardText(players.get(0), 0 - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT, dashboardHeight + pageHeight * DrawingConstants.UPPER_YOFFSET_DASH_TEXT, pageWidth, pageHeight, root, gameState.isExpert());
+        double otherDashboardHeight = pageHeight * DrawingConstants.OTHER_DASHBOARD_HEIGHT;
+        double megaDashboardHeight = pageHeight * DrawingConstants.MEGA_DASHBOARD_HEIGHT;
+        VBox otherDashboards = new VBox();
+        otherDashboards.setAlignment(Pos.CENTER);
+        otherDashboards.setPrefHeight(pageHeight - megaDashboardHeight - pageHeight * 0.2);
+        otherDashboards.setLayoutX(0);
+        otherDashboards.setLayoutY(0);
+        for (PlayerState player : players) {
+            if (!player.getName().equals(username)) {
+                VBox dashboardAndText = new VBox();
+                BorderPane dashboard = DashboardsDrawer.drawDashboard(player, pageHeight, otherDashboards, username);
+                AnchorPane text = DashboardsDrawer.drawDashboardText(player, pageWidth, pageHeight, gameState.isExpert());
+                dashboardAndText.getChildren().add(dashboard);
+                dashboardAndText.getChildren().add(text);
+                otherDashboards.getChildren().add(dashboardAndText);
+            } else {
+                DashboardsDrawer.drawMegaDashboard(player, pageHeight, root, username);
+                DashboardsDrawer.drawMegaDashboardText(player, pageWidth, pageHeight, root, gameState.isExpert());
+            }
+        }
 
-        DashboardsDrawer.drawDashboard(players.get(1), pageHeight * DrawingConstants.SECOND_DASHBOARD_Y, dashboardHeight, root, username);
-        DashboardsDrawer.drawDashboardText(players.get(1), dashboardHeight / (2 * DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH) - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT, dashboardHeight + pageHeight * DrawingConstants.UPPER_YOFFSET_DASH_TEXT, pageWidth, pageHeight, root, gameState.isExpert());
+        root.getChildren().add(otherDashboards);
 
-        cloudImages = CloudsDrawer.drawClouds(gameState.getClouds(), dashboardHeight / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH,
-                pageWidth, pageHeight, root);
+        cloudImages = CloudsDrawer.drawClouds(gameState.getClouds(), pageWidth, pageHeight, root);
         islands = IslandsDrawer.drawIslands(gameState, pageWidth, pageHeight, root);
+        assistantCards = AssistantsDrawer.drawAssistants(gameState, pageHeight * DrawingConstants.MEGA_DASHBOARD_HEIGHT / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH,
+                pageWidth, pageHeight, root, username);
         // Draw all three characters
         if (gameState.isExpert()) {
-            CharactersDrawer.drawCharacters(gameState.getCharacters(), pageWidth, pageHeight, dashboardHeight, root);
+            CharactersDrawer.drawCharacters(gameState.getCharacters(), pageWidth, pageHeight, otherDashboardHeight, root);
+
         }
     }
 

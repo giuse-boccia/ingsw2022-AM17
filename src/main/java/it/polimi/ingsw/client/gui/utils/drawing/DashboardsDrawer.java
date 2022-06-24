@@ -3,15 +3,13 @@ package it.polimi.ingsw.client.gui.utils.drawing;
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.server.game_state.PlayerState;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -26,20 +24,126 @@ public class DashboardsDrawer {
     /**
      * Draws a {@code DashBoard} with all the students in the {@code Entrance} and {@code DiningRoom}, the professors and the towers
      *
-     * @param player   the player to draw the {@code Dashboard} of
-     * @param y        the starting Y coordinate of the {@code Dashboard}
-     * @param root     the {@code AnchorPane} to attach the {@code Dashboard} to
-     * @param username the username of the player who owns the {@code Dashboard}
+     * @param player     the player to draw the {@code Dashboard} of
+     * @param pageHeight the height of the screen
+     * @param vBox       the {@code VBox} to attach the {@code Dashboard} to
+     * @param username   the username of the player who owns the {@code Dashboard}
      */
-    public static void drawDashboard(PlayerState player, double y, double dashboardHeight, AnchorPane root, String username) {
+    public static BorderPane drawDashboard(PlayerState player, double pageHeight, VBox vBox, String username) {
         ImageView dashboardImage = new ImageView(new Image("/gameboard/Plancia_DEF.png"));
+        double otherDashboardHeight = pageHeight * DrawingConstants.OTHER_DASHBOARD_HEIGHT;
         dashboardImage.setPreserveRatio(true);
-        dashboardImage.setFitHeight(dashboardHeight);
+        dashboardImage.setFitHeight(otherDashboardHeight);
+        double dashboardWidth = dashboardImage.getBoundsInParent().getWidth();
+        BorderPane dashboard = new BorderPane(dashboardImage);
+        vBox.setLayoutX(0);
+        vBox.setLayoutY(0);
+        vBox.getChildren().add(dashboard);
+        addElementsToDashboard(player, dashboardWidth, dashboard, username);
+
+        return dashboard;
+
+    }
+
+    /**
+     * Draws the text under/over the {@code DashBoard} with the username of the given {@code Player} and, if the game is in ExpertMode, the number of coins they own
+     *
+     * @param player     the player to insert in the text
+     * @param pageWidth  the width of the screen
+     * @param pageHeight the height of the screen
+     * @param isExpert   true if the {@code Game} is in Expert Mode
+     */
+    public static AnchorPane drawDashboardText(PlayerState player, double pageWidth, double pageHeight, boolean isExpert) {
+        double dashboardHeight = pageHeight * DrawingConstants.OTHER_DASHBOARD_HEIGHT;
+        double dashboardWidth = dashboardHeight / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH;
+        double startingX = dashboardWidth * DrawingConstants.PLAYER_NAME_INITIAL_PADDING;
+        AnchorPane playerInfo = new AnchorPane();
+        Text text;
+
+        if (!isExpert) {
+            text = new Text("↑ " + player.getName());
+            text.setX(startingX);
+            text.setY(pageHeight * 0.02);
+            text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.PARAGRAPH_FONT_SIZE));
+            playerInfo.getChildren().add(text);
+        } else {
+            text = new Text("↑ " + player.getName() + " | " + player.getNumCoins() + "x");
+            text.setX(startingX);
+            text.setY(pageHeight * 0.02);
+            text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.PARAGRAPH_FONT_SIZE));
+            playerInfo.getChildren().add(text);
+            ImageView coin = UtilsDrawer.getCoinImageView(startingX + text.getLayoutBounds().getWidth(),
+                    0, pageWidth * DrawingConstants.COIN_PROPORTION_SMALL);
+            playerInfo.getChildren().add(coin);
+        }
+        return playerInfo;
+    }
+
+    /**
+     * Draws the dashboard of the player seeing the screen
+     *
+     * @param player     the player who sees the screen
+     * @param pageHeight the height of the screen
+     * @param root       the {@code AnchorPane} to attach the different components to
+     * @param username   the username of the {@code Player} ehose GUI will be drawn the given {@code GameState} on
+     */
+    public static void drawMegaDashboard(PlayerState player, double pageHeight, AnchorPane root, String username) {
+        ImageView dashboardImage = new ImageView(new Image("/gameboard/Plancia_DEF.png"));
+        double megaDashboardHeight = pageHeight * DrawingConstants.MEGA_DASHBOARD_HEIGHT;
+        dashboardImage.setPreserveRatio(true);
+        dashboardImage.setFitHeight(megaDashboardHeight);
         double dashboardWidth = dashboardImage.getBoundsInParent().getWidth();
         BorderPane dashboard = new BorderPane(dashboardImage);
         dashboard.setLayoutX(0);
-        dashboard.setLayoutY(y);
+        dashboard.setLayoutY(pageHeight - megaDashboardHeight - pageHeight * 0.03);
         root.getChildren().add(dashboard);
+        addElementsToDashboard(player, dashboardWidth, dashboard, username);
+    }
+
+    /**
+     * Draws the text under/over the {@code DashBoard} with the username of the given {@code Player} and, if the game is in ExpertMode, the number of coins they own
+     *
+     * @param player     the player to insert in the text
+     * @param pageWidth  the width of the screen
+     * @param pageHeight the height of the screen
+     * @param root       the {@code AnchorPane} to attach te text to
+     * @param isExpert   true if the the {@code Game} is in Expert Mode
+     */
+    public static void drawMegaDashboardText(PlayerState player, double pageWidth, double pageHeight, AnchorPane root, boolean isExpert) {
+        Text text;
+        AnchorPane playerInfo = new AnchorPane();
+        double megaDashboardHeight = pageHeight * DrawingConstants.MEGA_DASHBOARD_HEIGHT;
+        double megaDashboardWidth = megaDashboardHeight / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH;
+        playerInfo.setLayoutX(megaDashboardWidth * 0.4);
+        playerInfo.setLayoutY(pageHeight - megaDashboardHeight - pageHeight * 0.05);
+        if (!isExpert) {
+            text = new Text("↓ " + player.getName());
+            text.setX(0);
+            text.setY(0);
+            text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.TITLE_FONT_SIZE));
+            playerInfo.getChildren().add(text);
+        } else {
+            text = new Text("↓ " + player.getName() + " | " + player.getNumCoins() + "x");
+            text.setX(0);
+            text.setY(0);
+            text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.TITLE_FONT_SIZE));
+            playerInfo.getChildren().add(text);
+            ImageView coin = UtilsDrawer.getCoinImageView(text.getLayoutBounds().getWidth(),
+                    -pageHeight / DrawingConstants.COIN_DIMENSION_IN_TEXT_DIVISOR, pageWidth * DrawingConstants.COIN_PROPORTION);
+            playerInfo.getChildren().add(coin);
+        }
+        root.getChildren().add(playerInfo);
+    }
+
+    /**
+     * Adds the different elements to the given dashboard
+     *
+     * @param player         the {@code Player} who owns the {@code Dashboard}
+     * @param dashboardWidth the width of the {@code Dashboard}
+     * @param dashboard      the {@code Dashboard} to be drawn
+     * @param username       the username of the player who owns the {@code Dashboard}
+     */
+    private static void addElementsToDashboard(PlayerState player, double dashboardWidth, BorderPane dashboard, String username) {
 
         // Add students to entrance
         GridPane newEntrance = UtilsDrawer.getGridPane(
@@ -75,7 +179,6 @@ public class DashboardsDrawer {
         addAllTowersToTowerSpace(player, dashboardWidth, towers);
         // Towers are attached to the gameboard and not to the root directly
         dashboard.getChildren().add(towers);
-
     }
 
     /**
@@ -192,47 +295,6 @@ public class DashboardsDrawer {
             ImageView tower = UtilsDrawer.getImageView(path, dashboardWidth * DrawingConstants.TOWERS_SIZE);
 
             towers.add(tower, i % 2, i / 2);
-        }
-    }
-
-    /**
-     * Draws the text under/over the {@code DashBoard} with the username of the given {@code Player} and, if the game is in ExpertMode, the number of coins they own
-     *
-     * @param player     the player to insert in the text
-     * @param x          the starting X coordinate of the text
-     * @param y          the starting Y coordinate of the text
-     * @param pageWidth  the width of the screen
-     * @param pageHeight the height of the screen
-     * @param root       the {@code AnchorPane} to attach te text to
-     * @param isExpert   true if the the {@code Game} is in Expert Mode
-     */
-    public static void drawDashboardText(PlayerState player, double x, double y, double pageWidth, double pageHeight, AnchorPane root, boolean isExpert) {
-        double startingX = x + pageWidth * DrawingConstants.PLAYER_NAME_INITIAL_PADDING;
-        Text text;
-
-        if (!isExpert) {
-            if (x == 0 - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT) {
-                text = new Text("↑ | " + player.getName());
-            } else {
-                text = new Text("↓ | " + player.getName());
-            }
-            text.setX(startingX);
-            text.setY(y);
-            text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.TITLE_FONT_SIZE));
-            root.getChildren().add(text);
-        } else {
-            if (x == 0 - pageWidth * DrawingConstants.XOFFSET_DASH_TEXT) {
-                text = new Text("↑ | " + player.getName() + " | " + player.getNumCoins() + "x");
-            } else {
-                text = new Text("↓ | " + player.getName() + " | " + player.getNumCoins() + "x");
-            }
-            text.setX(startingX);
-            text.setY(y);
-            text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.TITLE_FONT_SIZE));
-            root.getChildren().add(text);
-            ImageView coin = UtilsDrawer.getCoinImageView(startingX + text.getLayoutBounds().getWidth(),
-                    y - pageHeight / DrawingConstants.COIN_DIMENSION_IN_TEXT_DIVISOR, pageWidth * DrawingConstants.COIN_PROPORTION);
-            root.getChildren().add(coin);
         }
     }
 

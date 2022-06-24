@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.gui.controllers;
 
 import it.polimi.ingsw.client.gui.GuiView;
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
+import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
@@ -57,11 +58,7 @@ public class ActionController implements GuiController {
      */
     private void drawGameState(GameState gameState, String username) {
         DrawingComponents.clearAll(root);
-        switch (gameState.getPlayers().size()) {
-            case 2 -> DrawingComponents.drawTwoPlayersGame(gameState, width, height, root, username);
-            case 3 -> DrawingComponents.drawThreePlayersGame(gameState, width, height, root, username);
-            default -> DrawingComponents.drawFourPlayersGame(gameState, width, height, root, username);
-        }
+        DrawingComponents.drawComponents(gameState, width, height, root, username);
     }
 
     public void setRoot(AnchorPane root) {
