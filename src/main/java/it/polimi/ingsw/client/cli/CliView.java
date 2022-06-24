@@ -156,8 +156,8 @@ public class CliView {
         // Character index
         System.out.print((characterIndex + 1) + ". ");
 
-        // Character name (es: move1FromCardToIsland)
-        System.out.print(characterState.getCharacterName() + " ");
+        // Character name (es: Monk)
+        System.out.print(characterState.getCharacterName().getName() + " ");
 
         // Cost
         System.out.print("(" + characterState.getCost() + " " + (characterState.getCost() == 1 ? "coin" : "coins") + ")");
@@ -168,6 +168,12 @@ public class CliView {
         }
 
         System.out.println();
+
+        // Description
+        System.out.println(characterState.getCharacterName().getDescription());
+
+        System.out.println();
+
     }
 
     /**
