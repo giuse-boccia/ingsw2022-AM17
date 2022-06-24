@@ -27,7 +27,7 @@
    </Text>
    <VBox layoutX="230.0" layoutY="200.0" prefHeight="90.0" prefWidth="140.0" spacing="10.0">
       <Button fx:id="newGameBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0"
-              onMouseClicked="#onNewGameButtonClicked">
+              onMouseClicked="#onNewGameButtonClicked" onKeyPressed="#onKeyPressedOnNewGame">
          <font>
             <Font name="Baskerville Old Face" size="14.0"/>
          </font>
@@ -36,7 +36,7 @@
          </effect>
       </Button>
       <Button fx:id="loadGameBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0"
-              onMouseClicked="#onLoadGameButtonClicked">
+              onMouseClicked="#onLoadGameButtonClicked" onKeyPressed="#onKeyPressedOnLoadGame">
          <font>
             <Font name="Baskerville Old Face" size="14.0"/>
          </font>
