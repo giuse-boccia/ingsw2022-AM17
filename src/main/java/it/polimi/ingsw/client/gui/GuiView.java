@@ -243,7 +243,7 @@ public class GuiView extends Application {
      */
     private void closeAppWithErrorMessage(String message) {
         System.out.println(message);
-        System.out.println(MessageResourceBundle.getMessage("application_closing"));
+        System.out.println(MessageResourceBundle.getMessage("graceful_term"));
         System.exit(-1);
     }
 

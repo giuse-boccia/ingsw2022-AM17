@@ -52,7 +52,7 @@ public class Server {
      */
     private static void gracefulTermination(String message) {
         System.out.println(message);
-        System.out.println(MessageResourceBundle.getMessage("application_closing"));
+        System.out.println(MessageResourceBundle.getMessage("graceful_term"));
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {

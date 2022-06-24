@@ -10,12 +10,17 @@ public class Constants {
     public static final int PONG_INITIAL_DELAY = 5500;
     public static final int PONG_INTERVAL = 5500;
     public static final int MAX_ATTEMPTS_TO_CONTACT_SERVER = 2;
-    public static final int MAX_USERNAME_LENGTH = 16;
+    public static final int MAX_USERNAME_LENGTH = 32;
     public static final int LOWER_BOUND_SERVER_PORT = 1024;
     public static final int UPPER_BOUND_SERVER_PORT = 65535;
+    public static final String STUDENT_CHAR = "*";
+    public static final String PROF_CHAR = "#";
     public static final String SAVED_GAME_PATH = "saved_game.json";
     public static final String ERIANTYS = "Eriantys";
     public static final String SETTINGS_PATH = "./settings.json";
+    public static final String SERVER_PORT = "server_port";
+    public static final String SERVER_ADDRESS = "server_address";
+    public static final String GAME_LANGUAGE = "game_language";
 
     // Client Constants
     public static final int DEFAULT_PORT = 7373;    // to be used if no port is found in settings.json or given by args
