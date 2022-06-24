@@ -48,14 +48,13 @@ public class DrawingConstants {
     public static final double OFFSET_BETWEEN_STUDENTS_IN_CLOUD = 0.05;
     public static final double STUDENT_ON_CLOUD_DIMENSION = 0.02;
 
-
-    // Assistants contants
+    // Assistants constants
     public static final double ASSISTANT_Y = 0.32;
     public static final double ASSISTANT_BASE_WIDTH = 80;
     public static final double OFFSET_BETWEEN_ASSISTANTS = -56;
     public static final double ASSISTANT_HOVERED_WIDTH = 112;
 
-    // Dashboard constanst
+    // Dashboard constants
     public static final double OTHER_DASHBOARD_HEIGHT = 0.17;
     public static final double MEGA_DASHBOARD_HEIGHT = 0.32;
     public static final double DASHBOARD_HEIGHT_OVER_WIDTH = 1454.0 / 3352.0;
