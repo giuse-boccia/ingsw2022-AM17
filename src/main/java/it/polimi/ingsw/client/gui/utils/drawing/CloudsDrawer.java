@@ -69,7 +69,7 @@ public class CloudsDrawer {
             for (int j = 0; j < cloud.getStudents().size(); j++) {
                 String studentPath = "/gameboard/students/student_" +
                         cloud.getStudents().get(j).getColor().toString().toLowerCase() + ".png";
-                ImageView student = UtilsDrawer.getImageView(studentPath, pageWidth * 0.4 / 25);
+                ImageView student = UtilsDrawer.getImageView(studentPath, pageWidth * DrawingConstants.STUDENT_ON_CLOUD_DIMENSION);
 
                 studentsPane.add(student, j % 2, j / 2);
             }

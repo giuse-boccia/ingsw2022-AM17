@@ -17,7 +17,7 @@ public class DrawingConstants {
     public static final double CHARACTER_CARD_PROPORTION = 0.06;
     public static final double CHARACTER_Y_DIVISOR = 13;
     public static final double SPACE_BETWEEN_CHARACTERS_PROPORTION = 0.005;
-    public static final double ASSISTANT_AND_CHARACTERS_BEGINNING_PROPORTION = 0.06;
+    public static final double ASSISTANT_AND_CHARACTERS_BEGINNING_PROPORTION = 0.035;
     public static final double SPACE_BETWEEN_STUDENTS_ON_CHARACTERS = 0.007;
     public static final double CHARACTER_COIN_DIM = 0.21;
     public static final double CHARACTER_STUDENT_DIM = 0.016;
@@ -38,15 +38,18 @@ public class DrawingConstants {
     public static final double PLAYER_NAME_INITIAL_PADDING = 0.05;
 
     // Clouds constants
-    public static final double CLOUD_STARTING_Y = 0.4;
+    public static final double CLOUD_STARTING_Y = 0.485;
     public static final double CLOUD_STARTING_X = 0.73;
     public static final double SPACE_BETWEEN_CLOUDS = 0.006;
-    public static final double CLOUD_HEIGHT = 0.12;
-    public static final double X_OFFSET_OF_CLOUD_FROM_CENTER = 0.065;
-    public static final double Y_OFFSET_OF_CLOUD_FROM_CENTER = 0.13;
+    public static final double CLOUD_HEIGHT = 0.16;
+    public static final double X_OFFSET_OF_CLOUD_FROM_CENTER = 0.085;
+    public static final double Y_OFFSET_OF_CLOUD_FROM_CENTER = 0.17;
     public static final double OFFSET_OF_STUDENT_FROM_CLOUD = 0.2;
     public static final double OFFSET_BETWEEN_STUDENTS_IN_CLOUD = 0.05;
+    public static final double STUDENT_ON_CLOUD_DIMENSION = 0.02;
 
+
+    // Assistants contants
     public static final double ASSISTANT_Y = 0.32;
     public static final double ASSISTANT_BASE_WIDTH = 80;
     public static final double OFFSET_BETWEEN_ASSISTANTS = -56;
@@ -75,10 +78,10 @@ public class DrawingConstants {
     public static final double PROFESSOR_ROOM_VGAP = 0.0195;
 
     // Islands constants
-    public static final double ISLAND_RADIUS = 0.32;
-    public static final double ISLAND_DIMENSION = 0.1;
+    public static final double ISLAND_RADIUS = 0.4;
+    public static final double ISLAND_DIMENSION = 0.12;
     public static final double ISLAND_X = 0.73;
-    public static final double ISLAND_Y = 0.4;
+    public static final double ISLAND_Y = 0.485;
     public static final double ISLAND_ELEMENTS_X = 0.019;
     public static final double ISLAND_ELEMENTS_Y = 0.025;
     public static final int ISLAND_TOWER_DIVISOR = 6;
