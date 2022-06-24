@@ -10,7 +10,7 @@ public class Constants {
     public static final int PONG_INITIAL_DELAY = 5500;
     public static final int PONG_INTERVAL = 5500;
     public static final int MAX_ATTEMPTS_TO_CONTACT_SERVER = 2;
-    public static final int MAX_USERNAME_LENGTH = 16;
+    public static final int MAX_USERNAME_LENGTH = 32;
     public static final int LOWER_BOUND_SERVER_PORT = 1024;
     public static final int UPPER_BOUND_SERVER_PORT = 65535;
     public static final String SAVED_GAME_PATH = "saved_game.json";
