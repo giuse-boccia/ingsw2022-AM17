@@ -126,6 +126,5 @@ public class DrawingConstants {
     public static final String RESOURCE_CREATE_OR_LOAD_GAME = "create_or_load";
 
     // Character popup
-    public static final double CHARACTER_HOVER_POPUP_WIDTH = 140.0;
-    public static final double CHARACTER_HOVER_POPUP_HEIGHT = 110.0;
+    public static final double CHARACTER_HOVER_POPUP_WIDTH = 300;
 }

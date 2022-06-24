@@ -1,25 +1,33 @@
 package it.polimi.ingsw.model.characters;
 
-public enum CharacterName {
-    move1FromCardToIsland(1, CharacterDescriptions.DESC_MOVE_1_FROM_CARD_TO_ISLAND),
-    takeProfWithEqualStudents(2, CharacterDescriptions.DESC_TAKE_PROF_WITH_EQUAL_STUDENTS),
-    resolveIsland(3, CharacterDescriptions.DESC_RESOLVE_ISLAND),
-    plus2MNMoves(1, CharacterDescriptions.DESC_PLUS_2_MN_MOVE),
-    noEntry(2, CharacterDescriptions.DESC_NO_ENTRY),
-    ignoreTowers(3, CharacterDescriptions.DESC_IGNORE_TOWERS),
-    swapUpTo3FromEntranceToCard(1, CharacterDescriptions.DESC_SWAP_UP_TO_3),
-    swapUpTo2FromEntranceToDiningRoom(1, CharacterDescriptions.DESC_SWAP_UP_TO_2),
-    plus2Influence(2, CharacterDescriptions.DESC_PLUS_2_INFLUENCE),
-    move1FromCardToDining(2, CharacterDescriptions.DESC_MOVE_1_TO_DINING),
-    ignoreColor(3, CharacterDescriptions.DESC_IGNORE_COLOR),
-    everyOneMove3FromDiningRoomToBag(3, CharacterDescriptions.DESC_EVERYONE_MOVES);
+import it.polimi.ingsw.languages.MessageResourceBundle;
 
+public enum CharacterName {
+    move1FromCardToIsland(MessageResourceBundle.getMessage("monk"), 1, MessageResourceBundle.getMessage("desc_move_1_from_card_to_island")),
+    takeProfWithEqualStudents(MessageResourceBundle.getMessage("peasant"), 2, MessageResourceBundle.getMessage("desc_take_prof_with_equal_students")),
+    resolveIsland(MessageResourceBundle.getMessage("herald"), 3, MessageResourceBundle.getMessage("desc_resolve_island")),
+    plus2MNMoves(MessageResourceBundle.getMessage("magic_postman"), 1, MessageResourceBundle.getMessage("desc_plus_2_mn_move")),
+    noEntry(MessageResourceBundle.getMessage("herb_granny"), 2, MessageResourceBundle.getMessage("desc_no_entry")),
+    ignoreTowers(MessageResourceBundle.getMessage("centaur"), 3, MessageResourceBundle.getMessage("desc_ignore_towers")),
+    swapUpTo3FromEntranceToCard(MessageResourceBundle.getMessage("jester"), 1, MessageResourceBundle.getMessage("desc_swap_up_to_3")),
+    swapUpTo2FromEntranceToDiningRoom(MessageResourceBundle.getMessage("minstrel"), 1, MessageResourceBundle.getMessage("desc_swap_up_to_2")),
+    plus2Influence(MessageResourceBundle.getMessage("knight"), 2, MessageResourceBundle.getMessage("desc_plus_2_influence")),
+    move1FromCardToDining(MessageResourceBundle.getMessage("spoiled_princess"), 2, MessageResourceBundle.getMessage("desc_move_1_to_dining")),
+    ignoreColor(MessageResourceBundle.getMessage("fungus_man"), 3, MessageResourceBundle.getMessage("desc_ignore_color")),
+    everyOneMove3FromDiningRoomToBag(MessageResourceBundle.getMessage("thief"), 3, MessageResourceBundle.getMessage("desc_everyone_moves"));
+
+    private final String name;
     private final int initialCost;
     private final String description;
 
-    CharacterName(int initialCost, String description) {
+    CharacterName(String name, int initialCost, String description) {
+        this.name = name;
         this.initialCost = initialCost;
         this.description = description;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getInitialCost() {
