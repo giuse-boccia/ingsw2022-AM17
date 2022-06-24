@@ -56,7 +56,7 @@ public class CliView {
      * Prints a GameState to {@code System.out}. Uses ANSI colors.
      * A 50x80 window is recommended
      *
-     * @param gameState the {@code GameState] to print
+     * @param gameState the {@code GameState} to print
      */
     public static void printGameState(GameState gameState, String currentPlayer) {
 
