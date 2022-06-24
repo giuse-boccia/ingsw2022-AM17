@@ -1,4 +1,4 @@
-package it.polimi.ingsw.constants;
+package it.polimi.ingsw.utils.constants;
 
 
 /**

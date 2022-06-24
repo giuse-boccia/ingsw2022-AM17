@@ -10,8 +10,8 @@ import it.polimi.ingsw.client.observers.game_actions.play_character.PlayCharacte
 import it.polimi.ingsw.client.observers.login.game_parameters.GameParametersObserver;
 import it.polimi.ingsw.client.observers.login.load_game.LoadGameObserver;
 import it.polimi.ingsw.client.observers.login.username.UsernameObserver;
-import it.polimi.ingsw.constants.Constants;
-import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.utils.constants.Constants;
+import it.polimi.ingsw.utils.constants.Messages;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ServerActionMessage;

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
-import it.polimi.ingsw.constants.Constants;
-import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.utils.constants.Constants;
+import it.polimi.ingsw.utils.constants.Messages;
 import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.model.Place;

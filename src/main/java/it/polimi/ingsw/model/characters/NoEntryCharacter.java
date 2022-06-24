@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.characters;
 
-import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.utils.constants.Messages;
 import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;

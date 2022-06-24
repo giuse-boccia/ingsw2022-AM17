@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model;
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.constants.Constants;
+import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.characters.MovingCharacter;
 import it.polimi.ingsw.model.game_actions.Round;
