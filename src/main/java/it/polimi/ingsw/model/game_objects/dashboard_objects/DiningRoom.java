@@ -1,9 +1,9 @@
 package it.polimi.ingsw.model.game_objects.dashboard_objects;
 
-import it.polimi.ingsw.utils.constants.Constants;
-import it.polimi.ingsw.utils.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidStudentException;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
@@ -45,7 +45,7 @@ public class DiningRoom implements Place {
     @Override
     public void giveStudent(Place destination, Student student) throws InvalidStudentException, InvalidActionException {
         if (student == null || !students.contains(student)) {
-            throw new InvalidStudentException(Messages.DINING_ROOM_DOESNT_CONTAIN_STUDENT);
+            throw new InvalidStudentException(MessageResourceBundle.getMessage("dining_room_doesnt_contain_student"));
         }
         students.remove(student);
         destination.receiveStudent(student);

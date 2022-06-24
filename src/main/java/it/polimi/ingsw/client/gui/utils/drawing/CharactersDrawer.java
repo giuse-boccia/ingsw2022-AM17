@@ -41,7 +41,7 @@ public class CharactersDrawer {
             characterToAdd.setLayoutY(characterY);
             characterToAdd.setOnMouseClicked(event -> ObjectClickListeners.setCharacterClicked(character.getCharacterName(), characterToAdd));
             DrawingComponents.addCharacterImage(characterToAdd);
-            Popup characterPopup = getCharactersHoverPanel(character.getCharacterName().toString(), character.getCharacterName().getDescription());
+            Popup characterPopup = getCharactersHoverPanel(character.getCharacterName().getName(), character.getCharacterName().getDescription());
             double characterXCoord = firstCharacterX;
             double characterYCoord = characterY + characterToAdd.getBoundsInParent().getHeight();
             characterImage.hoverProperty().addListener((observableValue, oldValue, newValue) -> {
@@ -107,7 +107,7 @@ public class CharactersDrawer {
         characterDescription.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.PARAGRAPH_FONT_SIZE));
         characterDescription.setWrapText(true);
         VBox vBox = new VBox(characterName, characterDescription);
-        vBox.setPrefSize(DrawingConstants.CHARACTER_HOVER_POPUP_WIDTH, DrawingConstants.CHARACTER_HOVER_POPUP_HEIGHT);
+        vBox.setPrefWidth(DrawingConstants.CHARACTER_HOVER_POPUP_WIDTH);
         vBox.setAlignment(Pos.CENTER);
         vBox.setStyle("-fx-background-image: url('/gameboard/backgrounds/parchment_bacgkround.png'); -fx-padding: 10");
 

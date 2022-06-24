@@ -6,8 +6,7 @@ import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
-import it.polimi.ingsw.utils.constants.Constants;
-import it.polimi.ingsw.utils.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
@@ -74,7 +73,7 @@ public class GuiView extends Application {
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setPrefSize(width, height);
 
-        String titleText = bound == -1 ? Messages.CHOOSE_COLOR_CHARACTER : Messages.CHOOSE_BOUND_CHARACTER;
+        String titleText = bound == -1 ? MessageResourceBundle.getMessage("choose_color_character") : MessageResourceBundle.getMessage("choose_bound_character");
         Text title = new Text(titleText);
         title.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.SUBTITLE_FONT_SIZE));
         StackPane titleStackPane = new StackPane(title);
@@ -82,7 +81,7 @@ public class GuiView extends Application {
         titleStackPane.setLayoutY(height * DrawingConstants.CHARACTER_POPUP_TITLE_OFFSET_Y);
         anchorPane.getChildren().add(titleStackPane);
 
-        Button confirmBtn = new Button(Messages.CONFIRM);
+        Button confirmBtn = new Button(MessageResourceBundle.getMessage("confirm"));
         confirmBtn.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.SUBTITLE_FONT_SIZE));
         StackPane confirmStackPane = new StackPane(confirmBtn);
         confirmStackPane.setPrefWidth(width);
@@ -224,7 +223,7 @@ public class GuiView extends Application {
 
         Platform.runLater(() -> {
             Alert alert = new Alert(alertType);
-            alert.setTitle(Messages.GUI_ERROR);
+            alert.setTitle(MessageResourceBundle.getMessage("gui_error"));
             alert.setHeaderText(message);
             alert.setContentText(null);
             alert.initOwner(stage);
@@ -244,7 +243,7 @@ public class GuiView extends Application {
      */
     private void closeAppWithErrorMessage(String message) {
         System.out.println(message);
-        System.out.println(MessageResourceBundle.getMessage("application_closing"));
+        System.out.println(MessageResourceBundle.getMessage("graceful_term"));
         System.exit(-1);
     }
 
@@ -254,8 +253,8 @@ public class GuiView extends Application {
     private void confirmCloseApp() {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle(Messages.CLOSE_GAME_TITLE);
-            alert.setHeaderText(Messages.CONFIRM_CLOSE_GAME);
+            alert.setTitle(MessageResourceBundle.getMessage("close_game_title"));
+            alert.setHeaderText(MessageResourceBundle.getMessage("confirm_close_game"));
 
             alert.showAndWait();
 
@@ -291,15 +290,15 @@ public class GuiView extends Application {
         Platform.runLater(() -> {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle(Messages.END_GAME_TITLE);
+            stage.setTitle(MessageResourceBundle.getMessage("end_game_title"));
 
             Text endGameText = new Text(message);
             endGameText.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.SUBTITLE_FONT_SIZE));
             Button closeAppBtn = new Button();
-            closeAppBtn.setText(Messages.END_GAME_BUTTON_TEXT);
+            closeAppBtn.setText(MessageResourceBundle.getMessage("end_game_button_text"));
             closeAppBtn.setStyle("-fx-font-family: Algerian; -fx-font-size: 16");
             closeAppBtn.setOnMouseClicked(event -> {
-                System.out.println(Messages.GAME_ENDED_MESSAGE);
+                System.out.println(MessageResourceBundle.getMessage("game_ended_message"));
                 System.exit(0);
             });
             VBox vBox = new VBox(endGameText, closeAppBtn);

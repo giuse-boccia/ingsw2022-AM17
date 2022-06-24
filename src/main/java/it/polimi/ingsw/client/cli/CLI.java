@@ -1,9 +1,7 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.Client;
-import it.polimi.ingsw.utils.RandomNicknameGenerator;
-import it.polimi.ingsw.utils.constants.Constants;
-import it.polimi.ingsw.utils.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
@@ -24,7 +22,7 @@ public class CLI extends Client {
 
     @Override
     public void getAssistantValue() throws IOException {
-        int value = askForInteger(1, 10, Messages.ASK_ASSISTANT, "Assistant value");
+        int value = askForInteger(1, 10, MessageResourceBundle.getMessage("ask_assistant"), "Assistant value");
         getCurrentObserverHandler().notifyPlayAssistantObservers(value);
     }
 
@@ -32,9 +30,6 @@ public class CLI extends Client {
     public void askUsername() throws IOException {
         System.out.print(MessageResourceBundle.getMessage("ask_username"));
         String username = stdIn.readLine();
-        if (username.isBlank() || username.equals("random")) {
-            username = RandomNicknameGenerator.getRandomNickname();
-        }
         setTmpUsername(username);
         getCurrentObserverHandler().notifyAllUsernameObservers(username);
     }
@@ -44,9 +39,9 @@ public class CLI extends Client {
         String res;
 
         do {
-            System.out.println(Messages.NO_GAME_RUNNING);
-            System.out.println(Messages.CREATE_GAME);
-            System.out.println(Messages.LOAD_GAME);
+            System.out.println(MessageResourceBundle.getMessage("no_game_running"));
+            System.out.println(MessageResourceBundle.getMessage("create_game_option"));
+            System.out.println(MessageResourceBundle.getMessage("load_game_option"));
             System.out.print("> ");
             res = stdIn.readLine();
         } while (!res.equals("1") && !res.equals("2"));
@@ -61,7 +56,7 @@ public class CLI extends Client {
 
     @Override
     public void askNumPlayersAndExpertMode() throws IOException {
-        int numPlayers = askForInteger(Constants.MIN_PLAYERS, Constants.MAX_PLAYERS, Messages.ASK_NUM_PLAYERS, "Number of players");
+        int numPlayers = askForInteger(Constants.MIN_PLAYERS, Constants.MAX_PLAYERS, MessageResourceBundle.getMessage("ask_num_players"), "Number of players");
         boolean isGameExpert = askExpertMode();
         getCurrentObserverHandler().notifyAllGameParametersObservers(numPlayers, isGameExpert);
     }
@@ -133,13 +128,13 @@ public class CLI extends Client {
         int res;
         int size = actions.size();
         do {
-            System.out.print(Messages.SELECT_NUMBER);
+            System.out.print(MessageResourceBundle.getMessage("select_number"));
             String string = stdIn.readLine();
             try {
                 res = Integer.parseInt(string);
             } catch (NumberFormatException e) {
                 res = -1;       // remains in the do-while cycle
-                System.out.println(Messages.ACTION_MUST_NUMBER);
+                System.out.println(MessageResourceBundle.getMessage("action_must_be_number"));
             }
 
         } while (res < 1 || res > size);
@@ -149,7 +144,7 @@ public class CLI extends Client {
 
     @Override
     public void askIslandIndexForCharacter(CharacterName characterName) throws IOException {
-        int islandIndex = askForInteger(1, Constants.MAX_ISLANDS, Messages.ASK_ISLAND, "Island index");
+        int islandIndex = askForInteger(1, Constants.MAX_ISLANDS, MessageResourceBundle.getMessage("ask_island"), "Island index");
         getCurrentObserverHandler().notifyPlayCharacterObservers(characterName, null, islandIndex - 1, null, null);
     }
 
@@ -165,7 +160,7 @@ public class CLI extends Client {
         Integer islandIndex = null;
         CharacterName characterName = CharacterName.move1FromCardToDining;
         if (toIsland) {
-            islandIndex = askForInteger(1, 12, Messages.ASK_ISLAND, "Island index")
+            islandIndex = askForInteger(1, 12, MessageResourceBundle.getMessage("ask_island"), "Island index")
                     - 1;
             characterName = CharacterName.move1FromCardToIsland;
         }
@@ -174,14 +169,14 @@ public class CLI extends Client {
 
     @Override
     public void askMoveStudentToIsland() throws IOException {
-        int island = askForInteger(1, Constants.MAX_ISLANDS, Messages.ASK_ISLAND, "Island index");
+        int island = askForInteger(1, Constants.MAX_ISLANDS, MessageResourceBundle.getMessage("ask_island"), "Island index");
         Color color = askForColor();
         getCurrentObserverHandler().notifyMoveStudentObservers(color, island - 1);
     }
 
     @Override
     public void askCharacterIndex() throws IOException {
-        int index = askForInteger(1, Constants.NUM_CHARACTERS, Messages.ASK_CHARACTER, "Character index");
+        int index = askForInteger(1, Constants.NUM_CHARACTERS, MessageResourceBundle.getMessage("ask_character"), "Character index");
         getCurrentObserverHandler().notifyCharacterChoiceObservers(getCharacters().get(index - 1).getCharacterName());
     }
 
@@ -205,7 +200,7 @@ public class CLI extends Client {
 
     @Override
     public void askColorListForSwapCharacters(int maxBound, String secondElement, CharacterName characterName) throws IOException {
-        int size = askForInteger(0, maxBound, Messages.ASK_NUM_STUDENTS, "Number of students");
+        int size = askForInteger(0, maxBound, MessageResourceBundle.getMessage("ask_num_students"), "Number of students");
         System.out.println("Select " + size + " students from your entrance");
         ArrayList<Color> srcColors = new ArrayList<>();
         for (int i = 0; i < size; i++) {
@@ -229,19 +224,19 @@ public class CLI extends Client {
 
     @Override
     public void askNumStepsOfMotherNature() throws IOException {
-        int steps = askForInteger(0, Constants.MAX_MN_STEPS, Messages.ASK_MN, "Number of steps");
+        int steps = askForInteger(0, Constants.MAX_MN_STEPS, MessageResourceBundle.getMessage("ask_mn"), "Number of steps");
         getCurrentObserverHandler().notifyMoveMNObservers(steps);
     }
 
     @Override
     public void askCloudIndex() throws IOException {
-        int cloud = askForInteger(1, Constants.MAX_CLOUDS, Messages.ASK_CLOUD, "Cloud index");
+        int cloud = askForInteger(1, Constants.MAX_CLOUDS, MessageResourceBundle.getMessage("ask_cloud"), "Cloud index");
         getCurrentObserverHandler().notifyChooseCloudObservers(cloud - 1);
     }
 
     @Override
     public void showPossibleActions(List<String> actions) {
-        showMessage(Messages.POSSIBLE_ACTIONS);
+        showMessage(MessageResourceBundle.getMessage("possible_actions"));
         for (int i = 0; i < actions.size(); i++) {
             System.out.println((i + 1) + ". " + actions.get(i));
         }
@@ -290,7 +285,7 @@ public class CLI extends Client {
                 res = Integer.parseInt(string);
             } catch (NumberFormatException e) {
                 res = -1;       // remains in the do-while cycle
-                System.out.println(numberFormatErrMsgBeginning + Messages.MUST_NUMBER);
+                System.out.println(numberFormatErrMsgBeginning + MessageResourceBundle.getMessage("must_be_number"));
             }
         } while (res < lowerBound || res > upperBound);
 
@@ -306,12 +301,12 @@ public class CLI extends Client {
         String res;
         Color color;
         do {
-            System.out.print(Messages.ASK_COLOR);
+            System.out.print(MessageResourceBundle.getMessage("ask_color"));
             res = stdIn.readLine();
             try {
                 color = Color.valueOf(res.toUpperCase());
             } catch (IllegalArgumentException e) {
-                System.out.println(Messages.POSSIBLE_COLORS);
+                System.out.println(MessageResourceBundle.getMessage("possible_colors"));
                 color = null;
             }
         } while (color == null);
@@ -328,7 +323,7 @@ public class CLI extends Client {
         String res;
 
         do {
-            System.out.print(Messages.ASK_EXPERT);
+            System.out.print(MessageResourceBundle.getMessage("ask_expert"));
             res = stdIn.readLine();
             res = res.toLowerCase(Locale.ROOT);
         } while (!res.equals("y") && !res.equals("n") && !res.equals(""));

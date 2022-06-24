@@ -1,9 +1,9 @@
 package it.polimi.ingsw.model.game_actions;
 
-import it.polimi.ingsw.utils.constants.Messages;
 import it.polimi.ingsw.exceptions.AlreadyPlayedAssistantException;
 import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.SameAssistantPlayedException;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.model.game_objects.Assistant;
 import it.polimi.ingsw.model.Player;
 
@@ -38,21 +38,21 @@ public class PlanningPhase {
     public void addAssistant(Assistant assistant) throws InvalidActionException, AlreadyPlayedAssistantException, SameAssistantPlayedException {
 
         if (assistant == null) {
-            throw new AlreadyPlayedAssistantException(Messages.ALREADY_PLAYED_ASSISTANT);
+            throw new AlreadyPlayedAssistantException(MessageResourceBundle.getMessage("already_played_assistant"));
         }
 
         Player player = assistant.getPlayer();
 
         if (isEnded()) {
-            throw new InvalidActionException(Messages.PLANNING_PHASE_ENDED);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("planning_phase_ended"));
         }
 
         if (player != getNextPlayer()) {
-            throw new InvalidActionException(Messages.NOT_YOUR_TURN);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("not_your_turn"));
         }
 
         if (!isAssistantPlayable(assistant)) {
-            throw new SameAssistantPlayedException(Messages.ANOTHER_PLAYED_ASSISTANT);
+            throw new SameAssistantPlayedException(MessageResourceBundle.getMessage("another_played_assistant"));
         }
 
         playedAssistants.add(assistant);

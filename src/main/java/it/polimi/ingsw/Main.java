@@ -4,13 +4,14 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.server.Server;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
 
 public class Main {
 
     public static void main(String[] args) {
-        MessageResourceBundle.initializeBundle("en");
+        initializeLanguage();
         if (args.length > 3) {
             System.out.println(MessageResourceBundle.getMessage("wrong_usage"));
             System.exit(-1);
@@ -33,6 +34,17 @@ public class Main {
 
     }
 
+    /**
+     * Initializes the language of the game
+     */
+    private static void initializeLanguage() {
+        String language = "en";
+        try {
+            language = Settings.getGameLanguage();
+        } catch (IOException ignored) {
+        }
+        MessageResourceBundle.initializeBundle(language);
+    }
 
 
 }

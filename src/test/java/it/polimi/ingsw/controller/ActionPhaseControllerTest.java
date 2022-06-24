@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.utils.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.exceptions.GameEndedException;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
@@ -44,7 +45,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage response = ServerActionMessage.fromJson(rickCh.getJson());
         assertEquals(1, response.getError());
-        assertEquals("[ERROR] " + Messages.NOT_YOUR_TURN, response.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("not_your_turn"), response.getDisplayText());
     }
 
     /**
@@ -78,7 +79,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage response = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, response.getError());
-        assertEquals("[ERROR] " + Messages.ENTRANCE_DOESNT_CONTAIN_STUDENT, response.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("entrance_doesnt_contain_student"), response.getDisplayText());
 
         for (int i = 1; i <= 3; i++) {
             String moveRedStudent = "{status:ACTION,player:giuse,action:{name:MOVE_STUDENT_TO_DINING,args:{color:RED}}}";
@@ -108,7 +109,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage invalidRes = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(2, invalidRes.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_ISLAND, invalidRes.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_island"), invalidRes.getDisplayText());
 
         // Giuse wants to move a red student to the third island
         String json = "{status:ACTION,player:giuse,action:{name:MOVE_STUDENT_TO_ISLAND,args:{color:RED,island:2}}}";
@@ -161,7 +162,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage errorMessage = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, errorMessage.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_MN_MOVE, errorMessage.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_mn_move"), errorMessage.getDisplayText());
 
         String validMnMoveJson = "{status:ACTION,player:giuse,action:{name:MOVE_MN,args:{num_steps:1}}}";
         controller.handleMessage(validMnMoveJson, giuseCh);
@@ -181,7 +182,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage errorMessage = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, errorMessage.getError());
-        assertEquals("[ERROR] " + Messages.MOVE_MN_FIRST, errorMessage.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("move_mn_first"), errorMessage.getDisplayText());
         assertFalse(controller.getGame().getGameBoard().getClouds().get(1).isEmpty());
 
         String validMnMoveJson = "{status:ACTION,player:giuse,action:{name:MOVE_MN,args:{num_steps:1}}}";
@@ -192,7 +193,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage invalidCloudMessage = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, invalidCloudMessage.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_CLOUD, invalidCloudMessage.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_cloud"), invalidCloudMessage.getDisplayText());
         assertFalse(controller.getGame().getGameBoard().getClouds().get(1).isEmpty());
 
         String validCloudJson = "{status:ACTION,player:giuse,action:{name:FILL_FROM_CLOUD,args:{cloud:1}}}";
@@ -232,7 +233,7 @@ class ActionPhaseControllerTest {
         // Now Giuse has to play assistant
         assertEquals(giuse, controller.getGame().getCurrentRound().getPlanningPhase().getNextPlayer());
         ServerActionMessage giuseMessage = ServerActionMessage.fromJson(giuseCh.getJson());
-        assertArrayEquals(new String[]{Messages.ACTION_PLAY_ASSISTANT}, giuseMessage.getActions().toArray(new String[0]));
+        assertArrayEquals(new String[]{Constants.ACTION_PLAY_ASSISTANT}, giuseMessage.getActions().toArray(new String[0]));
     }
 
     /**
@@ -264,9 +265,9 @@ class ActionPhaseControllerTest {
         assertTrue(controller.getGame().isEnded());
         ServerActionMessage rickEndMessage = ServerActionMessage.fromJson(rickCh.getJson());
         ServerActionMessage giuseEndMessage = ServerActionMessage.fromJson(giuseCh.getJson());
-        assertEquals(Messages.STATUS_END, rickEndMessage.getStatus(), giuseEndMessage.getStatus());
-        assertEquals(Messages.GAME_LOST + "rick" + Messages.BROADCAST_GAME_WON, giuseEndMessage.getDisplayText());
-        assertEquals(Messages.GAME_WON, rickEndMessage.getDisplayText());
+        assertEquals(Constants.STATUS_END, rickEndMessage.getStatus(), giuseEndMessage.getStatus());
+        assertEquals(MessageResourceBundle.getMessage("game_lost") + "rick" + MessageResourceBundle.getMessage("broadcast_game_won"), giuseEndMessage.getDisplayText());
+        assertEquals(MessageResourceBundle.getMessage("game_won"), rickEndMessage.getDisplayText());
     }
 
     /**
@@ -283,7 +284,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage invalidCharacterResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, invalidCharacterResponse.getError());
-        assertEquals("[ERROR] " + Messages.CHARACTER_NOT_IN_GAME, invalidCharacterResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("character_not_in_game"), invalidCharacterResponse.getDisplayText());
 
         String playInvalidArgumentsCharacter =
                 "{status:ACTION,player:giuse,action:{name:PLAY_CHARACTER,args:" +
@@ -292,7 +293,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage invalidArgumentCharacterResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, invalidArgumentCharacterResponse.getError());
-        assertEquals("[ERROR] " + Messages.MOVE_JUST_ONE, invalidArgumentCharacterResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("move_just_one"), invalidArgumentCharacterResponse.getDisplayText());
 
         String missingArgumentsCharacter =
                 "{status:ACTION,player:giuse,action:{name:PLAY_CHARACTER,args:" +
@@ -301,7 +302,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage missingArgumentsCharacterResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, missingArgumentsCharacterResponse.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_ARGUMENT, missingArgumentsCharacterResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_argument"), missingArgumentsCharacterResponse.getDisplayText());
 
         String studentNotOnCardCharacter =
                 "{status:ACTION,player:giuse,action:{name:PLAY_CHARACTER,args:" +
@@ -310,7 +311,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage studentNotOnCardResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(2, studentNotOnCardResponse.getError());
-        assertEquals("[ERROR] " + Messages.STUDENT_NOT_FOUND, studentNotOnCardResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("student_not_found"), studentNotOnCardResponse.getDisplayText());
 
 
         String invalidIslandIndexCharacter =
@@ -320,7 +321,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage invalidIslandIndexResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, invalidIslandIndexResponse.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_ARGUMENT, invalidIslandIndexResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_argument"), invalidIslandIndexResponse.getDisplayText());
     }
 
     /**
@@ -339,7 +340,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage invalidArgumentResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, invalidArgumentResponse.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_ARGUMENT, invalidArgumentResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_argument"), invalidArgumentResponse.getDisplayText());
     }
 
     /**
@@ -368,7 +369,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage invalidArgumentResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(2, invalidArgumentResponse.getError());
-        assertEquals("[ERROR] " + Messages.ALREADY_PLAYED_CHARACTER, invalidArgumentResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("already_played_character"), invalidArgumentResponse.getDisplayText());
     }
 
     @Test

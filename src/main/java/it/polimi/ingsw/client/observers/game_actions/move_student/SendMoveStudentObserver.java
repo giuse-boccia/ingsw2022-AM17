@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.observers.game_actions.move_student;
 
 import it.polimi.ingsw.client.MessageHandler;
-import it.polimi.ingsw.utils.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.action.ActionArgs;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
@@ -23,7 +23,7 @@ public class SendMoveStudentObserver implements MoveStudentObserver {
         args.setColor(color);
         args.setIsland(islandIndex);
 
-        String actionName = islandIndex != null ? Messages.ACTION_MOVE_STUDENT_TO_ISLAND : Messages.ACTION_MOVE_STUDENT_TO_DINING;
+        String actionName = islandIndex != null ? Constants.ACTION_MOVE_STUDENT_TO_ISLAND : Constants.ACTION_MOVE_STUDENT_TO_DINING;
         Action action = new Action(actionName, args);
 
         ClientActionMessage toSend = new ClientActionMessage();

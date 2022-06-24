@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model.game_actions;
 
-import it.polimi.ingsw.utils.constants.Constants;
-import it.polimi.ingsw.utils.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
@@ -32,7 +32,7 @@ public class PlayerActionPhase {
     private MNStrategy mnStrategy;
     private int numStudentsMoved = 0;
     private boolean mnMoved = false;
-    private String expectedMove = Messages.ACTION_MOVE_STUDENT;
+    private String expectedMove = Constants.ACTION_MOVE_STUDENT;
 
 
     public PlayerActionPhase(Assistant assistant, GameBoard gb) {
@@ -173,13 +173,13 @@ public class PlayerActionPhase {
     public void playCharacter(Character character, Island island, Color color, List<Color> srcColors, List<Color> dstColors)
             throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException, NotEnoughCoinsException {
         if (!gb.getGame().isExpert()) {
-            throw new InvalidActionException(Messages.NO_CHARACTER_IN_NON_EXPERT);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("no_character_in_non_expert"));
         }
         if (getCurrentPlayer().getNumCoins() < character.getCost()) {
-            throw new NotEnoughCoinsException(Messages.NOT_ENOUGH_COINS);
+            throw new NotEnoughCoinsException(MessageResourceBundle.getMessage("not_enough_coins"));
         }
         if (!canPlayCharacter()) {
-            throw new CharacterAlreadyPlayedException(Messages.ALREADY_PLAYED_CHARACTER);
+            throw new CharacterAlreadyPlayedException(MessageResourceBundle.getMessage("already_played_character"));
         }
         try {
             character.useEffect(this, island, color, srcColors, dstColors);
@@ -249,7 +249,7 @@ public class PlayerActionPhase {
         numStudentsMoved++;
 
         if (numStudentsMoved == studentsToMove) {
-            expectedMove = Messages.ACTION_MOVE_MN;
+            expectedMove = Constants.ACTION_MOVE_MN;
         }
 
         stealProfessorIfPossible(color);
@@ -273,7 +273,7 @@ public class PlayerActionPhase {
         checkInvalidAction();
 
         if (numSteps < 0 || numSteps > mnStrategy.getMNMaxSteps(assistant)) {
-            throw new InvalidStepsForMotherNatureException(Messages.INVALID_MN_MOVE);
+            throw new InvalidStepsForMotherNatureException(MessageResourceBundle.getMessage("invalid_mn_move"));
         }
 
         gb.moveMotherNature(numSteps);
@@ -290,7 +290,7 @@ public class PlayerActionPhase {
         }
 
         mnMoved = true;
-        expectedMove = Messages.ACTION_FILL_FROM_CLOUD;
+        expectedMove = Constants.ACTION_FILL_FROM_CLOUD;
 
         if (gb.getGame().getCurrentRound().isLastRound()) {
             // The PlayerActionPhase is finished
@@ -310,11 +310,11 @@ public class PlayerActionPhase {
         checkInvalidAction();
 
         if (!mnMoved) {
-            throw new InvalidActionException(Messages.MOVE_MN_FIRST);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("move_mn_first"));
         }
 
         if (cloudIndex < 0 || cloudIndex >= gb.getClouds().size() || gb.getClouds().get(cloudIndex).isEmpty()) {
-            throw new InvalidCloudException(Messages.INVALID_CLOUD);
+            throw new InvalidCloudException(MessageResourceBundle.getMessage("invalid_cloud"));
         }
 
         Cloud cloud = gb.getClouds().get(cloudIndex);
@@ -333,7 +333,7 @@ public class PlayerActionPhase {
 
         int studentsToMove = gb.getGame().getPlayers().size() % 2 == 0 ? Constants.STUDENTS_TO_MOVE_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.STUDENTS_TO_MOVE_IN_THREE_PLAYER_GAME;
         if (numStudentsMoved < studentsToMove) {
-            throw new InvalidActionException(Messages.MOVE_STUDENTS_FIRST);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("move_students_first"));
         }
     }
 

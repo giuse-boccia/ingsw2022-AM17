@@ -2,7 +2,8 @@ package it.polimi.ingsw;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import it.polimi.ingsw.utils.constants.Constants;
+import com.google.inject.Key;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 
 import java.io.IOException;
@@ -29,16 +30,38 @@ public class Settings {
      * @throws NumberFormatException if the server_port field in not a number
      */
     public static Settings readPrefsFromFile() throws IOException, NumberFormatException {
-        Gson gson = new Gson();
+        Map<String, String> map = openFile();
+        int port = Integer.parseInt(map.get(Constants.SERVER_PORT));
+        String address = map.get(Constants.SERVER_ADDRESS);
+        return new Settings(port, address);
+    }
 
+    /**
+     * Returns the game language from the settings.json file
+     *
+     * @return the game language from the settings.json file
+     */
+    public static String getGameLanguage() throws IOException {
+        Map<String, String> map = openFile();
+        String gameLanguage = map.get(Constants.GAME_LANGUAGE);
+        if (gameLanguage == null || gameLanguage.length() != 2)
+            return "en";
+        return gameLanguage;
+    }
+
+    /**
+     * Opens the settings.json file
+     *
+     * @return a {@code Map} containing the different fields and values of the file
+     */
+    private static Map<String, String> openFile() throws IOException {
+        Gson gson = new Gson();
         Reader reader = Files.newBufferedReader(Paths.get(Constants.SETTINGS_PATH));
         Type type = new TypeToken<Map<String, String>>() {
         }.getType();
         Map<String, String> map = gson.fromJson(reader, type);
         reader.close();
-        int port = Integer.parseInt(map.get(MessageResourceBundle.getMessage("server_port")));
-        String address = map.get(MessageResourceBundle.getMessage("server_address"));
-        return new Settings(port, address);
+        return map;
     }
 
     public int getPort() {

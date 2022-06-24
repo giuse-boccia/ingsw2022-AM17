@@ -10,8 +10,7 @@ import it.polimi.ingsw.client.observers.game_actions.play_character.PlayCharacte
 import it.polimi.ingsw.client.observers.login.game_parameters.GameParametersObserver;
 import it.polimi.ingsw.client.observers.login.load_game.LoadGameObserver;
 import it.polimi.ingsw.client.observers.login.username.UsernameObserver;
-import it.polimi.ingsw.utils.constants.Constants;
-import it.polimi.ingsw.utils.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
@@ -64,11 +63,11 @@ public class MessageHandler implements ObserverHandler {
         if (message == null) return;
 
         switch (message.getStatus()) {
-            case Messages.STATUS_PING -> handlePing();
-            case Messages.STATUS_LOGIN -> handleLogin(jsonMessage);
-            case Messages.STATUS_ACTION -> parseAction(jsonMessage);
-            case Messages.STATUS_UPDATE -> handleUpdate(jsonMessage);
-            case Messages.STATUS_END -> handleEndGame(jsonMessage);
+            case Constants.STATUS_PING -> handlePing();
+            case Constants.STATUS_LOGIN -> handleLogin(jsonMessage);
+            case Constants.STATUS_ACTION -> parseAction(jsonMessage);
+            case Constants.STATUS_UPDATE -> handleUpdate(jsonMessage);
+            case Constants.STATUS_END -> handleEndGame(jsonMessage);
             default -> client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_message"));
         }
     }
@@ -96,7 +95,7 @@ public class MessageHandler implements ObserverHandler {
      */
     private void sendPong() {
         Message pong = new Message();
-        pong.setStatus(Messages.STATUS_PONG);
+        pong.setStatus(Constants.STATUS_PONG);
         nc.sendMessageToServer(pong.toJson());
     }
 
@@ -135,7 +134,7 @@ public class MessageHandler implements ObserverHandler {
             }).start();
         } else if (message.getError() != 0) {
             client.gracefulTermination(message.getDisplayText());
-        } else if (message.getAction() != null && message.getAction().equals(Messages.ACTION_CREATE_GAME)) {
+        } else if (message.getAction() != null && message.getAction().equals(Constants.ACTION_CREATE_GAME)) {
             client.setUsername(client.getTmpUsername());
             new Thread(() -> {
                 try {
@@ -175,7 +174,7 @@ public class MessageHandler implements ObserverHandler {
     public void sendLoadGame() {
         ClientLoginMessage msg = new ClientLoginMessage();
         msg.setUsername(client.getUsername());
-        msg.setAction(Messages.ACTION_LOAD_GAME);
+        msg.setAction(Constants.ACTION_LOAD_GAME);
         nc.sendMessageToServer(msg.toJson());
     }
 
@@ -332,12 +331,12 @@ public class MessageHandler implements ObserverHandler {
         new Thread(() -> {
             try {
                 switch (chosenAction) {
-                    case Messages.ACTION_PLAY_ASSISTANT -> ActionHandler.handlePlayAssistant(nc);
-                    case Messages.ACTION_MOVE_STUDENT_TO_DINING -> ActionHandler.handleMoveStudentToDining(nc);
-                    case Messages.ACTION_MOVE_STUDENT_TO_ISLAND -> ActionHandler.handleMoveStudentToIsland(nc);
-                    case Messages.ACTION_MOVE_MN -> ActionHandler.handleMoveMotherNature(nc);
-                    case Messages.ACTION_FILL_FROM_CLOUD -> ActionHandler.handleFillFromCloud(nc);
-                    case Messages.ACTION_PLAY_CHARACTER -> ActionHandler.handlePlayCharacter(nc);
+                    case Constants.ACTION_PLAY_ASSISTANT -> ActionHandler.handlePlayAssistant(nc);
+                    case Constants.ACTION_MOVE_STUDENT_TO_DINING -> ActionHandler.handleMoveStudentToDining(nc);
+                    case Constants.ACTION_MOVE_STUDENT_TO_ISLAND -> ActionHandler.handleMoveStudentToIsland(nc);
+                    case Constants.ACTION_MOVE_MN -> ActionHandler.handleMoveMotherNature(nc);
+                    case Constants.ACTION_FILL_FROM_CLOUD -> ActionHandler.handleFillFromCloud(nc);
+                    case Constants.ACTION_PLAY_CHARACTER -> ActionHandler.handlePlayCharacter(nc);
                     default -> client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_message"));
                 }
             } catch (IOException e) {

@@ -13,9 +13,14 @@ public class Constants {
     public static final int MAX_USERNAME_LENGTH = 32;
     public static final int LOWER_BOUND_SERVER_PORT = 1024;
     public static final int UPPER_BOUND_SERVER_PORT = 65535;
+    public static final String STUDENT_CHAR = "*";
+    public static final String PROF_CHAR = "#";
     public static final String SAVED_GAME_PATH = "saved_game.json";
     public static final String ERIANTYS = "Eriantys";
     public static final String SETTINGS_PATH = "./settings.json";
+    public static final String SERVER_PORT = "server_port";
+    public static final String SERVER_ADDRESS = "server_address";
+    public static final String GAME_LANGUAGE = "game_language";
 
     // Client Constants
     public static final int DEFAULT_PORT = 7373;    // to be used if no port is found in settings.json or given by args
@@ -46,5 +51,23 @@ public class Constants {
     // Gui constants
     public static final int TOAST_DURATION_SECONDS = 4;
 
+    // Actions
+    public static final String ACTION_SET_USERNAME = "SET_USERNAME";
+    public static final String ACTION_CREATE_GAME = "CREATE_GAME";
+    public static final String ACTION_LOAD_GAME = "LOAD_GAME";
+    public static final String ACTION_PLAY_ASSISTANT = "PLAY_ASSISTANT";
+    public static final String ACTION_MOVE_STUDENT = "MOVE_STUDENT";
+    public static final String ACTION_MOVE_STUDENT_TO_DINING = "MOVE_STUDENT_TO_DINING";
+    public static final String ACTION_MOVE_STUDENT_TO_ISLAND = "MOVE_STUDENT_TO_ISLAND";
+    public static final String ACTION_MOVE_MN = "MOVE_MN";
+    public static final String ACTION_PLAY_CHARACTER = "PLAY_CHARACTER";
+    public static final String ACTION_FILL_FROM_CLOUD = "FILL_FROM_CLOUD";
 
+    // Possible status in messages
+    public static final String STATUS_LOGIN = "LOGIN";
+    public static final String STATUS_ACTION = "ACTION";
+    public static final String STATUS_PONG = "PONG";
+    public static final String STATUS_PING = "PING";
+    public static final String STATUS_UPDATE = "UPDATE";
+    public static final String STATUS_END = "END";
 }

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.observers.game_actions.choose_cloud;
 
 import it.polimi.ingsw.client.MessageHandler;
-import it.polimi.ingsw.utils.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.action.ActionArgs;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
@@ -20,7 +20,7 @@ public class SendChooseCloudObserver implements ChooseCloudObserver {
         ActionArgs args = new ActionArgs();
         args.setCloud(index);
 
-        Action action = new Action(Messages.ACTION_FILL_FROM_CLOUD, args);
+        Action action = new Action(Constants.ACTION_FILL_FROM_CLOUD, args);
 
         ClientActionMessage toSend = new ClientActionMessage();
         toSend.setAction(action);

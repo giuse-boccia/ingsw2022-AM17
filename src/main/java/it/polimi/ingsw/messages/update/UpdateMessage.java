@@ -2,7 +2,7 @@ package it.polimi.ingsw.messages.update;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import it.polimi.ingsw.utils.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.server.game_state.GameState;
 
@@ -12,7 +12,7 @@ public class UpdateMessage extends Message {
 
     public UpdateMessage() {
         super();
-        setStatus(Messages.STATUS_UPDATE);
+        setStatus(Constants.STATUS_UPDATE);
     }
 
     public GameState getGameState() {

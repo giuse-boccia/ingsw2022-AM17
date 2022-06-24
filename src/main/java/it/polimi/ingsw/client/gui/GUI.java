@@ -4,7 +4,7 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.MessageHandler;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
-import it.polimi.ingsw.utils.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
@@ -22,17 +22,17 @@ public class GUI extends Client {
 
     @Override
     public void getAssistantValue() {
-        guiView.sendMessageToController(null, null, List.of(Messages.ACTION_PLAY_ASSISTANT), getUsername());
+        guiView.sendMessageToController(null, null, List.of(Constants.ACTION_PLAY_ASSISTANT), getUsername());
     }
 
     @Override
     public void askNumStepsOfMotherNature() {
-        guiView.sendMessageToController(null, null, List.of(Messages.ACTION_MOVE_MN), getUsername());
+        guiView.sendMessageToController(null, null, List.of(Constants.ACTION_MOVE_MN), getUsername());
     }
 
     @Override
     public void askCloudIndex() {
-        guiView.sendMessageToController(null, null, List.of(Messages.ACTION_FILL_FROM_CLOUD), getUsername());
+        guiView.sendMessageToController(null, null, List.of(Constants.ACTION_FILL_FROM_CLOUD), getUsername());
     }
 
     @Override
