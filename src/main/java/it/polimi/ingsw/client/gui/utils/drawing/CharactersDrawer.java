@@ -29,8 +29,7 @@ public class CharactersDrawer {
      * @param pageHeight the height of the screen
      * @param root       the {@code AnchorPane} to attach the clouds to
      */
-    public static void drawCharacters(List<CharacterState> characters, double pageWidth, double pageHeight, double dashboardHeight, AnchorPane root) {
-        double characterX = dashboardHeight / DrawingConstants.DASHBOARD_HEIGHT_OVER_WIDTH + pageWidth * DrawingConstants.CHARACTERS_BEGINNING_PROPORTION;
+    public static void drawCharacters(List<CharacterState> characters, double pageWidth, double pageHeight, double firstCharacterX, AnchorPane root) {
         double characterY = pageHeight / DrawingConstants.CHARACTER_Y_DIVISOR;
 
         for (CharacterState character : characters) {
@@ -38,12 +37,12 @@ public class CharactersDrawer {
             ImageView characterImage = UtilsDrawer.getImageView(imagePath, pageWidth * DrawingConstants.CHARACTER_CARD_PROPORTION);
 
             BorderPane characterToAdd = new BorderPane(characterImage);
-            characterToAdd.setLayoutX(characterX);
+            characterToAdd.setLayoutX(firstCharacterX);
             characterToAdd.setLayoutY(characterY);
             characterToAdd.setOnMouseClicked(event -> ObjectClickListeners.setCharacterClicked(character.getCharacterName(), characterToAdd));
             DrawingComponents.addCharacterImage(characterToAdd);
             Popup characterPopup = getCharactersHoverPanel(character.getCharacterName().toString(), character.getCharacterName().getDescription());
-            double characterXCoord = characterX;
+            double characterXCoord = firstCharacterX;
             double characterYCoord = characterY + characterToAdd.getBoundsInParent().getHeight();
             characterImage.hoverProperty().addListener((observableValue, oldValue, newValue) -> {
                 if (newValue) {
@@ -58,14 +57,14 @@ public class CharactersDrawer {
             if (character.hasCoin()) {
                 double imageWidth = pageWidth * DrawingConstants.COIN_PROPORTION;
                 ImageView coin = UtilsDrawer.getCoinImageView(
-                        characterX + pageWidth * (DrawingConstants.CHARACTER_CARD_PROPORTION) - imageWidth,
+                        firstCharacterX + pageWidth * (DrawingConstants.CHARACTER_CARD_PROPORTION) - imageWidth,
                         pageHeight * DrawingConstants.CHARACTER_COIN_DIM,
                         imageWidth);
                 root.getChildren().add(coin);
             }
             if (character.getStudents() != null) {
                 GridPane grid = new GridPane();
-                grid.setLayoutX(characterX + pageWidth * DrawingConstants.SPACE_BETWEEN_STUDENTS_ON_CHARACTERS);
+                grid.setLayoutX(firstCharacterX + pageWidth * DrawingConstants.SPACE_BETWEEN_STUDENTS_ON_CHARACTERS);
                 grid.setLayoutY(characterY - 2 * pageWidth * DrawingConstants.CHARACTER_STUDENT_DIM);
                 List<BorderPane> studentsOnCharacter = new ArrayList<>();
                 for (int i = 0; i < character.getStudents().size(); i++) {
@@ -88,7 +87,7 @@ public class CharactersDrawer {
                 root.getChildren().add(grid);
             }
 
-            characterX += pageWidth * (DrawingConstants.CHARACTER_CARD_PROPORTION + DrawingConstants.SPACE_BETWEEN_CHARACTERS_PROPORTION);
+            firstCharacterX += pageWidth * (DrawingConstants.CHARACTER_CARD_PROPORTION + DrawingConstants.SPACE_BETWEEN_CHARACTERS_PROPORTION);
         }
     }
 
