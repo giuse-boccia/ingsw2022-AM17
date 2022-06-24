@@ -46,5 +46,23 @@ public class Constants {
     // Gui constants
     public static final int TOAST_DURATION_SECONDS = 4;
 
+    // Actions
+    public static final String ACTION_SET_USERNAME = "SET_USERNAME";
+    public static final String ACTION_CREATE_GAME = "CREATE_GAME";
+    public static final String ACTION_LOAD_GAME = "LOAD_GAME";
+    public static final String ACTION_PLAY_ASSISTANT = "PLAY_ASSISTANT";
+    public static final String ACTION_MOVE_STUDENT = "MOVE_STUDENT";
+    public static final String ACTION_MOVE_STUDENT_TO_DINING = "MOVE_STUDENT_TO_DINING";
+    public static final String ACTION_MOVE_STUDENT_TO_ISLAND = "MOVE_STUDENT_TO_ISLAND";
+    public static final String ACTION_MOVE_MN = "MOVE_MN";
+    public static final String ACTION_PLAY_CHARACTER = "PLAY_CHARACTER";
+    public static final String ACTION_FILL_FROM_CLOUD = "FILL_FROM_CLOUD";
 
+    // Possible status in messages
+    public static final String STATUS_LOGIN = "LOGIN";
+    public static final String STATUS_ACTION = "ACTION";
+    public static final String STATUS_PONG = "PONG";
+    public static final String STATUS_PING = "PING";
+    public static final String STATUS_UPDATE = "UPDATE";
+    public static final String STATUS_END = "END";
 }

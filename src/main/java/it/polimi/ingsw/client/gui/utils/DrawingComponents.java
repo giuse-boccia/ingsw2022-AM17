@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.gui.utils;
 
 import it.polimi.ingsw.client.gui.utils.drawing.*;
-import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
 import it.polimi.ingsw.server.game_state.PlayerState;
@@ -85,15 +85,15 @@ public class DrawingComponents {
         lastActions = currentActions;
         for (String action : currentActions) {
             switch (action) {
-                case Messages.ACTION_MOVE_STUDENT_TO_DINING, Messages.ACTION_MOVE_STUDENT_TO_ISLAND -> {
+                case Constants.ACTION_MOVE_STUDENT_TO_DINING, Constants.ACTION_MOVE_STUDENT_TO_ISLAND -> {
                     entranceStudents.forEach(DrawingComponents::setGoldenBorder);
                     diningGaps.forEach(DrawingComponents::setGoldenBorder);
                     islands.forEach(DrawingComponents::setGoldenBorder);
                 }
-                case Messages.ACTION_PLAY_ASSISTANT -> assistantCards.forEach(DrawingComponents::setGoldenBorder);
-                case Messages.ACTION_PLAY_CHARACTER -> characterImages.forEach(DrawingComponents::setGoldenBorder);
-                case Messages.ACTION_MOVE_MN -> islands.forEach(DrawingComponents::setGoldenBorder);
-                case Messages.ACTION_FILL_FROM_CLOUD -> cloudImages.forEach(DrawingComponents::setGoldenBorder);
+                case Constants.ACTION_PLAY_ASSISTANT -> assistantCards.forEach(DrawingComponents::setGoldenBorder);
+                case Constants.ACTION_PLAY_CHARACTER -> characterImages.forEach(DrawingComponents::setGoldenBorder);
+                case Constants.ACTION_MOVE_MN -> islands.forEach(DrawingComponents::setGoldenBorder);
+                case Constants.ACTION_FILL_FROM_CLOUD -> cloudImages.forEach(DrawingComponents::setGoldenBorder);
             }
         }
     }

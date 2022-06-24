@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.observers.login.game_parameters;
 
 import it.polimi.ingsw.client.MessageHandler;
-import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 
 public class SendGameParametersObserver implements GameParametersObserver {
@@ -16,7 +16,7 @@ public class SendGameParametersObserver implements GameParametersObserver {
     @Override
     public void onGameParametersSet(int numPlayers, boolean isExpert) {
         ClientLoginMessage msg = new ClientLoginMessage();
-        msg.setAction(Messages.ACTION_CREATE_GAME);
+        msg.setAction(Constants.ACTION_CREATE_GAME);
         msg.setNumPlayers(numPlayers);
         msg.setExpert(isExpert);
         mh.getNetworkClient().sendMessageToServer(msg.toJson());

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.observers.login.load_game;
 
 import it.polimi.ingsw.client.MessageHandler;
-import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 
 public class ExecuteLoadGameObserver implements LoadGameObserver {
@@ -16,7 +16,7 @@ public class ExecuteLoadGameObserver implements LoadGameObserver {
     @Override
     public void loadGame() {
         ClientLoginMessage msg = new ClientLoginMessage();
-        msg.setAction(Messages.ACTION_LOAD_GAME);
+        msg.setAction(Constants.ACTION_LOAD_GAME);
         mh.getNetworkClient().sendMessageToServer(msg.toJson());
     }
 }

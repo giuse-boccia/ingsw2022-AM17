@@ -2,7 +2,6 @@ package it.polimi.ingsw.controller;
 
 import com.google.gson.JsonSyntaxException;
 import it.polimi.ingsw.constants.Constants;
-import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.GameEndedException;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.Message;
@@ -45,12 +44,12 @@ public class Controller {
      * @param errorCode    an integer representing the error which occurred
      */
     public static void sendErrorMessage(Communicable ch, String status, String errorMessage, int errorCode) {
-        if (status.equals(Messages.STATUS_LOGIN)) {
+        if (status.equals(Constants.STATUS_LOGIN)) {
             ServerLoginMessage message = new ServerLoginMessage();
             message.setError(errorCode);
             message.setDisplayText(MessageResourceBundle.getMessage("error_tag") + errorMessage);
             ch.sendMessageToClient(message.toJson());
-        } else if (status.equals(Messages.STATUS_ACTION)) {
+        } else if (status.equals(Constants.STATUS_ACTION)) {
             ServerActionMessage message = new ServerActionMessage();
             message.setError(errorCode);
             message.setDisplayText(MessageResourceBundle.getMessage("error_tag") + errorMessage);
@@ -67,10 +66,11 @@ public class Controller {
      */
     public synchronized void handleMessage(String jsonMessage, Communicable ch) throws GameEndedException {
         switch (getMessageStatus(jsonMessage)) {
-            case Messages.STATUS_LOGIN -> handleLoginMessage(jsonMessage, ch);
-            case Messages.STATUS_ACTION -> handleActionMessage(jsonMessage, ch);
-            case Messages.STATUS_PONG -> handlePong();
-            default -> sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("unrecognised_type"), 3);
+            case Constants.STATUS_LOGIN -> handleLoginMessage(jsonMessage, ch);
+            case Constants.STATUS_ACTION -> handleActionMessage(jsonMessage, ch);
+            case Constants.STATUS_PONG -> handlePong();
+            default ->
+                    sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("unrecognised_type"), 3);
         }
     }
 
@@ -109,20 +109,21 @@ public class Controller {
             ClientLoginMessage loginMessage = ClientLoginMessage.fromJSON(jsonMessage);
 
             if (loginMessage.getAction() == null) {
-                sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("bad_request"), 3);
+                sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("bad_request"), 3);
                 return;
             }
 
             switch (loginMessage.getAction()) {
-                case Messages.ACTION_SET_USERNAME -> handleSetUsername(ch, loginMessage.getUsername());
-                case Messages.ACTION_CREATE_GAME ->
+                case Constants.ACTION_SET_USERNAME -> handleSetUsername(ch, loginMessage.getUsername());
+                case Constants.ACTION_CREATE_GAME ->
                         setGameParameters(ch, loginMessage.getNumPlayers(), loginMessage.isExpert());
-                case Messages.ACTION_LOAD_GAME -> setLoadedGameParameters(ch);
-                default -> sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("bad_request"), 3);
+                case Constants.ACTION_LOAD_GAME -> setLoadedGameParameters(ch);
+                default ->
+                        sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("bad_request"), 3);
 
             }
         } catch (JsonSyntaxException e) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("invalid_format_num_player"), 3);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("invalid_format_num_player"), 3);
         }
     }
 
@@ -150,11 +151,11 @@ public class Controller {
      */
     private void setGameParameters(Communicable ch, int numPlayers, boolean isExpert) {
         if (loggedUsers.isEmpty() || loggedUsers.get(0).getCommunicable() != ch) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("invalid_player_creating_game"), 3);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("invalid_player_creating_game"), 3);
             return;
         }
         if (numPlayers < Constants.MIN_PLAYERS || numPlayers > Constants.MAX_PLAYERS) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("invalid_num_players"), 3);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("invalid_num_players"), 3);
             return;
         }
 
@@ -173,7 +174,7 @@ public class Controller {
     private void setLoadedGameParameters(Communicable ch) {
         // Only the "host" loggedUsers[0] can load a game
         if (loggedUsers.isEmpty() || loggedUsers.get(0).getCommunicable() != ch) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("invalid_player_creating_game"), 3);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("invalid_player_creating_game"), 3);
             return;
         }
 
@@ -188,7 +189,7 @@ public class Controller {
                 gameLobby.resetPreferences();
 
                 // send "you are not present in the loaded game" error and logout user (he has to log in again)
-                sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("username_not_in_loaded_game"), 5);
+                sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("username_not_in_loaded_game"), 5);
             } else {
                 gameLobby.setNumPlayers(loadedPlayers.length);
                 gameLobby.setIsExpert(loadedGame.isExpert());
@@ -196,7 +197,7 @@ public class Controller {
                 sanitizePlayers();  // ensures players are in the same order as in the loaded game
 
                 if (!startGameIfReady()) {
-                    ServerLoginMessage message = getServerLoginMessage(Messages.GAME_LOADED);
+                    ServerLoginMessage message = getServerLoginMessage(MessageResourceBundle.getMessage("game_loaded"));
                     for (PlayerClient player : loggedUsers) {
                         player.getCommunicable().sendMessageToClient(message.toJson());
                     }
@@ -204,8 +205,8 @@ public class Controller {
             }
         } catch (IOException | NoSuchElementException e) {
             // send "load failed" error
-            System.out.println(Messages.LOAD_ERR);
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("load_game_failed"), 4);
+            System.out.println(MessageResourceBundle.getMessage("load_err"));
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("load_game_failed"), 4);
         }
     }
 
@@ -217,15 +218,15 @@ public class Controller {
      */
     private void addUser(Communicable ch, String username) {
         if (username == null || username.trim().equals("")) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("invalid_username"), 3);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("invalid_username"), 3);
         } else if ((gameLobby.getNumPlayers() != -1 && loggedUsers.size() >= gameLobby.getNumPlayers()) || loggedUsers.size() >= Constants.MAX_PLAYERS || gameController != null) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("lobby_full"), 1);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("lobby_full"), 1);
         } else if (username.length() > Constants.MAX_USERNAME_LENGTH) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("username_too_long"), 3);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("username_too_long"), 3);
         } else if (loggedUsers.stream().anyMatch(u -> u.getUsername().equals(username))) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("username_already_taken"), 2);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("username_already_taken"), 2);
         } else if (gameLobby.isFromSavedGame() && !Arrays.asList(gameLobby.getPlayersFromSavedGame()).contains(username)) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("player_not_in_loaded_game"), 5);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("player_not_in_loaded_game"), 5);
         } else {
             PlayerClient newUser = new PlayerClient(ch, username);
             loggedUsers.add(newUser);
@@ -251,15 +252,15 @@ public class Controller {
      */
     private void renameUser(Communicable ch, String newUsername) {
         if (newUsername == null || newUsername.trim().equals("")) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("invalid_username"), 5);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("invalid_username"), 5);
         } else if ((gameLobby.getNumPlayers() != -1 && loggedUsers.size() >= gameLobby.getNumPlayers()) || loggedUsers.size() >= Constants.MAX_PLAYERS || gameController != null) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("lobby_full"), 5);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("lobby_full"), 5);
         } else if (newUsername.length() > Constants.MAX_USERNAME_LENGTH) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("username_too_long"), 5);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("username_too_long"), 5);
         } else if (loggedUsers.stream().anyMatch(u -> u.getUsername().equals(newUsername))) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("username_already_taken"), 5);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("username_already_taken"), 5);
         } else if (gameLobby.isFromSavedGame() && !Arrays.asList(gameLobby.getPlayersFromSavedGame()).contains(newUsername)) {
-            sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("username_not_in_loaded_game"), 5);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("username_not_in_loaded_game"), 5);
         } else {
             try {
                 PlayerClient userToRename = loggedUsers.stream()
@@ -283,7 +284,7 @@ public class Controller {
                     sendBroadcastMessage();
                 }
             } catch (Exception e) {
-                sendErrorMessage(ch, Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("internal_server_error"), 5);
+                sendErrorMessage(ch, Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("internal_server_error"), 5);
             }
         }
     }
@@ -326,7 +327,7 @@ public class Controller {
      */
     private void askDesiredNumberOfPlayers(Communicable ch) {
         ServerLoginMessage res = new ServerLoginMessage();
-        res.setAction(Messages.ACTION_CREATE_GAME);
+        res.setAction(Constants.ACTION_CREATE_GAME);
         res.setDisplayText(MessageResourceBundle.getMessage("set_game_parameters"));
 
         ch.sendMessageToClient(res.toJson());
@@ -348,7 +349,7 @@ public class Controller {
             // Alert player that game is full and removes him
             PlayerClient toRemove = loggedUsers.get(numberOfPlayers);
             String errorMessage = "A new game for " + numberOfPlayers + " players is starting. Your connection will be closed";
-            sendErrorMessage(toRemove.getCommunicable(), Messages.STATUS_LOGIN, errorMessage, 1);
+            sendErrorMessage(toRemove.getCommunicable(), Constants.STATUS_LOGIN, errorMessage, 1);
             loggedUsers.remove(toRemove);
         }
 
@@ -389,7 +390,7 @@ public class Controller {
         gameController = new GameController(loggedUsers, isExpert);
         gameController.start();
 
-        System.out.println(Messages.GAME_IS_STARTING);
+        System.out.println(MessageResourceBundle.getMessage("game_is_starting"));
         return true;
     }
 
@@ -419,7 +420,7 @@ public class Controller {
 
         clientsToKick.forEach(clientToKill -> {
             String errorMessage = "A new game for " + gameLobby.getNumPlayers() + " players is starting. Your connection will be closed";
-            sendErrorMessage(clientToKill.getCommunicable(), Messages.STATUS_LOGIN, errorMessage, 1);
+            sendErrorMessage(clientToKill.getCommunicable(), Constants.STATUS_LOGIN, errorMessage, 1);
         });
 
         loggedUsers.clear();
@@ -434,7 +435,7 @@ public class Controller {
      */
     private void handleActionMessage(String jsonMessage, Communicable ch) throws GameEndedException {
         if (gameController == null) {
-            sendErrorMessage(ch, Messages.STATUS_ACTION, Messages.GAME_NOT_STARTED, 1);
+            sendErrorMessage(ch, Constants.STATUS_ACTION, MessageResourceBundle.getMessage("game_not_started"), 1);
             return;
         }
 
@@ -442,7 +443,7 @@ public class Controller {
             ClientActionMessage actionMessage = ClientActionMessage.fromJSON(jsonMessage);
             gameController.handleActionMessage(actionMessage, ch);
         } catch (JsonSyntaxException e) {
-            sendErrorMessage(ch, Messages.STATUS_ACTION, MessageResourceBundle.getMessage("bad_request_syntax"), 3);
+            sendErrorMessage(ch, Constants.STATUS_ACTION, MessageResourceBundle.getMessage("bad_request_syntax"), 3);
         }
     }
 
@@ -460,12 +461,12 @@ public class Controller {
                 synchronized (boundLock) {
                     if (pongCount < bound) {
                         for (PlayerClient user : loggedUsers) {
-                            sendErrorMessage(user.getCommunicable(), Messages.STATUS_LOGIN, MessageResourceBundle.getMessage("connection_with_client_lost"), 3);
+                            sendErrorMessage(user.getCommunicable(), Constants.STATUS_LOGIN, MessageResourceBundle.getMessage("connection_with_client_lost"), 3);
                         }
                         loggedUsers.clear();
                         gameLobby.clear();
                         gameController = null;
-                        System.out.println(Messages.CLEARING_GAME);
+                        System.out.println(MessageResourceBundle.getMessage("clearing_game"));
                     }
                 }
 
@@ -486,7 +487,7 @@ public class Controller {
             pongCount = 0;
         }
         Message ping = new Message();
-        ping.setStatus(Messages.STATUS_PING);
+        ping.setStatus(Constants.STATUS_PING);
         int bound = 0;
         for (PlayerClient user : loggedUsers) {
             user.getCommunicable().sendMessageToClient(ping.toJson());

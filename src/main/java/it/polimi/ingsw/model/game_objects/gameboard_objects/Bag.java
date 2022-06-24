@@ -1,9 +1,9 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
 import it.polimi.ingsw.constants.Constants;
-import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.exceptions.InvalidActionException;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.utils.Students;
@@ -31,7 +31,7 @@ public class Bag implements Place {
      * @return a random {@code Student} of the collection
      */
     public Student getRandStudent() throws EmptyBagException {
-        if (isEmpty()) throw new EmptyBagException(Messages.EMPTY_BAG);
+        if (isEmpty()) throw new EmptyBagException(MessageResourceBundle.getMessage("empty_bag"));
         return students.get(0);
     }
 

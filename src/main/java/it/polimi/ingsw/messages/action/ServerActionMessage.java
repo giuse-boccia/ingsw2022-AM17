@@ -2,7 +2,7 @@ package it.polimi.ingsw.messages.action;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.messages.Message;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public class ServerActionMessage extends Message {
 
     public ServerActionMessage() {
         super();
-        setStatus(Messages.STATUS_ACTION);
+        setStatus(Constants.STATUS_ACTION);
         actions = new ArrayList<>();
     }
 

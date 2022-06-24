@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.observers.game_actions.play_character;
 
 import it.polimi.ingsw.client.MessageHandler;
-import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.action.ActionArgs;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
@@ -28,7 +28,7 @@ public class SendPlayCharacterObserver implements PlayCharacterObserver {
         args.setSourceStudents(srcStudents);
         args.setDstStudents(dstStudents);
 
-        Action action = new Action(Messages.ACTION_PLAY_CHARACTER, args);
+        Action action = new Action(Constants.ACTION_PLAY_CHARACTER, args);
 
         ClientActionMessage toSend = new ClientActionMessage();
         toSend.setAction(action);

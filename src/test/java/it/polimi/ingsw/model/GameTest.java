@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.game_actions.Round;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
@@ -75,7 +75,7 @@ public class GameTest {
         assertEquals(3, firstRound.getPlayedAssistants().size());
         //Now the PlanningPhase has ended and the PlayerActionPhase of clod has been created
         PlayerActionPhase pap = firstRound.getCurrentPlayerActionPhase();
-        assertEquals(Messages.ACTION_MOVE_STUDENT, firstRound.getCurrentPlayerActionPhase().getExpectedAction());
+        assertEquals(Constants.ACTION_MOVE_STUDENT, firstRound.getCurrentPlayerActionPhase().getExpectedAction());
         assertEquals(clod, pap.getCurrentPlayer());
 
         //Now several clients can call PlayerActionPhase

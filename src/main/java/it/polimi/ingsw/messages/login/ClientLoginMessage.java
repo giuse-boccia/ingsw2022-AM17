@@ -3,7 +3,7 @@ package it.polimi.ingsw.messages.login;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.constants.Constants;
 import it.polimi.ingsw.messages.Message;
 
 public class ClientLoginMessage extends Message {
@@ -14,7 +14,7 @@ public class ClientLoginMessage extends Message {
 
     public ClientLoginMessage() {
         super();
-        setStatus(Messages.STATUS_LOGIN);
+        setStatus(Constants.STATUS_LOGIN);
     }
 
     public String getUsername() {

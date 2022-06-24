@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.characters;
 
-import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.*;
@@ -75,7 +75,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
                 ArrayList<Student> dstStudents = getStudentListFromColorList(dstColors, curDashBoard.getDiningRoom());
                 swapStudents(curDashBoard.getEntrance(), curDashBoard.getDiningRoom(), srcStudents, dstStudents);
             }
-            default -> throw new InvalidCharacterException(Messages.INVALID_CHARACTER);
+            default -> throw new InvalidCharacterException(MessageResourceBundle.getMessage("invalid_character"));
 
         }
     }
@@ -108,10 +108,10 @@ public class MovingCharacter extends GameboardCharacter implements Place {
      */
     private void swapStudents(Place src, Place dst, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidActionException, InvalidStudentException {
         if (srcStudents.size() > numStudents) {
-            throw new InvalidActionException(Messages.MOVING_MORE_STUDENTS);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("moving_more_students"));
         }
         if (srcStudents.size() != dstStudents.size()) {
-            throw new InvalidActionException(Messages.INVALID_SWAP);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("invalid_swap"));
         }
         for (int i = 0; i < srcStudents.size(); i++) {
             Student firstStudentToSwap = srcStudents.get(i);
@@ -132,11 +132,11 @@ public class MovingCharacter extends GameboardCharacter implements Place {
      */
     private void moveStudentAwayFromCard(Place destination, List<Color> srcColors) throws StudentNotOnTheCardException, InvalidActionException, InvalidStudentException {
         if (destination == null) {
-            throw new InvalidActionException(Messages.INVALID_ARGUMENT);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("invalid_argument"));
         }
         ArrayList<Student> srcStudents = getStudentListFromColorList(srcColors, this);
         if (srcStudents.size() != 1) {
-            throw new InvalidActionException(Messages.MOVE_JUST_ONE);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("move_just_one"));
         }
         for (int i = 0; i < numStudents; i++) {
             this.giveStudent(destination, srcStudents.get(i));
@@ -154,13 +154,14 @@ public class MovingCharacter extends GameboardCharacter implements Place {
      */
     private ArrayList<Student> getStudentListFromColorList(List<Color> colors, Place source) throws StudentNotOnTheCardException, InvalidActionException {
         if (colors == null) {
-            throw new InvalidActionException(Messages.INVALID_ARGUMENT);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("invalid_argument"));
         }
         ArrayList<Student> res = new ArrayList<>();
         ArrayList<Student> sourceStudents = source.getStudents();
         for (Color color : colors) {
             Student toAdd = Students.findFirstStudentOfColor(sourceStudents, color);
-            if (toAdd == null) throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_FOUND);
+            if (toAdd == null)
+                throw new StudentNotOnTheCardException(MessageResourceBundle.getMessage("student_not_found"));
             res.add(toAdd);
             sourceStudents.remove(toAdd);
         }
@@ -170,7 +171,7 @@ public class MovingCharacter extends GameboardCharacter implements Place {
     @Override
     public void giveStudent(Place destination, Student student) throws InvalidStudentException, InvalidActionException {
         if (student == null || !students.contains(student)) {
-            throw new InvalidStudentException(Messages.STUDENT_NOT_ON_CHARACTER);
+            throw new InvalidStudentException(MessageResourceBundle.getMessage("student_not_on_character"));
         }
         students.remove(student);
         destination.receiveStudent(student);

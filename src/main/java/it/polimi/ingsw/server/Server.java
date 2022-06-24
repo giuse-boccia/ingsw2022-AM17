@@ -2,7 +2,6 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.Settings;
 import it.polimi.ingsw.constants.Constants;
-import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 
@@ -71,11 +70,11 @@ public class Server {
         controller.startPingPong();
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println(Messages.SERVER_READY);
+            System.out.println(MessageResourceBundle.getMessage("server_ready"));
             while (true) {
                 try {
                     Socket socket = serverSocket.accept();
-                    System.out.println(Messages.NEW_SOCKET + socket.getRemoteSocketAddress());
+                    System.out.println(MessageResourceBundle.getMessage("new_socket") + socket.getRemoteSocketAddress());
                     ClientHandler ch = new ClientHandler(socket, controller);
                     executor.submit(ch);
                 } catch (IOException e) {
