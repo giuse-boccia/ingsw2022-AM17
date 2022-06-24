@@ -1,6 +1,5 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
@@ -160,7 +159,7 @@ class ControllerTest {
         assertDoesNotThrow(() -> controller.handleMessage(createGame, ch));
 
         ServerLoginMessage gameCreatedMessage = ServerLoginMessage.fromJson(ch.getJson());
-        assertEquals(Messages.GAME_CREATED, gameCreatedMessage.getDisplayText());
+        assertEquals(MessageResourceBundle.getMessage("game_created"), gameCreatedMessage.getDisplayText());
     }
 
     /**

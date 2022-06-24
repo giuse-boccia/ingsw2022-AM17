@@ -163,7 +163,7 @@ public class Controller {
         System.out.println("GAME CREATED | " + numPlayers + " players | " + (isExpert ? "expert" : "non expert") + " mode");
 
         if (!startGameIfReady()) {
-            ServerLoginMessage message = getServerLoginMessage(Messages.GAME_CREATED);
+            ServerLoginMessage message = getServerLoginMessage(MessageResourceBundle.getMessage("game_created"));
             for (PlayerClient player : loggedUsers) {
                 player.getCommunicable().sendMessageToClient(message.toJson());
             }

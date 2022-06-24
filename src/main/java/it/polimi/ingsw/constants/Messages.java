@@ -10,7 +10,6 @@ public class Messages {
     public static final String STATUS_UPDATE = "UPDATE";
     public static final String STATUS_END = "END";
 
-    public static final String GAME_RESUMING = "The game is resuming";
     public static final String GAME_CREATED = "A new game was created!";
     public static final String GAME_LOADED = "A saved game was loaded!";
     public static final String SERVER_READY = "Server ready, waiting for clients...";
