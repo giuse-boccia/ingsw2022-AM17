@@ -6,7 +6,7 @@ import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
-import it.polimi.ingsw.constants.Constants;
+import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;

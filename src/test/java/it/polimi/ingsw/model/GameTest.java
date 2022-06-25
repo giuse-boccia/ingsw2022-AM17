@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.constants.Constants;
+import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.game_actions.Round;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;

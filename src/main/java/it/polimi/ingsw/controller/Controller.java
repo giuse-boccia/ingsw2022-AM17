@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import com.google.gson.JsonSyntaxException;
-import it.polimi.ingsw.constants.Constants;
+import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.exceptions.GameEndedException;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.Message;

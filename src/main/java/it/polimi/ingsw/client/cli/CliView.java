@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.cli;
 
-import it.polimi.ingsw.constants.ConsoleColors;
-import it.polimi.ingsw.constants.Constants;
+import it.polimi.ingsw.utils.constants.ConsoleColors;
+import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;

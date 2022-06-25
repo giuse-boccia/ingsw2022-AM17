@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.Settings;
-import it.polimi.ingsw.constants.Constants;
+import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 

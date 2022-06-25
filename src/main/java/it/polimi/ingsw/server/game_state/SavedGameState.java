@@ -2,7 +2,7 @@ package it.polimi.ingsw.server.game_state;
 
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.constants.Constants;
+import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
