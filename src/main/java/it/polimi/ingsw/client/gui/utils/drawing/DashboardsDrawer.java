@@ -61,13 +61,13 @@ public class DashboardsDrawer {
         Text text;
 
         if (!isExpert) {
-            text = new Text("↑ " + player.getName());
+            text = new Text("↑ | " + player.getName());
             text.setX(startingX);
             text.setY(pageHeight * 0.02);
             text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.PARAGRAPH_FONT_SIZE));
             playerInfo.getChildren().add(text);
         } else {
-            text = new Text("↑ " + player.getName() + " | " + player.getNumCoins() + "x");
+            text = new Text("↑ | " + player.getName() + " | " + player.getNumCoins() + "x");
             text.setX(startingX);
             text.setY(pageHeight * 0.02);
             text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.PARAGRAPH_FONT_SIZE));
@@ -117,13 +117,13 @@ public class DashboardsDrawer {
         playerInfo.setLayoutX(megaDashboardWidth * 0.4);
         playerInfo.setLayoutY(pageHeight - megaDashboardHeight - pageHeight * 0.05);
         if (!isExpert) {
-            text = new Text("↓ " + player.getName());
+            text = new Text("↓ | " + player.getName());
             text.setX(0);
             text.setY(0);
             text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.TITLE_FONT_SIZE));
             playerInfo.getChildren().add(text);
         } else {
-            text = new Text("↓ " + player.getName() + " | " + player.getNumCoins() + "x");
+            text = new Text("↓ | " + player.getName() + " | " + player.getNumCoins() + "x");
             text.setX(0);
             text.setY(0);
             text.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.BOLD, DrawingConstants.TITLE_FONT_SIZE));
