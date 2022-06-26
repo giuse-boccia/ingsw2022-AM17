@@ -31,7 +31,15 @@ public class IslandsDrawer {
         double radius = pageHeight * DrawingConstants.ISLAND_RADIUS;
         for (int i = 0; i < islands.size(); i++) {
             // Draw the Island background
-            String path = "/gameboard/islands/Isola_" + ((i % 3) + 1) + ".png";
+            String path = "";
+            switch (islands.get(i).getNumOfTowers()) {
+                case 0, 1 -> path = "/gameboard/islands/Isola_" + ((i % 3) + 1) + ".png";
+                case 2 -> path = "/gameboard/islands/2_isole.png";
+                case 3 -> path = "/gameboard/islands/3_isole.png";
+                case 4 -> path = "/gameboard/islands/4_isole.png";
+                case 5 -> path = "/gameboard/islands/5_isole.png";
+                default -> path = "/gameboard/islands/6_isole.png";
+            }
             ImageView island = UtilsDrawer.getImageView(path, pageWidth * DrawingConstants.ISLAND_DIMENSION);
             Bounds imageBounds = island.boundsInParentProperty().get();
             double islandWidth = imageBounds.getWidth();
@@ -56,7 +64,7 @@ public class IslandsDrawer {
 
             if (i == gameState.getMNIndex()) {
                 bp.getChildren().add(getMotherNatureImage(
-                        islandWidth * DrawingConstants.ISLAND_MN_DIM, islandHeight / DrawingConstants.ISLAND_MN_Y_DIVISOR));
+                        islandWidth * DrawingConstants.ISLAND_MN_DIM, islandHeight * DrawingConstants.ISLAND_MN_Y));
             }
         }
 
@@ -68,18 +76,19 @@ public class IslandsDrawer {
      *
      * @param island      the {@link IslandState} to draw all the elements of
      * @param islandIndex the index of the input {@link  IslandState} inside the array of islands
-     * @param islandX     the x position of the upper-left angle of the island
-     * @param islandY     the y position of the upper-left angle of the island
+     * @param initialX    the x position of the upper-left angle of VBox containing the elements
+     * @param initialY    the y position of the upper-left angle of VBox containing the elements
      * @param islandWidth the width of the drawn island
      * @return a {@code VBox} containing all the elements on the input island
      */
-    private static VBox getElementsOnIsland(IslandState island, int islandIndex, double islandX, double islandY, double islandWidth) {
+    private static VBox getElementsOnIsland(IslandState island, int islandIndex, double initialX, double initialY, double islandWidth) {
         VBox elementsOnIsland = new VBox();
         GridPane studentsOnIsland = new GridPane();
         HBox towersOnIsland = new HBox();
+        towersOnIsland.setSpacing(DrawingConstants.TOWERS_SPACING_ON_ISLAND);
         HBox noEntryOnIsland = new HBox();
-        elementsOnIsland.setLayoutX(islandX);
-        elementsOnIsland.setLayoutY(islandY);
+        elementsOnIsland.setLayoutX(initialX);
+        elementsOnIsland.setLayoutY(initialY);
         elementsOnIsland.getChildren().add(studentsOnIsland);
         elementsOnIsland.getChildren().add(towersOnIsland);
         elementsOnIsland.getChildren().add(noEntryOnIsland);
@@ -125,9 +134,9 @@ public class IslandsDrawer {
      */
     private static ImageView getMotherNatureImage(double mnWidth, double mnY) {
         ImageView mn = UtilsDrawer.getImageView("/gameboard/mother_nature.png", mnWidth);
-        BorderPane motherNature = new BorderPane(mn);
-        motherNature.setLayoutX(0);
-        motherNature.setLayoutY(mnY);
+        mn.setLayoutX(0);
+        mn.setLayoutY(mnY);
+        System.out.println("Y: " + mnY);
         return mn;
     }
 

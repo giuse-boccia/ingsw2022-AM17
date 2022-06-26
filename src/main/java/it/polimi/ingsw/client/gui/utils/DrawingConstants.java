@@ -86,8 +86,9 @@ public class DrawingConstants {
     public static final int ISLAND_TOWER_DIVISOR = 6;
     public static final int ISLAND_STUDENT_DIVISOR = 8;
     public static final int ISLAND_NOENTRY_DIVISOR = 8;
-    public static final int ISLAND_MN_Y_DIVISOR = 3;
+    public static final double ISLAND_MN_Y = 0.28;
     public static final double ISLAND_MN_DIM = 0.3;
+    public static final double TOWERS_SPACING_ON_ISLAND = -50;
 
     // Towers constants
     public static final double INITIAL_X_OFFSET_TOWERS = 0.80515;
