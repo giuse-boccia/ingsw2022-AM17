@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui.utils.drawing;
 
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
+import it.polimi.ingsw.utils.constants.Paths;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -21,7 +22,7 @@ public class UtilsDrawer {
      * @return an {@code ImageView} containing the {@code Image} from the given path
      */
     public static ImageView getCoinImageView(double x, double y, double fitWidth) {
-        ImageView iv = new ImageView(new Image("/gameboard/Moneta_base.png"));
+        ImageView iv = new ImageView(new Image(Paths.COIN));
         iv.setPreserveRatio(true);
         iv.setFitWidth(fitWidth);
         iv.setX(x);

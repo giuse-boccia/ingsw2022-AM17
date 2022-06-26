@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
 import it.polimi.ingsw.server.game_state.CharacterState;
+import it.polimi.ingsw.utils.constants.Paths;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -33,7 +34,7 @@ public class CharactersDrawer {
         double characterY = pageHeight / DrawingConstants.CHARACTER_Y_DIVISOR;
 
         for (CharacterState character : characters) {
-            String imagePath = "/gameboard/characters/" + character.getCharacterName() + ".jpg";
+            String imagePath = Paths.CHARACTER_START + character.getCharacterName() + Paths.JPG;
             ImageView characterImage = UtilsDrawer.getImageView(imagePath, pageWidth * DrawingConstants.CHARACTER_CARD_PROPORTION);
 
             BorderPane characterToAdd = new BorderPane(characterImage);
@@ -68,8 +69,8 @@ public class CharactersDrawer {
                 grid.setLayoutY(characterY - 2 * pageWidth * DrawingConstants.CHARACTER_STUDENT_DIM);
                 List<BorderPane> studentsOnCharacter = new ArrayList<>();
                 for (int i = 0; i < character.getStudents().size(); i++) {
-                    String studentPath = "/gameboard/students/student_" +
-                            character.getStudents().get(i).getColor().toString().toLowerCase() + ".png";
+                    String studentPath = Paths.STUDENT_START +
+                            character.getStudents().get(i).getColor().toString().toLowerCase() + Paths.PNG;
                     ImageView student = UtilsDrawer.getImageView(studentPath, pageWidth * DrawingConstants.CHARACTER_STUDENT_DIM);
 
                     BorderPane studentPane = new BorderPane(student);

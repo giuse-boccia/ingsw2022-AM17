@@ -12,6 +12,7 @@ import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.server.game_state.GameState;
+import it.polimi.ingsw.utils.constants.Paths;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -169,7 +170,7 @@ public class GuiView extends Application {
             AnchorPane root = new AnchorPane();
             root.setId(DrawingConstants.ID_ROOT_GAME);
             scene = new Scene(root, screenWidth, screenHeight);
-            scene.getStylesheets().add("/css/style.css");
+            scene.getStylesheets().add(Paths.STYLE);
 
             ActionController newController = new ActionController();
             newController.setRoot(root);
@@ -313,7 +314,7 @@ public class GuiView extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         GuiView.stage = stage;
-        stage.getIcons().add(new Image("/gameboard/cranio_logo.png"));
+        stage.getIcons().add(new Image(Paths.CRANIO_LOGO));
         currentSceneName = DrawingConstants.RESOURCE_LOGIN;
         FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/login.fxml"));
 

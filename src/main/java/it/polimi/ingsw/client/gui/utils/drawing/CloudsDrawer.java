@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.gui.utils.drawing;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
 import it.polimi.ingsw.server.game_state.CloudState;
+import it.polimi.ingsw.utils.constants.Paths;
 import javafx.geometry.Bounds;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -54,7 +55,7 @@ public class CloudsDrawer {
      * @return an {@code AnchorPane} containing the given cloud with the correct students on it
      */
     private static AnchorPane getCloudWithStudents(CloudState cloud, double pageWidth, double pageHeight) {
-        ImageView cloudBackground = new ImageView(new Image("/gameboard/clouds/cloud_card.png"));
+        ImageView cloudBackground = new ImageView(new Image(Paths.CLOUD));
         cloudBackground.setPreserveRatio(true);
         cloudBackground.setFitHeight(pageHeight * DrawingConstants.CLOUD_HEIGHT);
 
@@ -67,8 +68,8 @@ public class CloudsDrawer {
 
         if (cloud.getStudents() != null) {
             for (int j = 0; j < cloud.getStudents().size(); j++) {
-                String studentPath = "/gameboard/students/student_" +
-                        cloud.getStudents().get(j).getColor().toString().toLowerCase() + ".png";
+                String studentPath = Paths.STUDENT_START +
+                        cloud.getStudents().get(j).getColor().toString().toLowerCase() + Paths.PNG;
                 ImageView student = UtilsDrawer.getImageView(studentPath, pageWidth * DrawingConstants.STUDENT_ON_CLOUD_DIMENSION);
 
                 studentsPane.add(student, j % 2, j / 2);

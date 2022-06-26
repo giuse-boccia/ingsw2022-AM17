@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.server.game_state.PlayerState;
+import it.polimi.ingsw.utils.constants.Paths;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -30,7 +31,7 @@ public class DashboardsDrawer {
      * @param username   the username of the player who owns the {@code Dashboard}
      */
     public static BorderPane drawDashboard(PlayerState player, double pageHeight, VBox vBox, String username) {
-        ImageView dashboardImage = new ImageView(new Image("/gameboard/Plancia_DEF.png"));
+        ImageView dashboardImage = new ImageView(new Image(Paths.DASHBOARD));
         double otherDashboardHeight = pageHeight * DrawingConstants.OTHER_DASHBOARD_HEIGHT;
         dashboardImage.setPreserveRatio(true);
         dashboardImage.setFitHeight(otherDashboardHeight);
@@ -88,7 +89,7 @@ public class DashboardsDrawer {
      * @param username   the username of the {@code Player} ehose GUI will be drawn the given {@code GameState} on
      */
     public static void drawMegaDashboard(PlayerState player, double pageHeight, AnchorPane root, String username) {
-        ImageView dashboardImage = new ImageView(new Image("/gameboard/Plancia_DEF.png"));
+        ImageView dashboardImage = new ImageView(new Image(Paths.DASHBOARD));
         double megaDashboardHeight = pageHeight * DrawingConstants.MEGA_DASHBOARD_HEIGHT;
         dashboardImage.setPreserveRatio(true);
         dashboardImage.setFitHeight(megaDashboardHeight);
@@ -192,7 +193,7 @@ public class DashboardsDrawer {
     private static void addStudentsToEntrance(PlayerState player, String username, double dashboardWidth, GridPane entrancePane) {
         for (int i = 0; i < player.getEntrance().size(); i++) {
             Student s = player.getEntrance().get(i);
-            String resourceName = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
+            String resourceName = Paths.STUDENT_START + s.getColor().toString().toLowerCase() + Paths.PNG;
             ImageView student = UtilsDrawer.getImageView(resourceName, dashboardWidth / DrawingConstants.STUDENT_DIMENSION_DIVISOR);
             student.setOnMouseClicked(mouseEvent -> ObjectClickListeners.setStudentClicked(s.getColor(), student));
 
@@ -218,7 +219,7 @@ public class DashboardsDrawer {
         HashMap<Color, Integer> diningStudents = new HashMap<>();
         for (int i = 0; i < player.getDining().size(); i++) {
             Student s = player.getDining().get(i);
-            String resourceName = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
+            String resourceName = Paths.STUDENT_START + s.getColor().toString().toLowerCase() + Paths.PNG;
             ImageView student = UtilsDrawer.getImageView(resourceName, dashboardWidth / DrawingConstants.STUDENT_DIMENSION_DIVISOR);
 
             int row = colorsInOrder.indexOf(s.getColor());
@@ -267,7 +268,7 @@ public class DashboardsDrawer {
         for (int i = 0; i < colorsInOrder.size(); i++) {
             Color color = colorsInOrder.get(i);
             if (player.getOwnedProfessors().contains(color)) {
-                String path = "/gameboard/professors/teacher_" + color.toString().toLowerCase() + ".png";
+                String path = Paths.PROFESSOR_START + color.toString().toLowerCase() + Paths.PNG;
                 ImageView professor = UtilsDrawer.getImageView(path, dashboardWidth / DrawingConstants.PROFESSOR_DIMENSION_DIVISOR);
                 professor.setRotate(DrawingConstants.PROFESSOR_ROTATION);
 
@@ -291,7 +292,7 @@ public class DashboardsDrawer {
      */
     private static void addAllTowersToTowerSpace(PlayerState player, double dashboardWidth, GridPane towers) {
         for (int i = 0; i < player.getRemainingTowers(); i++) {
-            String path = "/gameboard/towers/" + player.getTowerColor().toString().toLowerCase() + "_tower.png";
+            String path = Paths.TOWER_START + player.getTowerColor().toString().toLowerCase() + Paths.TOWER_END;
             ImageView tower = UtilsDrawer.getImageView(path, dashboardWidth * DrawingConstants.TOWERS_SIZE);
 
             towers.add(tower, i % 2, i / 2);

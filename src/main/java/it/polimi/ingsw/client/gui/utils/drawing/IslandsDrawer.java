@@ -7,6 +7,7 @@ import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.server.game_state.GameState;
 import it.polimi.ingsw.server.game_state.IslandState;
+import it.polimi.ingsw.utils.constants.Paths;
 import javafx.geometry.Bounds;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -32,13 +33,10 @@ public class IslandsDrawer {
         for (int i = 0; i < islands.size(); i++) {
             // Draw the Island background
             String path = "";
-            switch (islands.get(i).getNumOfTowers()) {
-                case 0, 1 -> path = "/gameboard/islands/Isola_" + ((i % 3) + 1) + ".png";
-                case 2 -> path = "/gameboard/islands/2_isole.png";
-                case 3 -> path = "/gameboard/islands/3_isole.png";
-                case 4 -> path = "/gameboard/islands/4_isole.png";
-                case 5 -> path = "/gameboard/islands/5_isole.png";
-                default -> path = "/gameboard/islands/6_isole.png";
+            if (islands.get(i).getNumOfTowers() <= 1) {
+                path = Paths.ISLAND_START + ((i % 3) + 1) + Paths.PNG;
+            } else {
+                path = Paths.ISLANDS_START + islands.get(i).getNumOfTowers() + Paths.ISLANDS_END;
             }
             ImageView island = UtilsDrawer.getImageView(path, pageWidth * DrawingConstants.ISLAND_DIMENSION);
             Bounds imageBounds = island.boundsInParentProperty().get();
@@ -95,7 +93,7 @@ public class IslandsDrawer {
 
         // Add the island placed on the island
         for (int j = 0; j < island.getNumOfTowers(); j++) {
-            String towerPath = "/gameboard/towers/" + island.getTowerColor().toString().toLowerCase() + "_tower.png";
+            String towerPath = Paths.TOWER_START + island.getTowerColor().toString().toLowerCase() + Paths.TOWER_END;
             ImageView tower = UtilsDrawer.getImageView(towerPath, islandWidth / DrawingConstants.ISLAND_TOWER_DIVISOR);
             towersOnIsland.getChildren().add(tower);
         }
@@ -104,7 +102,7 @@ public class IslandsDrawer {
         List<BorderPane> studentsToDraw = new ArrayList<>();
         for (int j = 0; j < island.getStudents().size(); j++) {
             Student s = island.getStudents().get(j);
-            String studentPath = "/gameboard/students/student_" + s.getColor().toString().toLowerCase() + ".png";
+            String studentPath = Paths.STUDENT_START + s.getColor().toString().toLowerCase() + Paths.PNG;
             ImageView student = UtilsDrawer.getImageView(studentPath, islandWidth / DrawingConstants.ISLAND_STUDENT_DIVISOR);
             BorderPane studentBorderPane = new BorderPane(student);
             studentBorderPane.setOnMouseClicked(event ->
@@ -117,7 +115,7 @@ public class IslandsDrawer {
 
         // Draw all the noEntry pawn placed on the island, if any
         for (int j = 0; j < island.getNoEntryNum(); j++) {
-            ImageView noEntry = UtilsDrawer.getImageView("/gameboard/deny_island_icon.png", islandWidth / DrawingConstants.ISLAND_NOENTRY_DIVISOR);
+            ImageView noEntry = UtilsDrawer.getImageView(Paths.DENY, islandWidth / DrawingConstants.ISLAND_NOENTRY_DIVISOR);
             BorderPane noEntryBorderPane = new BorderPane(noEntry);
             noEntryOnIsland.getChildren().add(noEntryBorderPane);
         }
@@ -133,7 +131,7 @@ public class IslandsDrawer {
      * @return an {@code ImageView} representing mother nature
      */
     private static BorderPane getMotherNatureImage(double mnWidth, double mnY) {
-        ImageView mn = UtilsDrawer.getImageView("/gameboard/mother_nature.png", mnWidth);
+        ImageView mn = UtilsDrawer.getImageView(Paths.MN, mnWidth);
         BorderPane motherNature = new BorderPane(mn);
         motherNature.setLayoutX(DrawingConstants.ISLAND_MN_X);
         motherNature.setLayoutY(mnY);

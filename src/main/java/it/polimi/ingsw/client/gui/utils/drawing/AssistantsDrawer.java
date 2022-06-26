@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
 import it.polimi.ingsw.server.game_state.GameState;
 import it.polimi.ingsw.server.game_state.PlayerState;
+import it.polimi.ingsw.utils.constants.Paths;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -53,7 +54,7 @@ public class AssistantsDrawer {
 
         // Remember that the range of possible assistant values is between 1 and 10
         for (int value : assistants) {
-            String path = "/gameboard/assistants/Assistente (" + value + ").png";
+            String path = Paths.ASSISTANT_START + value + Paths.ASSISTANT_END;
             ImageView assistant = UtilsDrawer.getImageView(path, DrawingConstants.ASSISTANT_BASE_WIDTH);
 
             BorderPane assistantPane = new BorderPane(assistant);
