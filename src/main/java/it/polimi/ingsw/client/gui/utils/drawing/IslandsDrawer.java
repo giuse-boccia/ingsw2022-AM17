@@ -132,12 +132,12 @@ public class IslandsDrawer {
      * @param mnY     the y position of the upper-left angle of mother nature image
      * @return an {@code ImageView} representing mother nature
      */
-    private static ImageView getMotherNatureImage(double mnWidth, double mnY) {
+    private static BorderPane getMotherNatureImage(double mnWidth, double mnY) {
         ImageView mn = UtilsDrawer.getImageView("/gameboard/mother_nature.png", mnWidth);
-        mn.setLayoutX(0);
-        mn.setLayoutY(mnY);
-        System.out.println("Y: " + mnY);
-        return mn;
+        BorderPane motherNature = new BorderPane(mn);
+        motherNature.setLayoutX(DrawingConstants.ISLAND_MN_X);
+        motherNature.setLayoutY(mnY);
+        return motherNature;
     }
 
 }

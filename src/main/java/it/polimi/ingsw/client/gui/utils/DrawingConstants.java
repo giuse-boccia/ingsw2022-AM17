@@ -81,14 +81,15 @@ public class DrawingConstants {
     public static final double ISLAND_DIMENSION = 0.12;
     public static final double ISLAND_X = 0.73;
     public static final double ISLAND_Y = 0.485;
-    public static final double ISLAND_ELEMENTS_X = 0.019;
+    public static final double ISLAND_ELEMENTS_X = 0.022;
     public static final double ISLAND_ELEMENTS_Y = 0.025;
     public static final int ISLAND_TOWER_DIVISOR = 6;
     public static final int ISLAND_STUDENT_DIVISOR = 8;
     public static final int ISLAND_NOENTRY_DIVISOR = 8;
-    public static final double ISLAND_MN_Y = 0.28;
+    public static final double ISLAND_MN_Y = 0.4;
+    public static final double ISLAND_MN_X = -15;
     public static final double ISLAND_MN_DIM = 0.3;
-    public static final double TOWERS_SPACING_ON_ISLAND = -50;
+    public static final double TOWERS_SPACING_ON_ISLAND = -15;
 
     // Towers constants
     public static final double INITIAL_X_OFFSET_TOWERS = 0.80515;
