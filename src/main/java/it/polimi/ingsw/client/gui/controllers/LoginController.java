@@ -2,24 +2,32 @@ package it.polimi.ingsw.client.gui.controllers;
 
 import it.polimi.ingsw.client.gui.GuiView;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
+import it.polimi.ingsw.client.gui.utils.languages.FlagListCell;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
 import it.polimi.ingsw.utils.RandomNicknameGenerator;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 
 import java.util.List;
 
 public class LoginController implements GuiController {
 
+    @FXML
+    private ComboBox<String> languagePicker;
     @FXML
     private Button requestUsernameButton;
     @FXML
@@ -29,8 +37,15 @@ public class LoginController implements GuiController {
 
     @FXML
     private void initialize() {
-        usernameText.setText(MessageResourceBundle.getMessage("insert_username_title"));
-        requestUsernameButton.setText(MessageResourceBundle.getMessage("get_random_username"));
+        setTextToElements();
+        languagePicker.setItems(FXCollections.observableArrayList("en", "it"));
+        ListCell<String> cell = new FlagListCell();
+        languagePicker.setButtonCell(cell);
+        languagePicker.setCellFactory(stringListView -> new FlagListCell());
+        languagePicker.setValue(MessageResourceBundle.getCurrentLanguageTag());
+        languagePicker.getSelectionModel().selectedItemProperty().addListener(
+                (obs, oldTag, newTag) -> onLanguageSelected(newTag)
+        );
     }
 
     public LoginController() {
@@ -64,10 +79,33 @@ public class LoginController implements GuiController {
         GuiView.getGui().getCurrentObserverHandler().notifyAllUsernameObservers(username);
     }
 
+    /**
+     * Function called when the user clicks on the Random username button
+     *
+     * @param event the user's click on the Random username button
+     */
     public void onRandomUsernameRequested(MouseEvent event) {
         String username = RandomNicknameGenerator.getRandomNickname();
         GuiView.getGui().setTmpUsername(username);
         GuiView.getGui().getCurrentObserverHandler().notifyAllUsernameObservers(username);
+    }
+
+    /**
+     * Changes the language of the application according to the selected tag
+     *
+     * @param tag {@code String} identifying the selected language
+     */
+    private void onLanguageSelected(String tag) {
+        MessageResourceBundle.initializeBundle(tag);
+        setTextToElements();
+    }
+
+    /**
+     * Writes the correct text message for each element in the scene
+     */
+    private void setTextToElements() {
+        usernameText.setText(MessageResourceBundle.getMessage("insert_username_title"));
+        requestUsernameButton.setText(MessageResourceBundle.getMessage("get_random_username"));
     }
 
     @Override

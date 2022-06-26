@@ -127,4 +127,7 @@ public class DrawingConstants {
 
     // Character popup
     public static final double CHARACTER_HOVER_POPUP_WIDTH = 300;
+
+    // Login screen
+    public static final double FLAG_ICON_WIDTH = 20;
 }

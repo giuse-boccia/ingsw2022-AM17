@@ -36,4 +36,13 @@ public class MessageResourceBundle {
         messages = ResourceBundle.getBundle("messages/messages", currentLocale);
     }
 
+    /**
+     * Returns the language tag of the message {@code ResourceBundle} currently used
+     *
+     * @return the language tag of the resource currently used
+     */
+    public static String getCurrentLanguageTag() {
+        return messages.getLocale().toLanguageTag();
+    }
+
 }
