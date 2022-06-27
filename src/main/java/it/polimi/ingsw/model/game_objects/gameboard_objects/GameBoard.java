@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
+import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
@@ -15,9 +16,9 @@ import java.util.stream.Collectors;
 
 public class GameBoard {
     private final Game game;
-    private final Bag bag;
-    private ArrayList<Island> islands;
-    private ArrayList<Cloud> clouds;
+    private Bag bag;
+    private List<Island> islands;
+    private List<Cloud> clouds;
     private Character[] characters;
     private Map<Color, Player> professors;
     private int motherNatureIndex;
@@ -33,6 +34,22 @@ public class GameBoard {
         this.clouds = initClouds();
         this.islands = initIslands();
         this.characters = initCharacters();
+    }
+
+    public void setBag(Bag bag) {
+        this.bag = bag;
+    }
+
+    public void setIslands(List<Island> islands) {
+        this.islands = islands;
+    }
+
+    public void setClouds(List<Cloud> clouds) {
+        this.clouds = clouds;
+    }
+
+    public void setProfessors(Map<Color, Player> professors) {
+        this.professors = professors;
     }
 
     /**
@@ -90,9 +107,9 @@ public class GameBoard {
         ArrayList<Island> result = new ArrayList<>();
 
         ArrayList<Student> students = Students.getSomeStudents(2);
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < Constants.MAX_ISLANDS; i++) {
             Island newIsland = new Island();
-            if (i != motherNatureIndex && i != ((motherNatureIndex + 6) % 12)) {
+            if (i != motherNatureIndex && i != ((motherNatureIndex + (Constants.MAX_ISLANDS / 2)) % Constants.MAX_ISLANDS)) {
                 newIsland.receiveStudent(students.get(0));
                 students.remove(0);
             }
@@ -111,7 +128,7 @@ public class GameBoard {
         ArrayList<Cloud> result = new ArrayList<>();
         int numPlayers = game.getPlayers().size();
         for (int i = 0; i < numPlayers; i++) {
-            result.add(new Cloud(numPlayers % 2 == 0 ? 3 : 4));
+            result.add(new Cloud(numPlayers % 2 == 0 ? Constants.STUDENTS_ON_CLOUD_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.STUDENTS_ON_CLOUD_IN_THREE_PLAYER_GAME));
         }
         return result;
     }
@@ -155,7 +172,7 @@ public class GameBoard {
      * @param island the {@code Island} to be checked
      */
     private void mergeIfPossible(Island island) {
-        int indexOfIsland = islands.indexOf(island);
+        int indexOfIsland = island.getIndexIn(islands);
         Island right = islands.get((indexOfIsland + 1) % islands.size());
         Island left = islands.get((indexOfIsland + islands.size() - 1) % islands.size());
         if (left.getTowerColor() != null && left.getTowerColor() == island.getTowerColor()) {
@@ -167,20 +184,6 @@ public class GameBoard {
         } else if (right.getTowerColor() != null && right.getTowerColor() == island.getTowerColor())
             mergeIslands(island, right);
 
-    }
-
-    /**
-     * Checks if two islands are adjacent
-     *
-     * @param first  the first {@code Island}
-     * @param second the second {@code Island}
-     * @return true if the two islands are adjacent
-     */
-    private boolean areIslandsAdjacent(Island first, Island second) {
-        int firstIndex = islands.indexOf(first);
-        int secondIndex = islands.indexOf(second);
-        int check = (secondIndex - firstIndex + islands.size()) % islands.size();
-        return check == 1 || check == islands.size() - 1;
     }
 
     /**
@@ -197,9 +200,9 @@ public class GameBoard {
 
         // Move mother nature accordingly
         if (mnIsland == right) {
-            motherNatureIndex = islands.indexOf(left);
+            motherNatureIndex = left.getIndexIn(islands);
         } else {
-            motherNatureIndex = islands.indexOf(mnIsland);
+            motherNatureIndex = mnIsland.getIndexIn(islands);
         }
 
     }
@@ -283,5 +286,20 @@ public class GameBoard {
         return professors.keySet().stream()
                 .filter(color -> professors.get(color) == player)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GameBoard gameBoard = (GameBoard) o;
+
+        if (motherNatureIndex != gameBoard.motherNatureIndex) return false;
+        if (!bag.equals(gameBoard.bag)) return false;
+        if (!islands.equals(gameBoard.islands)) return false;
+        if (!clouds.equals(gameBoard.clouds)) return false;
+        if (!Arrays.equals(characters, gameBoard.characters)) return false;
+        return professors.equals(gameBoard.professors);
     }
 }

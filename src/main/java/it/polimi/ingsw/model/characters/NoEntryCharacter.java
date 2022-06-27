@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.exceptions.InvalidActionException;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
@@ -13,11 +14,11 @@ public class NoEntryCharacter extends GameboardCharacter {
 
     public NoEntryCharacter(CharacterName characterName, GameBoard gb) {
         super(characterName, gb);
-        noEntryNum = 4;
+        this.noEntryNum = 4;
     }
 
-    public NoEntryCharacter(CharacterName characterName, GameBoard gb, int noEntryNum) {
-        super(characterName, gb);
+    public NoEntryCharacter(CharacterName characterName, GameBoard gb, boolean hasCoin, int noEntryNum) {
+        super(characterName, gb, hasCoin);
         this.noEntryNum = noEntryNum;
     }
 
@@ -50,7 +51,11 @@ public class NoEntryCharacter extends GameboardCharacter {
      * @throws InvalidActionException if there are no noEntry tiles on the {@code Character}
      */
     private void removeNoEntry() throws InvalidActionException {
-        if (noEntryNum == 0) throw new InvalidActionException("There are no NoEntry pawns left on this card");
+        if (noEntryNum == 0) throw new InvalidActionException(MessageResourceBundle.getMessage("no_noentry"));
         noEntryNum--;
+    }
+
+    public int getNoEntryNum() {
+        return noEntryNum;
     }
 }

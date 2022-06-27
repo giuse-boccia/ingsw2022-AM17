@@ -24,4 +24,17 @@ public class Assistant {
     public Player getPlayer() {
         return player;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Assistant assistant = (Assistant) o;
+
+        if (numSteps != assistant.numSteps) return false;
+        if (value != assistant.value) return false;
+        // comparing only player name to avoid infinite recursion
+        return player.getName().equals(assistant.getPlayer().getName());
+    }
 }

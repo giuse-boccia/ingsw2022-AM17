@@ -1,13 +1,14 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidStudentException;
-import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.TowerColor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class Island implements Place {
 
@@ -21,6 +22,13 @@ public class Island implements Place {
         students = new ArrayList<>();
         noEntryNum = 0;
         numOfTowers = 0;
+    }
+
+    public Island(Collection<Student> students, TowerColor towerColor, int noEntryNum, int numOfTowers) {
+        this.students = students;
+        this.towerColor = towerColor;
+        this.noEntryNum = noEntryNum;
+        this.numOfTowers = numOfTowers;
     }
 
     public TowerColor getTowerColor() {
@@ -79,8 +87,23 @@ public class Island implements Place {
         this.numOfTowers += other.numOfTowers;
     }
 
+    /**
+     * Returns the index of this island in the given list of islands, or -1 if the island is not in the given list.
+     * Unlike List.indexOf(), this method uses pointer comparison (==) and not equals()
+     *
+     * @param islands a list of islands
+     * @return the index of this island in the given list
+     */
+    public int getIndexIn(List<Island> islands) {
+        for (int i = 0; i < islands.size(); i++) {
+            if (this == islands.get(i)) return i;
+        }
+
+        return -1;
+    }
+
     @Override
-    public void giveStudent(Place destination, Student student) throws InvalidStudentException {
+    public void giveStudent(Place destination, Student student) throws InvalidStudentException, InvalidActionException {
         if (student == null || !students.contains(student)) {
             throw new InvalidStudentException("This island doesn't contain this student");
         }
@@ -91,5 +114,18 @@ public class Island implements Place {
     @Override
     public void receiveStudent(Student student) {
         students.add(student);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Island island = (Island) o;
+
+        if (noEntryNum != island.noEntryNum) return false;
+        if (numOfTowers != island.numOfTowers) return false;
+        if (!students.equals(island.students)) return false;
+        return towerColor == island.towerColor;
     }
 }

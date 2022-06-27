@@ -1,19 +1,23 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.Settings;
+import it.polimi.ingsw.client.cli.CLI;
+import it.polimi.ingsw.client.gui.GUI;
+import it.polimi.ingsw.client.gui.GuiView;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.login.GameLobby;
-import it.polimi.ingsw.model.game_objects.Color;
-import it.polimi.ingsw.model.game_state.CharacterState;
-import it.polimi.ingsw.model.game_state.GameState;
+import it.polimi.ingsw.model.characters.CharacterName;
+import it.polimi.ingsw.server.game_state.CharacterState;
+import it.polimi.ingsw.server.game_state.GameState;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Client {
-    private static NetworkClient nc;
     private String username;
+    private String tmpUsername;
     private List<CharacterState> characters;
+    private ObserverHandler currentObserverHandler;
 
     /**
      * Starts correctly the {@code CLI} or the {@code GUI} accordingly to the user choice
@@ -25,77 +29,59 @@ public abstract class Client {
         String serverAddress = null;
         int serverPort = -1;
 
-        if (args[0].equalsIgnoreCase("cli")) {
-            client = new CLI();
-        } else {
+        if (args[0].equalsIgnoreCase("gui")) {
             client = new GUI();
-            new Thread(() -> GuiView.main(new String[]{})).start();
+            new Thread(() -> GuiView.main((GUI) client)).start();
+        } else {
+            client = new CLI();
         }
         if (args.length < 3) {
             try {
                 Settings settings = Settings.readPrefsFromFile();
                 if (settings.getAddress() == null) {
-                    client.gracefulTermination("Invalid server_address argument in settings.json");
+                    client.gracefulTermination(MessageResourceBundle.getMessage("cannot_connect_to_server"));
                 }
                 serverPort = settings.getPort();
                 serverAddress = settings.getAddress();
             } catch (IOException e) {
-                client.gracefulTermination("File settings.json not found. Please check documentation");
+                client.gracefulTermination(MessageResourceBundle.getMessage("json_not_found"));
             } catch (NumberFormatException e) {
-                client.gracefulTermination("Invalid server_port argument in settings.json");
+                client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
             }
         } else {
             try {
                 serverPort = Integer.parseInt(args[1]);
                 serverAddress = args[2];
             } catch (NumberFormatException e) {
-                client.gracefulTermination("Invalid server_port argument in settings.json");
+                client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
             }
         }
 
         if (serverPort < 1024 || serverPort > 65535) {
-            client.gracefulTermination("Invalid server_port argument. The port number has to be between 1024 and 65535");
+            client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
         }
 
-        nc = new NetworkClient(client, serverAddress, serverPort);
+        NetworkClient nc = new NetworkClient(client, serverAddress, serverPort);
         nc.connectToServer();
         nc.start();
     }
 
     /**
      * Asks the player to input a username
-     *
-     * @return the username string chosen by the player
      */
-    public abstract String askUsername() throws IOException;
+    public abstract void askUsername() throws IOException;
 
     /**
      * Asks the player to input the number of players
-     *
-     * @return an integer from 2 to 4 indicating the desired number of player
      */
-    public abstract int askNumPlayers() throws IOException;
-
-    /**
-     * Asks the player to choose whether to play in expert mode or not
-     *
-     * @return true if the player wants to play in expert mode, false otherwise
-     */
-    public abstract boolean askExpertMode() throws IOException;
+    public abstract void askNumPlayersAndExpertMode() throws IOException;
 
     /**
      * Shows the current state of the lobby
      *
      * @param gameLobby the {@code GameLobby} object containing the list of players
      */
-    public abstract void showCurrentLobby(GameLobby gameLobby);
-
-    /**
-     * Asks the player to pick a color
-     *
-     * @return the picked color
-     */
-    public abstract Color pickColor();
+    public abstract void showCurrentLobby(GameLobby gameLobby) throws IOException;
 
     /**
      * Closes the connection printing the provided message
@@ -112,11 +98,16 @@ public abstract class Client {
     public abstract void showMessage(String message);
 
     /**
-     * Asks the user to input a value to play an {@code Assistant}
+     * Shows the given message
      *
-     * @return the value chosen by the user
+     * @param message the message to be shown
      */
-    public abstract int getAssistantValue() throws IOException;
+    public abstract void showWarningMessage(String message);
+
+    /**
+     * Asks the user to input a value to play an {@code Assistant}
+     */
+    public abstract void getAssistantValue() throws IOException;
 
     /**
      * Shows the list of actions the user can choose from
@@ -128,45 +119,29 @@ public abstract class Client {
     /**
      * Makes the user choose an action from a list by inputting a number between 1 and bound
      *
-     * @param bound the maximum int the user can input to choose an action
-     * @return the index of the chose action
+     * @param actions the maximum int the user can input to choose an action
      */
-    public abstract int chooseAction(int bound) throws IOException;
+    public abstract void chooseAction(List<String> actions) throws IOException;
 
     /**
      * Asks the user to input a color
-     *
-     * @return the {@code Color} chosen by the user
      */
-    public abstract Color askStudentColor() throws IOException;
-
-    /**
-     * Asks the user to input the index of an {@code Island}
-     *
-     * @return the index of the chosen {@code Island}
-     */
-    public abstract int askIslandIndex() throws IOException;
+    public abstract void askMoveStudentToDining() throws IOException;
 
     /**
      * Asks the user to input the number of moves they want to make MotherNature do
-     *
-     * @return the number of moves chosen by the user
      */
-    public abstract int askNumStepsOfMotherNature() throws IOException;
+    public abstract void askNumStepsOfMotherNature() throws IOException;
 
     /**
      * Asks the user to input the index of an {@code Cloud}
-     *
-     * @return the index of the chosen {@code Cloud}
      */
-    public abstract int askCloudIndex() throws IOException;
+    public abstract void askCloudIndex() throws IOException;
 
     /**
      * Asks the user to input the index of an {@code Character}
-     *
-     * @return the index of the chosen {@code Character}
      */
-    public abstract int askCharacterIndex() throws IOException;
+    public abstract void askCharacterIndex() throws IOException;
 
     /**
      * Shows the list of {@code Characters} present in the {@code Game}, each one with an index starting from 1
@@ -178,9 +153,9 @@ public abstract class Client {
      *
      * @param maxBound      the maximum number of students which can be swapped
      * @param secondElement the second place where to swap the students from/to
-     * @return the {@code ArrayList} of colors of students to be swapped
+     * @param characterName the name of the selected {@code Character}
      */
-    public abstract ArrayList<Color> askColorListForSwapCharacters(int maxBound, String secondElement) throws IOException;
+    public abstract void askColorListForSwapCharacters(int maxBound, String secondElement, CharacterName characterName) throws IOException;
 
     /**
      * Ends the {@code Game} showing a message
@@ -197,6 +172,14 @@ public abstract class Client {
         this.username = username;
     }
 
+    public String getTmpUsername() {
+        return tmpUsername;
+    }
+
+    public void setTmpUsername(String tmpUsername) {
+        this.tmpUsername = tmpUsername;
+    }
+
     public List<CharacterState> getCharacters() {
         return characters;
     }
@@ -205,5 +188,56 @@ public abstract class Client {
         this.characters = characters;
     }
 
+    public ObserverHandler getCurrentObserverHandler() {
+        return currentObserverHandler;
+    }
+
+    public void setCurrentObserverHandler(ObserverHandler currentObserverHandler) {
+        this.currentObserverHandler = currentObserverHandler;
+    }
+
+    /**
+     * Updates the current {@code GameState} overwriting it with the given one
+     *
+     * @param gameState the {@code GameState} to overwrite over the current one
+     */
     public abstract void updateGameState(GameState gameState);
+
+    /**
+     * Asks the user the parameters to move a {@code Student} to an {@code Island}
+     */
+    public abstract void askMoveStudentToIsland() throws IOException;
+
+    /**
+     * Asks the user the parameters to move a {@code Student} from a {@code Character} card, which can be move1FromCardToIsland or move1FromCardToDining
+     *
+     * @param toIsland if true the {@code Character} being used is move1FromCardToIsland
+     */
+    public abstract void askToMoveOneStudentFromCard(boolean toIsland) throws IOException;
+
+    /**
+     * Asks the user an {@code Island} index to be used by the given {@code Character}
+     *
+     * @param characterName the given {@code Character} name
+     */
+    public abstract void askIslandIndexForCharacter(CharacterName characterName) throws IOException;
+
+    /**
+     * Asks the user to pick a {@code Color} to be used by the given passive {@code Character}
+     *
+     * @param characterName the given {@code Character} name
+     */
+    public abstract void pickColorForPassive(CharacterName characterName) throws IOException;
+
+    /**
+     * Plays the given {@code Character} without asking any parameter
+     *
+     * @param characterName the given {@code Character} name
+     */
+    public abstract void playCharacterWithoutArguments(CharacterName characterName) throws IOException;
+
+    /**
+     * Asks the user if they want to create a new {@code Game} or to load the previous one
+     */
+    public abstract void askCreateOrLoad() throws IOException;
 }

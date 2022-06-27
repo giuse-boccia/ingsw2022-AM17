@@ -1,12 +1,13 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.Settings;
+import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,20 +25,20 @@ public class Server {
                 Settings settings = Settings.readPrefsFromFile();
                 port = settings.getPort();
             } catch (IOException e) {
-                gracefulTermination("File settings.json not found. Please check documentation");
+                gracefulTermination(MessageResourceBundle.getMessage("json_not_found"));
             } catch (NumberFormatException e) {
-                gracefulTermination("Invalid server_port argument in settings.json");
+                gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
             }
         } else {
             try {
                 port = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                gracefulTermination("Invalid server_port");
+                gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
             }
         }
 
-        if (port < 1024 || port > 65535) {
-            gracefulTermination("Invalid server_port argument. The port number has to be between 1024 and 65535");
+        if (port < Constants.LOWER_BOUND_SERVER_PORT || port > Constants.UPPER_BOUND_SERVER_PORT) {
+            gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
         }
 
         Server server = new Server();
@@ -51,7 +52,7 @@ public class Server {
      */
     private static void gracefulTermination(String message) {
         System.out.println(message);
-        System.out.println("Application will now close...");
+        System.out.println(MessageResourceBundle.getMessage("graceful_term"));
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -69,11 +70,11 @@ public class Server {
         controller.startPingPong();
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server ready, waiting for clients...");
+            System.out.println(MessageResourceBundle.getMessage("server_ready"));
             while (true) {
                 try {
                     Socket socket = serverSocket.accept();
-                    System.out.println("New socket: " + socket.getRemoteSocketAddress());
+                    System.out.println(MessageResourceBundle.getMessage("new_socket") + socket.getRemoteSocketAddress());
                     ClientHandler ch = new ClientHandler(socket, controller);
                     executor.submit(ch);
                 } catch (IOException e) {
@@ -82,7 +83,7 @@ public class Server {
             }
             executor.shutdown();
         } catch (IOException e) {
-            gracefulTermination("The selected port is not available at the moment");
+            gracefulTermination(MessageResourceBundle.getMessage("port_not_available"));
         }
     }
 

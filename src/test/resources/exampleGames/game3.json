@@ -1,0 +1,535 @@
+{
+  "roundsPlayed": 5,
+  "bag": [
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "GREEN"
+    }
+  ],
+  "roundState": {
+    "firstPlayerIndex": 1,
+    "currentAssistantIndex": -1,
+    "isLastRound": false
+  },
+  "isExpert": true,
+  "MNIndex": 2,
+  "players": [
+    {
+      "name": "Giuseppe",
+      "towerColor": "WHITE",
+      "remainingTowers": 2,
+      "numCoins": 2,
+      "assistants": [
+        3,
+        4,
+        7,
+        9,
+        10
+      ],
+      "entrance": [
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "PINK"
+        }
+      ],
+      "dining": [
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "GREEN"
+        }
+      ],
+      "ownedProfessors": [
+        "GREEN"
+      ]
+    },
+    {
+      "name": "Diligent horse",
+      "towerColor": "BLACK",
+      "remainingTowers": 2,
+      "numCoins": 1,
+      "assistants": [
+        2,
+        7,
+        8,
+        9,
+        10
+      ],
+      "entrance": [
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "GREEN"
+        }
+      ],
+      "dining": [
+        {
+          "color": "RED"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "PINK"
+        }
+      ],
+      "ownedProfessors": [
+        "PINK",
+        "RED",
+        "BLUE"
+      ]
+    },
+    {
+      "name": "clod",
+      "towerColor": "GREY",
+      "remainingTowers": 2,
+      "numCoins": 4,
+      "assistants": [
+        1,
+        2,
+        5,
+        6,
+        10
+      ],
+      "entrance": [
+        {
+          "color": "RED"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "GREEN"
+        }
+      ],
+      "dining": [
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "GREEN"
+        }
+      ],
+      "ownedProfessors": [
+        "YELLOW"
+      ]
+    }
+  ],
+  "islands": [
+    {
+      "students": [
+        {
+          "color": "RED"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "RED"
+        }
+      ],
+      "towerColor": "WHITE",
+      "noEntryNum": 0,
+      "numOfTowers": 4
+    },
+    {
+      "students": [
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "BLUE"
+        }
+      ],
+      "towerColor": "BLACK",
+      "noEntryNum": 0,
+      "numOfTowers": 2
+    },
+    {
+      "students": [
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "YELLOW"
+        }
+      ],
+      "towerColor": "GREY",
+      "noEntryNum": 0,
+      "numOfTowers": 4
+    },
+    {
+      "students": [
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "BLUE"
+        }
+      ],
+      "towerColor": "BLACK",
+      "noEntryNum": 0,
+      "numOfTowers": 2
+    }
+  ],
+  "characters": [
+    {
+      "characterName": "ignoreTowers",
+      "cost": 4,
+      "hasCoin": true,
+      "noEntryNum": 0
+    },
+    {
+      "characterName": "resolveIsland",
+      "cost": 3,
+      "hasCoin": false,
+      "noEntryNum": 0
+    },
+    {
+      "characterName": "move1FromCardToDining",
+      "cost": 3,
+      "hasCoin": true,
+      "students": [
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "RED"
+        }
+      ],
+      "noEntryNum": 0
+    }
+  ],
+  "clouds": [
+    {
+      "students": [
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "GREEN"
+        }
+      ],
+      "maxStudents": 4
+    },
+    {
+      "students": [
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "RED"
+        }
+      ],
+      "maxStudents": 4
+    },
+    {
+      "students": [
+        {
+          "color": "RED"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "PINK"
+        }
+      ],
+      "maxStudents": 4
+    }
+  ]
+}

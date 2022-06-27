@@ -21,11 +21,7 @@ public class ActionHandler {
      * @param nc the {@code NetworkClient} of the {@code Client} to send the response message from
      */
     public static void handlePlayAssistant(NetworkClient nc) throws IOException {
-        int value = nc.getClient().getAssistantValue();
-        ActionArgs args = new ActionArgs();
-        args.setValue(value);
-        Action action = new Action("PLAY_ASSISTANT", args);
-        sendMessageToServer(nc, action);
+        nc.getClient().getAssistantValue();
     }
 
     /**
@@ -34,10 +30,7 @@ public class ActionHandler {
      * @param nc the {@code NetworkClient} of the {@code Client} to send the response message from
      */
     public static void handleMoveStudentToDining(NetworkClient nc) throws IOException {
-        Color chosenColor = nc.getClient().askStudentColor();
-        ActionArgs args = new ActionArgs();
-        args.setColor(chosenColor);
-        sendMessageToServer(nc, new Action("MOVE_STUDENT_TO_DINING", args));
+        nc.getClient().askMoveStudentToDining();
     }
 
     /**
@@ -46,12 +39,7 @@ public class ActionHandler {
      * @param nc the {@code NetworkClient} of the {@code Client} to send the response message from
      */
     public static void handleMoveStudentToIsland(NetworkClient nc) throws IOException {
-        Color chosenColor = nc.getClient().askStudentColor();
-        int islandIndex = nc.getClient().askIslandIndex() - 1;
-        ActionArgs args = new ActionArgs();
-        args.setIsland(islandIndex);
-        args.setColor(chosenColor);
-        sendMessageToServer(nc, new Action("MOVE_STUDENT_TO_ISLAND", args));
+        nc.getClient().askMoveStudentToIsland();
     }
 
     /**
@@ -60,10 +48,7 @@ public class ActionHandler {
      * @param nc the {@code NetworkClient} of the {@code Client} to send the response message from
      */
     public static void handleMoveMotherNature(NetworkClient nc) throws IOException {
-        int numSteps = nc.getClient().askNumStepsOfMotherNature();
-        ActionArgs args = new ActionArgs();
-        args.setNum_steps(numSteps);
-        sendMessageToServer(nc, new Action("MOVE_MN", args));
+        nc.getClient().askNumStepsOfMotherNature();
     }
 
     /**
@@ -72,10 +57,7 @@ public class ActionHandler {
      * @param nc the {@code NetworkClient} of the {@code Client} to send the response message from
      */
     public static void handleFillFromCloud(NetworkClient nc) throws IOException {
-        int cloudNumber = nc.getClient().askCloudIndex() - 1;
-        ActionArgs args = new ActionArgs();
-        args.setCloud(cloudNumber);
-        sendMessageToServer(nc, new Action("FILL_FROM_CLOUD", args));
+        nc.getClient().askCloudIndex();
     }
 
     /**
@@ -85,8 +67,7 @@ public class ActionHandler {
      */
     public static void handlePlayCharacter(NetworkClient nc) throws IOException {
         nc.getClient().showAllCharactersWithIndex();
-        int characterIndex = nc.getClient().askCharacterIndex() - 1;
-        handleCharacterPlayed(nc.getClient().getCharacters().get(characterIndex).getCharacterName(), nc);
+        nc.getClient().askCharacterIndex();
     }
 
     /**
@@ -95,52 +76,15 @@ public class ActionHandler {
      * @param name the name of the chosen {@code Character}
      * @param nc   the {@code NetworkClient} of the {@code Client} to send the response message from
      */
-    private static void handleCharacterPlayed(CharacterName name, NetworkClient nc) throws IOException {
-        ActionArgs args = new ActionArgs();
-        args.setCharacterName(name);
+    public static void handleCharacterPlayed(CharacterName name, NetworkClient nc) throws IOException {
         switch (name) {
-            case move1FromCardToIsland -> {
-                Color color = nc.getClient().askStudentColor();
-                int islandIndex = nc.getClient().askIslandIndex() - 1;
-                args.setSourceStudents(new ArrayList<>(List.of(color)));
-                args.setIsland(islandIndex);
-            }
-            case resolveIsland, noEntry -> {
-                int islandIndex = nc.getClient().askIslandIndex() - 1;
-                args.setIsland(islandIndex);
-            }
-            case swapUpTo3FromEntranceToCard -> {
-                ArrayList<Color> allColors = nc.getClient().askColorListForSwapCharacters(3, "this card");
-                args.setSourceStudents(allColors.subList(0, (allColors.size() / 2)));
-                args.setDstStudents(allColors.subList(allColors.size() / 2, allColors.size()));
-            }
-            case swapUpTo2FromEntranceToDiningRoom -> {
-                ArrayList<Color> allColors = nc.getClient().askColorListForSwapCharacters(2, "your dining room");
-                args.setSourceStudents(allColors.subList(0, (allColors.size() / 2)));
-                args.setDstStudents(allColors.subList(allColors.size() / 2, allColors.size()));
-            }
-            case move1FromCardToDining -> {
-                Color color = nc.getClient().askStudentColor();
-                args.setSourceStudents(new ArrayList<>(List.of(color)));
-            }
-            case ignoreColor, everyOneMove3FromDiningRoomToBag -> {
-                Color color = nc.getClient().askStudentColor();
-                args.setColor(color);
-            }
+            case move1FromCardToIsland -> nc.getClient().askToMoveOneStudentFromCard(true);
+            case move1FromCardToDining -> nc.getClient().askToMoveOneStudentFromCard(false);
+            case resolveIsland, noEntry -> nc.getClient().askIslandIndexForCharacter(name);
+            case swapUpTo3FromEntranceToCard -> nc.getClient().askColorListForSwapCharacters(3, "this card", name);
+            case swapUpTo2FromEntranceToDiningRoom -> nc.getClient().askColorListForSwapCharacters(2, "your dining room", name);
+            case ignoreColor, everyOneMove3FromDiningRoomToBag -> nc.getClient().pickColorForPassive(name);
+            default -> nc.getClient().playCharacterWithoutArguments(name);
         }
-        sendMessageToServer(nc, new Action("PLAY_CHARACTER", args));
-    }
-
-    /**
-     * Sends a {@code ClientActionMessage} to the {@code Server}
-     *
-     * @param nc     the {@code NetworkClient} of the {@code Client} to send the response message from
-     * @param action the {@code Action} object to set in the {@code ClientActionMessage} to send
-     */
-    private static void sendMessageToServer(NetworkClient nc, Action action) {
-        ClientActionMessage toSend = new ClientActionMessage();
-        toSend.setAction(action);
-        toSend.setPlayer(nc.getUsername());
-        nc.sendMessageToServer(toSend.toJson());
     }
 }

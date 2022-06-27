@@ -1,0 +1,39 @@
+.highlight_element {
+    -fx-border-color: rgba(204, 204, 115, 0.68);
+    -fx-border-width: 1.5;
+    -fx-background-color: rgba(204, 204, 115, 0.68);
+}
+
+.selected_element {
+    -fx-background-color: rgba(124, 124, 0, 0.68);
+}
+
+.element_active_for_swap_character {
+    -fx-border-color: rgba(0, 95, 210, 0.68);
+    -fx-border-width: 1.5;
+    -fx-background-color: rgba(53, 138, 210, 0.68);
+}
+
+.element_selected_for_swap_character {
+    -fx-border-color: rgba(0, 28, 63, 0.68);
+    -fx-border-width: 1.5;
+    -fx-background-color: rgba(0, 42, 79, 0.45);
+}
+
+.element_active_for_moving_character {
+    -fx-border-color: rgba(78, 199, 86, 0.68);
+    -fx-border-width: 1.5;
+    -fx-background-color: rgba(165, 224, 157, 0.68);
+}
+
+.element_selected_for_moving_character {
+    -fx-border-color: rgba(7, 82, 0, 0.68);
+    -fx-border-width: 1.5;
+    -fx-background-color: rgba(27, 196, 37, 0.68);
+}
+
+.element_active_for_island_character {
+    -fx-border-color: rgba(162, 50, 239, 0.68);
+    -fx-border-width: 1.5;
+    -fx-background-color: rgba(211, 151, 248, 0.68);
+}

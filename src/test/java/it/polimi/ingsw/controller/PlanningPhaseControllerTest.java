@@ -1,9 +1,10 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.GameEndedException;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.model.Player;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -18,6 +19,11 @@ class PlanningPhaseControllerTest {
     ClientHandlerStub giuseCh = new ClientHandlerStub();
     ClientHandlerStub clodCh = new ClientHandlerStub();
 
+    @BeforeAll
+    static void initializeMessagesResourceBundle() {
+        MessageResourceBundle.initializeBundle("en");
+    }
+
     /**
      * Tests what happens when a player attempts to send an action message but the game is not started yet
      */
@@ -29,7 +35,7 @@ class PlanningPhaseControllerTest {
         controller.handleMessage(playAssistantJson, rickCh);
 
         ServerActionMessage response = ServerActionMessage.fromJson(rickCh.getJson());
-        assertEquals("[ERROR] " + Messages.GAME_NOT_STARTED, response.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("game_not_started"), response.getDisplayText());
         assertEquals(1, response.getError());
 
         assertNull(controller.getGame());
@@ -59,7 +65,38 @@ class PlanningPhaseControllerTest {
 
         ServerActionMessage clodResponse = ServerActionMessage.fromJson(clodCh.getJson());
         assertEquals(3, clodResponse.getError());
-        assertEquals("[ERROR] " + Messages.NOT_LOGGED_IN, clodResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("not_logged_in"), clodResponse.getDisplayText());
+    }
+
+    /**
+     * Tests what happens when the correct player sends a message with an invalid action name
+     */
+    @Test
+    void testInvalidActionName() throws GameEndedException {
+        startNewExpertGameForTwo();
+
+        String rickJson = "{status:ACTION,player:rick,action:{name:TEST,args:{value:5}}}";
+        controller.handleMessage(rickJson, rickCh);
+
+        ServerActionMessage rickResponse = ServerActionMessage.fromJson(rickCh.getJson());
+        assertEquals(3, rickResponse.getError());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_request"), rickResponse.getDisplayText());
+    }
+
+    /**
+     * Tests what happens when a player logged in sends a message with a username different from
+     * the one he chose in the login phase
+     */
+    @Test
+    void testInvalidUsernameAfterLogin() throws GameEndedException {
+        startNewExpertGameForTwo();
+
+        String invalidJson = "{status:ACTION,player:not_rick,action:{name:PLAY_ASSISTANT,args:{value:5}}}";
+        controller.handleMessage(invalidJson, rickCh);
+
+        ServerActionMessage response = ServerActionMessage.fromJson(rickCh.getJson());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_identity"), response.getDisplayText());
+        assertEquals(3, response.getError());
     }
 
     /**
@@ -73,7 +110,7 @@ class PlanningPhaseControllerTest {
         controller.handleMessage(giuseInvalidJson, giuseCh);
 
         ServerActionMessage giuseResponse = ServerActionMessage.fromJson(giuseCh.getJson());
-        assertEquals("[ERROR] " + Messages.NOT_YOUR_TURN, giuseResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("not_your_turn"), giuseResponse.getDisplayText());
         assertEquals(1, giuseResponse.getError());
     }
 
@@ -89,7 +126,7 @@ class PlanningPhaseControllerTest {
             controller.handleMessage(rickInvalidJson, rickCh);
 
             ServerActionMessage rickResponse = ServerActionMessage.fromJson(rickCh.getJson());
-            assertEquals("[ERROR] " + Messages.INVALID_ARGUMENT, rickResponse.getDisplayText());
+            assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_argument"), rickResponse.getDisplayText());
             assertEquals(2, rickResponse.getError());
         }
     }
@@ -123,14 +160,14 @@ class PlanningPhaseControllerTest {
 
         ServerActionMessage rickResponse = ServerActionMessage.fromJson(rickCh.getJson());
         assertEquals(2, rickResponse.getError());
-        assertEquals("[ERROR] " + Messages.ALREADY_PLAYED_ASSISTANT, rickResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("already_played_assistant"), rickResponse.getDisplayText());
 
         String giuseJson = "{status:ACTION,player:giuse,action:{name:PLAY_ASSISTANT,args:{value:5}}}";
         controller.handleMessage(giuseJson, giuseCh);
 
         ServerActionMessage giuseResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(2, giuseResponse.getError());
-        assertEquals("[ERROR] " + Messages.ANOTHER_PLAYED_ASSISTANT, giuseResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("another_played_assistant"), giuseResponse.getDisplayText());
     }
 
     /**
@@ -188,7 +225,7 @@ class PlanningPhaseControllerTest {
         controller.handleMessage(jsonMessage, rickCh);
 
         ServerActionMessage response = ServerActionMessage.fromJson(rickCh.getJson());
-        assertEquals("[ERROR] " + Messages.INVALID_REQUEST, response.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_request"), response.getDisplayText());
         assertEquals(3, response.getError());
     }
 

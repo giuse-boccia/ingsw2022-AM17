@@ -1,7 +1,8 @@
 package it.polimi.ingsw.model.game_actions;
 
-import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
@@ -20,10 +21,7 @@ import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorStrategy;
 import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorWithDraw;
 import it.polimi.ingsw.model.utils.Students;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PlayerActionPhase {
     private final Assistant assistant;
@@ -34,7 +32,7 @@ public class PlayerActionPhase {
     private MNStrategy mnStrategy;
     private int numStudentsMoved = 0;
     private boolean mnMoved = false;
-    private String expectedMove = "MOVE_STUDENT";
+    private String expectedMove = Constants.ACTION_MOVE_STUDENT;
 
 
     public PlayerActionPhase(Assistant assistant, GameBoard gb) {
@@ -106,18 +104,6 @@ public class PlayerActionPhase {
         return res;
     }
 
-    public Character getPlayedCharacter() {
-        return playedCharacter;
-    }
-
-    public int getNumStudentsMoved() {
-        return numStudentsMoved;
-    }
-
-    public boolean isMnMoved() {
-        return mnMoved;
-    }
-
     /**
      * Resolves the island where mother nature is and eventually changes that island's owner.
      * In case of tie between two or more players, the owner of the island is not changed
@@ -187,13 +173,13 @@ public class PlayerActionPhase {
     public void playCharacter(Character character, Island island, Color color, List<Color> srcColors, List<Color> dstColors)
             throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException, NotEnoughCoinsException {
         if (!gb.getGame().isExpert()) {
-            throw new InvalidActionException("There are no characters in the non expert mode");
+            throw new InvalidActionException(MessageResourceBundle.getMessage("no_character_in_non_expert"));
         }
         if (getCurrentPlayer().getNumCoins() < character.getCost()) {
-            throw new NotEnoughCoinsException("You don't have enough coins to play this character");
+            throw new NotEnoughCoinsException(MessageResourceBundle.getMessage("not_enough_coins"));
         }
         if (!canPlayCharacter()) {
-            throw new CharacterAlreadyPlayedException(Messages.ALREADY_PLAYED_CHARACTER);
+            throw new CharacterAlreadyPlayedException(MessageResourceBundle.getMessage("already_played_character"));
         }
         try {
             character.useEffect(this, island, color, srcColors, dstColors);
@@ -221,9 +207,9 @@ public class PlayerActionPhase {
      */
     public void playPassiveCharacter(PassiveCharacter playedCharacter) {
         switch (playedCharacter.getCardName()) {
-            case plus2MNMoves -> this.mnStrategy = new MNBonus();
+            case plus2MNMoves -> this.mnStrategy = new MNBonus(Constants.MN_BONUS);
             case takeProfWithEqualStudents -> this.professorStrategy = new ProfessorWithDraw();
-            case plus2Influence -> this.influenceStrategy = new InfluenceBonus(assistant.getPlayer());
+            case plus2Influence -> this.influenceStrategy = new InfluenceBonus(assistant.getPlayer(), Constants.INFLUENCE_BONUS);
             case ignoreTowers -> this.influenceStrategy = new InfluenceIgnoreTowers();
         }
     }
@@ -248,7 +234,7 @@ public class PlayerActionPhase {
     public void moveStudent(Color color, Place destination) throws InvalidActionException, InvalidStudentException {
 
         int numPlayers = gb.getGame().getPlayers().size();
-        int studentsToMove = numPlayers % 2 == 0 ? 3 : 4;
+        int studentsToMove = numPlayers % 2 == 0 ? Constants.STUDENTS_TO_MOVE_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.STUDENTS_TO_MOVE_IN_THREE_PLAYER_GAME;
 
         if (numStudentsMoved == studentsToMove) {
             throw new InvalidActionException("You have already moved " + numStudentsMoved + " students");
@@ -263,7 +249,7 @@ public class PlayerActionPhase {
         numStudentsMoved++;
 
         if (numStudentsMoved == studentsToMove) {
-            expectedMove = "MOVE_MN";
+            expectedMove = Constants.ACTION_MOVE_MN;
         }
 
         stealProfessorIfPossible(color);
@@ -286,15 +272,15 @@ public class PlayerActionPhase {
 
         checkInvalidAction();
 
-        if (numSteps < 0 || numSteps > mnStrategy.getMNMaxSteps(assistant)) {
-            throw new InvalidStepsForMotherNatureException(Messages.INVALID_MN_MOVE);
+        if (numSteps <= 0 || numSteps > mnStrategy.getMNMaxSteps(assistant)) {
+            throw new InvalidStepsForMotherNatureException(MessageResourceBundle.getMessage("invalid_mn_move"));
         }
 
         gb.moveMotherNature(numSteps);
         resolveIsland();
 
         for (Player player : gb.getGame().getPlayers()) {
-            if (player.getNumberOfTowers() <= 0) {
+            if (player.getRemainingTowers() <= 0) {
                 gb.getGame().end();
             }
         }
@@ -304,7 +290,7 @@ public class PlayerActionPhase {
         }
 
         mnMoved = true;
-        expectedMove = "FILL_FROM_CLOUD";
+        expectedMove = Constants.ACTION_FILL_FROM_CLOUD;
 
         if (gb.getGame().getCurrentRound().isLastRound()) {
             // The PlayerActionPhase is finished
@@ -324,11 +310,11 @@ public class PlayerActionPhase {
         checkInvalidAction();
 
         if (!mnMoved) {
-            throw new InvalidActionException(Messages.MOVE_MN_FIRST);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("move_mn_first"));
         }
 
         if (cloudIndex < 0 || cloudIndex >= gb.getClouds().size() || gb.getClouds().get(cloudIndex).isEmpty()) {
-            throw new InvalidCloudException(Messages.INVALID_CLOUD);
+            throw new InvalidCloudException(MessageResourceBundle.getMessage("invalid_cloud"));
         }
 
         Cloud cloud = gb.getClouds().get(cloudIndex);
@@ -345,9 +331,9 @@ public class PlayerActionPhase {
      */
     private void checkInvalidAction() throws InvalidActionException {
 
-        int studentsToMove = gb.getGame().getPlayers().size() % 2 == 0 ? 3 : 4;
+        int studentsToMove = gb.getGame().getPlayers().size() % 2 == 0 ? Constants.STUDENTS_TO_MOVE_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.STUDENTS_TO_MOVE_IN_THREE_PLAYER_GAME;
         if (numStudentsMoved < studentsToMove) {
-            throw new InvalidActionException("Move your students first");
+            throw new InvalidActionException(MessageResourceBundle.getMessage("move_students_first"));
         }
     }
 
@@ -363,4 +349,18 @@ public class PlayerActionPhase {
         return playedCharacter == null;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PlayerActionPhase that = (PlayerActionPhase) o;
+
+        if (numStudentsMoved != that.numStudentsMoved) return false;
+        if (mnMoved != that.mnMoved) return false;
+        if (!assistant.equals(that.assistant)) return false;
+        if (!Objects.equals(playedCharacter, that.playedCharacter))
+            return false;
+        return Objects.equals(expectedMove, that.expectedMove);
+    }
 }

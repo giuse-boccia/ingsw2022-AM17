@@ -1,14 +1,16 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
 import it.polimi.ingsw.exceptions.EmptyBagException;
+import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Cloud implements Place {
-    private final ArrayList<Student> students;
+    private final List<Student> students;
     private final int maxStudents;
 
     public Cloud(int maxStudents) {
@@ -16,11 +18,17 @@ public class Cloud implements Place {
         this.maxStudents = maxStudents;
     }
 
+    public Cloud(List<Student> students, int maxStudents) {
+        this.students = students;
+        this.maxStudents = maxStudents;
+    }
+
     /**
      * Give the students contained in the Cloud to the destination
+     *
      * @param destination the Entrance which the Cloud gives students to
      */
-    public void emptyTo(Entrance destination) {
+    public void emptyTo(Entrance destination) throws InvalidActionException {
         for (int i = 0; i < students.size(); ) {
             giveStudent(destination, students.get(i));
         }
@@ -33,7 +41,11 @@ public class Cloud implements Place {
      */
     public void fillFromBag(Bag bag) throws EmptyBagException {
         while (students.size() < maxStudents) {
-            bag.giveStudent(this, bag.getRandStudent());
+            try {
+                bag.giveStudent(this, bag.getRandStudent());
+            } catch (InvalidActionException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -47,7 +59,7 @@ public class Cloud implements Place {
     }
 
     @Override
-    public void giveStudent(Place destination, Student student) {
+    public void giveStudent(Place destination, Student student) throws InvalidActionException {
         students.remove(student);
         destination.receiveStudent(student);
     }
@@ -70,5 +82,16 @@ public class Cloud implements Place {
 
     public int getMaxStudents() {
         return maxStudents;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Cloud cloud = (Cloud) o;
+
+        if (maxStudents != cloud.maxStudents) return false;
+        return students.equals(cloud.students);
     }
 }

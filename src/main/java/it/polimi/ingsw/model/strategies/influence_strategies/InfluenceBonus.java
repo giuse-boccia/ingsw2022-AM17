@@ -14,11 +14,6 @@ public class InfluenceBonus implements InfluenceStrategy {
         this.bonus = bonus;
     }
 
-    public InfluenceBonus(Player buffedPlayer) {
-        this.buffedPlayer = buffedPlayer;
-        this.bonus = 2;
-    }
-
     /**
      * The method to calculate the influence of the selected {@code Island} when the effect of the
      * {@code Character} called "plus2Influence" is active

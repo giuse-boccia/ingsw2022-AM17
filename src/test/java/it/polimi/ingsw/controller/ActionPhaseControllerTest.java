@@ -1,8 +1,10 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.constants.Messages;
+import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.exceptions.GameEndedException;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
+import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
@@ -10,6 +12,7 @@ import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.model.utils.Students;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -22,22 +25,26 @@ class ActionPhaseControllerTest {
     Controller controller = new Controller();
     ClientHandlerStub rickCh = new ClientHandlerStub();
     ClientHandlerStub giuseCh = new ClientHandlerStub();
-    ClientHandlerStub clodCh = new ClientHandlerStub();
     Player rick, giuse;
+
+    @BeforeAll
+    static void initializeMessagesResourceBundle() {
+        MessageResourceBundle.initializeBundle("en");
+    }
 
     /**
      * In this test a player tries to play when it's not his turn
      */
     @Test
     void testInvalidTurn() throws GameEndedException {
-        startActionPhase();
+        startActionPhase(false);
 
         String rickMoveStudent = "{status:ACTION,player:rick,action:{name:MOVE_STUDENT_TO_DINING,args:{color:GREEN}}}";
         controller.handleMessage(rickMoveStudent, rickCh);
 
         ServerActionMessage response = ServerActionMessage.fromJson(rickCh.getJson());
         assertEquals(1, response.getError());
-        assertEquals("[ERROR] " + Messages.NOT_YOUR_TURN, response.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("not_your_turn"), response.getDisplayText());
     }
 
     /**
@@ -46,7 +53,7 @@ class ActionPhaseControllerTest {
      */
     @Test
     void testFakeAlias() throws GameEndedException {
-        startActionPhase();
+        startActionPhase(false);
 
         // Field "player" has value "giuse" but the message comes from Rick's Communicable
         String json = "{status:ACTION,player:giuse,action:{name:MOVE_STUDENT_TO_DINING,args:{color:GREEN}}}";
@@ -54,7 +61,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage response = ServerActionMessage.fromJson(rickCh.getJson());
         assertEquals(3, response.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_IDENTITY, response.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_identity"), response.getDisplayText());
     }
 
     /**
@@ -62,7 +69,7 @@ class ActionPhaseControllerTest {
      */
     @Test
     void testMoveStudentToDining() throws GameEndedException {
-        startActionPhase();
+        startActionPhase(false);
         fillEntrancesAndEmptyIslandsAndSetCharacters();
 
         // Giuse does not own a green student
@@ -71,7 +78,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage response = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, response.getError());
-        assertEquals("[ERROR] " + Messages.ENTRANCE_DOESNT_CONTAIN_STUDENT, response.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("entrance_doesnt_contain_student"), response.getDisplayText());
 
         for (int i = 1; i <= 3; i++) {
             String moveRedStudent = "{status:ACTION,player:giuse,action:{name:MOVE_STUDENT_TO_DINING,args:{color:RED}}}";
@@ -89,6 +96,59 @@ class ActionPhaseControllerTest {
     }
 
     /**
+     * Tests what happens when the correct player tries to move a student to his dining room
+     */
+    @Test
+    void testMoveStudentToIsland() throws GameEndedException {
+        startActionPhase(false);
+        fillEntrancesAndEmptyIslandsAndSetCharacters();
+
+        String invalidJson = "{status:ACTION,player:giuse,action:{name:MOVE_STUDENT_TO_ISLAND,args:{color:RED,island:-1}}}";
+        controller.handleMessage(invalidJson, giuseCh);
+
+        ServerActionMessage invalidRes = ServerActionMessage.fromJson(giuseCh.getJson());
+        assertEquals(2, invalidRes.getError());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_island"), invalidRes.getDisplayText());
+
+        // Giuse wants to move a red student to the third island
+        String json = "{status:ACTION,player:giuse,action:{name:MOVE_STUDENT_TO_ISLAND,args:{color:RED,island:2}}}";
+        controller.handleMessage(json, giuseCh);
+
+        ServerActionMessage res = ServerActionMessage.fromJson(giuseCh.getJson());
+        assertEquals(0, res.getError());
+
+        assertEquals(1,
+                Students.countColor(controller.getGame().getGameBoard().getIslands().get(2).getStudents(), Color.RED));
+        assertEquals(6, Students.countColor(giuse.getDashboard().getEntrance().getStudents(), Color.RED));
+    }
+
+    /**
+     * Tests json messages with invalid format - missing parentheses at the end and a word written instead
+     * of a number
+     */
+    @Test
+    void testInvalidJsonFormat() throws GameEndedException {
+        startActionPhase(false);
+        fillEntrancesAndEmptyIslandsAndSetCharacters();
+
+        // Json message with invalid parentheses (missing two at the end)
+        String missingParentheses = "{status:ACTION,player:giuse,action:{name:MOVE_STUDENT_TO_ISLAND,args:{color:RED,island:-1}";
+        controller.handleMessage(missingParentheses, giuseCh);
+
+        ServerLoginMessage invalidRes = ServerLoginMessage.fromJson(giuseCh.getJson());
+        assertEquals(3, invalidRes.getError());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("unrecognised_type"), invalidRes.getDisplayText());
+
+        // Invalid island index: there's a word instead of a number
+        String json = "{status:ACTION,player:giuse,action:{name:MOVE_STUDENT_TO_ISLAND,args:{color:RED,island:word}}}";
+        controller.handleMessage(json, giuseCh);
+
+        ServerActionMessage invalidSyntaxRes = ServerActionMessage.fromJson(giuseCh.getJson());
+        assertEquals(3, invalidSyntaxRes.getError());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("bad_request_syntax"), invalidSyntaxRes.getDisplayText());
+    }
+
+    /**
      * Tests what happens when the correct player tries to move mother nature of an invalid number of steps
      * and then a valid one
      */
@@ -101,7 +161,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage errorMessage = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, errorMessage.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_MN_MOVE, errorMessage.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_mn_move"), errorMessage.getDisplayText());
 
         String validMnMoveJson = "{status:ACTION,player:giuse,action:{name:MOVE_MN,args:{num_steps:1}}}";
         controller.handleMessage(validMnMoveJson, giuseCh);
@@ -121,7 +181,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage errorMessage = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, errorMessage.getError());
-        assertEquals("[ERROR] " + Messages.MOVE_MN_FIRST, errorMessage.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("move_mn_first"), errorMessage.getDisplayText());
         assertFalse(controller.getGame().getGameBoard().getClouds().get(1).isEmpty());
 
         String validMnMoveJson = "{status:ACTION,player:giuse,action:{name:MOVE_MN,args:{num_steps:1}}}";
@@ -132,7 +192,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage invalidCloudMessage = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, invalidCloudMessage.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_CLOUD, invalidCloudMessage.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_cloud"), invalidCloudMessage.getDisplayText());
         assertFalse(controller.getGame().getGameBoard().getClouds().get(1).isEmpty());
 
         String validCloudJson = "{status:ACTION,player:giuse,action:{name:FILL_FROM_CLOUD,args:{cloud:1}}}";
@@ -143,6 +203,70 @@ class ActionPhaseControllerTest {
 
         // It's Rick's turn
         assertEquals(rick, controller.getGame().getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer());
+    }
+
+    /**
+     * Tests a full round played in a 2-players match, especially the transition between the played round and the following one
+     */
+    @Test
+    void testFullRound() throws GameEndedException {
+        // Giuse moves 3 red students to his dining room
+        playUntilMotherNatureMove();
+        // Giuse moves mother nature of 1 position and chooses first cloud
+        String giuseMovesMn = "{status:ACTION,player:giuse,action:{name:MOVE_MN,args:{num_steps:1}}}";
+        String giuseChoosesCloud = "{status:ACTION,player:giuse,action:{name:FILL_FROM_CLOUD,args:{cloud:0}}}";
+        controller.handleMessage(giuseMovesMn, giuseCh);
+        controller.handleMessage(giuseChoosesCloud, giuseCh);
+
+        // Rick moves three pink students to his dining room, moves mother nature of one position
+        // and chooses the second cloud
+        String rickMovesPinkToDining = "{status:ACTION,player:rick,action:{name:MOVE_STUDENT_TO_DINING,args:{color:PINK}}}";
+        String rickMovesMn = "{status:ACTION,player:rick,action:{name:MOVE_MN,args:{num_steps:1}}}";
+        String rickChoosesCloud = "{status:ACTION,player:rick,action:{name:FILL_FROM_CLOUD,args:{cloud:1}}}";
+        for (int i = 0; i < 3; i++) {
+            controller.handleMessage(rickMovesPinkToDining, rickCh);
+        }
+        controller.handleMessage(rickMovesMn, rickCh);
+        controller.handleMessage(rickChoosesCloud, rickCh);
+
+        // Now Giuse has to play assistant
+        assertEquals(giuse, controller.getGame().getCurrentRound().getPlanningPhase().getNextPlayer());
+        ServerActionMessage giuseMessage = ServerActionMessage.fromJson(giuseCh.getJson());
+        assertArrayEquals(new String[]{Constants.ACTION_PLAY_ASSISTANT}, giuseMessage.getActions().toArray(new String[0]));
+    }
+
+    /**
+     * Tests messages received at the end of the game
+     */
+    @Test
+    void testLastRound() throws GameEndedException {
+        startActionPhase(true);
+        fillEntrancesAndEmptyIslandsAndSetCharacters();
+
+        // Giuse moves 3 red students to his dining room and moves mother nature of 1 position
+        for (int i = 0; i < 3; i++) {
+            String giuseMovesStudentJson = "{status:ACTION,player:giuse,action:{name:MOVE_STUDENT_TO_DINING,args:{color:RED}}}";
+            controller.handleMessage(giuseMovesStudentJson, giuseCh);
+        }
+        String giuseMovesMn = "{status:ACTION,player:giuse,action:{name:MOVE_MN,args:{num_steps:1}}}";
+        controller.handleMessage(giuseMovesMn, giuseCh);
+
+        // Rick moves two pink students to his dining room, one pink to the third island, then moves mother nature of one
+        // position - so that he can build a tower
+        String rickMovesPinkToDining = "{status:ACTION,player:rick,action:{name:MOVE_STUDENT_TO_DINING,args:{color:PINK}}}";
+        String rickMovesPinkToIsland = "{status:ACTION,player:rick,action:{name:MOVE_STUDENT_TO_ISLAND,args:{color:PINK,island:2}}}";
+        String rickMovesMn = "{status:ACTION,player:rick,action:{name:MOVE_MN,args:{num_steps:1}}}";
+        controller.handleMessage(rickMovesPinkToDining, rickCh);
+        controller.handleMessage(rickMovesPinkToDining, rickCh);
+        controller.handleMessage(rickMovesPinkToIsland, rickCh);
+        assertThrows(GameEndedException.class, () -> controller.handleMessage(rickMovesMn, rickCh));
+
+        assertTrue(controller.getGame().isEnded());
+        ServerActionMessage rickEndMessage = ServerActionMessage.fromJson(rickCh.getJson());
+        ServerActionMessage giuseEndMessage = ServerActionMessage.fromJson(giuseCh.getJson());
+        assertEquals(Constants.STATUS_END, rickEndMessage.getStatus(), giuseEndMessage.getStatus());
+        assertEquals(MessageResourceBundle.getMessage("game_lost") + "rick" + MessageResourceBundle.getMessage("broadcast_game_won"), giuseEndMessage.getDisplayText());
+        assertEquals(MessageResourceBundle.getMessage("game_won"), rickEndMessage.getDisplayText());
     }
 
     /**
@@ -159,7 +283,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage invalidCharacterResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, invalidCharacterResponse.getError());
-        assertEquals("[ERROR] " + Messages.CHARACTER_NOT_IN_GAME, invalidCharacterResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("character_not_in_game"), invalidCharacterResponse.getDisplayText());
 
         String playInvalidArgumentsCharacter =
                 "{status:ACTION,player:giuse,action:{name:PLAY_CHARACTER,args:" +
@@ -168,7 +292,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage invalidArgumentCharacterResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, invalidArgumentCharacterResponse.getError());
-        assertEquals("[ERROR] " + Messages.MOVE_JUST_ONE, invalidArgumentCharacterResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("move_just_one"), invalidArgumentCharacterResponse.getDisplayText());
 
         String missingArgumentsCharacter =
                 "{status:ACTION,player:giuse,action:{name:PLAY_CHARACTER,args:" +
@@ -177,7 +301,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage missingArgumentsCharacterResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, missingArgumentsCharacterResponse.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_ARGUMENT, missingArgumentsCharacterResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_argument"), missingArgumentsCharacterResponse.getDisplayText());
 
         String studentNotOnCardCharacter =
                 "{status:ACTION,player:giuse,action:{name:PLAY_CHARACTER,args:" +
@@ -186,7 +310,7 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage studentNotOnCardResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(2, studentNotOnCardResponse.getError());
-        assertEquals("[ERROR] " + Messages.STUDENT_NOT_FOUND, studentNotOnCardResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("student_not_found"), studentNotOnCardResponse.getDisplayText());
 
 
         String invalidIslandIndexCharacter =
@@ -196,9 +320,13 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage invalidIslandIndexResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, invalidIslandIndexResponse.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_ARGUMENT, invalidIslandIndexResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_argument"), invalidIslandIndexResponse.getDisplayText());
     }
 
+    /**
+     * Tests what happens when a player tries to play a passive character without providing the necessary arguments - e.g. color to ignore
+     * during the influence calculus for ignoreColor character
+     */
     @Test
     void testInvalidPassiveCharacter() throws GameEndedException {
         playUntilMotherNatureMove();
@@ -211,18 +339,23 @@ class ActionPhaseControllerTest {
 
         ServerActionMessage invalidArgumentResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(1, invalidArgumentResponse.getError());
-        assertEquals("[ERROR] " + Messages.INVALID_ARGUMENT, invalidArgumentResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_argument"), invalidArgumentResponse.getDisplayText());
     }
 
+    /**
+     * Tests what happens when a player correctly plays a character (with the correct arguments) and when, in the same turn, he tries to
+     * play again the character
+     */
     @Test
     void testValidCharacter() throws GameEndedException {
-        playUntilMotherNatureMove();
+        startActionPhase(false);
+        fillEntrancesAndEmptyIslandsAndSetCharacters();
         for (int i = 0; i < 100; i++) {
             giuse.addCoin();
         }
 
         String playValidCharacter =
-                "{status:ACTION,player:giuse,action:{name:PLAY_CHARACTER,args:{characterName:ignoreColor,color:RED}}}";
+                "{status:ACTION,player:giuse,action:{name:PLAY_CHARACTER,args:{characterName:everyOneMove3FromDiningRoomToBag,color:RED}}}";
         controller.handleMessage(playValidCharacter, giuseCh);
 
         ServerActionMessage response = ServerActionMessage.fromJson(giuseCh.getJson());
@@ -230,12 +363,12 @@ class ActionPhaseControllerTest {
 
 
         String playAgainCharacter =
-                "{status:ACTION,player:giuse,action:{name:PLAY_CHARACTER,args:{characterName:everyOneMove3FromDiningRoomToBag,color:RED}}}";
+                "{status:ACTION,player:giuse,action:{name:PLAY_CHARACTER,args:{characterName:ignoreColor,color:RED}}}";
         controller.handleMessage(playAgainCharacter, giuseCh);
 
         ServerActionMessage invalidArgumentResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(2, invalidArgumentResponse.getError());
-        assertEquals("[ERROR] " + Messages.ALREADY_PLAYED_CHARACTER, invalidArgumentResponse.getDisplayText());
+        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("already_played_character"), invalidArgumentResponse.getDisplayText());
     }
 
     @Test
@@ -259,14 +392,16 @@ class ActionPhaseControllerTest {
         assertTrue(controller.getGame().getCurrentRound().isLastRound());
     }
 
-    // TODO check why alertLastRound is covered and test alertGameEnded
+    // TODO check why alertLastRound is not covered and test alertGameEnded
 
     /**
      * Handles the login and the planning phase of a new expert game for two, during which
      * Rick plays assistant number 5 and Giuse assistant number 4.
      * That means Giuse has to play his PlayerActionPhase
+     *
+     * @param lastRound a {@code boolean} set to true if this is the last round of the game
      */
-    private void startActionPhase() throws GameEndedException {
+    private void startActionPhase(boolean lastRound) throws GameEndedException {
         String rickLoginJson = "{status:LOGIN,username:rick,action:SET_USERNAME,error:0}";
         String giuseLoginJson = "{status:LOGIN,username:giuse,action:SET_USERNAME,error:0}";
 
@@ -275,6 +410,10 @@ class ActionPhaseControllerTest {
 
         String createGameJson = "{status:LOGIN,username:rick,action:CREATE_GAME,expert:true,numPlayers:2}";
         controller.handleMessage(createGameJson, rickCh);
+
+        if (lastRound) {
+            controller.getGame().getCurrentRound().setLastRound();
+        }
 
         rick = controller.getLoggedUsers().get(0).getPlayer();
         giuse = controller.getLoggedUsers().get(1).getPlayer();
@@ -333,7 +472,7 @@ class ActionPhaseControllerTest {
      * students from Giuse's entrance to his dining room
      */
     private void playUntilMotherNatureMove() throws GameEndedException {
-        startActionPhase();
+        startActionPhase(false);
         fillEntrancesAndEmptyIslandsAndSetCharacters();
         for (int i = 0; i < 3; i++) {
             String moveRedStudent = "{status:ACTION,player:giuse,action:{name:MOVE_STUDENT_TO_DINING,args:{color:RED}}}";

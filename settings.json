@@ -1,4 +1,5 @@
 {
   "server_port": "7373",
-  "server_address": "localhost"
+  "server_address": "localhost",
+  "game_language": "en"
 }

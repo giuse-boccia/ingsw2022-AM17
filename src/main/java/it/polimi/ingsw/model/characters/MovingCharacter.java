@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.characters;
 
-import it.polimi.ingsw.constants.Messages;
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.*;
@@ -25,7 +25,14 @@ public class MovingCharacter extends GameboardCharacter implements Place {
         super(characterName, gb);
         this.numStudents = numStudents;
         this.initialStudents = initialStudents;
-        students = new ArrayList<>();
+        this.students = new ArrayList<>();
+    }
+
+    public MovingCharacter(CharacterName characterName, GameBoard gb, int initialStudents, int numStudents, boolean hasCoin, ArrayList<Student> students) {
+        super(characterName, gb, hasCoin);
+        this.numStudents = numStudents;
+        this.initialStudents = initialStudents;
+        this.students = students;
     }
 
     /**
@@ -60,27 +67,15 @@ public class MovingCharacter extends GameboardCharacter implements Place {
                 Entrance curEntrance = currentPlayerActionPhase.getCurrentPlayer().getDashboard().getEntrance();
                 ArrayList<Student> srcStudents = getStudentListFromColorList(srcColors, curEntrance);
                 ArrayList<Student> dstStudents = getStudentListFromColorList(dstColors, this);
-                if (!this.students.containsAll(dstStudents)) {
-                    throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_FOUND);
-                }
-                if (!curEntrance.getStudents().containsAll(srcStudents)) {
-                    throw new InvalidActionException(Messages.STUDENT_NOT_FOUND);
-                }
                 swapStudents(curEntrance, this, srcStudents, dstStudents);
             }
             case swapUpTo2FromEntranceToDiningRoom -> {
                 Dashboard curDashBoard = currentPlayerActionPhase.getCurrentPlayer().getDashboard();
                 ArrayList<Student> srcStudents = getStudentListFromColorList(srcColors, curDashBoard.getEntrance());
                 ArrayList<Student> dstStudents = getStudentListFromColorList(dstColors, curDashBoard.getDiningRoom());
-                if (!curDashBoard.getEntrance().getStudents().containsAll(srcStudents)) {
-                    throw new InvalidActionException("One or more students are not on the entrance");
-                }
-                if (!curDashBoard.getDiningRoom().getStudents().containsAll(dstStudents)) {
-                    throw new InvalidActionException("One or more students are not on the dining room");
-                }
                 swapStudents(curDashBoard.getEntrance(), curDashBoard.getDiningRoom(), srcStudents, dstStudents);
             }
-            default -> throw new InvalidCharacterException("This is not a valid character");
+            default -> throw new InvalidCharacterException(MessageResourceBundle.getMessage("invalid_character"));
 
         }
     }
@@ -93,7 +88,11 @@ public class MovingCharacter extends GameboardCharacter implements Place {
     public void fillCardFromBag() throws EmptyBagException {
         Bag bag = getGameBoard().getBag();
         while (students.size() < initialStudents) {
-            bag.giveStudent(this, bag.getRandStudent());
+            try {
+                bag.giveStudent(this, bag.getRandStudent());
+            } catch (InvalidActionException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -109,10 +108,10 @@ public class MovingCharacter extends GameboardCharacter implements Place {
      */
     private void swapStudents(Place src, Place dst, ArrayList<Student> srcStudents, ArrayList<Student> dstStudents) throws InvalidActionException, InvalidStudentException {
         if (srcStudents.size() > numStudents) {
-            throw new InvalidActionException(Messages.MOVING_MORE_STUDENTS);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("moving_more_students"));
         }
         if (srcStudents.size() != dstStudents.size()) {
-            throw new InvalidActionException("This is not a valid swap");
+            throw new InvalidActionException(MessageResourceBundle.getMessage("invalid_swap"));
         }
         for (int i = 0; i < srcStudents.size(); i++) {
             Student firstStudentToSwap = srcStudents.get(i);
@@ -133,29 +132,36 @@ public class MovingCharacter extends GameboardCharacter implements Place {
      */
     private void moveStudentAwayFromCard(Place destination, List<Color> srcColors) throws StudentNotOnTheCardException, InvalidActionException, InvalidStudentException {
         if (destination == null) {
-            throw new InvalidActionException(Messages.INVALID_ARGUMENT);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("invalid_argument"));
         }
         ArrayList<Student> srcStudents = getStudentListFromColorList(srcColors, this);
-        if (!students.containsAll(srcStudents)) {
-            throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_FOUND);
-        }
         if (srcStudents.size() != 1) {
-            throw new InvalidActionException(Messages.MOVE_JUST_ONE);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("move_just_one"));
         }
         for (int i = 0; i < numStudents; i++) {
             this.giveStudent(destination, srcStudents.get(i));
         }
     }
 
+    /**
+     * Returns an {@code ArrayList} of students from a {@code List} of colors
+     *
+     * @param colors the {@code List} of colors given
+     * @param source the {@code Place} to get the correct students from
+     * @return an {@code ArrayList} of students from a {@code List} of colors
+     * @throws StudentNotOnTheCardException if the {@code Student} is not on the card
+     * @throws InvalidActionException       if the given {@code List} of colors is invalid
+     */
     private ArrayList<Student> getStudentListFromColorList(List<Color> colors, Place source) throws StudentNotOnTheCardException, InvalidActionException {
         if (colors == null) {
-            throw new InvalidActionException(Messages.INVALID_ARGUMENT);
+            throw new InvalidActionException(MessageResourceBundle.getMessage("invalid_argument"));
         }
         ArrayList<Student> res = new ArrayList<>();
         ArrayList<Student> sourceStudents = source.getStudents();
         for (Color color : colors) {
             Student toAdd = Students.findFirstStudentOfColor(sourceStudents, color);
-            if (toAdd == null) throw new StudentNotOnTheCardException(Messages.STUDENT_NOT_FOUND);
+            if (toAdd == null)
+                throw new StudentNotOnTheCardException(MessageResourceBundle.getMessage("student_not_found"));
             res.add(toAdd);
             sourceStudents.remove(toAdd);
         }
@@ -163,9 +169,9 @@ public class MovingCharacter extends GameboardCharacter implements Place {
     }
 
     @Override
-    public void giveStudent(Place destination, Student student) throws InvalidStudentException {
+    public void giveStudent(Place destination, Student student) throws InvalidStudentException, InvalidActionException {
         if (student == null || !students.contains(student)) {
-            throw new InvalidStudentException("The character doesn't contain this student");
+            throw new InvalidStudentException(MessageResourceBundle.getMessage("student_not_on_character"));
         }
         students.remove(student);
         destination.receiveStudent(student);

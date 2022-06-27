@@ -70,7 +70,7 @@ public class EndGameTest {
         pap.moveStudent(Color.BLUE, game.getGameBoard().getIslands().get(1));
         pap.moveMotherNature(1);
         pap.chooseCloud(0);
-        assertEquals(5, clod.getNumberOfTowers());
+        assertEquals(5, clod.getRemainingTowers());
 
         // Mother nature is in island 1 where there are 2 blue students, whose professor belongs to Clod
 
@@ -82,7 +82,7 @@ public class EndGameTest {
         pap.moveStudent(Color.PINK, game.getGameBoard().getIslands().get(2));
         pap.moveMotherNature(1);
         pap.chooseCloud(1);
-        assertEquals(5, giuse.getNumberOfTowers());
+        assertEquals(5, giuse.getRemainingTowers());
 
         // Mother nature is in island 2 where there are 2 pink students, whose professor belongs to Giuse
 
@@ -98,7 +98,7 @@ public class EndGameTest {
         }
         pap.moveMotherNature(1);
         pap.chooseCloud(2);
-        assertEquals(6, rick.getNumberOfTowers());
+        assertEquals(6, rick.getRemainingTowers());
 
         assertTrue(game.isEnded());
         assertEquals(1, game.getWinners().size());

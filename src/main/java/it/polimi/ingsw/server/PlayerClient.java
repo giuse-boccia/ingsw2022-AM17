@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.Player;
 
 public class PlayerClient {
     private final Communicable ch;
-    private final String username;
+    private String username;
     private Player player;
 
     public PlayerClient(Communicable ch, String username) {
@@ -19,6 +19,10 @@ public class PlayerClient {
 
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Player getPlayer() {

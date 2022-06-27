@@ -1,12 +1,11 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.InvalidStudentException;
-import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.model.game_objects.*;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
-import it.polimi.ingsw.model.game_objects.gameboard_objects.Cloud;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Player {
@@ -24,10 +23,29 @@ public class Player {
         this.initialTowers = initialTowers;
         this.numCoins = 1;
         this.dashboard = new Dashboard();
-        this.hand = new Assistant[10];
-        for (int i = 1; i <= 10; i++) {
+        this.hand = new Assistant[Constants.MAX_ASSISTANT_VALUE];
+        for (int i = 1; i <= Constants.MAX_ASSISTANT_VALUE; i++) {
             hand[i - 1] = new Assistant(i % 2 != 0 ? i / 2 + 1 : i / 2, i, this);
         }
+    }
+
+    // For Game loading
+    public Player(int[] assistants, Dashboard dashboard, String name, int numCoins, Wizard wizard, TowerColor towerColor, int initialTowers) {
+        this.hand = new Assistant[10];
+        for (int i = 1; i <= 10; i++) {
+            final int check = i;
+            if (Arrays.stream(assistants).anyMatch(a -> a == check)) {
+                hand[i - 1] = new Assistant(i % 2 != 0 ? i / 2 + 1 : i / 2, i, this);
+            } else {
+                hand[i - 1] = null;
+            }
+        }
+        this.dashboard = dashboard;
+        this.name = name;
+        this.numCoins = numCoins;
+        this.wizard = wizard;
+        this.towerColor = towerColor;
+        this.initialTowers = initialTowers;
     }
 
     /**
@@ -63,7 +81,7 @@ public class Player {
      *
      * @return the remaining towers in the player dashboard
      */
-    public int getNumberOfTowers() {
+    public int getRemainingTowers() {
         int res = initialTowers;
         for (Island island : game.getGameBoard().getIslands()) {
             if (island.getTowerColor() == towerColor) {
@@ -134,5 +152,21 @@ public class Player {
 
     public void setTowerColor(TowerColor towerColor) {
         this.towerColor = towerColor;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Player player = (Player) o;
+
+        if (numCoins != player.numCoins) return false;
+        if (initialTowers != player.initialTowers) return false;
+        if (!Arrays.equals(hand, player.hand)) return false;
+        if (!dashboard.equals(player.dashboard)) return false;
+        if (!name.equals(player.name)) return false;
+        if (wizard != player.wizard) return false;
+        return towerColor == player.towerColor;
     }
 }

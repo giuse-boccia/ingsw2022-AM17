@@ -31,6 +31,7 @@ public class BagTest {
             assertDoesNotThrow(() -> bag.giveStudent(fooIsland, bag.getRandStudent()));
         }
 
+        assertEquals(0, bag.getStudents().size());
         assertThrows(EmptyBagException.class, () -> bag.giveStudent(fooIsland, bag.getRandStudent()));
 
         Student newStudent = new Student(Color.GREEN);

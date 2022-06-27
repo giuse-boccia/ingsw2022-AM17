@@ -7,14 +7,15 @@ import it.polimi.ingsw.model.game_objects.gameboard_objects.Cloud;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 public class Round {
     private final int firstPlayerIndex;
-    private int currentPlayerIndex = -1;
-    private int currentAssistantIndex = -1;
     private final Game game;
+    private int currentAssistantIndex = -1;
     private PlanningPhase planningPhase;
-    private ArrayList<Assistant> playedAssistants;
+    private List<Assistant> playedAssistants;
     private PlayerActionPhase currentPlayerActionPhase;
     private boolean isLastRound;
 
@@ -28,6 +29,14 @@ public class Round {
         this.firstPlayerIndex = firstPlayerIndex;
         this.game = game;
         this.isLastRound = isLastRound;
+    }
+
+    public int getCurrentAssistantIndex() {
+        return currentAssistantIndex;
+    }
+
+    public void setCurrentAssistantIndex(int currentAssistantIndex) {
+        this.currentAssistantIndex = currentAssistantIndex;
     }
 
     /**
@@ -64,6 +73,7 @@ public class Round {
      * creates the next {@code PlayerActionPhase}
      */
     public void nextPlayerActionPhase() {
+
         currentAssistantIndex++;
 
         if (currentAssistantIndex == game.getPlayers().size()) {
@@ -71,7 +81,6 @@ public class Round {
             game.nextRound(game.getPlayers().indexOf(nextFirstPlayer));
         } else {
             Player currentPlayer = playedAssistants.get(currentAssistantIndex).getPlayer();
-            currentPlayerIndex = game.getPlayers().indexOf(currentPlayer);
             currentPlayerActionPhase = new PlayerActionPhase(playedAssistants.get(currentAssistantIndex), game.getGameBoard());
         }
     }
@@ -105,7 +114,7 @@ public class Round {
      *
      * @return the {@code ArrayList} containing the players in the order they should play the {@code PlanningPhase} in
      */
-    private ArrayList<Player> createPlayersArray() {
+    public ArrayList<Player> createPlayersArray() {
         ArrayList<Player> playersInOrder = new ArrayList<>();
         int numPlayers = game.getPlayers().size();
         for (int i = 0; i < numPlayers; i++) {
@@ -118,11 +127,47 @@ public class Round {
         return planningPhase;
     }
 
+    public void setPlanningPhase(PlanningPhase planningPhase) {
+        this.planningPhase = planningPhase;
+    }
+
     public PlayerActionPhase getCurrentPlayerActionPhase() {
         return currentPlayerActionPhase;
     }
 
+    public void setCurrentPlayerActionPhase(PlayerActionPhase currentPlayerActionPhase) {
+        this.currentPlayerActionPhase = currentPlayerActionPhase;
+    }
+
     public int getFirstPlayerIndex() {
         return firstPlayerIndex;
+    }
+
+    public List<Assistant> getPlayedAssistants() {
+        if (playedAssistants == null) {
+            return null;
+        }
+        return new ArrayList<>(playedAssistants);
+    }
+
+    public void setPlayedAssistants(List<Assistant> playedAssistants) {
+        this.playedAssistants = playedAssistants;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Round round = (Round) o;
+
+        if (firstPlayerIndex != round.firstPlayerIndex) return false;
+        if (currentAssistantIndex != round.currentAssistantIndex) return false;
+        if (isLastRound != round.isLastRound) return false;
+        if (!Objects.equals(planningPhase, round.planningPhase))
+            return false;
+        if (!Objects.equals(playedAssistants, round.playedAssistants))
+            return false;
+        return Objects.equals(currentPlayerActionPhase, round.currentPlayerActionPhase);
     }
 }

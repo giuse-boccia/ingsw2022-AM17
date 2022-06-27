@@ -1,0 +1,568 @@
+{
+  "roundsPlayed": 0,
+  "bag": [
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "RED"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "GREEN"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "PINK"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "BLUE"
+    },
+    {
+      "color": "YELLOW"
+    },
+    {
+      "color": "YELLOW"
+    }
+  ],
+  "roundState": {
+    "playedAssistants": [
+      {
+        "numSteps": 2,
+        "value": 4,
+        "playerName": "Clod"
+      },
+      {
+        "numSteps": 4,
+        "value": 7,
+        "playerName": "Rick"
+      }
+    ],
+    "firstPlayerIndex": 1,
+    "currentAssistantIndex": 1,
+    "isLastRound": false
+  },
+  "isExpert": true,
+  "MNIndex": 10,
+  "players": [
+    {
+      "name": "Rick",
+      "towerColor": "WHITE",
+      "remainingTowers": 8,
+      "numCoins": 1,
+      "assistants": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10
+      ],
+      "entrance": [
+        {
+          "color": "RED"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "YELLOW"
+        }
+      ],
+      "dining": [],
+      "ownedProfessors": []
+    },
+    {
+      "name": "Clod",
+      "towerColor": "BLACK",
+      "remainingTowers": 7,
+      "numCoins": 1,
+      "assistants": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "entrance": [
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "PINK"
+        },
+        {
+          "color": "YELLOW"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "RED"
+        }
+      ],
+      "dining": [
+        {
+          "color": "RED"
+        }
+      ],
+      "ownedProfessors": [
+        "RED"
+      ]
+    }
+  ],
+  "islands": [
+    {
+      "students": [
+        {
+          "color": "YELLOW"
+        }
+      ],
+      "noEntryNum": 0,
+      "numOfTowers": 0
+    },
+    {
+      "students": [
+        {
+          "color": "YELLOW"
+        }
+      ],
+      "noEntryNum": 0,
+      "numOfTowers": 0
+    },
+    {
+      "students": [
+        {
+          "color": "RED"
+        }
+      ],
+      "noEntryNum": 0,
+      "numOfTowers": 0
+    },
+    {
+      "students": [
+        {
+          "color": "BLUE"
+        }
+      ],
+      "noEntryNum": 0,
+      "numOfTowers": 0
+    },
+    {
+      "students": [
+        {
+          "color": "PINK"
+        }
+      ],
+      "noEntryNum": 0,
+      "numOfTowers": 0
+    },
+    {
+      "students": [
+        {
+          "color": "GREEN"
+        }
+      ],
+      "noEntryNum": 0,
+      "numOfTowers": 0
+    },
+    {
+      "students": [
+        {
+          "color": "BLUE"
+        }
+      ],
+      "noEntryNum": 0,
+      "numOfTowers": 0
+    },
+    {
+      "students": [
+        {
+          "color": "PINK"
+        }
+      ],
+      "noEntryNum": 0,
+      "numOfTowers": 0
+    },
+    {
+      "students": [],
+      "noEntryNum": 0,
+      "numOfTowers": 0
+    },
+    {
+      "students": [
+        {
+          "color": "GREEN"
+        }
+      ],
+      "noEntryNum": 0,
+      "numOfTowers": 0
+    },
+    {
+      "students": [
+        {
+          "color": "RED"
+        },
+        {
+          "color": "RED"
+        }
+      ],
+      "towerColor": "BLACK",
+      "noEntryNum": 0,
+      "numOfTowers": 1
+    },
+    {
+      "students": [
+        {
+          "color": "RED"
+        }
+      ],
+      "noEntryNum": 0,
+      "numOfTowers": 0
+    }
+  ],
+  "characters": [
+    {
+      "characterName": "noEntry",
+      "cost": 2,
+      "hasCoin": false,
+      "noEntryNum": 4
+    },
+    {
+      "characterName": "plus2MNMoves",
+      "cost": 1,
+      "hasCoin": false,
+      "noEntryNum": 0
+    },
+    {
+      "characterName": "move1FromCardToIsland",
+      "cost": 1,
+      "hasCoin": false,
+      "students": [
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "BLUE"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "BLUE"
+        }
+      ],
+      "noEntryNum": 0
+    }
+  ],
+  "clouds": [
+    {
+      "students": [],
+      "maxStudents": 3
+    },
+    {
+      "students": [
+        {
+          "color": "GREEN"
+        },
+        {
+          "color": "RED"
+        },
+        {
+          "color": "PINK"
+        }
+      ],
+      "maxStudents": 3
+    }
+  ]
+}
