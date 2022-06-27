@@ -272,7 +272,7 @@ public class PlayerActionPhase {
 
         checkInvalidAction();
 
-        if (numSteps < 0 || numSteps > mnStrategy.getMNMaxSteps(assistant)) {
+        if (numSteps <= 0 || numSteps > mnStrategy.getMNMaxSteps(assistant)) {
             throw new InvalidStepsForMotherNatureException(MessageResourceBundle.getMessage("invalid_mn_move"));
         }
 
