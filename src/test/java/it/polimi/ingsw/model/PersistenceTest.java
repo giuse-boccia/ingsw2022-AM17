@@ -1,6 +1,9 @@
 package it.polimi.ingsw.model;
 
 import com.google.gson.Gson;
+import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.characters.MovingCharacter;
@@ -10,6 +13,7 @@ import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Cloud;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.server.game_state.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -21,6 +25,12 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PersistenceTest {
+
+    @BeforeAll
+    static void initializeMessageResourceBundle() {
+        MessageResourceBundle.initializeBundle("en");
+    }
+
     /**
      * Loads a game state from a file, then loads a game from that game state and tests that everything is correct
      * by making assertions between the gameState and the game
