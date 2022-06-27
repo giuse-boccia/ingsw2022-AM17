@@ -92,7 +92,7 @@ public class CliView {
 
         // Dashboards
         System.out.println(DASHBOARD_LINE);
-        printDashboardsState(gameState.getPlayers(), gameState.isExpert());
+        printDashboardsState(gameState.getPlayers(), currentPlayer, gameState.isExpert());
 
         // Clouds
         System.out.println(CLOUDS_LINE);
@@ -182,22 +182,22 @@ public class CliView {
      * @param players  a list of player states, included in the game state
      * @param isExpert whether the game is in expert mode or not
      */
-    private static void printDashboardsState(List<PlayerState> players, boolean isExpert) {
+    private static void printDashboardsState(List<PlayerState> players, String currentPlayer, boolean isExpert) {
         switch (players.size()) {
             case 2 -> {
-                printSingleDashboard(players.get(0), isExpert);
+                printSingleDashboard(players.get(0), currentPlayer, isExpert);
                 System.out.println();
-                printSingleDashboard(players.get(1), isExpert);
+                printSingleDashboard(players.get(1), currentPlayer, isExpert);
             }
             case 3 -> {
-                printSingleDashboard(players.get(0), isExpert);
+                printSingleDashboard(players.get(0), currentPlayer, isExpert);
                 System.out.println();
-                printDoubleDashboard(players.get(1), players.get(2), isExpert);
+                printDoubleDashboard(players.get(1), players.get(2), currentPlayer, isExpert);
             }
             case 4 -> {
-                printDoubleDashboard(players.get(0), players.get(2), isExpert);
+                printDoubleDashboard(players.get(0), players.get(2), currentPlayer, isExpert);
                 System.out.println();
-                printDoubleDashboard(players.get(1), players.get(3), isExpert);
+                printDoubleDashboard(players.get(1), players.get(3), currentPlayer, isExpert);
             }
         }
     }
@@ -229,12 +229,16 @@ public class CliView {
      *
      * @param player the owner of the dashboard to be printed
      */
-    private static void printSingleDashboard(PlayerState player, boolean isExpert) {
+    private static void printSingleDashboard(PlayerState player, String currentPlayer, boolean isExpert) {
         List<Student> dining = player.getDining();
         List<Student> entrance = player.getEntrance();
 
         // Player name and stats
-        System.out.print("  " + player.getName());
+        String playerName = player.getName();
+        if (playerName.equals(currentPlayer)) {
+            playerName += " (you)";
+        }
+        System.out.print("  " + playerName);
         System.out.print(" | " + player.getRemainingTowers() + " towers left (" + player.getTowerColor() + ")");
         if (isExpert) {
             System.out.print(" | " +
@@ -303,11 +307,11 @@ public class CliView {
      * @param player1 the owner of the dashboard to be printed on the left
      * @param player2 the owner of the dashboard to be printed on the right
      */
-    private static void printDoubleDashboard(PlayerState player1, PlayerState player2, boolean isExpert) {
+    private static void printDoubleDashboard(PlayerState player1, PlayerState player2, String currentPlayer, boolean isExpert) {
         // TODO implement double dashboards
-        printSingleDashboard(player1, isExpert);
+        printSingleDashboard(player1, currentPlayer, isExpert);
         System.out.println();
-        printSingleDashboard(player2, isExpert);
+        printSingleDashboard(player2, currentPlayer, isExpert);
     }
 
     /**
