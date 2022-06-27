@@ -79,10 +79,26 @@ public class LobbyController implements GuiController {
         playersTitle.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.TITLE_FONT_SIZE));
         gridPane.add(playersTitle, 0, 0);
 
-        for (int i = 0; i < lobby.getPlayers().size(); i++) {
-            Text newPlayerText = new Text(lobby.getPlayers().get(i));
-            newPlayerText.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.TITLE_FONT_SIZE));
-            gridPane.add(newPlayerText, 0, i + 1);
+        if (lobby.isFromSavedGame()) {
+            List<String> readyPlayers = lobby.getPlayers();
+            String[] playersFromSavedGame = lobby.getPlayersFromSavedGame();
+            for (int i = 0; i < playersFromSavedGame.length; i++) {
+                String player = playersFromSavedGame[i];
+                boolean playerIsReady = lobby.getPlayers().contains(player);
+                String playerString = playerIsReady ? MessageResourceBundle.getMessage("ready") : MessageResourceBundle.getMessage("waiting");
+                playerString += "  " + player;
+
+                Text playerText = new Text(playerString);
+                playerText.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.TITLE_FONT_SIZE));
+                gridPane.add(playerText, 0, i + 1);
+
+            }
+        } else {
+            for (int i = 0; i < lobby.getPlayers().size(); i++) {
+                Text newPlayerText = new Text(lobby.getPlayers().get(i));
+                newPlayerText.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.TITLE_FONT_SIZE));
+                gridPane.add(newPlayerText, 0, i + 1);
+            }
         }
     }
 }
