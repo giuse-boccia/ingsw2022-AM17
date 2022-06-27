@@ -49,7 +49,7 @@ public class Constants {
     public static final int MAX_STUDENTS_IN_DINING = 10;
 
     // Gui constants
-    public static final int TOAST_DURATION_SECONDS = 4;
+    public static final int TOAST_DURATION_SECONDS = 7;
 
     // Actions
     public static final String ACTION_SET_USERNAME = "SET_USERNAME";
