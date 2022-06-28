@@ -71,6 +71,7 @@ public class LoginController implements GuiController {
      */
     public void onLoginBtnPressed(ActionEvent event) {
         String username = usernameTextField.getText();
+        if (!checkConnectionSuccess()) return;
         if (username.isBlank()) {
             onRandomUsernameRequested(null);
             return;
@@ -85,6 +86,7 @@ public class LoginController implements GuiController {
      * @param event the user's click on the Random username button
      */
     public void onRandomUsernameRequested(MouseEvent event) {
+        if (!checkConnectionSuccess()) return;
         String username = RandomNicknameGenerator.getRandomNickname();
         GuiView.getGui().setTmpUsername(username);
         GuiView.getGui().getCurrentObserverHandler().notifyAllUsernameObservers(username);
@@ -106,6 +108,20 @@ public class LoginController implements GuiController {
     private void setTextToElements() {
         usernameText.setText(MessageResourceBundle.getMessage("insert_username_title"));
         requestUsernameButton.setText(MessageResourceBundle.getMessage("get_random_username"));
+    }
+
+    /**
+     * Checks if the user has successfully connected to server; if not, the user is kicked with a popup error message
+     *
+     * @return true if the connection has been established successfully
+     */
+    private boolean checkConnectionSuccess() {
+        boolean connectionSuccessful = GuiView.getGui().getCurrentObserverHandler() != null;
+        if (!connectionSuccessful) {
+            // There was an error connecting to server
+            GuiView.getGui().gracefulTermination(MessageResourceBundle.getMessage("connection_failed"));
+        }
+        return connectionSuccessful;
     }
 
     @Override
