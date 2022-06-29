@@ -1,12 +1,12 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.model.game_actions.Round;
 import it.polimi.ingsw.model.game_objects.TowerColor;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.utils.RandomGenerator;
+import it.polimi.ingsw.utils.constants.Constants;
 
 import java.util.*;
 

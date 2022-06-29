@@ -1,10 +1,10 @@
 package it.polimi.ingsw.client.gui.utils;
 
 import it.polimi.ingsw.client.gui.utils.drawing.*;
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
 import it.polimi.ingsw.server.game_state.PlayerState;
+import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.utils.constants.Paths;
 import javafx.geometry.Pos;
 import javafx.scene.Node;

@@ -1,12 +1,12 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.utils.Students;
+import it.polimi.ingsw.utils.constants.Constants;
 
 import java.util.ArrayList;
 import java.util.Collections;

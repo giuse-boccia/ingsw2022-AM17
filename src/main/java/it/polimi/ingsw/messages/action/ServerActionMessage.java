@@ -2,8 +2,8 @@ package it.polimi.ingsw.messages.action;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.messages.Message;
+import it.polimi.ingsw.utils.constants.Constants;
 
 import java.util.ArrayList;
 import java.util.List;

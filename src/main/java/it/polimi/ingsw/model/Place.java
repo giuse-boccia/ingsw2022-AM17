@@ -5,7 +5,6 @@ import it.polimi.ingsw.exceptions.InvalidStudentException;
 import it.polimi.ingsw.model.game_objects.Student;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public interface Place {
     /**

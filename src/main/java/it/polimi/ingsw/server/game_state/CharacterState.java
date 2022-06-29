@@ -1,7 +1,8 @@
 package it.polimi.ingsw.server.game_state;
 
-import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.model.characters.CharacterName;
+import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 

@@ -2,7 +2,6 @@ package it.polimi.ingsw.server.game_state;
 
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
@@ -10,6 +9,7 @@ import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Bag;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
+import it.polimi.ingsw.utils.constants.Constants;
 
 import java.io.IOException;
 import java.io.Reader;

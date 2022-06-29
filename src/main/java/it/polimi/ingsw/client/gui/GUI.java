@@ -4,10 +4,11 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.MessageHandler;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
+import it.polimi.ingsw.utils.constants.Constants;
+
 import java.util.List;
 
 public class GUI extends Client {

@@ -1,15 +1,16 @@
 package it.polimi.ingsw.model.game_objects.gameboard_objects;
 
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.model.characters.CharacterName;
+import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.TowerColor;
 import it.polimi.ingsw.model.utils.Students;
+import it.polimi.ingsw.utils.constants.Constants;
 
 import java.util.*;
 import java.util.stream.Collectors;

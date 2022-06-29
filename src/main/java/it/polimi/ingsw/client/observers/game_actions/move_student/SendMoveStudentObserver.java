@@ -1,11 +1,11 @@
 package it.polimi.ingsw.client.observers.game_actions.move_student;
 
 import it.polimi.ingsw.client.MessageHandler;
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.action.ActionArgs;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.utils.constants.Constants;
 
 public class SendMoveStudentObserver implements MoveStudentObserver {
 

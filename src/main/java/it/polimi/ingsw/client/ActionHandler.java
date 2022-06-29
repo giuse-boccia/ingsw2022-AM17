@@ -1,14 +1,8 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.messages.action.Action;
-import it.polimi.ingsw.messages.action.ActionArgs;
-import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.model.characters.CharacterName;
-import it.polimi.ingsw.model.game_objects.Color;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class which handles the action messages

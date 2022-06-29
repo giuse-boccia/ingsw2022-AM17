@@ -1,8 +1,8 @@
 package it.polimi.ingsw.client.observers.login.game_parameters;
 
 import it.polimi.ingsw.client.MessageHandler;
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
+import it.polimi.ingsw.utils.constants.Constants;
 
 public class SendGameParametersObserver implements GameParametersObserver {
 
