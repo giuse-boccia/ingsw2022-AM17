@@ -54,7 +54,6 @@ public class GameController {
      */
     public void start() {
         game.start();
-        game.getCurrentRound().setLastRound();
         currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
         PlayerClient firstPlayer = players.get(currentPlayerIndex);
         sendBroadcastUpdateMessage(firstPlayer.getUsername() + MessageResourceBundle.getMessage("is_playing"));
