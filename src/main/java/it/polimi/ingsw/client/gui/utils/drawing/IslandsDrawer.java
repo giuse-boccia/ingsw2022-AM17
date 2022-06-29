@@ -45,7 +45,8 @@ public class IslandsDrawer {
             BorderPane bp = new BorderPane(island);
             int steps = (i - gameState.getMNIndex() + gameState.getIslands().size()) % gameState.getIslands().size();
             int islandIndex = i;
-            bp.setOnMouseClicked(event -> ObjectClickListeners.setIslandClicked(bp, steps, islandIndex));
+            int finalSteps = (steps == 0) ? islands.size() : steps;
+            bp.setOnMouseClicked(event -> ObjectClickListeners.setIslandClicked(bp, finalSteps, islandIndex));
             islandIcons.add(bp);
             double X = Math.cos(deltaAngle * i) * radius;
             double Y = Math.sin(deltaAngle * i) * radius;
