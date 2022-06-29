@@ -29,6 +29,7 @@ public class Bag implements Place {
 
     /**
      * @return a random {@code Student} of the collection
+     * @throws EmptyBagException if the bag is empty
      */
     public Student getRandStudent() throws EmptyBagException {
         if (isEmpty()) throw new EmptyBagException(MessageResourceBundle.getMessage("empty_bag"));
