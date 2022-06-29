@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.gui.controllers.ActionController;
+import it.polimi.ingsw.client.gui.controllers.EndGameController;
 import it.polimi.ingsw.client.gui.controllers.GuiController;
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
@@ -292,20 +293,18 @@ public class GuiView extends Application {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle(MessageResourceBundle.getMessage("end_game_title"));
+            stage.getIcons().add(new Image(Paths.CRANIO_LOGO));
 
-            Text endGameText = new Text(message);
-            endGameText.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.SUBTITLE_FONT_SIZE));
-            Button closeAppBtn = new Button();
-            closeAppBtn.setText(MessageResourceBundle.getMessage("end_game_button_text"));
-            closeAppBtn.setStyle("-fx-font-family: Algerian; -fx-font-size: 16");
-            closeAppBtn.setOnMouseClicked(event -> {
-                System.out.println(MessageResourceBundle.getMessage("game_ended_message"));
-                System.exit(0);
-            });
-            VBox vBox = new VBox(endGameText, closeAppBtn);
-            vBox.setAlignment(Pos.CENTER);
+            FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/end_game.fxml"));
 
-            stage.setScene(new Scene(vBox, DrawingConstants.END_GAME_POPUP_WIDTH, DrawingConstants.END_GAME_POPUP_HEIGHT));
+            try {
+                scene = new Scene(fxmlLoader.load());
+                stage.setScene(scene);
+                EndGameController controller = fxmlLoader.getController();
+                controller.setEndGameMessage(message);
+            } catch (IOException e) {
+                return;
+            }
             stage.show();
         });
     }

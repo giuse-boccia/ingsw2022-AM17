@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18"
+            fx:controller="it.polimi.ingsw.client.gui.controllers.EndGameController">
+   <ImageView fitHeight="603.0" fitWidth="690.0" opacity="0.67" pickOnBounds="true" preserveRatio="true">
+      <Image url="@gameboard/backgrounds/login_background.png"/>
+   </ImageView>
+   <ImageView fitHeight="79.0" fitWidth="83.0" layoutY="321.0" pickOnBounds="true" preserveRatio="true">
+      <Image url="@gameboard/cranio_logo.png"/>
+   </ImageView>
+   <ImageView fitHeight="67.0" fitWidth="79.0" layoutX="7.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
+      <Image url="@gameboard/crossed_swords.png"/>
+   </ImageView>
+   <ImageView fitHeight="67.0" fitWidth="67.0" layoutX="519.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+      <Image url="@gameboard/trophy.png"/>
+   </ImageView>
+   <Button fx:id="closeAppButton" layoutX="201.0" layoutY="297.0" mnemonicParsing="false"
+           onMouseClicked="#closeApplication" prefHeight="46.0" prefWidth="200.0">
+      <font>
+         <Font name="Baskerville Old Face" size="18.0"/>
+      </font>
+   </Button>
+   <Text fx:id="endGameText" layoutX="140.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0"
+         textAlignment="CENTER" wrappingWidth="320.0">
+      <font>
+         <Font name="Baskerville Old Face" size="29.0"/>
+      </font>
+   </Text>
+</AnchorPane>
