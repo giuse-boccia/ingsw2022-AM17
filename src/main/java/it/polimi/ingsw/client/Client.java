@@ -248,4 +248,6 @@ public abstract class Client {
      * @param chatMessage the received {@link ChatMessage}
      */
     public abstract void showReceivedChatMessage(ChatMessage chatMessage);
+
+    public abstract void receiveAllChatMessages(List<ChatMessage> chatMessages);
 }

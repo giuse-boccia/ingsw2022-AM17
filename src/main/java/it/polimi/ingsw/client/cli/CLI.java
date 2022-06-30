@@ -278,6 +278,11 @@ public class CLI extends Client {
 
     }
 
+    @Override
+    public void receiveAllChatMessages(List<ChatMessage> chatMessages) {
+
+    }
+
     /**
      * Asks the user to input an integer between lowerBound and upperBound
      *
@@ -342,4 +347,6 @@ public class CLI extends Client {
 
         return res.equals("y") || res.equals("");
     }
+
+
 }
