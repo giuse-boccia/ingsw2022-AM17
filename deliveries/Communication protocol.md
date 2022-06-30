@@ -655,8 +655,13 @@ The *game_status* field in every update message is a JSON rappresentation of the
 }
 ```
 # End
+
 A message with an END status is sent to every logged user when the game is finished.
-It contains only a *status* field and a *displayText* field which shows every user a win or defeat message - in the latter there are the username(s) of the player(s) who won
+
+### Fields
+- The *status* field is always set to END
+- The *displayText* field shows every user a win or defeat message - in the latter there are the username(s) of the player(s) who won
+- The *gameState* field updates the current GameState to show the user the final state of the just finished game
 
 ```
 +--------+                                        +--------+
@@ -673,13 +678,15 @@ It contains only a *status* field and a *displayText* field which shows every us
 ```json
 {
 	"status": "END",
-	"displayText": "Congratulations, you won the game!"
+	"displayText": "Congratulations, you won the game!",
+	"gameState": {...}
 }
 ```
 #### message E.D
 ```json
 {
 	"status": "END",
-	"displayText": "Unfortunately you lost. Clod and Giuse won the game"
+	"displayText": "Unfortunately you lost. Clod and Giuse won the game",
+	"gameState": {...}
 }
 ```

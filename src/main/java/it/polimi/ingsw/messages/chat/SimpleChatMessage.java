@@ -8,10 +8,12 @@ import it.polimi.ingsw.utils.constants.Constants;
 public class SimpleChatMessage extends Message {
 
     private final ChatMessage chatMessage;
+    private String action;
 
     public SimpleChatMessage(ChatMessage chatMessage) {
         super();
         setStatus(Constants.STATUS_CHAT);
+        action = Constants.ACTION_SEND_MESSAGE;
         this.chatMessage = chatMessage;
     }
 
@@ -23,5 +25,13 @@ public class SimpleChatMessage extends Message {
 
     public ChatMessage getChatMessage() {
         return chatMessage;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 }

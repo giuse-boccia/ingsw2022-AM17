@@ -1,10 +1,10 @@
-package it.polimi.ingsw.client.observers.chat;
+package it.polimi.ingsw.client.observers.chat.send_message;
 
 import it.polimi.ingsw.client.MessageHandler;
 import it.polimi.ingsw.messages.chat.ChatMessage;
 import it.polimi.ingsw.messages.chat.SimpleChatMessage;
 
-public class SendChatMessageObserver implements ChatObserver {
+public class SendChatMessageObserver implements ChatMessageObserver {
 
     private final MessageHandler mh;
 

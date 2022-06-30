@@ -121,6 +121,13 @@ public class GUI extends Client {
     }
 
     @Override
+    public void receiveAllChatMessages(List<ChatMessage> chatMessages) {
+        for (ChatMessage message : chatMessages) {
+            ChatView.onChatMessageReceived(message);
+        }
+    }
+
+    @Override
     public void askUsername() {
 
     }

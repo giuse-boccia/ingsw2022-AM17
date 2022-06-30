@@ -26,6 +26,9 @@ public class ChatController {
 
     @FXML
     void initialize() {
+        // Asks all the messages to the server
+        GuiView.getGui().getCurrentObserverHandler().notifyAllRequestMessagesObservers();
+
         messageTextField.setOnKeyTyped(event -> {
             String text = messageTextField.getText();
             if (text.length() > Constants.MAX_LENGTH_FOR_MESSAGE) {
@@ -39,6 +42,7 @@ public class ChatController {
             if (!toSend.isBlank()) {
                 vBoxMessages.getChildren().add(getLayoutForSentMessage(toSend));
                 messagesScrollPane.setVvalue(1.0);
+                messageTextField.setText("");
                 // Send message to server
                 GuiView.getGui().getCurrentObserverHandler()
                         .notifyAllChatMessageObservers(new ChatMessage(toSend, GuiView.getGui().getUsername()));
@@ -103,6 +107,12 @@ public class ChatController {
      * @param chatMessage the received {@link ChatMessage}
      */
     public void onChatMessageReceived(ChatMessage chatMessage) {
-        vBoxMessages.getChildren().add(getLayoutForReceivedMessage(chatMessage.getMessage(), chatMessage.getSender()));
+        HBox toAdd;
+        if (chatMessage.getSender().equals(GuiView.getGui().getUsername())) {
+            toAdd = getLayoutForSentMessage(chatMessage.getMessage());
+        } else {
+            toAdd = getLayoutForReceivedMessage(chatMessage.getMessage(), chatMessage.getSender());
+        }
+        vBoxMessages.getChildren().add(toAdd);
     }
 }

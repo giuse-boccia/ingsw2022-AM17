@@ -73,8 +73,13 @@ public class Constants {
     public static final String STATUS_CHAT = "CHAT";
     public static final String STATUS_END = "END";
 
+    // Chat-related constants
     public static final int MAX_LENGTH_FOR_MESSAGE = 200;
+    public static final String ACTION_SEND_MESSAGE = "SEND_MESSAGE";
+    public static final String ACTION_GET_ALL_MESSAGES = "GET_ALL_MESSAGES";
+    public static final String ACTION_SEND_ALL_MESSAGES = "SEND_ALL_MESSAGES";
 
     // Possible language tags
     public static final List<String> LANGUAGE_TAGS = List.of("en", "it");
+
 }

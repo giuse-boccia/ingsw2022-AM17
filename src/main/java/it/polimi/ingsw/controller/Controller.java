@@ -3,9 +3,11 @@ package it.polimi.ingsw.controller;
 import com.google.gson.JsonSyntaxException;
 import it.polimi.ingsw.exceptions.GameEndedException;
 import it.polimi.ingsw.languages.Messages;
+import it.polimi.ingsw.languages.MessagesForClients;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
+import it.polimi.ingsw.messages.chat.ServerChatMessage;
 import it.polimi.ingsw.messages.chat.SimpleChatMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.GameLobby;
@@ -48,12 +50,12 @@ public class Controller {
         if (status.equals(Constants.STATUS_LOGIN)) {
             ServerLoginMessage message = new ServerLoginMessage();
             message.setError(errorCode);
-            message.setDisplayText(Messages.getMessage("error_tag", languageTag) + errorMessage);
+            message.setDisplayText(MessagesForClients.getMessage("error_tag", languageTag) + errorMessage);
             ch.sendMessageToClient(message.toJson());
         } else if (status.equals(Constants.STATUS_ACTION)) {
             ServerActionMessage message = new ServerActionMessage();
             message.setError(errorCode);
-            message.setDisplayText(Messages.getMessage("error_tag", languageTag) + errorMessage);
+            message.setDisplayText(MessagesForClients.getMessage("error_tag", languageTag) + errorMessage);
             ch.sendMessageToClient(message.toJson());
         }
 
@@ -116,7 +118,7 @@ public class Controller {
             }
 
             if (loginMessage.getAction() == null) {
-                sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("bad_request", locale), 3, locale);
+                sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("bad_request", locale), 3, locale);
                 return;
             }
 
@@ -125,8 +127,7 @@ public class Controller {
                 case Constants.ACTION_CREATE_GAME ->
                         setGameParameters(ch, loginMessage.getNumPlayers(), loginMessage.isExpert(), locale);
                 case Constants.ACTION_LOAD_GAME -> setLoadedGameParameters(ch, locale);
-                default ->
-                        sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("bad_request", locale), 3, locale);
+                default -> sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("bad_request", locale), 3, locale);
 
             }
         } catch (JsonSyntaxException e) {
@@ -161,11 +162,11 @@ public class Controller {
      */
     private void setGameParameters(Communicable ch, int numPlayers, boolean isExpert, Locale locale) {
         if (loggedUsers.isEmpty() || loggedUsers.get(0).getCommunicable() != ch) {
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("invalid_player_creating_game", locale), 3, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("invalid_player_creating_game", locale), 3, locale);
             return;
         }
         if (numPlayers < Constants.MIN_PLAYERS || numPlayers > Constants.MAX_PLAYERS) {
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("invalid_num_players", locale), 3, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("invalid_num_players", locale), 3, locale);
             return;
         }
 
@@ -175,7 +176,7 @@ public class Controller {
 
         if (!startGameIfReady()) {
             for (PlayerClient player : loggedUsers) {
-                ServerLoginMessage message = getServerLoginMessage(Messages.getMessage("game_created", player.getLanguageTag()));
+                ServerLoginMessage message = getServerLoginMessage(MessagesForClients.getMessage("game_created", player.getLanguageTag()));
                 player.getCommunicable().sendMessageToClient(message.toJson());
             }
         }
@@ -190,7 +191,7 @@ public class Controller {
     private void setLoadedGameParameters(Communicable ch, Locale locale) {
         // Only the "host" loggedUsers[0] can load a game
         if (loggedUsers.isEmpty() || loggedUsers.get(0).getCommunicable() != ch) {
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("invalid_player_creating_game", locale), 3, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("invalid_player_creating_game", locale), 3, locale);
             return;
         }
 
@@ -205,7 +206,7 @@ public class Controller {
                 gameLobby.resetPreferences();
 
                 // send "you are not present in the loaded game" error and logout user (he has to log in again)
-                sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("username_not_in_loaded_game", locale), 5, locale);
+                sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("username_not_in_loaded_game", locale), 5, locale);
             } else {
                 gameLobby.setNumPlayers(loadedPlayers.length);
                 gameLobby.setIsExpert(loadedGame.isExpert());
@@ -214,7 +215,7 @@ public class Controller {
 
                 if (!startGameIfReady()) {
                     for (PlayerClient player : loggedUsers) {
-                        ServerLoginMessage message = getServerLoginMessage(Messages.getMessage("game_loaded", player.getLanguageTag()));
+                        ServerLoginMessage message = getServerLoginMessage(MessagesForClients.getMessage("game_loaded", player.getLanguageTag()));
                         player.getCommunicable().sendMessageToClient(message.toJson());
                     }
                 }
@@ -222,7 +223,7 @@ public class Controller {
         } catch (IOException | NoSuchElementException e) {
             // send "load failed" error
             System.out.println(Messages.getMessage("load_err"));
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("load_game_failed", locale), 4, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("load_game_failed", locale), 4, locale);
         }
     }
 
@@ -235,15 +236,15 @@ public class Controller {
      */
     private void addUser(Communicable ch, String username, Locale locale) {
         if (username == null || username.trim().equals("")) {
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("invalid_username", locale), 3, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("invalid_username", locale), 3, locale);
         } else if ((gameLobby.getNumPlayers() != -1 && loggedUsers.size() >= gameLobby.getNumPlayers()) || loggedUsers.size() >= Constants.MAX_PLAYERS || gameController != null) {
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("lobby_full", locale), 1, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("lobby_full", locale), 1, locale);
         } else if (username.length() > Constants.MAX_USERNAME_LENGTH) {
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("username_too_long", locale), 3, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("username_too_long", locale), 3, locale);
         } else if (loggedUsers.stream().anyMatch(u -> u.getUsername().equals(username))) {
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("username_already_taken", locale), 2, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("username_already_taken", locale), 2, locale);
         } else if (gameLobby.isFromSavedGame() && !Arrays.asList(gameLobby.getPlayersFromSavedGame()).contains(username)) {
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("player_not_in_loaded_game", locale), 5, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("player_not_in_loaded_game", locale), 5, locale);
         } else {
             PlayerClient newUser = new PlayerClient(ch, username);
             newUser.setLanguageTag(locale);
@@ -271,15 +272,15 @@ public class Controller {
      */
     private void renameUser(Communicable ch, String newUsername, Locale locale) {
         if (newUsername == null || newUsername.trim().equals("")) {
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("invalid_username", locale), 5, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("invalid_username", locale), 5, locale);
         } else if ((gameLobby.getNumPlayers() != -1 && loggedUsers.size() >= gameLobby.getNumPlayers()) || loggedUsers.size() >= Constants.MAX_PLAYERS || gameController != null) {
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("lobby_full", locale), 5, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("lobby_full", locale), 5, locale);
         } else if (newUsername.length() > Constants.MAX_USERNAME_LENGTH) {
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("username_too_long", locale), 5, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("username_too_long", locale), 5, locale);
         } else if (loggedUsers.stream().anyMatch(u -> u.getUsername().equals(newUsername))) {
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("username_already_taken", locale), 5, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("username_already_taken", locale), 5, locale);
         } else if (gameLobby.isFromSavedGame() && !Arrays.asList(gameLobby.getPlayersFromSavedGame()).contains(newUsername)) {
-            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("username_not_in_loaded_game", locale), 5, locale);
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("username_not_in_loaded_game", locale), 5, locale);
         } else {
             try {
                 PlayerClient userToRename = loggedUsers.stream()
@@ -305,7 +306,7 @@ public class Controller {
                     sendBroadcastMessage();
                 }
             } catch (Exception e) {
-                sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("internal_server_error", locale), 5, locale);
+                sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("internal_server_error", locale), 5, locale);
             }
         }
     }
@@ -319,13 +320,13 @@ public class Controller {
         // Notify the "host" only if he already picked the game preferences
         if (gameLobby.getNumPlayers() != -1) {
             Locale firstLocale = loggedUsers.get(0).getLanguageTag();
-            ServerLoginMessage res = getServerLoginMessage(Messages.getMessage("new_player_joined", firstLocale));
+            ServerLoginMessage res = getServerLoginMessage(MessagesForClients.getMessage("new_player_joined", firstLocale));
             loggedUsers.get(0).getCommunicable().sendMessageToClient(res.toJson());
         }
 
         for (int i = 1; i < loggedUsers.size(); i++) {
             Locale locale = loggedUsers.get(i).getLanguageTag();
-            ServerLoginMessage res = getServerLoginMessage(Messages.getMessage("new_player_joined", locale));
+            ServerLoginMessage res = getServerLoginMessage(MessagesForClients.getMessage("new_player_joined", locale));
             loggedUsers.get(i).getCommunicable().sendMessageToClient(res.toJson());
         }
     }
@@ -351,7 +352,7 @@ public class Controller {
     private void askDesiredNumberOfPlayers(Communicable ch, Locale locale) {
         ServerLoginMessage res = new ServerLoginMessage();
         res.setAction(Constants.ACTION_CREATE_GAME);
-        res.setDisplayText(Messages.getMessage("set_game_parameters", locale));
+        res.setDisplayText(MessagesForClients.getMessage("set_game_parameters", locale));
 
         ch.sendMessageToClient(res.toJson());
 
@@ -372,9 +373,9 @@ public class Controller {
             // Alert player that game is full and removes him
             PlayerClient toRemove = loggedUsers.get(numberOfPlayers);
             Locale toRemoveLocale = toRemove.getLanguageTag();
-            String errorMessage = Messages.getMessage("new_game_error_start", toRemoveLocale)
+            String errorMessage = MessagesForClients.getMessage("new_game_error_start", toRemoveLocale)
                     + numberOfPlayers +
-                    Messages.getMessage("new_game_error_end", toRemoveLocale);
+                    MessagesForClients.getMessage("new_game_error_end", toRemoveLocale);
             sendErrorMessage(toRemove.getCommunicable(), Constants.STATUS_LOGIN, errorMessage, 1, toRemoveLocale);
             loggedUsers.remove(toRemove);
         }
@@ -382,7 +383,7 @@ public class Controller {
         if (gameLobby.isFromSavedGame()) {
 
             for (PlayerClient playerClient : loggedUsers) {
-                String message = Messages.getMessage("game_resuming", playerClient.getLanguageTag());
+                String message = MessagesForClients.getMessage("game_resuming", playerClient.getLanguageTag());
                 ServerLoginMessage toSend = getServerLoginMessage(message);
                 // Alert player that game is resuming
                 playerClient.getCommunicable().sendMessageToClient(toSend.toJson());
@@ -404,11 +405,11 @@ public class Controller {
             for (PlayerClient playerClient : loggedUsers) {
                 // Alert player that game is starting
                 Locale locale = playerClient.getLanguageTag();
-                String message = Messages.getMessage("game_starting", locale) + Messages.getMessage("teams", locale) +
-                        loggedUsers.get(0).getUsername() + Messages.getMessage("and", locale) +
-                        loggedUsers.get(2).getUsername() + Messages.getMessage("white", locale) +
-                        loggedUsers.get(1).getUsername() + Messages.getMessage("and", locale) +
-                        loggedUsers.get(3).getUsername() + Messages.getMessage("black", locale);
+                String message = MessagesForClients.getMessage("game_starting", locale) + MessagesForClients.getMessage("teams", locale) +
+                        loggedUsers.get(0).getUsername() + MessagesForClients.getMessage("and", locale) +
+                        loggedUsers.get(2).getUsername() + MessagesForClients.getMessage("white", locale) +
+                        loggedUsers.get(1).getUsername() + MessagesForClients.getMessage("and", locale) +
+                        loggedUsers.get(3).getUsername() + MessagesForClients.getMessage("black", locale);
                 ServerLoginMessage toSend = getServerLoginMessage(message);
                 playerClient.getCommunicable().sendMessageToClient(toSend.toJson());
                 playerClient.setPlayer(new Player(playerClient.getUsername(), Constants.TOWERS_IN_TWO_OR_FOUR_PLAYER_GAME));
@@ -417,7 +418,7 @@ public class Controller {
             for (PlayerClient playerClient : loggedUsers) {
                 // Alert player that game is starting
                 Locale locale = playerClient.getLanguageTag();
-                String message = Messages.getMessage("game_starting", locale);
+                String message = MessagesForClients.getMessage("game_starting", locale);
                 ServerLoginMessage toSend = getServerLoginMessage(message);
                 playerClient.getCommunicable().sendMessageToClient(toSend.toJson());
                 playerClient.setPlayer(new Player(playerClient.getUsername(), numberOfPlayers % 2 == 0 ? Constants.TOWERS_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.TOWERS_IN_THREE_PLAYER_GAME));
@@ -425,6 +426,7 @@ public class Controller {
         }
 
         gameController = new GameController(loggedUsers, isExpert);
+        ServerChatMessage.getInstance().getMessages().clear();
         gameController.start();
 
         System.out.println(Messages.getMessage("game_is_starting"));
@@ -457,8 +459,8 @@ public class Controller {
 
         clientsToKick.forEach(clientToKill -> {
             Locale locale = clientToKill.getLanguageTag();
-            String errorMessage = Messages.getMessage("new_game_error_start", locale) + gameLobby.getNumPlayers() +
-                    Messages.getMessage("new_game_error_end", locale);
+            String errorMessage = MessagesForClients.getMessage("new_game_error_start", locale) + gameLobby.getNumPlayers() +
+                    MessagesForClients.getMessage("new_game_error_end", locale);
             sendErrorMessage(clientToKill.getCommunicable(), Constants.STATUS_LOGIN, errorMessage, 1, locale);
         });
 
@@ -496,9 +498,9 @@ public class Controller {
     private void handleChatMessage(String jsonMessage, Communicable ch) {
         try {
             SimpleChatMessage chatMessage = SimpleChatMessage.fromJson(jsonMessage);
-            for (PlayerClient user : loggedUsers) {
-                if (user.getCommunicable().equals(ch)) continue;
-                user.getCommunicable().sendMessageToClient(chatMessage.toJson());
+            switch (chatMessage.getAction()) {
+                case Constants.ACTION_SEND_MESSAGE -> GameChatController.sendMessageToEveryone(chatMessage, ch, loggedUsers);
+                case Constants.ACTION_GET_ALL_MESSAGES -> GameChatController.sendAllMessagesToClient(ch);
             }
         } catch (JsonSyntaxException ignored) {
             // The chat message simply gets ignored
@@ -519,7 +521,7 @@ public class Controller {
                 synchronized (boundLock) {
                     if (pongCount < bound) {
                         for (PlayerClient user : loggedUsers) {
-                            sendErrorMessage(user.getCommunicable(), Constants.STATUS_LOGIN, Messages.getMessage("connection_with_client_lost", user.getLanguageTag()), 3, user.getLanguageTag());
+                            sendErrorMessage(user.getCommunicable(), Constants.STATUS_LOGIN, MessagesForClients.getMessage("connection_with_client_lost", user.getLanguageTag()), 3, user.getLanguageTag());
                         }
                         loggedUsers.clear();
                         gameLobby.clear();
