@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.client.observers.chat.ChatObserver;
+import it.polimi.ingsw.client.observers.chat.request_messages.RequestMessagesObserver;
+import it.polimi.ingsw.client.observers.chat.send_message.ChatMessageObserver;
 import it.polimi.ingsw.client.observers.choices.action.ActionChoiceObserver;
 import it.polimi.ingsw.client.observers.choices.character.CharacterChoiceObserver;
 import it.polimi.ingsw.client.observers.game_actions.choose_cloud.ChooseCloudObserver;
@@ -93,9 +94,16 @@ public interface ObserverHandler {
     /**
      * Adds the given observer to the list of all ChatObservers
      *
-     * @param observer the {@link ChatObserver} to be added
+     * @param observer the {@link ChatMessageObserver} to be added
      */
-    void attachChatMessageObserver(ChatObserver observer);
+    void attachChatMessageObserver(ChatMessageObserver observer);
+
+    /**
+     * Adds the given observer to the list of all RequestMessageObservers
+     *
+     * @param observer the {@link RequestMessagesObserver} to be added
+     */
+    void attachRequestMessagesObserver(RequestMessagesObserver observer);
 
     /**
      * Notifies all the attached observers that the user has selected their username
@@ -177,4 +185,9 @@ public interface ObserverHandler {
      * @param message the sent {@link ChatMessage}
      */
     void notifyAllChatMessageObservers(ChatMessage message);
+
+    /**
+     * Notifies all the attached observers that retrieves all messages from server
+     */
+    void notifyAllRequestMessagesObservers();
 }

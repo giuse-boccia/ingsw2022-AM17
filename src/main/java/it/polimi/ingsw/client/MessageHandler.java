@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.client.observers.chat.ChatObserver;
+import it.polimi.ingsw.client.observers.chat.request_messages.RequestMessagesObserver;
+import it.polimi.ingsw.client.observers.chat.send_message.ChatMessageObserver;
 import it.polimi.ingsw.client.observers.choices.action.ActionChoiceObserver;
 import it.polimi.ingsw.client.observers.choices.character.CharacterChoiceObserver;
 import it.polimi.ingsw.client.observers.game_actions.choose_cloud.ChooseCloudObserver;
@@ -15,8 +16,8 @@ import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.chat.ChatMessage;
+import it.polimi.ingsw.messages.chat.ServerChatMessage;
 import it.polimi.ingsw.messages.chat.SimpleChatMessage;
-import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import it.polimi.ingsw.messages.update.UpdateMessage;
 import it.polimi.ingsw.model.characters.CharacterName;
@@ -47,7 +48,8 @@ public class MessageHandler implements ObserverHandler {
     private final List<PlayCharacterObserver> playCharactersObservers = new ArrayList<>();
     private final List<ActionChoiceObserver> actionChoiceObservers = new ArrayList<>();
     private final List<CharacterChoiceObserver> characterChoiceObservers = new ArrayList<>();
-    private final List<ChatObserver> chatObservers = new ArrayList<>();
+    private final List<ChatMessageObserver> chatObservers = new ArrayList<>();
+    private final List<RequestMessagesObserver> requestMessagesObservers = new ArrayList<>();
 
     public MessageHandler(NetworkClient nc) {
         this.nc = nc;
@@ -173,16 +175,6 @@ public class MessageHandler implements ObserverHandler {
         client.askUsername();
     }
 
-    /**
-     * Sends a "CREATE_GAME" message to the server with the player preferences
-     */
-    public void sendLoadGame() {
-        ClientLoginMessage msg = new ClientLoginMessage();
-        msg.setUsername(client.getUsername());
-        msg.setAction(Constants.ACTION_LOAD_GAME);
-        nc.sendMessageToServer(msg.toJson());
-    }
-
     public NetworkClient getNetworkClient() {
         return nc;
     }
@@ -215,6 +207,46 @@ public class MessageHandler implements ObserverHandler {
     }
 
     @Override
+    public void attachLoadGameObserver(LoadGameObserver loadGameObserver) {
+        loadGameObservers.add(loadGameObserver);
+    }
+
+    @Override
+    public void attachChatMessageObserver(ChatMessageObserver observer) {
+        chatObservers.add(observer);
+    }
+
+    @Override
+    public void attachChooseCloudObserver(ChooseCloudObserver cloudObserver) {
+        chooseCloudObservers.add(cloudObserver);
+    }
+
+    @Override
+    public void attachPlayAssistantObserver(PlayAssistantObserver playAssistantObserver) {
+        playAssistantObservers.add(playAssistantObserver);
+    }
+
+    @Override
+    public void attachPlayCharacterObserver(PlayCharacterObserver playCharacterObserver) {
+        playCharactersObservers.add(playCharacterObserver);
+    }
+
+    @Override
+    public void attachRequestMessagesObserver(RequestMessagesObserver observer) {
+        requestMessagesObservers.add(observer);
+    }
+
+    @Override
+    public void notifyAllLoadGameObservers() {
+        loadGameObservers.forEach(LoadGameObserver::loadGame);
+    }
+
+    @Override
+    public void notifyAllChatMessageObservers(ChatMessage message) {
+        chatObservers.forEach(observer -> observer.onMessageSent(message));
+    }
+
+    @Override
     public void notifyActionChoiceObservers(String name) {
         actionChoiceObservers.forEach(observer -> observer.onActionChosen(name));
     }
@@ -233,41 +265,6 @@ public class MessageHandler implements ObserverHandler {
     @Override
     public void notifyMoveMNObservers(int numSteps) {
         moveMNObservers.forEach(observer -> observer.onMotherNatureMoved(numSteps));
-    }
-
-    @Override
-    public void attachLoadGameObserver(LoadGameObserver loadGameObserver) {
-        loadGameObservers.add(loadGameObserver);
-    }
-
-    @Override
-    public void attachChatMessageObserver(ChatObserver observer) {
-        chatObservers.add(observer);
-    }
-
-    @Override
-    public void notifyAllLoadGameObservers() {
-        loadGameObservers.forEach(LoadGameObserver::loadGame);
-    }
-
-    @Override
-    public void notifyAllChatMessageObservers(ChatMessage message) {
-        chatObservers.forEach(observer -> observer.onMessageSent(message));
-    }
-
-    @Override
-    public void attachChooseCloudObserver(ChooseCloudObserver cloudObserver) {
-        chooseCloudObservers.add(cloudObserver);
-    }
-
-    @Override
-    public void attachPlayAssistantObserver(PlayAssistantObserver playAssistantObserver) {
-        playAssistantObservers.add(playAssistantObserver);
-    }
-
-    @Override
-    public void attachPlayCharacterObserver(PlayCharacterObserver playCharacterObserver) {
-        playCharactersObservers.add(playCharacterObserver);
     }
 
     @Override
@@ -298,6 +295,11 @@ public class MessageHandler implements ObserverHandler {
     @Override
     public void notifyMoveStudentObservers(Color color, Integer islandIndex) {
         moveStudentObservers.forEach(observer -> observer.onStudentMoved(color, islandIndex));
+    }
+
+    @Override
+    public void notifyAllRequestMessagesObservers() {
+        requestMessagesObservers.forEach(RequestMessagesObserver::requestAllMessages);
     }
 
     /**
@@ -387,9 +389,20 @@ public class MessageHandler implements ObserverHandler {
         client.endGame(actionMessage.getDisplayText());
     }
 
+    /**
+     * Handles the arrival of a chat message
+     *
+     * @param json the Json {@code String} of the message
+     */
     private void handleChatMessage(String json) {
         SimpleChatMessage chatMessage = SimpleChatMessage.fromJson(json);
-        client.showReceivedChatMessage(chatMessage.getChatMessage());
+        switch (chatMessage.getAction()) {
+            case Constants.ACTION_SEND_MESSAGE -> client.showReceivedChatMessage(chatMessage.getChatMessage());
+            case Constants.ACTION_SEND_ALL_MESSAGES -> {
+                ServerChatMessage serverChatMessage = ServerChatMessage.fromJson(json);
+                client.receiveAllChatMessages(serverChatMessage.getMessages());
+            }
+        }
     }
 
     /**
