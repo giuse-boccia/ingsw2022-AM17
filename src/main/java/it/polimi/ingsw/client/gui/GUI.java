@@ -2,8 +2,10 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.MessageHandler;
+import it.polimi.ingsw.client.gui.utils.ChatView;
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
+import it.polimi.ingsw.messages.chat.ChatMessage;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
@@ -111,6 +113,11 @@ public class GUI extends Client {
     @Override
     public void askCreateOrLoad() {
         guiView.changeScene(DrawingConstants.RESOURCE_CREATE_OR_LOAD_GAME, false);
+    }
+
+    @Override
+    public void showReceivedChatMessage(ChatMessage chatMessage) {
+        ChatView.onChatMessageReceived(chatMessage);
     }
 
     @Override

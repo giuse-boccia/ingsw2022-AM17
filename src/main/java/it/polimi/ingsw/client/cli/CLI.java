@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.messages.chat.ChatMessage;
 import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
@@ -270,6 +271,11 @@ public class CLI extends Client {
     public void updateGameState(GameState gameState) {
         printBlueLine();
         CliView.printGameState(gameState, getUsername());
+    }
+
+    @Override
+    public void showReceivedChatMessage(ChatMessage chatMessage) {
+
     }
 
     /**

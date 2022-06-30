@@ -5,6 +5,7 @@ import it.polimi.ingsw.client.cli.CLI;
 import it.polimi.ingsw.client.gui.GUI;
 import it.polimi.ingsw.client.gui.GuiView;
 import it.polimi.ingsw.languages.Messages;
+import it.polimi.ingsw.messages.chat.ChatMessage;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.CharacterState;
@@ -240,4 +241,11 @@ public abstract class Client {
      * Asks the user if they want to create a new {@code Game} or to load the previous one
      */
     public abstract void askCreateOrLoad() throws IOException;
+
+    /**
+     * Shows the received message in the user's chat
+     *
+     * @param chatMessage the received {@link ChatMessage}
+     */
+    public abstract void showReceivedChatMessage(ChatMessage chatMessage);
 }
