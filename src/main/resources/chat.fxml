@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="it.polimi.ingsw.client.gui.controllers.ChatController"
+            prefHeight="400" prefWidth="400">
+
+    <Label layoutX="150" layoutY="30" text="Game chat">
+        <font>
+            <Font name="Baskerville Old Face" size="24"/>
+        </font>
+    </Label>
+
+    <HBox layoutX="30" layoutY="350" spacing="10">
+        <TextField fx:id="messageTextField" prefWidth="300" prefHeight="30"/>
+        <Button fx:id="btnSendMessage" prefHeight="30" text="Send"/>
+    </HBox>
+    <ScrollPane fx:id="messagesScrollPane" layoutY="60" layoutX="30" prefHeight="280" prefWidth="350" fitToWidth="true">
+        <VBox fx:id="vBoxMessages" prefHeight="240" prefWidth="200"/>
+    </ScrollPane>
+
+</AnchorPane>
