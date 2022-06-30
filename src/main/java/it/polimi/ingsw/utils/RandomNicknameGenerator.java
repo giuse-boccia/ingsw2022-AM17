@@ -35,7 +35,7 @@ public class RandomNicknameGenerator {
         RandomGenerator randomGenerator = new RandomGenerator(new Random().nextInt());
         String adjective = adjectives[randomGenerator.getRandomInteger(adjectives.length)];
         String animal = animals[randomGenerator.getRandomInteger(animals.length)];
-        if (MessageResourceBundle.getCurrentLanguageTag().equals("it")) {
+        if (Messages.getCurrentLanguageTag().equals("it")) {
             if (animal.endsWith("a") && adjective.endsWith("o")) {
                 adjective = adjective.substring(0, adjective.length() - 1) + "a";
             }

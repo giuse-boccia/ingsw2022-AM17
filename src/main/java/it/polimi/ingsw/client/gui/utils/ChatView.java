@@ -2,7 +2,7 @@ package it.polimi.ingsw.client.gui.utils;
 
 import it.polimi.ingsw.client.gui.GuiView;
 import it.polimi.ingsw.client.gui.controllers.ChatController;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.chat.ChatMessage;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -34,7 +34,7 @@ public class ChatView {
             stage.show();
 
         } catch (IOException e) {
-            GuiView.getGui().gracefulTermination(MessageResourceBundle.getMessage("generic_error_gui"));
+            GuiView.getGui().gracefulTermination(Messages.getMessage("generic_error_gui"));
         }
     }
 

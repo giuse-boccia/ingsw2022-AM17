@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.GameEndedException;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ public class LoadGameControllerTest {
 
     @BeforeAll
     static void initializeMessagesResourceBundle() {
-        MessageResourceBundle.initializeBundle("en");
+        Messages.initializeBundle("en");
     }
 
     /**
@@ -35,7 +35,7 @@ public class LoadGameControllerTest {
         // Controller sends an error message to Rick
         ServerLoginMessage rickResponse = ServerLoginMessage.fromJson(rickCh.getJson());
         assertEquals(3, rickResponse.getError());
-        assertEquals(MessageResourceBundle.getMessage("error_tag") + MessageResourceBundle.getMessage("invalid_player_creating_game"),
+        assertEquals(Messages.getMessage("error_tag") + Messages.getMessage("invalid_player_creating_game"),
                 rickResponse.getDisplayText());
     }
 
@@ -54,7 +54,7 @@ public class LoadGameControllerTest {
         // Server has to refuse this request
         ServerLoginMessage rickResponse = ServerLoginMessage.fromJson(rickCh.getJson());
         assertEquals(5, rickResponse.getError());
-        assertEquals(MessageResourceBundle.getMessage("error_tag") + MessageResourceBundle.getMessage("username_not_in_loaded_game"),
+        assertEquals(Messages.getMessage("error_tag") + Messages.getMessage("username_not_in_loaded_game"),
                 rickResponse.getDisplayText());
         assertNull(controller.getGame());
     }
@@ -74,7 +74,7 @@ public class LoadGameControllerTest {
 
         // Server should assert that a loaded game has been restored
         ServerLoginMessage gameLoadedResponse = ServerLoginMessage.fromJson(rickCh.getJson());
-        assertEquals(MessageResourceBundle.getMessage("game_loaded"), gameLoadedResponse.getDisplayText());
+        assertEquals(Messages.getMessage("game_loaded"), gameLoadedResponse.getDisplayText());
         assertEquals(0, gameLoadedResponse.getError());
 
         // Clod attempts to log in, but he wasn't part of the saved game: he has to be kicked
@@ -83,7 +83,7 @@ public class LoadGameControllerTest {
 
         ServerLoginMessage clodResponse = ServerLoginMessage.fromJson(clodCh.getJson());
         assertEquals(5, clodResponse.getError());
-        assertEquals(MessageResourceBundle.getMessage("error_tag") + MessageResourceBundle.getMessage("player_not_in_loaded_game"),
+        assertEquals(Messages.getMessage("error_tag") + Messages.getMessage("player_not_in_loaded_game"),
                 clodResponse.getDisplayText());
 
         // Giuse, which was part of the saved game, logs in
@@ -115,6 +115,6 @@ public class LoadGameControllerTest {
         // Clod should have been kicked
         ServerLoginMessage clodResponse = ServerLoginMessage.fromJson(clodCh.getJson());
         assertEquals(1, clodResponse.getError());
-        assertEquals("[ERROR] A new game for 2 players is starting. Your connection will be closed", clodResponse.getDisplayText());
+        assertEquals("[ERROR] A new game for 2 players is starting. Your connection will be closed.", clodResponse.getDisplayText());
     }
 }

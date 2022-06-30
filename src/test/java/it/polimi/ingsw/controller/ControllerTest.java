@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.exceptions.GameEndedException;
 import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
@@ -330,7 +331,7 @@ class ControllerTest {
         controller.handleMessage(json, ch);
         ServerLoginMessage response = ServerLoginMessage.fromJson(ch.getJson());
         assertEquals(5, response.getError());
-        assertEquals(MessageResourceBundle.getMessage("error_tag") + MessageResourceBundle.getMessage(expectedKey),
+        assertEquals(Messages.getMessage("error_tag") + Messages.getMessage(expectedKey),
                 response.getDisplayText());
     }
 
