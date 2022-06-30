@@ -392,8 +392,6 @@ class ActionPhaseControllerTest {
         assertTrue(controller.getGame().getCurrentRound().isLastRound());
     }
 
-    // TODO check why alertLastRound is not covered and test alertGameEnded
-
     /**
      * Handles the login and the planning phase of a new expert game for two, during which
      * Rick plays assistant number 5 and Giuse assistant number 4.

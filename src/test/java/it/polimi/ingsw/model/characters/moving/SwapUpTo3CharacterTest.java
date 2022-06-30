@@ -87,16 +87,6 @@ public class SwapUpTo3CharacterTest {
             initialStudentsInEntrance.removeAll(studentsInEntranceToMove);
             initialStudentsOnCard.addAll(studentsInEntranceToMove);
             initialStudentsInEntrance.addAll(studentsOnCardToMove);
-
-            /* TODO: REWRITE BROKEN ASSERTIONS -> order of students can be mixed up while swapping
-
-            for (int j = 0; j < initialStudentsOnCard.size(); j++) {
-                assertEquals(initialStudentsOnCard.get(j), character.getStudents().get(j));
-            }
-            for (int j = 0; j < initialStudentsInEntrance.size(); j++) {
-                assertEquals(initialStudentsInEntrance.get(j), entrance.getStudents().get(j));
-            }
-            */
         }
     }
 

@@ -66,7 +66,6 @@ public class Player {
      * @param wizard the {@code Wizard} chosen
      */
     public void pickWizard(Wizard wizard) {
-        // TODO: check if wizard is not picked by others
         this.wizard = wizard;
     }
 

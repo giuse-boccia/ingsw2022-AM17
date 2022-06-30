@@ -307,7 +307,6 @@ public class CliView {
      * @param player2 the owner of the dashboard to be printed on the right
      */
     private static void printDoubleDashboard(PlayerState player1, PlayerState player2, String currentPlayer, boolean isExpert) {
-        // TODO implement double dashboards
         printSingleDashboard(player1, currentPlayer, isExpert);
         System.out.println();
         printSingleDashboard(player2, currentPlayer, isExpert);

@@ -245,7 +245,6 @@ public class GameTest {
             assertEquals(0, player.getColorsOfOwnedProfessors().size());
         }
 
-        // FIXME what happens when a player chooses a Wizard that is already been chosen? Maybe thrown an Exception - but in Game class, not in Player
         players.get(0).pickWizard(Wizard.KING);
         assertEquals(Wizard.KING, rick.getWizard());
         players.get(1).pickWizard(Wizard.MAGE);

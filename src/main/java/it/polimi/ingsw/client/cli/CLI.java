@@ -1,8 +1,8 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.Client;
-import it.polimi.ingsw.messages.chat.ChatMessage;
 import it.polimi.ingsw.languages.Messages;
+import it.polimi.ingsw.messages.chat.ChatMessage;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
