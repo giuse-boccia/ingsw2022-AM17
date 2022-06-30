@@ -257,6 +257,9 @@ public class GuiView extends Application {
             alert.setTitle(Messages.getMessage("close_game_title"));
             alert.setHeaderText(Messages.getMessage("confirm_close_game"));
 
+            Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+            alertStage.getIcons().add(new Image(Paths.CRANIO_LOGO));
+
             alert.showAndWait();
 
             if (alert.getResult() == ButtonType.OK) {
