@@ -10,7 +10,7 @@ import it.polimi.ingsw.client.observers.game_actions.play_character.SendPlayChar
 import it.polimi.ingsw.client.observers.login.game_parameters.SendGameParametersObserver;
 import it.polimi.ingsw.client.observers.login.load_game.ExecuteLoadGameObserver;
 import it.polimi.ingsw.client.observers.login.username.SendUsernameObserver;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class NetworkClient extends Thread {
             socketOut = new PrintWriter(server.getOutputStream(), true);
 
         } catch (IOException e) {
-            client.gracefulTermination(MessageResourceBundle.getMessage("cannot_connect_to_server"));
+            client.gracefulTermination(Messages.getMessage("cannot_connect_to_server"));
         }
     }
 
@@ -96,7 +96,7 @@ public class NetworkClient extends Thread {
             }
         } catch (IOException e) {
             // Server connection error
-            client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
+            client.gracefulTermination(Messages.getMessage("server_lost"));
         }
     }
 }

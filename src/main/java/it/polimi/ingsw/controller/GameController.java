@@ -2,7 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.action.ActionArgs;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
@@ -56,7 +56,7 @@ public class GameController {
         game.start();
         currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
         PlayerClient firstPlayer = players.get(currentPlayerIndex);
-        sendBroadcastUpdateMessage(firstPlayer.getUsername() + MessageResourceBundle.getMessage("is_playing"));
+        sendBroadcastUpdateMessage(firstPlayer.getUsername() + Messages.getMessage("is_playing"));
         askForAssistant(firstPlayer);
     }
 
@@ -71,13 +71,13 @@ public class GameController {
             String nextPlayerName = game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer().getName();
             currentPlayerIndex = getIndexFromPlayerName(nextPlayerName);
             PlayerClient nextPlayer = players.get(currentPlayerIndex);
-            sendBroadcastUpdateMessage(nextPlayer.getUsername() + MessageResourceBundle.getMessage("is_playing"));
+            sendBroadcastUpdateMessage(nextPlayer.getUsername() + Messages.getMessage("is_playing"));
             askForMoveInPAP(nextPlayer);
         } else {
             // We are in the planning phase
             currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
             PlayerClient nextPlayer = players.get(currentPlayerIndex);
-            sendBroadcastUpdateMessage(nextPlayer.getUsername() + MessageResourceBundle.getMessage("is_playing"));
+            sendBroadcastUpdateMessage(nextPlayer.getUsername() + Messages.getMessage("is_playing"));
             askForAssistant(nextPlayer);
         }
     }
@@ -107,19 +107,19 @@ public class GameController {
      */
     public void handleActionMessage(ClientActionMessage message, Communicable ch) throws GameEndedException {
         if (message.getAction() == null) {
-            sendActionErrorMessage(ch, MessageResourceBundle.getMessage("invalid_request"), 3, "");
+            sendActionErrorMessage(ch, Messages.getMessage("invalid_request"), 3, "");
             return;
         }
 
         List<PlayerClient> playersMatchingCh = players.stream().filter(user -> ch.equals(user.getCommunicable())).toList();
         if (playersMatchingCh.isEmpty()) {
-            sendActionErrorMessage(ch, MessageResourceBundle.getMessage("not_logged_in"), 3, "");
+            sendActionErrorMessage(ch, Messages.getMessage("not_logged_in"), 3, "");
             return;
         }
         PlayerClient player = playersMatchingCh.get(0);
 
         if (!Objects.equals(player.getPlayer().getName(), message.getPlayer())) {
-            sendActionErrorMessage(ch, MessageResourceBundle.getMessage("invalid_identity"), 3, "");
+            sendActionErrorMessage(ch, Messages.getMessage("invalid_identity"), 3, "");
             return;
         }
 
@@ -129,7 +129,7 @@ public class GameController {
         }
 
         if (game.getCurrentRound().getCurrentPlayerActionPhase() != null && !isCorrectSender(message.getPlayer())) {
-            sendActionErrorMessage(ch, MessageResourceBundle.getMessage("not_your_turn"), 1, "");
+            sendActionErrorMessage(ch, Messages.getMessage("not_your_turn"), 1, "");
             return;
         }
 
@@ -140,7 +140,7 @@ public class GameController {
             case Constants.ACTION_MOVE_MN -> handleMotherNatureMoved(action, player);
             case Constants.ACTION_FILL_FROM_CLOUD -> handleFillFromCloud(action, player);
             case Constants.ACTION_PLAY_CHARACTER -> handlePlayCharacter(action, player);
-            default -> sendActionErrorMessage(ch, MessageResourceBundle.getMessage("invalid_request"), 3, "");
+            default -> sendActionErrorMessage(ch, Messages.getMessage("invalid_request"), 3, "");
         }
     }
 
@@ -153,7 +153,7 @@ public class GameController {
     private void handleAssistantPlayed(Action action, PlayerClient player) {
         Integer value = action.getArgs().getValue();
         if (value < Constants.MIN_ASSISTANT_VALUE || value > Constants.MAX_ASSISTANT_VALUE) {
-            sendActionErrorMessage(player.getCommunicable(), MessageResourceBundle.getMessage("invalid_argument"), 2, action.getName());
+            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage("invalid_argument"), 2, action.getName());
             return;
         }
 
@@ -169,7 +169,7 @@ public class GameController {
         }
 
         PlayerClient curPlayer;
-        String text = player.getUsername() + MessageResourceBundle.getMessage("broadcast_assistant") + (value) + MessageResourceBundle.getMessage("broadcast_separator");
+        String text = player.getUsername() + Messages.getMessage("broadcast_assistant") + (value) + Messages.getMessage("broadcast_separator");
 
         if (game.getCurrentRound().getPlanningPhase().isEnded()) {
             SavedGameState.saveToFile(game);
@@ -178,16 +178,16 @@ public class GameController {
 
             curPlayer = getPlayerClientFromPlayer(game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer());
 
-            text += curPlayer.getUsername() + MessageResourceBundle.getMessage("is_playing");
+            text += curPlayer.getUsername() + Messages.getMessage("is_playing");
             if (game.getCurrentRound().isLastRound()) {
-                text = MessageResourceBundle.getMessage("last_round") + " ";
+                text = Messages.getMessage("last_round") + " ";
             }
             sendBroadcastUpdateMessage(text);
 
             askForMoveInPAP(curPlayer);
         } else {
             curPlayer = getPlayerClientFromPlayer(game.getCurrentRound().getPlanningPhase().getNextPlayer());
-            sendBroadcastUpdateMessage(text + curPlayer.getUsername() + MessageResourceBundle.getMessage("is_playing"));
+            sendBroadcastUpdateMessage(text + curPlayer.getUsername() + Messages.getMessage("is_playing"));
             askForAssistant(curPlayer);
         }
 
@@ -205,7 +205,7 @@ public class GameController {
         Color color = action.getArgs().getColor();
         DiningRoom dining = player.getPlayer().getDashboard().getDiningRoom();
 
-        String text = player.getUsername() + " moved a " + color + MessageResourceBundle.getMessage("broadcast_to_dining");
+        String text = player.getUsername() + " moved a " + color + Messages.getMessage("broadcast_to_dining");
         moveStudent(color, dining, player, Constants.ACTION_MOVE_STUDENT_TO_DINING, text);
     }
 
@@ -221,11 +221,11 @@ public class GameController {
         Integer islandIndex = action.getArgs().getIsland();
 
         if (islandIndex < 0 || islandIndex >= game.getGameBoard().getIslands().size()) {
-            sendActionErrorMessage(player.getCommunicable(), MessageResourceBundle.getMessage("invalid_island"), 2, Constants.ACTION_MOVE_STUDENT_TO_ISLAND);
+            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage("invalid_island"), 2, Constants.ACTION_MOVE_STUDENT_TO_ISLAND);
             return;
         }
 
-        String text = player.getUsername() + " moved a " + color + MessageResourceBundle.getMessage("broadcast_to_island") + (islandIndex + 1);
+        String text = player.getUsername() + " moved a " + color + Messages.getMessage("broadcast_to_island") + (islandIndex + 1);
         moveStudent(color, game.getGameBoard().getIslands().get(islandIndex), player, Constants.ACTION_MOVE_STUDENT_TO_ISLAND, text);
     }
 
@@ -266,7 +266,7 @@ public class GameController {
             return;
         }
 
-        String text = player.getUsername() + MessageResourceBundle.getMessage("broadcast_for_mother_nature") + steps + " steps";
+        String text = player.getUsername() + Messages.getMessage("broadcast_for_mother_nature") + steps + " steps";
         sendMessagesInPAP(text);
     }
 
@@ -289,13 +289,13 @@ public class GameController {
 
         SavedGameState.saveToFile(game);
 
-        String text = player.getUsername() + MessageResourceBundle.getMessage("broadcast_fill_from_cloud") + (cloudNumber + 1);
+        String text = player.getUsername() + Messages.getMessage("broadcast_fill_from_cloud") + (cloudNumber + 1);
         if (game.getCurrentRound().getCurrentPlayerActionPhase() != null || game.isEnded()) {
             sendMessagesInPAP(text);
         } else {
             currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
             PlayerClient nextPlayer = players.get(currentPlayerIndex);
-            sendBroadcastUpdateMessage(text + MessageResourceBundle.getMessage("broadcast_separator") + nextPlayer.getUsername() + MessageResourceBundle.getMessage("is_playing"));
+            sendBroadcastUpdateMessage(text + Messages.getMessage("broadcast_separator") + nextPlayer.getUsername() + Messages.getMessage("is_playing"));
             askForAssistant(nextPlayer);
         }
     }
@@ -316,7 +316,7 @@ public class GameController {
         }
 
         if (selectedCharacter == null) {
-            sendActionErrorMessage(player.getCommunicable(), MessageResourceBundle.getMessage("character_not_in_game"), 1, Constants.ACTION_PLAY_CHARACTER);
+            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage("character_not_in_game"), 1, Constants.ACTION_PLAY_CHARACTER);
             return;
         }
 
@@ -337,7 +337,7 @@ public class GameController {
         }
 
         String text = selectedCharacter.getCardName() == CharacterName.everyOneMove3FromDiningRoomToBag ?
-                "Everyone lost up to three " + args.getColor() + " students from their dining room" : player.getUsername() + MessageResourceBundle.getMessage("is_playing");
+                "Everyone lost up to three " + args.getColor() + " students from their dining room" : player.getUsername() + Messages.getMessage("is_playing");
 
         sendBroadcastUpdateMessage(text);
         askForMoveInPAP(player);
@@ -373,7 +373,7 @@ public class GameController {
     private void sendActionErrorMessage(Communicable ch, String errorMessage, int errorCode, String action) {
         ServerActionMessage message = new ServerActionMessage();
         message.setError(errorCode);
-        message.setDisplayText(MessageResourceBundle.getMessage("error_tag") + errorMessage);
+        message.setDisplayText(Messages.getMessage("error_tag") + errorMessage);
         if (action.equals(Constants.ACTION_PLAY_CHARACTER)) {
             String expectedAction = game.getCurrentRound().getCurrentPlayerActionPhase().getExpectedAction();
             if (expectedAction.equals(Constants.ACTION_MOVE_STUDENT)) {
@@ -420,14 +420,14 @@ public class GameController {
 
         if (game.isEnded()) {
             alertGameEnded();
-            throw new GameEndedException(MessageResourceBundle.getMessage("game_ended"));
+            throw new GameEndedException(Messages.getMessage("game_ended"));
         }
 
         PlayerClient nextPlayer = getPlayerClientFromPlayer(
                 game.getCurrentRound().getCurrentPlayerActionPhase().getCurrentPlayer()
         );
 
-        sendBroadcastUpdateMessage(message + MessageResourceBundle.getMessage("broadcast_separator") + nextPlayer.getUsername() + MessageResourceBundle.getMessage("is_playing"));
+        sendBroadcastUpdateMessage(message + Messages.getMessage("broadcast_separator") + nextPlayer.getUsername() + Messages.getMessage("is_playing"));
 
         askForMoveInPAP(nextPlayer);
 
@@ -441,9 +441,9 @@ public class GameController {
         List<Player> winners = game.getWinners();
         String winnersText;
         if (winners.size() == 2) {
-            winnersText = winners.get(0).getName() + " and " + winners.get(1).getName() + MessageResourceBundle.getMessage("broadcast_game_won");
+            winnersText = winners.get(0).getName() + " and " + winners.get(1).getName() + Messages.getMessage("broadcast_game_won");
         } else {
-            winnersText = winners.get(0).getName() + MessageResourceBundle.getMessage("broadcast_game_won");
+            winnersText = winners.get(0).getName() + Messages.getMessage("broadcast_game_won");
         }
         for (PlayerClient player : players) {
             ServerActionMessage actionMessage = new ServerActionMessage();
@@ -452,10 +452,10 @@ public class GameController {
 
             if (winners.contains(player.getPlayer())) {
                 // Win message
-                actionMessage.setDisplayText(MessageResourceBundle.getMessage("game_won"));
+                actionMessage.setDisplayText(Messages.getMessage("game_won"));
             } else {
                 // Defeat message
-                actionMessage.setDisplayText(MessageResourceBundle.getMessage("game_lost") + winnersText);
+                actionMessage.setDisplayText(Messages.getMessage("game_lost") + winnersText);
             }
 
             player.getCommunicable().sendMessageToClient(actionMessage.toJson());

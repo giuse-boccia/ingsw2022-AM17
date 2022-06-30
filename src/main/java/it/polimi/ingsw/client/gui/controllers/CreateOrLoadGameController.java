@@ -2,7 +2,7 @@ package it.polimi.ingsw.client.gui.controllers;
 
 import it.polimi.ingsw.client.gui.GuiView;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
@@ -11,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
 import java.util.List;
@@ -27,9 +26,9 @@ public class CreateOrLoadGameController implements GuiController {
 
     @FXML
     private void initialize() {
-        askCreateOrLoadTitle.setText(MessageResourceBundle.getMessage("ask_create_or_load"));
-        newGameBtn.setText(MessageResourceBundle.getMessage("new_game"));
-        loadGameBtn.setText(MessageResourceBundle.getMessage("load_game"));
+        askCreateOrLoadTitle.setText(Messages.getMessage("ask_create_or_load"));
+        newGameBtn.setText(Messages.getMessage("new_game"));
+        loadGameBtn.setText(Messages.getMessage("load_game"));
     }
 
     /**

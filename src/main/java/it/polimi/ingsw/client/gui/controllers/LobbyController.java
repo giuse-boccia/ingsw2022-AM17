@@ -2,7 +2,7 @@ package it.polimi.ingsw.client.gui.controllers;
 
 import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
@@ -33,7 +33,7 @@ public class LobbyController implements GuiController {
      */
     @FXML
     void initialize() {
-        gameLobbyLabel.setText(MessageResourceBundle.getMessage("game_lobby_title"));
+        gameLobbyLabel.setText(Messages.getMessage("game_lobby_title"));
 
         width = Screen.getPrimary().getVisualBounds().getWidth();
         height = Screen.getPrimary().getVisualBounds().getHeight();
@@ -69,10 +69,10 @@ public class LobbyController implements GuiController {
         // Remove all elements set previously
         gridPane.getChildren().removeIf(node -> true);
 
-        String text = MessageResourceBundle.getMessage("players_title_create_or_load") + lobby.getPlayers().size();
+        String text = Messages.getMessage("players_title_create_or_load") + lobby.getPlayers().size();
         if (lobby.getNumPlayers() != -1) {
-            text += "/" + lobby.getNumPlayers() + MessageResourceBundle.getMessage("expert_mode")
-                    + (lobby.isExpert() ? " " : MessageResourceBundle.getMessage("not_with_space")) + MessageResourceBundle.getMessage("active");
+            text += "/" + lobby.getNumPlayers() + Messages.getMessage("expert_mode")
+                    + (lobby.isExpert() ? " " : Messages.getMessage("not_with_space")) + Messages.getMessage("active");
         }
 
         Text playersTitle = new Text(text);
@@ -85,7 +85,7 @@ public class LobbyController implements GuiController {
             for (int i = 0; i < playersFromSavedGame.length; i++) {
                 String player = playersFromSavedGame[i];
                 boolean playerIsReady = lobby.getPlayers().contains(player);
-                String playerString = playerIsReady ? MessageResourceBundle.getMessage("ready") : MessageResourceBundle.getMessage("waiting");
+                String playerString = playerIsReady ? Messages.getMessage("ready") : Messages.getMessage("waiting");
                 playerString += "  " + player;
 
                 Text playerText = new Text(playerString);

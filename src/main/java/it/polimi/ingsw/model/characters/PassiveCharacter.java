@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidCharacterException;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
@@ -37,11 +37,11 @@ public class PassiveCharacter extends Character {
             case plus2MNMoves, takeProfWithEqualStudents, plus2Influence, ignoreTowers -> currentPlayerActionPhase.playPassiveCharacter(this);
             case ignoreColor -> {
                 if (color == null) {
-                    throw new InvalidActionException(MessageResourceBundle.getMessage("invalid_argument"));
+                    throw new InvalidActionException(Messages.getMessage("invalid_argument"));
                 }
                 currentPlayerActionPhase.playPassiveCharacterWithColor(color);
             }
-            default -> throw new InvalidCharacterException(MessageResourceBundle.getMessage("not_passive"));
+            default -> throw new InvalidCharacterException(Messages.getMessage("not_passive"));
 
         }
 

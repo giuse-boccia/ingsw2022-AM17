@@ -1,6 +1,6 @@
 package it.polimi.ingsw.utils;
 
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.model.utils.RandomGenerator;
 
 import java.util.Random;
@@ -8,22 +8,22 @@ import java.util.Random;
 public class RandomNicknameGenerator {
 
     public static final String[] animals = {
-            MessageResourceBundle.getMessage("racoon"), MessageResourceBundle.getMessage("warthog"),
-            MessageResourceBundle.getMessage("sloth"), MessageResourceBundle.getMessage("canary"),
-            MessageResourceBundle.getMessage("turtle"), MessageResourceBundle.getMessage("horse"),
-            MessageResourceBundle.getMessage("panther"), MessageResourceBundle.getMessage("hen"),
-            MessageResourceBundle.getMessage("snake"), MessageResourceBundle.getMessage("trout"),
-            MessageResourceBundle.getMessage("gecko"), MessageResourceBundle.getMessage("tuna"),
-            MessageResourceBundle.getMessage("shark")
+            Messages.getMessage("racoon"), Messages.getMessage("warthog"),
+            Messages.getMessage("sloth"), Messages.getMessage("canary"),
+            Messages.getMessage("turtle"), Messages.getMessage("horse"),
+            Messages.getMessage("panther"), Messages.getMessage("hen"),
+            Messages.getMessage("snake"), Messages.getMessage("trout"),
+            Messages.getMessage("gecko"), Messages.getMessage("tuna"),
+            Messages.getMessage("shark")
     };
     public static final String[] adjectives = {
-            MessageResourceBundle.getMessage("commanding"), MessageResourceBundle.getMessage("scrappy"),
-            MessageResourceBundle.getMessage("soporific"), MessageResourceBundle.getMessage("caring"),
-            MessageResourceBundle.getMessage("distracted"), MessageResourceBundle.getMessage("greedy"),
-            MessageResourceBundle.getMessage("wise"), MessageResourceBundle.getMessage("empathetic"),
-            MessageResourceBundle.getMessage("overwhelming"), MessageResourceBundle.getMessage("diligent"),
-            MessageResourceBundle.getMessage("dynamic"), MessageResourceBundle.getMessage("brave"),
-            MessageResourceBundle.getMessage("skilled")
+            Messages.getMessage("commanding"), Messages.getMessage("scrappy"),
+            Messages.getMessage("soporific"), Messages.getMessage("caring"),
+            Messages.getMessage("distracted"), Messages.getMessage("greedy"),
+            Messages.getMessage("wise"), Messages.getMessage("empathetic"),
+            Messages.getMessage("overwhelming"), Messages.getMessage("diligent"),
+            Messages.getMessage("dynamic"), Messages.getMessage("brave"),
+            Messages.getMessage("skilled")
     };
 
     /**

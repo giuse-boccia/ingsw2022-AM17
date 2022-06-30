@@ -2,7 +2,7 @@ package it.polimi.ingsw.client.gui.controllers;
 
 import it.polimi.ingsw.client.gui.GuiView;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
@@ -35,10 +35,10 @@ public class GameParametersController implements GuiController {
      */
     @FXML
     void initialize() {
-        title.setText(MessageResourceBundle.getMessage("welcome") + ", " + GuiView.getGui().getUsername());
+        title.setText(Messages.getMessage("welcome") + ", " + GuiView.getGui().getUsername());
 
-        numPlayersLabel.setText(MessageResourceBundle.getMessage("num_players_title"));
-        expertGameLabel.setText(MessageResourceBundle.getMessage("expert_mode_title"));
+        numPlayersLabel.setText(Messages.getMessage("num_players_title"));
+        expertGameLabel.setText(Messages.getMessage("expert_mode_title"));
 
         numPlayersChoiceBox.setValue(2);
         numPlayersChoiceBox.setItems(numPlayersChoices);

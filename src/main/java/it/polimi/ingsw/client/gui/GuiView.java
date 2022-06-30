@@ -8,7 +8,7 @@ import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.client.gui.utils.ObjectClickListeners;
 import it.polimi.ingsw.utils.constants.Constants;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
@@ -29,7 +29,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -75,7 +74,7 @@ public class GuiView extends Application {
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setPrefSize(width, height);
 
-        String titleText = bound == -1 ? MessageResourceBundle.getMessage("choose_color_character") : MessageResourceBundle.getMessage("choose_bound_character");
+        String titleText = bound == -1 ? Messages.getMessage("choose_color_character") : Messages.getMessage("choose_bound_character");
         Text title = new Text(titleText);
         title.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.SUBTITLE_FONT_SIZE));
         StackPane titleStackPane = new StackPane(title);
@@ -83,7 +82,7 @@ public class GuiView extends Application {
         titleStackPane.setLayoutY(height * DrawingConstants.CHARACTER_POPUP_TITLE_OFFSET_Y);
         anchorPane.getChildren().add(titleStackPane);
 
-        Button confirmBtn = new Button(MessageResourceBundle.getMessage("confirm"));
+        Button confirmBtn = new Button(Messages.getMessage("confirm"));
         confirmBtn.setFont(Font.font(DrawingConstants.FONT_NAME, FontWeight.NORMAL, DrawingConstants.SUBTITLE_FONT_SIZE));
         StackPane confirmStackPane = new StackPane(confirmBtn);
         confirmStackPane.setPrefWidth(width);
@@ -151,7 +150,7 @@ public class GuiView extends Application {
             try {
                 scene = new Scene(fxmlLoader.load());
             } catch (IOException e) {
-                gui.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
+                gui.gracefulTermination(Messages.getMessage("server_lost"));
             }
             stage.setResizable(fullscreen);
             stage.setFullScreen(false);
@@ -215,9 +214,9 @@ public class GuiView extends Application {
     public void showErrorDialog(String message, boolean closeApplication) {
         // If there's a connection error the app should be closed without showing the alert - also to avoid
         // showing the login screen when the app can't start
-        if (Objects.equals(message, MessageResourceBundle.getMessage("wrong_usage")) || Objects.equals(message, MessageResourceBundle.getMessage("json_not_found"))
-                || Objects.equals(message, MessageResourceBundle.getMessage("invalid_server_port")) || Objects.equals(message, MessageResourceBundle.getMessage("port_not_available"))
-                || Objects.equals(message, MessageResourceBundle.getMessage("cannot_connect_to_server"))) {
+        if (Objects.equals(message, Messages.getMessage("wrong_usage")) || Objects.equals(message, Messages.getMessage("json_not_found"))
+                || Objects.equals(message, Messages.getMessage("invalid_server_port")) || Objects.equals(message, Messages.getMessage("port_not_available"))
+                || Objects.equals(message, Messages.getMessage("cannot_connect_to_server"))) {
             closeAppWithErrorMessage(message);
             return;
         }
@@ -225,7 +224,7 @@ public class GuiView extends Application {
 
         Platform.runLater(() -> {
             Alert alert = new Alert(alertType);
-            alert.setTitle(MessageResourceBundle.getMessage("gui_error"));
+            alert.setTitle(Messages.getMessage("gui_error"));
             alert.setHeaderText(message);
             alert.setContentText(null);
             alert.initOwner(stage);
@@ -245,7 +244,7 @@ public class GuiView extends Application {
      */
     private void closeAppWithErrorMessage(String message) {
         System.out.println(message);
-        System.out.println(MessageResourceBundle.getMessage("graceful_term"));
+        System.out.println(Messages.getMessage("graceful_term"));
         System.exit(-1);
     }
 
@@ -255,8 +254,8 @@ public class GuiView extends Application {
     private void confirmCloseApp() {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle(MessageResourceBundle.getMessage("close_game_title"));
-            alert.setHeaderText(MessageResourceBundle.getMessage("confirm_close_game"));
+            alert.setTitle(Messages.getMessage("close_game_title"));
+            alert.setHeaderText(Messages.getMessage("confirm_close_game"));
 
             alert.showAndWait();
 
@@ -292,7 +291,7 @@ public class GuiView extends Application {
         Platform.runLater(() -> {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle(MessageResourceBundle.getMessage("end_game_title"));
+            stage.setTitle(Messages.getMessage("end_game_title"));
             stage.getIcons().add(new Image(Paths.CRANIO_LOGO));
 
             FXMLLoader fxmlLoader = new FXMLLoader(GuiView.class.getResource("/end_game.fxml"));

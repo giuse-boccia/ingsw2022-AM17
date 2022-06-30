@@ -3,7 +3,7 @@ package it.polimi.ingsw.server.game_state;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.utils.constants.Constants;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.game_objects.Color;
@@ -49,7 +49,7 @@ public class SavedGameState extends GameState {
      */
     public static void saveToFile(Game game) {
 
-        System.out.println(MessageResourceBundle.getMessage("saving_to_file"));
+        System.out.println(Messages.getMessage("saving_to_file"));
 
         try {
             SavedGameState gs = new SavedGameState(game);
@@ -58,9 +58,9 @@ public class SavedGameState extends GameState {
             gson.toJson(gs, writer);
             writer.close();
 
-            System.out.println(MessageResourceBundle.getMessage("save_ok"));
+            System.out.println(Messages.getMessage("save_ok"));
         } catch (Exception e) {
-            System.out.println(MessageResourceBundle.getMessage("save_err"));
+            System.out.println(Messages.getMessage("save_err"));
         }
     }
 

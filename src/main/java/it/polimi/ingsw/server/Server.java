@@ -3,7 +3,7 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.Settings;
 import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -25,20 +25,20 @@ public class Server {
                 Settings settings = Settings.readPrefsFromFile();
                 port = settings.getPort();
             } catch (IOException e) {
-                gracefulTermination(MessageResourceBundle.getMessage("json_not_found"));
+                gracefulTermination(Messages.getMessage("json_not_found"));
             } catch (NumberFormatException e) {
-                gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
+                gracefulTermination(Messages.getMessage("invalid_server_port"));
             }
         } else {
             try {
                 port = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
+                gracefulTermination(Messages.getMessage("invalid_server_port"));
             }
         }
 
         if (port < Constants.LOWER_BOUND_SERVER_PORT || port > Constants.UPPER_BOUND_SERVER_PORT) {
-            gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
+            gracefulTermination(Messages.getMessage("invalid_server_port"));
         }
 
         Server server = new Server();
@@ -52,7 +52,7 @@ public class Server {
      */
     private static void gracefulTermination(String message) {
         System.out.println(message);
-        System.out.println(MessageResourceBundle.getMessage("graceful_term"));
+        System.out.println(Messages.getMessage("graceful_term"));
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -70,11 +70,11 @@ public class Server {
         controller.startPingPong();
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println(MessageResourceBundle.getMessage("server_ready"));
+            System.out.println(Messages.getMessage("server_ready"));
             while (true) {
                 try {
                     Socket socket = serverSocket.accept();
-                    System.out.println(MessageResourceBundle.getMessage("new_socket") + socket.getRemoteSocketAddress());
+                    System.out.println(Messages.getMessage("new_socket") + socket.getRemoteSocketAddress());
                     ClientHandler ch = new ClientHandler(socket, controller);
                     executor.submit(ch);
                 } catch (IOException e) {
@@ -83,7 +83,7 @@ public class Server {
             }
             executor.shutdown();
         } catch (IOException e) {
-            gracefulTermination(MessageResourceBundle.getMessage("port_not_available"));
+            gracefulTermination(Messages.getMessage("port_not_available"));
         }
     }
 

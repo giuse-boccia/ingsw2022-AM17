@@ -2,7 +2,7 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.exceptions.GameEndedException;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -53,7 +53,7 @@ public class ClientHandler implements Runnable, Communicable {
             // Socket closed by another method
         } catch (IOException e) {
             // Client connection error
-            System.err.println(MessageResourceBundle.getMessage("alerting_other_clients"));
+            System.err.println(Messages.getMessage("alerting_other_clients"));
         } catch (GameEndedException e) {
             // Game is ended, clientHandler will close socket
             try {

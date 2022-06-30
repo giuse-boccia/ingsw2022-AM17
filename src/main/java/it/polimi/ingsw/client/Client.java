@@ -4,7 +4,7 @@ import it.polimi.ingsw.Settings;
 import it.polimi.ingsw.client.cli.CLI;
 import it.polimi.ingsw.client.gui.GUI;
 import it.polimi.ingsw.client.gui.GuiView;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.CharacterState;
@@ -39,26 +39,26 @@ public abstract class Client {
             try {
                 Settings settings = Settings.readPrefsFromFile();
                 if (settings.getAddress() == null) {
-                    client.gracefulTermination(MessageResourceBundle.getMessage("cannot_connect_to_server"));
+                    client.gracefulTermination(Messages.getMessage("cannot_connect_to_server"));
                 }
                 serverPort = settings.getPort();
                 serverAddress = settings.getAddress();
             } catch (IOException e) {
-                client.gracefulTermination(MessageResourceBundle.getMessage("json_not_found"));
+                client.gracefulTermination(Messages.getMessage("json_not_found"));
             } catch (NumberFormatException e) {
-                client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
+                client.gracefulTermination(Messages.getMessage("invalid_server_port"));
             }
         } else {
             try {
                 serverPort = Integer.parseInt(args[1]);
                 serverAddress = args[2];
             } catch (NumberFormatException e) {
-                client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
+                client.gracefulTermination(Messages.getMessage("invalid_server_port"));
             }
         }
 
         if (serverPort < 1024 || serverPort > 65535) {
-            client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_port"));
+            client.gracefulTermination(Messages.getMessage("invalid_server_port"));
         }
 
         NetworkClient nc = new NetworkClient(client, serverAddress, serverPort);

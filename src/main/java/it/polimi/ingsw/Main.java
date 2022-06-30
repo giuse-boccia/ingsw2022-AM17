@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.client.Client;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.server.Server;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
         initializeLanguage();
         if (args.length > 3) {
-            System.out.println(MessageResourceBundle.getMessage("wrong_usage"));
+            System.out.println(Messages.getMessage("wrong_usage"));
             System.exit(-1);
         }
 
@@ -26,7 +26,7 @@ public class Main {
                 case "server" -> Server.main(config);
                 case "cli", "gui" -> Client.main(args);
                 default -> {
-                    System.out.println(MessageResourceBundle.getMessage("wrong_usage"));
+                    System.out.println(Messages.getMessage("wrong_usage"));
                     System.exit(-1);
                 }
             }
@@ -43,7 +43,7 @@ public class Main {
             language = Settings.getGameLanguage();
         } catch (IOException ignored) {
         }
-        MessageResourceBundle.initializeBundle(language);
+        Messages.initializeBundle(language);
     }
 
 

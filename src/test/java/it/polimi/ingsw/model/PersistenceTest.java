@@ -1,9 +1,7 @@
 package it.polimi.ingsw.model;
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.languages.MessageResourceBundle;
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.characters.MovingCharacter;
@@ -28,7 +26,7 @@ public class PersistenceTest {
 
     @BeforeAll
     static void initializeMessageResourceBundle() {
-        MessageResourceBundle.initializeBundle("en");
+        Messages.initializeBundle("en");
     }
 
     /**

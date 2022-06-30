@@ -2,11 +2,10 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidStudentException;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
-import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class TestGameFactory {
      * @return the created {@code Game}
      */
     public static Game getNewGame() {
-        MessageResourceBundle.initializeBundle("en");
+        Messages.initializeBundle("en");
         ArrayList<Player> players = createThreePlayers();
         Game res = new Game(players, true);
         res.start(0);

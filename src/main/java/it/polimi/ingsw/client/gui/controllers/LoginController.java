@@ -3,24 +3,19 @@ package it.polimi.ingsw.client.gui.controllers;
 import it.polimi.ingsw.client.gui.GuiView;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.client.gui.utils.languages.FlagListCell;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.GameState;
 import it.polimi.ingsw.utils.RandomNicknameGenerator;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 
 import java.util.List;
 
@@ -42,7 +37,7 @@ public class LoginController implements GuiController {
         ListCell<String> cell = new FlagListCell();
         languagePicker.setButtonCell(cell);
         languagePicker.setCellFactory(stringListView -> new FlagListCell());
-        languagePicker.setValue(MessageResourceBundle.getCurrentLanguageTag());
+        languagePicker.setValue(Messages.getCurrentLanguageTag());
         languagePicker.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldTag, newTag) -> onLanguageSelected(newTag)
         );
@@ -98,7 +93,7 @@ public class LoginController implements GuiController {
      * @param tag {@code String} identifying the selected language
      */
     private void onLanguageSelected(String tag) {
-        MessageResourceBundle.initializeBundle(tag);
+        Messages.initializeBundle(tag);
         setTextToElements();
     }
 
@@ -106,8 +101,8 @@ public class LoginController implements GuiController {
      * Writes the correct text message for each element in the scene
      */
     private void setTextToElements() {
-        usernameText.setText(MessageResourceBundle.getMessage("insert_username_title"));
-        requestUsernameButton.setText(MessageResourceBundle.getMessage("get_random_username"));
+        usernameText.setText(Messages.getMessage("insert_username_title"));
+        requestUsernameButton.setText(Messages.getMessage("get_random_username"));
     }
 
     /**
@@ -119,7 +114,7 @@ public class LoginController implements GuiController {
         boolean connectionSuccessful = GuiView.getGui().getCurrentObserverHandler() != null;
         if (!connectionSuccessful) {
             // There was an error connecting to server
-            GuiView.getGui().gracefulTermination(MessageResourceBundle.getMessage("connection_failed"));
+            GuiView.getGui().gracefulTermination(Messages.getMessage("connection_failed"));
         }
         return connectionSuccessful;
     }

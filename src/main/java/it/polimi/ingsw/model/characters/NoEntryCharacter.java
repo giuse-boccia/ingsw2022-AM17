@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.exceptions.InvalidActionException;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.GameBoard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
@@ -51,7 +51,7 @@ public class NoEntryCharacter extends GameboardCharacter {
      * @throws InvalidActionException if there are no noEntry tiles on the {@code Character}
      */
     private void removeNoEntry() throws InvalidActionException {
-        if (noEntryNum == 0) throw new InvalidActionException(MessageResourceBundle.getMessage("no_noentry"));
+        if (noEntryNum == 0) throw new InvalidActionException(Messages.getMessage("no_noentry"));
         noEntryNum--;
     }
 

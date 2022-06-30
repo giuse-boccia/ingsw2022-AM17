@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.GameEndedException;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.model.Player;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,7 +21,7 @@ class PlanningPhaseControllerTest {
 
     @BeforeAll
     static void initializeMessagesResourceBundle() {
-        MessageResourceBundle.initializeBundle("en");
+        Messages.initializeBundle("en");
     }
 
     /**
@@ -35,7 +35,7 @@ class PlanningPhaseControllerTest {
         controller.handleMessage(playAssistantJson, rickCh);
 
         ServerActionMessage response = ServerActionMessage.fromJson(rickCh.getJson());
-        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("game_not_started"), response.getDisplayText());
+        assertEquals("[ERROR] " + Messages.getMessage("game_not_started"), response.getDisplayText());
         assertEquals(1, response.getError());
 
         assertNull(controller.getGame());
@@ -65,7 +65,7 @@ class PlanningPhaseControllerTest {
 
         ServerActionMessage clodResponse = ServerActionMessage.fromJson(clodCh.getJson());
         assertEquals(3, clodResponse.getError());
-        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("not_logged_in"), clodResponse.getDisplayText());
+        assertEquals("[ERROR] " + Messages.getMessage("not_logged_in"), clodResponse.getDisplayText());
     }
 
     /**
@@ -80,7 +80,7 @@ class PlanningPhaseControllerTest {
 
         ServerActionMessage rickResponse = ServerActionMessage.fromJson(rickCh.getJson());
         assertEquals(3, rickResponse.getError());
-        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_request"), rickResponse.getDisplayText());
+        assertEquals("[ERROR] " + Messages.getMessage("invalid_request"), rickResponse.getDisplayText());
     }
 
     /**
@@ -95,7 +95,7 @@ class PlanningPhaseControllerTest {
         controller.handleMessage(invalidJson, rickCh);
 
         ServerActionMessage response = ServerActionMessage.fromJson(rickCh.getJson());
-        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_identity"), response.getDisplayText());
+        assertEquals("[ERROR] " + Messages.getMessage("invalid_identity"), response.getDisplayText());
         assertEquals(3, response.getError());
     }
 
@@ -110,7 +110,7 @@ class PlanningPhaseControllerTest {
         controller.handleMessage(giuseInvalidJson, giuseCh);
 
         ServerActionMessage giuseResponse = ServerActionMessage.fromJson(giuseCh.getJson());
-        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("not_your_turn"), giuseResponse.getDisplayText());
+        assertEquals("[ERROR] " + Messages.getMessage("not_your_turn"), giuseResponse.getDisplayText());
         assertEquals(1, giuseResponse.getError());
     }
 
@@ -126,7 +126,7 @@ class PlanningPhaseControllerTest {
             controller.handleMessage(rickInvalidJson, rickCh);
 
             ServerActionMessage rickResponse = ServerActionMessage.fromJson(rickCh.getJson());
-            assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_argument"), rickResponse.getDisplayText());
+            assertEquals("[ERROR] " + Messages.getMessage("invalid_argument"), rickResponse.getDisplayText());
             assertEquals(2, rickResponse.getError());
         }
     }
@@ -160,14 +160,14 @@ class PlanningPhaseControllerTest {
 
         ServerActionMessage rickResponse = ServerActionMessage.fromJson(rickCh.getJson());
         assertEquals(2, rickResponse.getError());
-        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("already_played_assistant"), rickResponse.getDisplayText());
+        assertEquals("[ERROR] " + Messages.getMessage("already_played_assistant"), rickResponse.getDisplayText());
 
         String giuseJson = "{status:ACTION,player:giuse,action:{name:PLAY_ASSISTANT,args:{value:5}}}";
         controller.handleMessage(giuseJson, giuseCh);
 
         ServerActionMessage giuseResponse = ServerActionMessage.fromJson(giuseCh.getJson());
         assertEquals(2, giuseResponse.getError());
-        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("another_played_assistant"), giuseResponse.getDisplayText());
+        assertEquals("[ERROR] " + Messages.getMessage("another_played_assistant"), giuseResponse.getDisplayText());
     }
 
     /**
@@ -225,7 +225,7 @@ class PlanningPhaseControllerTest {
         controller.handleMessage(jsonMessage, rickCh);
 
         ServerActionMessage response = ServerActionMessage.fromJson(rickCh.getJson());
-        assertEquals("[ERROR] " + MessageResourceBundle.getMessage("invalid_request"), response.getDisplayText());
+        assertEquals("[ERROR] " + Messages.getMessage("invalid_request"), response.getDisplayText());
         assertEquals(3, response.getError());
     }
 

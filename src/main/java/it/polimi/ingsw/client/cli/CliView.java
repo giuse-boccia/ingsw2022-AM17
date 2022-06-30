@@ -2,7 +2,7 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.utils.constants.ConsoleColors;
 import it.polimi.ingsw.utils.constants.Constants;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.server.game_state.*;
@@ -87,7 +87,7 @@ public class CliView {
             }
             System.out.println();
         } else {
-            System.out.println(ConsoleColors.WHITE + MessageResourceBundle.getMessage("no_assistant_left") + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.WHITE + Messages.getMessage("no_assistant_left") + ConsoleColors.RESET);
         }
 
         // Dashboards

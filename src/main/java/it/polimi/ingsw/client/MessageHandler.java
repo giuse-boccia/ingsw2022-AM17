@@ -11,7 +11,7 @@ import it.polimi.ingsw.client.observers.login.game_parameters.GameParametersObse
 import it.polimi.ingsw.client.observers.login.load_game.LoadGameObserver;
 import it.polimi.ingsw.client.observers.login.username.UsernameObserver;
 import it.polimi.ingsw.utils.constants.Constants;
-import it.polimi.ingsw.languages.MessageResourceBundle;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
@@ -68,7 +68,7 @@ public class MessageHandler implements ObserverHandler {
             case Constants.STATUS_ACTION -> parseAction(jsonMessage);
             case Constants.STATUS_UPDATE -> handleUpdate(jsonMessage);
             case Constants.STATUS_END -> handleEndGame(jsonMessage);
-            default -> client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_message"));
+            default -> client.gracefulTermination(Messages.getMessage("invalid_server_message"));
         }
     }
 
@@ -106,12 +106,12 @@ public class MessageHandler implements ObserverHandler {
         ServerLoginMessage message = ServerLoginMessage.fromJson(jsonMessage);
 
         if (message.getError() == 2) {
-            client.showWarningMessage(MessageResourceBundle.getMessage("username_already_taken"));
+            client.showWarningMessage(Messages.getMessage("username_already_taken"));
             new Thread(() -> {
                 try {
                     askUsernameAndSend();
                 } catch (IOException e) {
-                    client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
+                    client.gracefulTermination(Messages.getMessage("server_lost"));
                 }
             }).start();
         } else if (message.getError() == 5) {
@@ -120,7 +120,7 @@ public class MessageHandler implements ObserverHandler {
                 try {
                     changeUsernameAndSend();
                 } catch (IOException e) {
-                    client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
+                    client.gracefulTermination(Messages.getMessage("server_lost"));
                 }
             }).start();
         } else if (message.getError() == 4) {
@@ -129,7 +129,7 @@ public class MessageHandler implements ObserverHandler {
                 try {
                     client.askCreateOrLoad();
                 } catch (IOException e) {
-                    client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
+                    client.gracefulTermination(Messages.getMessage("server_lost"));
                 }
             }).start();
         } else if (message.getError() != 0) {
@@ -140,7 +140,7 @@ public class MessageHandler implements ObserverHandler {
                 try {
                     client.askCreateOrLoad();
                 } catch (IOException e) {
-                    client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
+                    client.gracefulTermination(Messages.getMessage("server_lost"));
                 }
             }).start();
 
@@ -156,7 +156,7 @@ public class MessageHandler implements ObserverHandler {
      */
     public void askUsernameAndSend() throws IOException {
         client.setCurrentObserverHandler(this);
-        client.showMessage(MessageResourceBundle.getMessage("connecting"));
+        client.showMessage(Messages.getMessage("connecting"));
         client.askUsername();
     }
 
@@ -164,7 +164,7 @@ public class MessageHandler implements ObserverHandler {
      * Asks for a username and sends a login message to the server
      */
     public void changeUsernameAndSend() throws IOException {
-        client.showMessage(MessageResourceBundle.getMessage("connecting"));
+        client.showMessage(Messages.getMessage("connecting"));
         client.askUsername();
     }
 
@@ -220,7 +220,7 @@ public class MessageHandler implements ObserverHandler {
             try {
                 observer.onCharacterChosen(name);
             } catch (IOException e) {
-                client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
+                client.gracefulTermination(Messages.getMessage("server_lost"));
             }
         });
     }
@@ -337,10 +337,10 @@ public class MessageHandler implements ObserverHandler {
                     case Constants.ACTION_MOVE_MN -> ActionHandler.handleMoveMotherNature(nc);
                     case Constants.ACTION_FILL_FROM_CLOUD -> ActionHandler.handleFillFromCloud(nc);
                     case Constants.ACTION_PLAY_CHARACTER -> ActionHandler.handlePlayCharacter(nc);
-                    default -> client.gracefulTermination(MessageResourceBundle.getMessage("invalid_server_message"));
+                    default -> client.gracefulTermination(Messages.getMessage("invalid_server_message"));
                 }
             } catch (IOException e) {
-                client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
+                client.gracefulTermination(Messages.getMessage("server_lost"));
             }
 
         }).start();
@@ -357,7 +357,7 @@ public class MessageHandler implements ObserverHandler {
                 client.showPossibleActions(actions);
                 client.chooseAction(actions);
             } catch (IOException e) {
-                client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
+                client.gracefulTermination(Messages.getMessage("server_lost"));
             }
         }).start();
     }
@@ -381,7 +381,7 @@ public class MessageHandler implements ObserverHandler {
             @Override
             public void run() {
                 if (serverUpCalls >= Constants.MAX_ATTEMPTS_TO_CONTACT_SERVER && client.getUsername() != null) {
-                    client.gracefulTermination(MessageResourceBundle.getMessage("server_lost"));
+                    client.gracefulTermination(Messages.getMessage("server_lost"));
                     this.cancel();
                 } else if (client.getUsername() != null) {
                     serverUpCalls++;

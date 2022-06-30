@@ -3,7 +3,7 @@ package it.polimi.ingsw.languages;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class MessageResourceBundle {
+public class Messages {
 
     private static ResourceBundle messages;
 
