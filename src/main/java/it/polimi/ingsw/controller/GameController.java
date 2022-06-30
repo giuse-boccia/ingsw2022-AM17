@@ -6,6 +6,7 @@ import it.polimi.ingsw.messages.action.Action;
 import it.polimi.ingsw.messages.action.ActionArgs;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
+import it.polimi.ingsw.messages.end.EndGameMessage;
 import it.polimi.ingsw.messages.update.UpdateMessage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Place;
@@ -450,19 +451,18 @@ public class GameController {
             } else {
                 winnersText = winners.get(0).getName() + Messages.getMessage("broadcast_game_won", locale);
             }
-            ServerActionMessage actionMessage = new ServerActionMessage();
-            actionMessage.setStatus(Constants.STATUS_END);
-            actionMessage.setPlayer(player.getUsername());
+            EndGameMessage endGameMessage = new EndGameMessage();
+            endGameMessage.setGameState(new GameState(game));
 
             if (winners.contains(player.getPlayer())) {
                 // Win message
-                actionMessage.setDisplayText(Messages.getMessage("game_won", locale));
+                endGameMessage.setDisplayText(Messages.getMessage("game_won", locale));
             } else {
                 // Defeat message
-                actionMessage.setDisplayText(Messages.getMessage("game_lost", locale) + winnersText);
+                endGameMessage.setDisplayText(Messages.getMessage("game_lost", locale) + winnersText);
             }
 
-            player.getCommunicable().sendMessageToClient(actionMessage.toJson());
+            player.getCommunicable().sendMessageToClient(endGameMessage.toJson());
         }
     }
 

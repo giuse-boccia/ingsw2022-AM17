@@ -16,6 +16,7 @@ import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
 import it.polimi.ingsw.messages.chat.ChatMessage;
 import it.polimi.ingsw.messages.chat.SimpleChatMessage;
+import it.polimi.ingsw.messages.end.EndGameMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import it.polimi.ingsw.messages.update.UpdateMessage;
@@ -383,8 +384,9 @@ public class MessageHandler implements ObserverHandler {
      * @param json the Json {@code String} to put into the message
      */
     private void handleEndGame(String json) {
-        ServerActionMessage actionMessage = ServerActionMessage.fromJson(json);
-        client.endGame(actionMessage.getDisplayText());
+        EndGameMessage endGameMessage = EndGameMessage.fromJson(json);
+        client.updateGameState(endGameMessage.getGameState());
+        client.endGame(endGameMessage.getDisplayText());
     }
 
     private void handleChatMessage(String json) {
