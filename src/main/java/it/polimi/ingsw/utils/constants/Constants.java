@@ -3,7 +3,6 @@ package it.polimi.ingsw.utils.constants;
 import java.util.List;
 
 public class Constants {
-    // TODO move all "magic numbers" here
     // Math Constants
     public static final double PI = 3.14;
 
@@ -71,7 +70,10 @@ public class Constants {
     public static final String STATUS_PONG = "PONG";
     public static final String STATUS_PING = "PING";
     public static final String STATUS_UPDATE = "UPDATE";
+    public static final String STATUS_CHAT = "CHAT";
     public static final String STATUS_END = "END";
+
+    public static final int MAX_LENGTH_FOR_MESSAGE = 200;
 
     // Possible language tags
     public static final List<String> LANGUAGE_TAGS = List.of("en", "it");
