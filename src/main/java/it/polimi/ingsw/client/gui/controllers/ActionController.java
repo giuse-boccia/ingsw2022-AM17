@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui.controllers;
 
 import it.polimi.ingsw.client.gui.GuiView;
+import it.polimi.ingsw.client.gui.utils.ChatView;
 import it.polimi.ingsw.client.gui.utils.DrawingComponents;
 import it.polimi.ingsw.client.gui.utils.GuiCharacterType;
 import it.polimi.ingsw.messages.login.GameLobby;
@@ -9,6 +10,7 @@ import it.polimi.ingsw.server.game_state.GameState;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Circle;
 import javafx.stage.Screen;
 
 import java.util.List;
@@ -58,6 +60,11 @@ public class ActionController implements GuiController {
     private void drawGameState(GameState gameState, String username) {
         DrawingComponents.clearAll(root);
         DrawingComponents.drawComponents(gameState, width, height, root, username);
+        Circle openChatButton = new Circle(20, javafx.scene.paint.Color.WHITESMOKE);
+        openChatButton.setCenterX(width - 50);
+        openChatButton.setCenterY(height - 50);
+        openChatButton.setOnMouseClicked(event -> ChatView.openChatPanel());
+        root.getChildren().add(openChatButton);
     }
 
     public void setRoot(AnchorPane root) {
