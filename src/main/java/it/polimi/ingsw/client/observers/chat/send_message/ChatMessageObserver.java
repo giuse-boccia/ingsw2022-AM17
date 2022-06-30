@@ -1,8 +1,8 @@
-package it.polimi.ingsw.client.observers.chat;
+package it.polimi.ingsw.client.observers.chat.send_message;
 
 import it.polimi.ingsw.messages.chat.ChatMessage;
 
-public interface ChatObserver {
+public interface ChatMessageObserver {
 
     /**
      * This method is triggered when a player clicks on Send button from chat screen
