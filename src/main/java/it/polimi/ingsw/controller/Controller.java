@@ -7,6 +7,7 @@ import it.polimi.ingsw.languages.MessagesForClients;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
+import it.polimi.ingsw.messages.chat.ServerChatMessage;
 import it.polimi.ingsw.messages.chat.SimpleChatMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.GameLobby;
@@ -425,6 +426,7 @@ public class Controller {
         }
 
         gameController = new GameController(loggedUsers, isExpert);
+        ServerChatMessage.getInstance().getMessages().clear();
         gameController.start();
 
         System.out.println(Messages.getMessage("game_is_starting"));
@@ -496,9 +498,9 @@ public class Controller {
     private void handleChatMessage(String jsonMessage, Communicable ch) {
         try {
             SimpleChatMessage chatMessage = SimpleChatMessage.fromJson(jsonMessage);
-            for (PlayerClient user : loggedUsers) {
-                if (user.getCommunicable().equals(ch)) continue;
-                user.getCommunicable().sendMessageToClient(chatMessage.toJson());
+            switch (chatMessage.getAction()) {
+                case Constants.ACTION_SEND_MESSAGE -> GameChatController.sendMessageToEveryone(chatMessage, ch, loggedUsers);
+                case Constants.ACTION_GET_ALL_MESSAGES -> GameChatController.sendAllMessagesToClient(ch);
             }
         } catch (JsonSyntaxException ignored) {
             // The chat message simply gets ignored
