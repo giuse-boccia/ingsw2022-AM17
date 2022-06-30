@@ -30,11 +30,14 @@ Login messages are used to communicate information regarding the login phase of 
 ### Fields
 - The *action* field indicates the required action if the message is sent from the server, or the intended action if the message is sent from the client. If this field is not present, then the message is either an error message (error ≠ 0) or a brodcast message (error=0).
 - The *username* and *num players* fields are arguments for the SET_USERNAME and CREATE_GAME message.
+- The *expert* field indicates whether the game in in expert or non expert mode. It is required for the CREATE_GAME message.
 - The *error* field is a number. It indicates the error code an error occurred, or zero otherwise. This field is always present (it is omitted in this document in non-error messages for simplicity).
 - The *displayText* field is not necessary for the functioning of the application, but can be printed in case of errors and makes the messages more human-readable
+- The *gameLobby* field contains all the players who already logged in and it is sent in a broadcast message to the ones who are waiting for the game to start, either if a new game is starting or if a game is being loaded from file
+- The *languageTag* is a string indicating the *Locale* of the client sending the message. Using this field the server will be able to send every user all the messages in their correct language 
 
 ## After new client connection
-When a new client connects to the server, the former sends a message containing his nickname. If the username is empty or already taken the server responds with an error and the connection is closed. If the username is correct, then:
+When a new client connects to the server, the former sends a message containing their nickname. If the username is empty or already taken the server responds with an error and the connection is closed. If the username is correct, then:
 
 - if a game is already in progress, the server responds with an error and the connection is closed
 - if a game is present but not started the server adds him to the lobby and sends a broadcast message to everyone with the new players list
@@ -66,9 +69,10 @@ When a new client connects to the server, the former sends a message containing 
 #### message L.1.1
 ```json
 {
-    "status": "LOGIN",
-    "action": "SET_USERNAME",
-	"username": "Rick"
+	"status": "LOGIN",
+   	"action": "SET_USERNAME",
+	"username": "Rick",
+	"languageTag": "en"
 }
 ```
 #### message L.1.2
@@ -111,7 +115,8 @@ When a new client connects to the server, the former sends a message containing 
 {
     "status": "LOGIN",
     "action": "SET_USERNAME",
-    "username": "Rick"
+    "username": "Rick",
+    "languageTag": "en"
 }
 ```
 
@@ -137,12 +142,14 @@ When a new client connects to the server, the former sends a message containing 
     |              <-------------------------           |
     |                                                   |
 ```
+
 #### message L.1.1
 ```json
 {
-    "status": "LOGIN",
-    "action": "SET_USERNAME",
-	"username": "Rick"
+    	"status": "LOGIN",
+    	"action": "SET_USERNAME",
+	"username": "Rick",
+	"languageTag": "en"
 }
 ```
 #### message L.1.2
@@ -179,7 +186,6 @@ Every message contains an “error” number field. If this field in not 0, then
 	"displayText" : "An user with this username is already logged in. Please select another username"
 }
 ```
-
 #### message L.E.3
 ```json
 {
@@ -188,7 +194,6 @@ Every message contains an “error” number field. If this field in not 0, then
 	"displayText" : "Bad request"
 }
 ```
-
 #### message L.E.4
 ```json
 {
@@ -198,7 +203,6 @@ Every message contains an “error” number field. If this field in not 0, then
 	"displayText" : "Missing or corrupted save file, create a new game"
 }
 ```
-
 #### message L.E.5
 This message is displayed if an user tries to load a game but the loaded game doesn't have a player with the same username
 ```json
@@ -222,7 +226,6 @@ This message is displayed if an user tries to load a game but the loaded game do
 	}
 }
 ```
-
 #### message L.B.2
 ```json
 {
@@ -235,7 +238,6 @@ This message is displayed if an user tries to load a game but the loaded game do
 	}
 }
 ```
-
 #### message L.B.3
 ```json
 {
@@ -255,7 +257,7 @@ Action messages are used to communicate player choices from each client to the s
 
 ### Fields
 
-- The *player* field indicates which player is performing the move. A player is identified by his username.
+- The *player* field indicates which player is performing the move. A player is identified by their username.
 - Messages from the server contain an *actions* field, which is an array of all the possible actions the player can perform
 - Messages from the client and broadcast messages from the server contain a *action* field, which describes the action which has to made (or has been made in case of a broadcast message):
     - *action.name* indicates the type of the action to be performed (es: move mother nature)
@@ -284,7 +286,6 @@ Every player has to play an assistant.
     |             <-------------------------           |
     |                                                  |
 ```
-
 
 #### message A.0.1
 ```json
@@ -370,7 +371,6 @@ Every player has to play an assistant.
 	}
 }
 ```
-
 #### message A.2.1a
 ```json
 {
@@ -384,7 +384,6 @@ Every player has to play an assistant.
 	}
 }
 ```
-
 #### message A.2.1b
 ```json
 {
@@ -422,7 +421,6 @@ Every player has to play an assistant.
 	}
 }
 ```
-
 #### message A.0.4
 ```json
 {
@@ -480,7 +478,6 @@ Update messages are sent to every client every time the game model changes (i.e.
 	"game_status": {...}
 }
 ```
-
 #### message A.B.2
 ```json
 {
@@ -490,7 +487,6 @@ Update messages are sent to every client every time the game model changes (i.e.
 	"game_status": {...}
 }
 ```
-
 #### message A.B.3
 ```json
 {
@@ -501,7 +497,6 @@ Update messages are sent to every client every time the game model changes (i.e.
 }
 
 ```
-
 #### message A.B.4
 ```json
 {
@@ -657,5 +652,34 @@ The *game_status* field in every update message is a JSON rappresentation of the
             "maxStudents": 3
         }
     ]
+}
+```
+# End
+A message with an END status is sent to every logged user when the game is finished.
+It contains only a *status* field and a *displayText* field which shows every user a win or defeat message - in the latter there are the username(s) of the player(s) who won
+
+```
++--------+                                        +--------+
+| Client |                                        | Server |    
++--------+                                        +--------+
+    |                                                  |
+    |                  [WIN] message E.W               |
+    |             <-------------------------           |
+    |                 [LOSS] message E.D               |
+    |             <-------------------------           |
+```
+
+#### message E.W
+```json
+{
+	"status": "END",
+	"displayText": "Congratulations, you won the game!"
+}
+```
+#### message E.D
+```json
+{
+	"status": "END",
+	"displayText": "Unfortunately you lost. Clod and Giuse won the game"
 }
 ```
