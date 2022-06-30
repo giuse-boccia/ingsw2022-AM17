@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.exceptions.GameEndedException;
 import it.polimi.ingsw.languages.MessageResourceBundle;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
@@ -285,5 +286,57 @@ class ControllerTest {
         assertEquals(4, controller.getGame().getPlayers().size());
         assertTrue(controller.getGame().isExpert());
     }
+
+    /**
+     * Tests what happens when an already logged-in user attempts to rename himself
+     */
+    @Test
+    void testRenameUser() throws GameEndedException {
+        // Rick logs in with a valid username
+        String rickLogin = "{status:LOGIN,username:rick,action:SET_USERNAME,error:0}";
+        controller.handleMessage(rickLogin, ch);
+
+        // Rick attempts to change his username with a too long string
+        String tooLongUsernameJson = "{status:LOGIN,username:" + "a".repeat(33) + ",action:SET_USERNAME,error:0}";
+        testInvalidRenameUserAssertions(tooLongUsernameJson, "username_too_long");
+
+        // Rick attempts to change his username with a blank string
+        ClientLoginMessage clientLoginMessage = new ClientLoginMessage();
+        clientLoginMessage.setUsername("  ");
+        clientLoginMessage.setAction("SET_USERNAME");
+        String emptyUsernameJson = clientLoginMessage.toJson();
+        testInvalidRenameUserAssertions(emptyUsernameJson, "invalid_username");
+
+        // Giuse logs in and Rick attempts to take his username
+        String giuseLogin = "{status:LOGIN,username:giuse,action:SET_USERNAME,error:0}";
+        controller.handleMessage(giuseLogin, secondCh);
+        String alreadyTakenUsernameJson = "{status:LOGIN,username:giuse,action:SET_USERNAME,error:0}";
+        testInvalidRenameUserAssertions(alreadyTakenUsernameJson, "username_already_taken");
+
+        // Rick attempts to change his username with a valid one
+        String changeUsername = "{status:LOGIN,username:username,action:SET_USERNAME,error:0}";
+        controller.handleMessage(changeUsername, ch);
+
+        assertEquals("username", controller.getLoggedUsers().get(0).getUsername());
+    }
+
+    /**
+     * Asserts that the provided json message, handled by the controller, gives an error message with 5 as error code
+     * and with the given key in the "key" field
+     *
+     * @param json        the input json {@code String}
+     * @param expectedKey the expected key for the error message
+     */
+    private void testInvalidRenameUserAssertions(String json, String expectedKey) throws GameEndedException {
+        controller.handleMessage(json, ch);
+        ServerLoginMessage response = ServerLoginMessage.fromJson(ch.getJson());
+        assertEquals(5, response.getError());
+        assertEquals(MessageResourceBundle.getMessage("error_tag") + MessageResourceBundle.getMessage(expectedKey),
+                response.getDisplayText());
+    }
+
+    /**
+     * Tests what happens when
+     */
 
 }
