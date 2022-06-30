@@ -106,7 +106,6 @@ public class CliView {
     /**
      * Prints a single line visualizing the state of an island, including its students, owner, noEntry tiles and if
      * Mother Nature is currently there
-     * ES: Island 1 | BLACK | ●●●●● | XX | <----- MN is here
      *
      * @param islandState an Island State, included in a Game State
      * @param islandIndex the current index of the island (starting from 0)
@@ -204,7 +203,7 @@ public class CliView {
 
     /**
      * Prints a single line visualizing the state of a cloud (its students or "empty" if it's empty)
-     * ES: Cloud 1 | ● ● ●
+     * ES: Cloud 1 | * * *
      *
      * @param cloudState a cloud state, included in a Game State
      * @param cloudIndex the index of the cloud (starting from 0)
@@ -258,7 +257,7 @@ public class CliView {
         }
 
         // First line (1st entrance student + green dining)
-        // something like:      |    ●  ●   |    ● ● ●                |   ▲   |
+        // something like:      |    *  *   |    * * *                |   #   |
         System.out.println("|      " +
                 entranceHelper(entrance, 0) + "   |   " +
                 (getStringFromStudent(new Student(Color.GREEN)) + " ").repeat(Students.countColor(dining, Color.GREEN)) +

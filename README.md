@@ -28,9 +28,15 @@
 
 ⚫ -> Will not implement
 
+### Extra functionalities
+- **Random nickname generator**: allows the user to participate in a match with a random-chosen username. This is possible either clicking on the apposite button
+in GUI or leaving blank the *username* field when asked
+- **Internationalization**: it's possible to play Eriantys in different languages - currently Italian and English - according to the choice of the user.
+Game language can be chosen from the apposite popup in the login screen (for GUI) or setting a language tag (two letters) in the *game_language* field in `deliveries/Jar/settings.json` file
+
 ## Instructions for use
 To use the application launch the JAR file from a terminal (Linux, MacOS) or Powershell (Windows).
-NOTE: Using Windows Command Prompt (cmd.exe)
+NOTE: We cannot ensure an optimal CLI game experience on Windows Command Prompt (cmd.exe)  
 ```
 java -jar ./deliveries/Jar/Eriantys.jar [SERVER | GUI | CLI] [PORT] [ADDRESS]
 ```
@@ -74,7 +80,7 @@ java -jar ./deliveries/Jar/Eriantys.jar cli 7373 192.168.1.10
 
 
 ## Test coverage
-| Package    |        Class |        Method |           Line |
-|:-----------|-------------:|--------------:|---------------:|
-| Model      | 100% (38/38) | 96% (234/243) |  95% (812/849) |
-| Controller |    66% (2/3) |   80% (41/51) |  69% (290/415) |
+| Package    |        Method |           Line |
+|:-----------|--------------:|---------------:|
+| Model      | 96% (234/243) |  95% (812/849) |
+| Controller | 92% (47/51)   |  90% (375/415) |

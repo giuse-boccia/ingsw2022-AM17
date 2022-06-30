@@ -33,8 +33,15 @@ public class RandomNicknameGenerator {
      */
     public static String getRandomNickname() {
         RandomGenerator randomGenerator = new RandomGenerator(new Random().nextInt());
-        return adjectives[randomGenerator.getRandomInteger(adjectives.length)] + " "
-                + animals[randomGenerator.getRandomInteger(animals.length)];
+        String adjective = adjectives[randomGenerator.getRandomInteger(adjectives.length)];
+        String animal = animals[randomGenerator.getRandomInteger(animals.length)];
+        if (MessageResourceBundle.getCurrentLanguageTag().equals("it")) {
+            if (animal.endsWith("a") && adjective.endsWith("o")) {
+                adjective = adjective.substring(0, adjective.length() - 1) + "a";
+            }
+            return Character.toUpperCase(animal.charAt(0)) + animal.substring(1) + " " + adjective.toLowerCase();
+        }
+        return adjective + " " + animal;
     }
 
 }
