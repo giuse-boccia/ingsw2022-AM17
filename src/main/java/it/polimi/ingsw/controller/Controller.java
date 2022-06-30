@@ -6,6 +6,7 @@ import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
+import it.polimi.ingsw.messages.chat.SimpleChatMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
@@ -69,6 +70,7 @@ public class Controller {
             case Constants.STATUS_LOGIN -> handleLoginMessage(jsonMessage, ch);
             case Constants.STATUS_ACTION -> handleActionMessage(jsonMessage, ch);
             case Constants.STATUS_PONG -> handlePong();
+            case Constants.STATUS_CHAT -> handleChatMessage(jsonMessage, ch);
             default ->
                     sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("unrecognised_type"), 3, Locale.ENGLISH);
         }
@@ -482,6 +484,24 @@ public class Controller {
             gameController.handleActionMessage(actionMessage, ch);
         } catch (JsonSyntaxException e) {
             sendErrorMessage(ch, Constants.STATUS_ACTION, Messages.getMessage("bad_request_syntax"), 3, Locale.ENGLISH);
+        }
+    }
+
+    /**
+     * Deserializes and handles a chat message
+     *
+     * @param jsonMessage Json string which contains a chat message
+     * @param ch          the {@code Communicable} interface of the client who sent the message
+     */
+    private void handleChatMessage(String jsonMessage, Communicable ch) {
+        try {
+            SimpleChatMessage chatMessage = SimpleChatMessage.fromJson(jsonMessage);
+            for (PlayerClient user : loggedUsers) {
+                if (user.getCommunicable().equals(ch)) continue;
+                user.getCommunicable().sendMessageToClient(chatMessage.toJson());
+            }
+        } catch (JsonSyntaxException ignored) {
+            // The chat message simply gets ignored
         }
     }
 
