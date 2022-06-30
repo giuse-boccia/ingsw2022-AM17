@@ -11,6 +11,7 @@ public class ClientLoginMessage extends Message {
     private int numPlayers;
     private String action;
     private boolean expert;
+    private String languageTag;
 
     public ClientLoginMessage() {
         super();
@@ -47,6 +48,14 @@ public class ClientLoginMessage extends Message {
 
     public void setExpert(boolean expert) {
         this.expert = expert;
+    }
+
+    public String getLanguageTag() {
+        return languageTag;
+    }
+
+    public void setLanguageTag(String languageTag) {
+        this.languageTag = languageTag;
     }
 
     /**

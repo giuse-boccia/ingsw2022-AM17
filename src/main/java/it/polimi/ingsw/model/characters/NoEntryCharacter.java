@@ -51,7 +51,7 @@ public class NoEntryCharacter extends GameboardCharacter {
      * @throws InvalidActionException if there are no noEntry tiles on the {@code Character}
      */
     private void removeNoEntry() throws InvalidActionException {
-        if (noEntryNum == 0) throw new InvalidActionException(Messages.getMessage("no_noentry"));
+        if (noEntryNum == 0) throw new InvalidActionException("no_noentry");
         noEntryNum--;
     }
 

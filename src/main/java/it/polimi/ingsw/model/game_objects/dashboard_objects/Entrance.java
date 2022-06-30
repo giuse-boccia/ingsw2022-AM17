@@ -34,7 +34,7 @@ public class Entrance implements Place {
     @Override
     public void giveStudent(Place destination, Student student) throws InvalidStudentException, InvalidActionException {
         if (student == null || !students.contains(student)) {
-            throw new InvalidStudentException(Messages.getMessage("entrance_doesnt_contain_student"));
+            throw new InvalidStudentException("entrance_doesnt_contain_student");
         }
         students.remove(student);
         destination.receiveStudent(student);

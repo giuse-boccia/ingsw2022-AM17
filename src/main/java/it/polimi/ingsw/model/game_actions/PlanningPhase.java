@@ -38,21 +38,21 @@ public class PlanningPhase {
     public void addAssistant(Assistant assistant) throws InvalidActionException, AlreadyPlayedAssistantException, SameAssistantPlayedException {
 
         if (assistant == null) {
-            throw new AlreadyPlayedAssistantException(Messages.getMessage("already_played_assistant"));
+            throw new AlreadyPlayedAssistantException("already_played_assistant");
         }
 
         Player player = assistant.getPlayer();
 
         if (isEnded()) {
-            throw new InvalidActionException(Messages.getMessage("planning_phase_ended"));
+            throw new InvalidActionException("planning_phase_ended");
         }
 
         if (player != getNextPlayer()) {
-            throw new InvalidActionException(Messages.getMessage("not_your_turn"));
+            throw new InvalidActionException("not_your_turn");
         }
 
         if (!isAssistantPlayable(assistant)) {
-            throw new SameAssistantPlayedException(Messages.getMessage("another_played_assistant"));
+            throw new SameAssistantPlayedException("another_played_assistant");
         }
 
         playedAssistants.add(assistant);

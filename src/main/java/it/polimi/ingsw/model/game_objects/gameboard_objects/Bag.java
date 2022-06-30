@@ -31,7 +31,7 @@ public class Bag implements Place {
      * @return a random {@code Student} of the collection
      */
     public Student getRandStudent() throws EmptyBagException {
-        if (isEmpty()) throw new EmptyBagException(Messages.getMessage("empty_bag"));
+        if (isEmpty()) throw new EmptyBagException("empty_bag");
         return students.get(0);
     }
 

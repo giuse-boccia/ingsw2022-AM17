@@ -1,5 +1,8 @@
 package it.polimi.ingsw.utils.constants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Constants {
     // TODO move all "magic numbers" here
     // Math Constants
@@ -70,4 +73,7 @@ public class Constants {
     public static final String STATUS_PING = "PING";
     public static final String STATUS_UPDATE = "UPDATE";
     public static final String STATUS_END = "END";
+
+    // Possible language tags
+    public static final List<String> LANGUAGE_TAGS = List.of("en", "it");
 }

@@ -2,10 +2,13 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.model.Player;
 
+import java.util.Locale;
+
 public class PlayerClient {
     private final Communicable ch;
     private String username;
     private Player player;
+    private Locale languageTag;
 
     public PlayerClient(Communicable ch, String username) {
         this.ch = ch;
@@ -32,4 +35,13 @@ public class PlayerClient {
     public void setPlayer(Player player) {
         this.player = player;
     }
+
+    public Locale getLanguageTag() {
+        return languageTag;
+    }
+
+    public void setLanguageTag(Locale languageTag) {
+        this.languageTag = languageTag;
+    }
+
 }

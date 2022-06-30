@@ -173,13 +173,13 @@ public class PlayerActionPhase {
     public void playCharacter(Character character, Island island, Color color, List<Color> srcColors, List<Color> dstColors)
             throws InvalidCharacterException, CharacterAlreadyPlayedException, StudentNotOnTheCardException, InvalidActionException, InvalidStudentException, NotEnoughCoinsException {
         if (!gb.getGame().isExpert()) {
-            throw new InvalidActionException(Messages.getMessage("no_character_in_non_expert"));
+            throw new InvalidActionException("no_character_in_non_expert");
         }
         if (getCurrentPlayer().getNumCoins() < character.getCost()) {
-            throw new NotEnoughCoinsException(Messages.getMessage("not_enough_coins"));
+            throw new NotEnoughCoinsException("not_enough_coins");
         }
         if (!canPlayCharacter()) {
-            throw new CharacterAlreadyPlayedException(Messages.getMessage("already_played_character"));
+            throw new CharacterAlreadyPlayedException("already_played_character");
         }
         try {
             character.useEffect(this, island, color, srcColors, dstColors);
@@ -237,7 +237,7 @@ public class PlayerActionPhase {
         int studentsToMove = numPlayers % 2 == 0 ? Constants.STUDENTS_TO_MOVE_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.STUDENTS_TO_MOVE_IN_THREE_PLAYER_GAME;
 
         if (numStudentsMoved == studentsToMove) {
-            throw new InvalidActionException("You have already moved " + numStudentsMoved + " students");
+            throw new InvalidActionException("moved_enough");
         }
 
         Entrance entrance = getCurrentPlayer().getDashboard().getEntrance();
@@ -273,7 +273,7 @@ public class PlayerActionPhase {
         checkInvalidAction();
 
         if (numSteps <= 0 || numSteps > mnStrategy.getMNMaxSteps(assistant)) {
-            throw new InvalidStepsForMotherNatureException(Messages.getMessage("invalid_mn_move"));
+            throw new InvalidStepsForMotherNatureException("invalid_mn_move");
         }
 
         gb.moveMotherNature(numSteps);
@@ -310,11 +310,11 @@ public class PlayerActionPhase {
         checkInvalidAction();
 
         if (!mnMoved) {
-            throw new InvalidActionException(Messages.getMessage("move_mn_first"));
+            throw new InvalidActionException("move_mn_first");
         }
 
         if (cloudIndex < 0 || cloudIndex >= gb.getClouds().size() || gb.getClouds().get(cloudIndex).isEmpty()) {
-            throw new InvalidCloudException(Messages.getMessage("invalid_cloud"));
+            throw new InvalidCloudException("invalid_cloud");
         }
 
         Cloud cloud = gb.getClouds().get(cloudIndex);
@@ -333,7 +333,7 @@ public class PlayerActionPhase {
 
         int studentsToMove = gb.getGame().getPlayers().size() % 2 == 0 ? Constants.STUDENTS_TO_MOVE_IN_TWO_OR_FOUR_PLAYER_GAME : Constants.STUDENTS_TO_MOVE_IN_THREE_PLAYER_GAME;
         if (numStudentsMoved < studentsToMove) {
-            throw new InvalidActionException(Messages.getMessage("move_students_first"));
+            throw new InvalidActionException("move_students_first");
         }
     }
 

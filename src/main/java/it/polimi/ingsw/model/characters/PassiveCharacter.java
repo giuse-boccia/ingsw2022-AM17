@@ -37,11 +37,11 @@ public class PassiveCharacter extends Character {
             case plus2MNMoves, takeProfWithEqualStudents, plus2Influence, ignoreTowers -> currentPlayerActionPhase.playPassiveCharacter(this);
             case ignoreColor -> {
                 if (color == null) {
-                    throw new InvalidActionException(Messages.getMessage("invalid_argument"));
+                    throw new InvalidActionException("invalid_argument");
                 }
                 currentPlayerActionPhase.playPassiveCharacterWithColor(color);
             }
-            default -> throw new InvalidCharacterException(Messages.getMessage("not_passive"));
+            default -> throw new InvalidCharacterException("not_passive");
 
         }
 

@@ -23,10 +23,7 @@ import it.polimi.ingsw.server.Communicable;
 import it.polimi.ingsw.server.PlayerClient;
 import it.polimi.ingsw.server.game_state.SavedGameState;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class GameController {
 
@@ -106,20 +103,21 @@ public class GameController {
      * @throws GameEndedException if the {@code Game} is ended
      */
     public void handleActionMessage(ClientActionMessage message, Communicable ch) throws GameEndedException {
-        if (message.getAction() == null) {
-            sendActionErrorMessage(ch, Messages.getMessage("invalid_request"), 3, "");
-            return;
-        }
-
         List<PlayerClient> playersMatchingCh = players.stream().filter(user -> ch.equals(user.getCommunicable())).toList();
         if (playersMatchingCh.isEmpty()) {
-            sendActionErrorMessage(ch, Messages.getMessage("not_logged_in"), 3, "");
+            sendActionErrorMessage(ch, Messages.getMessage("not_logged_in"), 3, "", Locale.ENGLISH);
             return;
         }
         PlayerClient player = playersMatchingCh.get(0);
+        Locale locale = player.getLanguageTag();
+
+        if (message.getAction() == null) {
+            sendActionErrorMessage(ch, Messages.getMessage("invalid_request", locale), 3, "", locale);
+            return;
+        }
 
         if (!Objects.equals(player.getPlayer().getName(), message.getPlayer())) {
-            sendActionErrorMessage(ch, Messages.getMessage("invalid_identity"), 3, "");
+            sendActionErrorMessage(ch, Messages.getMessage("invalid_identity", locale), 3, "", locale);
             return;
         }
 
@@ -129,7 +127,7 @@ public class GameController {
         }
 
         if (game.getCurrentRound().getCurrentPlayerActionPhase() != null && !isCorrectSender(message.getPlayer())) {
-            sendActionErrorMessage(ch, Messages.getMessage("not_your_turn"), 1, "");
+            sendActionErrorMessage(ch, Messages.getMessage("not_your_turn", locale), 1, "", locale);
             return;
         }
 
@@ -140,7 +138,7 @@ public class GameController {
             case Constants.ACTION_MOVE_MN -> handleMotherNatureMoved(action, player);
             case Constants.ACTION_FILL_FROM_CLOUD -> handleFillFromCloud(action, player);
             case Constants.ACTION_PLAY_CHARACTER -> handlePlayCharacter(action, player);
-            default -> sendActionErrorMessage(ch, Messages.getMessage("invalid_request"), 3, "");
+            default -> sendActionErrorMessage(ch, Messages.getMessage("invalid_request", locale), 3, "", locale);
         }
     }
 
@@ -152,8 +150,9 @@ public class GameController {
      */
     private void handleAssistantPlayed(Action action, PlayerClient player) {
         Integer value = action.getArgs().getValue();
+        Locale locale = player.getLanguageTag();
         if (value < Constants.MIN_ASSISTANT_VALUE || value > Constants.MAX_ASSISTANT_VALUE) {
-            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage("invalid_argument"), 2, action.getName());
+            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage("invalid_argument", locale), 2, action.getName(), locale);
             return;
         }
 
@@ -161,10 +160,10 @@ public class GameController {
         try {
             game.getCurrentRound().getPlanningPhase().addAssistant(assistant);
         } catch (AlreadyPlayedAssistantException | SameAssistantPlayedException e) {
-            sendActionErrorMessage(player.getCommunicable(), e.getMessage(), 2, action.getName());
+            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage(e.getMessage(), locale), 2, action.getName(), locale);
             return;
         } catch (InvalidActionException e) {
-            sendActionErrorMessage(player.getCommunicable(), e.getMessage(), 1, action.getName());
+            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage(e.getMessage(), locale), 1, action.getName(), locale);
             return;
         }
 
@@ -219,9 +218,10 @@ public class GameController {
     private void handleStudentMovedToIsland(Action action, PlayerClient player) throws GameEndedException {
         Color color = action.getArgs().getColor();
         Integer islandIndex = action.getArgs().getIsland();
+        Locale locale = player.getLanguageTag();
 
         if (islandIndex < 0 || islandIndex >= game.getGameBoard().getIslands().size()) {
-            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage("invalid_island"), 2, Constants.ACTION_MOVE_STUDENT_TO_ISLAND);
+            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage("invalid_island", locale), 2, Constants.ACTION_MOVE_STUDENT_TO_ISLAND, locale);
             return;
         }
 
@@ -242,7 +242,8 @@ public class GameController {
         try {
             game.getCurrentRound().getCurrentPlayerActionPhase().moveStudent(color, destination);
         } catch (InvalidActionException | InvalidStudentException e) {
-            sendActionErrorMessage(player.getCommunicable(), e.getMessage(), 1, actionName);
+            Locale locale = player.getLanguageTag();
+            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage(e.getMessage(), locale), 1, actionName, locale);
             return;
         }
 
@@ -258,11 +259,12 @@ public class GameController {
      */
     private void handleMotherNatureMoved(Action action, PlayerClient player) throws GameEndedException {
         Integer steps = action.getArgs().getNum_steps();
+        Locale locale = player.getLanguageTag();
 
         try {
             game.getCurrentRound().getCurrentPlayerActionPhase().moveMotherNature(steps);
         } catch (InvalidActionException | InvalidStepsForMotherNatureException e) {
-            sendActionErrorMessage(player.getCommunicable(), e.getMessage(), 1, Constants.ACTION_MOVE_MN);
+            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage(e.getMessage(), locale), 1, Constants.ACTION_MOVE_MN, locale);
             return;
         }
 
@@ -279,11 +281,12 @@ public class GameController {
      */
     private void handleFillFromCloud(Action action, PlayerClient player) throws GameEndedException {
         Integer cloudNumber = action.getArgs().getCloud();
+        Locale locale = player.getLanguageTag();
 
         try {
             game.getCurrentRound().getCurrentPlayerActionPhase().chooseCloud(cloudNumber);
         } catch (InvalidActionException | InvalidCloudException e) {
-            sendActionErrorMessage(player.getCommunicable(), e.getMessage(), 1, Constants.ACTION_FILL_FROM_CLOUD);
+            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage(e.getMessage(), locale), 1, Constants.ACTION_FILL_FROM_CLOUD, locale);
             return;
         }
 
@@ -308,6 +311,7 @@ public class GameController {
      */
     private void handlePlayCharacter(Action action, PlayerClient player) {
         ActionArgs args = action.getArgs();
+        Locale locale = player.getLanguageTag();
         Character selectedCharacter = null;
         Island selectedIsland = null;
         for (Character character : game.getGameBoard().getCharacters()) {
@@ -316,7 +320,7 @@ public class GameController {
         }
 
         if (selectedCharacter == null) {
-            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage("character_not_in_game"), 1, Constants.ACTION_PLAY_CHARACTER);
+            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage("character_not_in_game", locale), 1, Constants.ACTION_PLAY_CHARACTER, locale);
             return;
         }
 
@@ -329,10 +333,10 @@ public class GameController {
             );
         } catch (InvalidCharacterException | CharacterAlreadyPlayedException | StudentNotOnTheCardException |
                 InvalidStudentException | NotEnoughCoinsException e) {
-            sendActionErrorMessage(player.getCommunicable(), e.getMessage(), 2, Constants.ACTION_PLAY_CHARACTER);
+            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage(e.getMessage(), locale), 2, Constants.ACTION_PLAY_CHARACTER, locale);
             return;
         } catch (InvalidActionException e) {
-            sendActionErrorMessage(player.getCommunicable(), e.getMessage(), 1, Constants.ACTION_PLAY_CHARACTER);
+            sendActionErrorMessage(player.getCommunicable(), Messages.getMessage(e.getMessage(), locale), 1, Constants.ACTION_PLAY_CHARACTER, locale);
             return;
         }
 
@@ -370,10 +374,10 @@ public class GameController {
      *
      * @param ch The {@code Communicable} interface of the client who caused the error
      */
-    private void sendActionErrorMessage(Communicable ch, String errorMessage, int errorCode, String action) {
+    private void sendActionErrorMessage(Communicable ch, String errorMessage, int errorCode, String action, Locale locale) {
         ServerActionMessage message = new ServerActionMessage();
         message.setError(errorCode);
-        message.setDisplayText(Messages.getMessage("error_tag") + errorMessage);
+        message.setDisplayText(Messages.getMessage("error_tag", locale) + errorMessage);
         if (action.equals(Constants.ACTION_PLAY_CHARACTER)) {
             String expectedAction = game.getCurrentRound().getCurrentPlayerActionPhase().getExpectedAction();
             if (expectedAction.equals(Constants.ACTION_MOVE_STUDENT)) {
@@ -420,7 +424,7 @@ public class GameController {
 
         if (game.isEnded()) {
             alertGameEnded();
-            throw new GameEndedException(Messages.getMessage("game_ended"));
+            throw new GameEndedException("game_ended");
         }
 
         PlayerClient nextPlayer = getPlayerClientFromPlayer(
@@ -437,25 +441,25 @@ public class GameController {
      * Alerts all the players that the {@code Game} is finished and shows the winners
      */
     private void alertGameEnded() {
-        //TODO Show everyone who won the game (if i lose i want to know who won)
         List<Player> winners = game.getWinners();
         String winnersText;
-        if (winners.size() == 2) {
-            winnersText = winners.get(0).getName() + " and " + winners.get(1).getName() + Messages.getMessage("broadcast_game_won");
-        } else {
-            winnersText = winners.get(0).getName() + Messages.getMessage("broadcast_game_won");
-        }
         for (PlayerClient player : players) {
+            Locale locale = player.getLanguageTag();
+            if (winners.size() == 2) {
+                winnersText = winners.get(0).getName() + Messages.getMessage("and", locale) + winners.get(1).getName() + Messages.getMessage("broadcast_game_won", locale);
+            } else {
+                winnersText = winners.get(0).getName() + Messages.getMessage("broadcast_game_won", locale);
+            }
             ServerActionMessage actionMessage = new ServerActionMessage();
             actionMessage.setStatus(Constants.STATUS_END);
             actionMessage.setPlayer(player.getUsername());
 
             if (winners.contains(player.getPlayer())) {
                 // Win message
-                actionMessage.setDisplayText(Messages.getMessage("game_won"));
+                actionMessage.setDisplayText(Messages.getMessage("game_won", locale));
             } else {
                 // Defeat message
-                actionMessage.setDisplayText(Messages.getMessage("game_lost") + winnersText);
+                actionMessage.setDisplayText(Messages.getMessage("game_lost", locale) + winnersText);
             }
 
             player.getCommunicable().sendMessageToClient(actionMessage.toJson());

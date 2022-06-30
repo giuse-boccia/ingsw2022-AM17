@@ -45,7 +45,7 @@ public class DiningRoom implements Place {
     @Override
     public void giveStudent(Place destination, Student student) throws InvalidStudentException, InvalidActionException {
         if (student == null || !students.contains(student)) {
-            throw new InvalidStudentException(Messages.getMessage("dining_room_doesnt_contain_student"));
+            throw new InvalidStudentException("dining_room_doesnt_contain_student");
         }
         students.remove(student);
         destination.receiveStudent(student);
@@ -54,7 +54,7 @@ public class DiningRoom implements Place {
     @Override
     public void receiveStudent(Student student) throws InvalidActionException {
         if (Students.countColor(students, student.getColor()) > Constants.MAX_STUDENTS_IN_DINING) {
-            throw new InvalidActionException("You already have " + Constants.MAX_STUDENTS_IN_DINING + " " + student.getColor() + " students in your dining room!");
+            throw new InvalidActionException("max_students_in_dining");
         }
         students.add(student);
     }
