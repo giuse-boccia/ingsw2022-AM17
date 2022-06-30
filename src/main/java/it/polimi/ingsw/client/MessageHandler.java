@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.client.observers.chat.ChatObserver;
 import it.polimi.ingsw.client.observers.choices.action.ActionChoiceObserver;
 import it.polimi.ingsw.client.observers.choices.character.CharacterChoiceObserver;
 import it.polimi.ingsw.client.observers.game_actions.choose_cloud.ChooseCloudObserver;
@@ -13,6 +14,8 @@ import it.polimi.ingsw.client.observers.login.username.UsernameObserver;
 import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
+import it.polimi.ingsw.messages.chat.ChatMessage;
+import it.polimi.ingsw.messages.chat.SimpleChatMessage;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import it.polimi.ingsw.messages.update.UpdateMessage;
@@ -44,6 +47,7 @@ public class MessageHandler implements ObserverHandler {
     private final List<PlayCharacterObserver> playCharactersObservers = new ArrayList<>();
     private final List<ActionChoiceObserver> actionChoiceObservers = new ArrayList<>();
     private final List<CharacterChoiceObserver> characterChoiceObservers = new ArrayList<>();
+    private final List<ChatObserver> chatObservers = new ArrayList<>();
 
     public MessageHandler(NetworkClient nc) {
         this.nc = nc;
@@ -68,6 +72,7 @@ public class MessageHandler implements ObserverHandler {
             case Constants.STATUS_ACTION -> parseAction(jsonMessage);
             case Constants.STATUS_UPDATE -> handleUpdate(jsonMessage);
             case Constants.STATUS_END -> handleEndGame(jsonMessage);
+            case Constants.STATUS_CHAT -> handleChatMessage(jsonMessage);
             default -> client.gracefulTermination(Messages.getMessage("invalid_server_message"));
         }
     }
@@ -236,8 +241,18 @@ public class MessageHandler implements ObserverHandler {
     }
 
     @Override
+    public void attachChatMessageObserver(ChatObserver observer) {
+        chatObservers.add(observer);
+    }
+
+    @Override
     public void notifyAllLoadGameObservers() {
         loadGameObservers.forEach(LoadGameObserver::loadGame);
+    }
+
+    @Override
+    public void notifyAllChatMessageObservers(ChatMessage message) {
+        chatObservers.forEach(observer -> observer.onMessageSent(message));
     }
 
     @Override
@@ -370,6 +385,11 @@ public class MessageHandler implements ObserverHandler {
     private void handleEndGame(String json) {
         ServerActionMessage actionMessage = ServerActionMessage.fromJson(json);
         client.endGame(actionMessage.getDisplayText());
+    }
+
+    private void handleChatMessage(String json) {
+        SimpleChatMessage chatMessage = SimpleChatMessage.fromJson(json);
+        client.showReceivedChatMessage(chatMessage.getChatMessage());
     }
 
     /**

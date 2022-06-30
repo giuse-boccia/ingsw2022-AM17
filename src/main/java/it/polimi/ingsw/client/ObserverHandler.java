@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.client.observers.chat.ChatObserver;
 import it.polimi.ingsw.client.observers.choices.action.ActionChoiceObserver;
 import it.polimi.ingsw.client.observers.choices.character.CharacterChoiceObserver;
 import it.polimi.ingsw.client.observers.game_actions.choose_cloud.ChooseCloudObserver;
@@ -10,6 +11,7 @@ import it.polimi.ingsw.client.observers.game_actions.play_character.PlayCharacte
 import it.polimi.ingsw.client.observers.login.game_parameters.GameParametersObserver;
 import it.polimi.ingsw.client.observers.login.load_game.LoadGameObserver;
 import it.polimi.ingsw.client.observers.login.username.UsernameObserver;
+import it.polimi.ingsw.messages.chat.ChatMessage;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
 
@@ -87,6 +89,14 @@ public interface ObserverHandler {
      */
     void attachLoadGameObserver(LoadGameObserver loadGameObserver);
 
+
+    /**
+     * Adds the given observer to the list of all ChatObservers
+     *
+     * @param observer the {@link ChatObserver} to be added
+     */
+    void attachChatMessageObserver(ChatObserver observer);
+
     /**
      * Notifies all the attached observers that the user has selected their username
      *
@@ -161,4 +171,10 @@ public interface ObserverHandler {
      */
     void notifyAllLoadGameObservers();
 
+    /**
+     * Notifies all the attached observers that the user sent a message in the game chat
+     *
+     * @param message the sent {@link ChatMessage}
+     */
+    void notifyAllChatMessageObservers(ChatMessage message);
 }

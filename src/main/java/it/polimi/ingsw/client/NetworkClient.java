@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.client.observers.chat.SendChatMessageObserver;
 import it.polimi.ingsw.client.observers.choices.action.SendActionChoiceObserver;
 import it.polimi.ingsw.client.observers.choices.character.SendCharacterChoiceObserver;
 import it.polimi.ingsw.client.observers.game_actions.choose_cloud.SendChooseCloudObserver;
@@ -76,6 +77,9 @@ public class NetworkClient extends Thread {
         new SendMoveStudentObserver(mh);
         new SendPlayAssistantObserver(mh);
         new SendPlayCharacterObserver(mh);
+
+        // Chat observers
+        new SendChatMessageObserver(mh);
     }
 
     @Override
