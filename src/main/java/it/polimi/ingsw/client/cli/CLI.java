@@ -1,15 +1,17 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.Client;
-import it.polimi.ingsw.utils.RandomNicknameGenerator;
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.server.game_state.GameState;
+import it.polimi.ingsw.utils.RandomNicknameGenerator;
+import it.polimi.ingsw.utils.constants.Constants;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -242,7 +244,7 @@ public class CLI extends Client {
     public void showPossibleActions(List<String> actions) {
         showMessage(Messages.getMessage("possible_actions"));
         for (int i = 0; i < actions.size(); i++) {
-            System.out.println((i + 1) + ". " + actions.get(i));
+            System.out.println((i + 1) + ". " + Messages.getMessage(actions.get(i).toLowerCase()));
         }
     }
 

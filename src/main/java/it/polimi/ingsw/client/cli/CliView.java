@@ -1,12 +1,12 @@
 package it.polimi.ingsw.client.cli;
 
-import it.polimi.ingsw.utils.constants.ConsoleColors;
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.model.game_objects.Color;
 import it.polimi.ingsw.model.game_objects.Student;
-import it.polimi.ingsw.server.game_state.*;
 import it.polimi.ingsw.model.utils.Students;
+import it.polimi.ingsw.server.game_state.*;
+import it.polimi.ingsw.utils.constants.ConsoleColors;
+import it.polimi.ingsw.utils.constants.Constants;
 
 import java.util.List;
 

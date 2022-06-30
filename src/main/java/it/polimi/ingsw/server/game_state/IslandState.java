@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.game_objects.TowerColor;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class IslandState {

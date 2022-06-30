@@ -10,7 +10,6 @@ import it.polimi.ingsw.client.observers.game_actions.play_character.PlayCharacte
 import it.polimi.ingsw.client.observers.login.game_parameters.GameParametersObserver;
 import it.polimi.ingsw.client.observers.login.load_game.LoadGameObserver;
 import it.polimi.ingsw.client.observers.login.username.UsernameObserver;
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.action.ServerActionMessage;
@@ -19,6 +18,7 @@ import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import it.polimi.ingsw.messages.update.UpdateMessage;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.utils.constants.Constants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -319,7 +319,7 @@ public class MessageHandler implements ObserverHandler {
             return;
         }
 
-        client.showMessage("Now you have to: " + actionMessage.getActions().get(0));
+        client.showMessage(Messages.getMessage("now_you_have_to") + Messages.getMessage(actionMessage.getActions().get(0).toLowerCase()));
         String chosenAction = actionMessage.getActions().get(0);
         handleAction(chosenAction);
     }

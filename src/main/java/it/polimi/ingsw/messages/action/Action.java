@@ -2,8 +2,8 @@ package it.polimi.ingsw.messages.action;
 
 public class Action {
 
-    private String name;
-    private ActionArgs args;
+    private final String name;
+    private final ActionArgs args;
 
     public Action(String name, ActionArgs args) {
         this.name = name;

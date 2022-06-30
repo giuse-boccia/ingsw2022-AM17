@@ -2,7 +2,6 @@ package it.polimi.ingsw.messages;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import it.polimi.ingsw.messages.login.ServerLoginMessage;
 
 public class Message {
     private String status;

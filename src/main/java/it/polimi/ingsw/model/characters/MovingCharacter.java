@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_actions.PlayerActionPhase;
-import it.polimi.ingsw.model.game_objects.*;
+import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_objects.Student;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Bag;

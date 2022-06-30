@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.game_objects.dashboard_objects;
 
 import it.polimi.ingsw.exceptions.InvalidActionException;
 import it.polimi.ingsw.exceptions.InvalidStudentException;
-import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.model.Place;
 import it.polimi.ingsw.model.game_objects.Student;
 

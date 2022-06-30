@@ -1,16 +1,9 @@
 package it.polimi.ingsw.client.gui.utils.drawing;
 
-import it.polimi.ingsw.client.gui.utils.DrawingConstants;
 import it.polimi.ingsw.utils.constants.Paths;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.stage.Popup;
+import javafx.scene.layout.GridPane;
 
 public class UtilsDrawer {
     /**

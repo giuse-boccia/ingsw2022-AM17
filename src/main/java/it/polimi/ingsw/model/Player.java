@@ -1,9 +1,12 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.utils.constants.Constants;
-import it.polimi.ingsw.model.game_objects.*;
+import it.polimi.ingsw.model.game_objects.Assistant;
+import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_objects.TowerColor;
+import it.polimi.ingsw.model.game_objects.Wizard;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Dashboard;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
+import it.polimi.ingsw.utils.constants.Constants;
 
 import java.util.Arrays;
 import java.util.List;

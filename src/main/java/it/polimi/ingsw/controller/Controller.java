@@ -1,7 +1,6 @@
 package it.polimi.ingsw.controller;
 
 import com.google.gson.JsonSyntaxException;
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.exceptions.GameEndedException;
 import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.Message;
@@ -15,6 +14,7 @@ import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.server.Communicable;
 import it.polimi.ingsw.server.PlayerClient;
 import it.polimi.ingsw.server.game_state.SavedGameState;
+import it.polimi.ingsw.utils.constants.Constants;
 
 import java.io.IOException;
 import java.util.*;
@@ -471,12 +471,9 @@ public class Controller {
      * @param ch          the {@code Communicable} interface of the client who sent the message
      */
     private void handleActionMessage(String jsonMessage, Communicable ch) throws GameEndedException {
-        PlayerClient playerClient = loggedUsers.stream()
-                .filter(user -> user.getCommunicable() == ch)
-                .findFirst().orElseThrow();
-        Locale locale = playerClient.getLanguageTag();
+
         if (gameController == null) {
-            sendErrorMessage(ch, Constants.STATUS_ACTION, Messages.getMessage("game_not_started", locale), 1, locale);
+            sendErrorMessage(ch, Constants.STATUS_ACTION, Messages.getMessage("game_not_started"), 1, Locale.ENGLISH);
             return;
         }
 
@@ -484,7 +481,7 @@ public class Controller {
             ClientActionMessage actionMessage = ClientActionMessage.fromJSON(jsonMessage);
             gameController.handleActionMessage(actionMessage, ch);
         } catch (JsonSyntaxException e) {
-            sendErrorMessage(ch, Constants.STATUS_ACTION, Messages.getMessage("bad_request_syntax", locale), 3, locale);
+            sendErrorMessage(ch, Constants.STATUS_ACTION, Messages.getMessage("bad_request_syntax"), 3, Locale.ENGLISH);
         }
     }
 

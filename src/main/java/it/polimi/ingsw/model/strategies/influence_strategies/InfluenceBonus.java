@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.strategies.influence_strategies;
 
-import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.game_objects.gameboard_objects.Island;
 
 import java.util.ArrayList;
 

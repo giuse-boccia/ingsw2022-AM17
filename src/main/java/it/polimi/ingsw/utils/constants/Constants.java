@@ -1,6 +1,5 @@
 package it.polimi.ingsw.utils.constants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Constants {

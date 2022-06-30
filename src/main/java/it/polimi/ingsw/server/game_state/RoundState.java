@@ -32,6 +32,7 @@ public class RoundState {
 
     /**
      * Creates a new RoundState starting from a given {@code Round}
+     *
      * @param round the {@code round} to create the new {@code RoundState} from
      */
     public RoundState(Round round) {

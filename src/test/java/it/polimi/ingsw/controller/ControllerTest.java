@@ -177,7 +177,7 @@ class ControllerTest {
         ServerLoginMessage giuseMessage = ServerLoginMessage.fromJson(secondCh.getJson());
 
         assertEquals(Messages.getMessage("new_player_joined"), clodMessage.getDisplayText(), giuseMessage.getDisplayText());
-        assertEquals(new ArrayList<String>(List.of(new String[]{"clod", "giuse"})), clodMessage.getGameLobby().getPlayers());
+        assertEquals(new ArrayList<>(List.of(new String[]{"clod", "giuse"})), clodMessage.getGameLobby().getPlayers());
     }
 
     /**
@@ -244,7 +244,7 @@ class ControllerTest {
 
         ServerLoginMessage giuseMessage = ServerLoginMessage.fromJson(thirdCh.getJson());
         assertEquals(1, giuseMessage.getError());
-        assertEquals("[ERROR] A new game for 2 players is starting. Your connection will be closed", giuseMessage.getDisplayText());
+        assertEquals("[ERROR] A new game for 2 players is starting. Your connection will be closed.", giuseMessage.getDisplayText());
     }
 
     /**

@@ -2,8 +2,8 @@ package it.polimi.ingsw.client.observers.login.username;
 
 import it.polimi.ingsw.client.MessageHandler;
 import it.polimi.ingsw.languages.Messages;
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.messages.login.ClientLoginMessage;
+import it.polimi.ingsw.utils.constants.Constants;
 
 public class SendUsernameObserver implements UsernameObserver {
 

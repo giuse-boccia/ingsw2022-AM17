@@ -1,14 +1,8 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.messages.action.Action;
-import it.polimi.ingsw.messages.action.ActionArgs;
-import it.polimi.ingsw.messages.action.ClientActionMessage;
 import it.polimi.ingsw.model.characters.CharacterName;
-import it.polimi.ingsw.model.game_objects.Color;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class which handles the action messages
@@ -82,7 +76,8 @@ public class ActionHandler {
             case move1FromCardToDining -> nc.getClient().askToMoveOneStudentFromCard(false);
             case resolveIsland, noEntry -> nc.getClient().askIslandIndexForCharacter(name);
             case swapUpTo3FromEntranceToCard -> nc.getClient().askColorListForSwapCharacters(3, "this card", name);
-            case swapUpTo2FromEntranceToDiningRoom -> nc.getClient().askColorListForSwapCharacters(2, "your dining room", name);
+            case swapUpTo2FromEntranceToDiningRoom ->
+                    nc.getClient().askColorListForSwapCharacters(2, "your dining room", name);
             case ignoreColor, everyOneMove3FromDiningRoomToBag -> nc.getClient().pickColorForPassive(name);
             default -> nc.getClient().playCharacterWithoutArguments(name);
         }

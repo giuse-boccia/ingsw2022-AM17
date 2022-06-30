@@ -1,12 +1,15 @@
 package it.polimi.ingsw.model.game_actions;
 
-import it.polimi.ingsw.utils.constants.Constants;
 import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.languages.Messages;
-import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.characters.*;
+import it.polimi.ingsw.model.Place;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.characters.Character;
-import it.polimi.ingsw.model.game_objects.*;
+import it.polimi.ingsw.model.characters.CharacterName;
+import it.polimi.ingsw.model.characters.NoEntryCharacter;
+import it.polimi.ingsw.model.characters.PassiveCharacter;
+import it.polimi.ingsw.model.game_objects.Assistant;
+import it.polimi.ingsw.model.game_objects.Color;
+import it.polimi.ingsw.model.game_objects.TowerColor;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.DiningRoom;
 import it.polimi.ingsw.model.game_objects.dashboard_objects.Entrance;
 import it.polimi.ingsw.model.game_objects.gameboard_objects.Cloud;
@@ -20,6 +23,7 @@ import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorDefault;
 import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorStrategy;
 import it.polimi.ingsw.model.strategies.professor_strategies.ProfessorWithDraw;
 import it.polimi.ingsw.model.utils.Students;
+import it.polimi.ingsw.utils.constants.Constants;
 
 import java.util.*;
 
@@ -209,7 +213,8 @@ public class PlayerActionPhase {
         switch (playedCharacter.getCardName()) {
             case plus2MNMoves -> this.mnStrategy = new MNBonus(Constants.MN_BONUS);
             case takeProfWithEqualStudents -> this.professorStrategy = new ProfessorWithDraw();
-            case plus2Influence -> this.influenceStrategy = new InfluenceBonus(assistant.getPlayer(), Constants.INFLUENCE_BONUS);
+            case plus2Influence ->
+                    this.influenceStrategy = new InfluenceBonus(assistant.getPlayer(), Constants.INFLUENCE_BONUS);
             case ignoreTowers -> this.influenceStrategy = new InfluenceIgnoreTowers();
         }
     }

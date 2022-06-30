@@ -27,8 +27,8 @@ public class CreateOrLoadGameController implements GuiController {
     @FXML
     private void initialize() {
         askCreateOrLoadTitle.setText(Messages.getMessage("ask_create_or_load"));
-        newGameBtn.setText(Messages.getMessage("new_game"));
-        loadGameBtn.setText(Messages.getMessage("load_game"));
+        newGameBtn.setText(Messages.getMessage("start_new_game"));
+        loadGameBtn.setText(Messages.getMessage("start_load_game"));
     }
 
     /**
