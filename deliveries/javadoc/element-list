@@ -6,6 +6,8 @@ it.polimi.ingsw.client.gui.controllers
 it.polimi.ingsw.client.gui.utils
 it.polimi.ingsw.client.gui.utils.drawing
 it.polimi.ingsw.client.gui.utils.languages
+it.polimi.ingsw.client.observers.chat.request_messages
+it.polimi.ingsw.client.observers.chat.send_message
 it.polimi.ingsw.client.observers.choices.action
 it.polimi.ingsw.client.observers.choices.character
 it.polimi.ingsw.client.observers.game_actions.choose_cloud
@@ -21,6 +23,8 @@ it.polimi.ingsw.exceptions
 it.polimi.ingsw.languages
 it.polimi.ingsw.messages
 it.polimi.ingsw.messages.action
+it.polimi.ingsw.messages.chat
+it.polimi.ingsw.messages.end
 it.polimi.ingsw.messages.login
 it.polimi.ingsw.messages.update
 it.polimi.ingsw.model
@@ -30,7 +34,6 @@ it.polimi.ingsw.model.game_actions
 it.polimi.ingsw.model.game_objects
 it.polimi.ingsw.model.game_objects.dashboard_objects
 it.polimi.ingsw.model.game_objects.gameboard_objects
-it.polimi.ingsw.model.strategies
 it.polimi.ingsw.model.strategies.influence_strategies
 it.polimi.ingsw.model.strategies.mn_strategies
 it.polimi.ingsw.model.strategies.professor_strategies
