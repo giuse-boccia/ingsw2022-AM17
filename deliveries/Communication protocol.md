@@ -2,7 +2,7 @@
 
 This is a list of all possible messages that can be exchanged between client and server. We decided to use JSON to encode messages.
 
-Every message has a **type** field which is either *ping/pong*, *login*, *action*, *end* or *update*.
+Every message has a **type** field which is either *ping/pong*, *login*, *action*, *end*, *chat* or *update*.
 
 # Ping / pong
 
@@ -654,6 +654,90 @@ The *game_status* field in every update message is a JSON rappresentation of the
     ]
 }
 ```
+
+# Chat
+Chat messages are sent from a user to everyone through the chat panel - available in GUI. When a logged-in user sends a chat message it arrives at the server, which then sends it back to all the other connected players.
+
+### Fields
+- The *status* field is always set to CHAT
+- The *action* field can be set to three different values: 
+	- *SEND_MESSAGE*, when a user sends a chat message to server or when the server broadcasts the received message to all connected players
+	- *GET_ALL_MESSAGES*, when a logged-in user asks the server the list of all the messages sent during the current game
+	- *SEND_ALL_MESSAGES*, when the server sends the list of all the messages sent during the current game to the player who requested them. In this 
+	case the message has a *messages* field, which is a list of *chatMessage* objects
+- The *chatMessage* field - present only in messages with status *SEND_MESSAGE* - contains a JSON object made up of two fields:
+	- *message*, which is the actual chat message sent by the user
+	- *sender*, the username of the player who sent the message
+### Requesting all messages
+```
++--------+                                        +--------+
+| Client |                                        | Server |    
++--------+                                        +--------+
+    |                                                  |
+    |            [GET_ALL] message C.G.A               |
+    |           -------------------------> 	       |
+    |		 				       |
+    |            [SEND_ALL] message C.S.A              |
+    |           <-------------------------             |
+    |						       |
+    
+```
+#### message C.G.A
+```json
+
+{
+	"status":"CHAT",
+	"action":"GET_ALL_MESSAGES"
+}
+
+```
+#### message C.S.A
+```json
+
+{
+	"status":"CHAT",
+	"action":"SEND_ALL_MESSAGES",
+	"messages": [
+			"chatMessage":{
+				"message":"first message",
+				"sender":"rick"
+			}, "chatMessage":{
+				"message":"second message",
+				"sender":"giuse"
+			}, {...}
+	]
+}
+
+```
+### Sending a message
+```
++--------+                                        +--------+                                        +---------------+		
+| Client |                                        | Server |    				    | Other clients |
++--------+                                        +--------+                                        +---------------+
+    |                                                  |						    |
+    |            [SEND] message C.S                    |						    |
+    |           -------------------------> 	       |						    |
+    |                                                  |		[SEND] message C.S		    |
+    |                                                  |           ---------------------------->	    |
+    |                                                  |						    |
+    |                                                  |						    |
+
+    
+```
+#### message C.S
+```json
+
+{
+	"status":"CHAT",
+	"action":"SEND_MESSAGE",
+	"chatMessage":{
+		"message":"test message",
+		"sender":"rick"
+	}
+}
+
+```
+
 # End
 
 A message with an END status is sent to every logged user when the game is finished.
