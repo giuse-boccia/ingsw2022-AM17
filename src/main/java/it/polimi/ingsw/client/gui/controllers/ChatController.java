@@ -1,14 +1,19 @@
 package it.polimi.ingsw.client.gui.controllers;
 
 import it.polimi.ingsw.client.gui.GuiView;
+import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.chat.ChatMessage;
 import it.polimi.ingsw.utils.constants.Constants;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -17,15 +22,24 @@ import javafx.scene.text.TextFlow;
 
 public class ChatController {
 
-
-    public TextField messageTextField;
-    public Button btnSendMessage;
-    public ScrollPane messagesScrollPane;
-    public VBox vBoxMessages;
+    @FXML
+    private AnchorPane root;
+    @FXML
+    private Label titleLabel;
+    @FXML
+    private TextField messageTextField;
+    @FXML
+    private Button btnSendMessage;
+    @FXML
+    private ScrollPane messagesScrollPane;
+    @FXML
+    private VBox vBoxMessages;
 
 
     @FXML
     void initialize() {
+        setTextToElements();
+
         // Asks all the messages to the server
         GuiView.getGui().getCurrentObserverHandler().notifyAllRequestMessagesObservers();
 
@@ -37,21 +51,30 @@ public class ChatController {
             }
         });
 
-        btnSendMessage.setOnMouseClicked(event -> {
-            String toSend = messageTextField.getText();
-            if (!toSend.isBlank()) {
-                vBoxMessages.getChildren().add(getLayoutForSentMessage(toSend));
-                messagesScrollPane.setVvalue(1.0);
-                messageTextField.setText("");
-                // Send message to server
-                GuiView.getGui().getCurrentObserverHandler()
-                        .notifyAllChatMessageObservers(new ChatMessage(toSend, GuiView.getGui().getUsername()));
-            }
-        });
+        btnSendMessage.setOnMouseClicked(this::onButtonSendClicked);
 
         vBoxMessages.heightProperty().addListener((obs, oldVal, newVal) -> {
             messagesScrollPane.setVvalue((Double) newVal);
         });
+
+        root.setOnKeyPressed(keyEvent -> {
+            // If the user presses Enter the message in the TextField is sent
+            if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                onButtonSendClicked(null);
+            }
+        });
+    }
+
+    private void onButtonSendClicked(MouseEvent event) {
+        String toSend = messageTextField.getText();
+        if (!toSend.isBlank()) {
+            vBoxMessages.getChildren().add(getLayoutForSentMessage(toSend));
+            messagesScrollPane.setVvalue(1.0);
+            messageTextField.setText("");
+            // Send message to server
+            GuiView.getGui().getCurrentObserverHandler()
+                    .notifyAllChatMessageObservers(new ChatMessage(toSend, GuiView.getGui().getUsername()));
+        }
     }
 
     /**
@@ -86,7 +109,7 @@ public class ChatController {
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.setPadding(new Insets(5));
-        Text messageText = new Text("> " + message);
+        Text messageText = new Text(message);
         messageText.setFill(Color.BLACK);
         messageText.setStyle("-fx-font-size: 15");
         messageText.setWrappingWidth(280);
@@ -114,5 +137,13 @@ public class ChatController {
             toAdd = getLayoutForReceivedMessage(chatMessage.getMessage(), chatMessage.getSender());
         }
         vBoxMessages.getChildren().add(toAdd);
+    }
+
+    /**
+     * Sets up the correct messages for title label and send button
+     */
+    private void setTextToElements() {
+        titleLabel.setText(Messages.getMessage("game_chat"));
+        btnSendMessage.setText(Messages.getMessage("send"));
     }
 }

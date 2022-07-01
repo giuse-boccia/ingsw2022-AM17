@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="it.polimi.ingsw.client.gui.controllers.ChatController"
-            prefHeight="400" prefWidth="400">
+            prefHeight="400" prefWidth="400" fx:id="root">
 
-    <Label layoutX="150" layoutY="30" text="Game chat">
+    <Label fx:id="titleLabel" layoutX="150" layoutY="30" text="Game chat">
         <font>
             <Font name="Baskerville Old Face" size="24"/>
         </font>
