@@ -20,6 +20,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/**
+ * Class which manages the communication between {@link Client} and server. There's a {@link NetworkClient}
+ * for each client
+ */
 public class NetworkClient extends Thread {
     private final Client client;
 
@@ -43,6 +47,7 @@ public class NetworkClient extends Thread {
      * Asks the client for the username and tries to open a connection with the server
      */
     public void connectToServer() {
+        // Attempts to open a Socket with server
         try {
             Socket server = new Socket(serverAddress, serverPort);
             socketIn = new BufferedReader(new InputStreamReader(server.getInputStream()));
@@ -62,6 +67,11 @@ public class NetworkClient extends Thread {
         socketOut.println(message);
     }
 
+    /**
+     * Initializes all the observers needed for the game
+     *
+     * @param mh the {@link MessageHandler} to attach the observers to
+     */
     private void attachObserversToMessageHandler(MessageHandler mh) {
         // Login observers
         new SendUsernameObserver(mh);

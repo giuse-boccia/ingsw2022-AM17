@@ -21,6 +21,7 @@ public class Server {
 
     public static void main(String[] args) {
         if (args.length == 0) {
+            // The user didn't specify a port: try to get it from settings.json file in the folder of the project
             try {
                 Settings settings = Settings.readPrefsFromFile();
                 port = settings.getPort();
@@ -38,6 +39,7 @@ public class Server {
         }
 
         if (port < Constants.LOWER_BOUND_SERVER_PORT || port > Constants.UPPER_BOUND_SERVER_PORT) {
+            // Invalid server_port argument
             gracefulTermination(Messages.getMessage("invalid_server_port"));
         }
 
@@ -75,6 +77,7 @@ public class Server {
                 try {
                     Socket socket = serverSocket.accept();
                     System.out.println(Messages.getMessage("new_socket") + socket.getRemoteSocketAddress());
+                    // Instantiate a ClientHandler for each Socket
                     ClientHandler ch = new ClientHandler(socket, controller);
                     executor.submit(ch);
                 } catch (IOException e) {

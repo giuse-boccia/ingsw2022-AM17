@@ -17,20 +17,9 @@ public class ClientHandler implements Runnable, Communicable {
     private Scanner in;
     private PrintWriter out;
 
-    private boolean stop;
-
     public ClientHandler(Socket socket, Controller controller) {
         this.socket = socket;
         this.controller = controller;
-        this.stop = false;
-    }
-
-    /**
-     * Closes the socket connection with the client
-     */
-    public void closeConnection() throws IOException {
-        stop = true;
-        socket.close();
     }
 
     @Override

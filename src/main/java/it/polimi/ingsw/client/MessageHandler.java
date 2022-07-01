@@ -19,7 +19,6 @@ import it.polimi.ingsw.messages.chat.ChatMessage;
 import it.polimi.ingsw.messages.chat.ServerChatMessage;
 import it.polimi.ingsw.messages.chat.SimpleChatMessage;
 import it.polimi.ingsw.messages.end.EndGameMessage;
-import it.polimi.ingsw.messages.login.ClientLoginMessage;
 import it.polimi.ingsw.messages.login.ServerLoginMessage;
 import it.polimi.ingsw.messages.update.UpdateMessage;
 import it.polimi.ingsw.model.characters.CharacterName;
@@ -95,6 +94,7 @@ public class MessageHandler implements ObserverHandler {
      * Handles a ping message
      */
     private void handlePing() {
+        // A ping is arrived: send pong to the server and assert that server is still up, setting serverUpCalls to 0
         sendPong();
         serverUpCalls = 0;
     }
@@ -115,6 +115,7 @@ public class MessageHandler implements ObserverHandler {
         ServerLoginMessage message = ServerLoginMessage.fromJson(jsonMessage);
 
         if (message.getError() == 2) {
+            // The selected username is already taken: ask the user for another one
             client.showWarningMessage(Messages.getMessage("username_already_taken"));
             new Thread(() -> {
                 try {
@@ -142,8 +143,10 @@ public class MessageHandler implements ObserverHandler {
                 }
             }).start();
         } else if (message.getError() != 0) {
-            client.gracefulTermination(message.getDisplayText());
+            // Generic server error: connection with server isn't safe and app has to be closed
+            client.gracefulTermination(Messages.getMessage("internal_server_error"));
         } else if (message.getAction() != null && message.getAction().equals(Constants.ACTION_CREATE_GAME)) {
+            // Login completed successfully
             client.setUsername(client.getTmpUsername());
             new Thread(() -> {
                 try {
@@ -413,9 +416,12 @@ public class MessageHandler implements ObserverHandler {
      */
     public void startPongThread() {
         Timer timer = new Timer("PONG THREAD");
+        // Scheduled task which verifies whether server is up
+        // The server is detected as down if two consecutive iterations of this task fail to catch a ping message
         serverUpTask = new TimerTask() {
             @Override
             public void run() {
+                // The check on serverUpCalls variable is done only when the user is successfully logged in
                 if (serverUpCalls >= Constants.MAX_ATTEMPTS_TO_CONTACT_SERVER && client.getUsername() != null) {
                     client.gracefulTermination(Messages.getMessage("server_lost"));
                     this.cancel();

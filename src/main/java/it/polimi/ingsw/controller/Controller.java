@@ -162,10 +162,12 @@ public class Controller {
      */
     private void setGameParameters(Communicable ch, int numPlayers, boolean isExpert, Locale locale) {
         if (loggedUsers.isEmpty() || loggedUsers.get(0).getCommunicable() != ch) {
+            // A player who hasn't the right to create the game is trying to do it
             sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("invalid_player_creating_game", locale), 3, locale);
             return;
         }
         if (numPlayers < Constants.MIN_PLAYERS || numPlayers > Constants.MAX_PLAYERS) {
+            // The message contains an invalid number of players
             sendErrorMessage(ch, Constants.STATUS_LOGIN, MessagesForClients.getMessage("invalid_num_players", locale), 3, locale);
             return;
         }
@@ -324,6 +326,7 @@ public class Controller {
             loggedUsers.get(0).getCommunicable().sendMessageToClient(res.toJson());
         }
 
+        // Notify all the other logged users
         for (int i = 1; i < loggedUsers.size(); i++) {
             Locale locale = loggedUsers.get(i).getLanguageTag();
             ServerLoginMessage res = getServerLoginMessage(MessagesForClients.getMessage("new_player_joined", locale));
@@ -401,6 +404,8 @@ public class Controller {
             return true;
         }
 
+        // Differentiate between a game for 4 players and a game for 2 or 3 players: in the first case the message
+        // contains a description of the teams
         if (numberOfPlayers == 4) {
             for (PlayerClient playerClient : loggedUsers) {
                 // Alert player that game is starting
@@ -518,12 +523,13 @@ public class Controller {
     public void startPingPong() {
         Timer timer = new Timer("PING THREAD");
         bound = sendPingAndReturnBound();
-
+        // Scheduled tasks that periodically checks if all the users are up
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 synchronized (boundLock) {
                     if (pongCount < bound) {
+                        // One or more client didn't respond to ping messages: the game has to be cleared
                         for (PlayerClient user : loggedUsers) {
                             sendErrorMessage(user.getCommunicable(), Constants.STATUS_LOGIN, MessagesForClients.getMessage("connection_with_client_lost", user.getLanguageTag()), 3, user.getLanguageTag());
                         }

@@ -10,6 +10,7 @@ import it.polimi.ingsw.messages.login.GameLobby;
 import it.polimi.ingsw.model.characters.CharacterName;
 import it.polimi.ingsw.server.game_state.CharacterState;
 import it.polimi.ingsw.server.game_state.GameState;
+import it.polimi.ingsw.utils.constants.Constants;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,11 +33,13 @@ public abstract class Client {
 
         if (args[0].equalsIgnoreCase("gui")) {
             client = new GUI();
+            // Start GUI thread
             new Thread(() -> GuiView.main((GUI) client)).start();
         } else {
             client = new CLI();
         }
         if (args.length < 3) {
+            // The user didn't specify either the server port or the server address: try to read them from settings.json file
             try {
                 Settings settings = Settings.readPrefsFromFile();
                 if (settings.getAddress() == null) {
@@ -50,6 +53,7 @@ public abstract class Client {
                 client.gracefulTermination(Messages.getMessage("invalid_server_port"));
             }
         } else {
+            // Read arguments from command line
             try {
                 serverPort = Integer.parseInt(args[1]);
                 serverAddress = args[2];
@@ -58,7 +62,7 @@ public abstract class Client {
             }
         }
 
-        if (serverPort < 1024 || serverPort > 65535) {
+        if (serverPort < Constants.LOWER_BOUND_SERVER_PORT || serverPort > Constants.UPPER_BOUND_SERVER_PORT) {
             client.gracefulTermination(Messages.getMessage("invalid_server_port"));
         }
 
@@ -249,5 +253,10 @@ public abstract class Client {
      */
     public abstract void showReceivedChatMessage(ChatMessage chatMessage);
 
+    /**
+     * Shows all chat messages received from server
+     *
+     * @param chatMessages {@code List} of chat messages
+     */
     public abstract void receiveAllChatMessages(List<ChatMessage> chatMessages);
 }
