@@ -496,6 +496,10 @@ public class Controller {
      * @param ch          the {@code Communicable} interface of the client who sent the message
      */
     private void handleChatMessage(String jsonMessage, Communicable ch) {
+        if (loggedUsers.stream().noneMatch(user -> user.getCommunicable() == ch)) {
+            sendErrorMessage(ch, Constants.STATUS_LOGIN, Messages.getMessage("not_logged_in"), 3, Locale.ENGLISH);
+            return;
+        }
         try {
             SimpleChatMessage chatMessage = SimpleChatMessage.fromJson(jsonMessage);
             switch (chatMessage.getAction()) {

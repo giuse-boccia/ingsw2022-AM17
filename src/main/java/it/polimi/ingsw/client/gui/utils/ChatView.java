@@ -4,9 +4,11 @@ import it.polimi.ingsw.client.gui.GuiView;
 import it.polimi.ingsw.client.gui.controllers.ChatController;
 import it.polimi.ingsw.languages.Messages;
 import it.polimi.ingsw.messages.chat.ChatMessage;
+import it.polimi.ingsw.utils.constants.Paths;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -27,7 +29,7 @@ public class ChatView {
             Scene scene = new Scene(loader.load(), 400, 400);
             chatController = loader.getController();
             Stage stage = new Stage();
-            stage.setTitle("Chat");
+            stage.getIcons().add(new Image(Paths.CRANIO_LOGO));
             stage.setScene(scene);
             stage.setResizable(false);
             stage.setOnCloseRequest(event -> isChatAlreadyOpened = false);
