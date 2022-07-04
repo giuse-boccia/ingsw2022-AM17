@@ -28,15 +28,13 @@
 
 ⚫ -> Will not implement
 
-### Extra functionalities
+### Extra features
 - **Random nickname generator**: allows the user to participate in a match with a random-chosen username. This is possible either clicking on the apposite button
 in GUI or leaving blank the *username* field when asked
 - **Internationalization**: it's possible to play Eriantys in different languages - currently Italian and English - according to the choice of the user.
-Game language can be chosen from the apposite popup in the login screen (for GUI) or setting a language tag (two letters) in the *game_language* field in `deliveries/Jar/settings.json` file
+Game language can be chosen from the apposite popup in the login screen (for GUI) or setting a language tag (two letters) in the *game_language* field in the `settings.json` file
 - **Game chat**: in GUI, players can communicate through a chat panel which opens up when the corresponding button - in the bottom right of the screen - is pressed
-- **Basic security of the communication**: the user, playing accordingly to the game rules, cannot send "wrong" messages, but, in any case, the server blocks corrupted messages. Here are two examples of blocked messages:
-  - every message coming from not logged-in users (even if they pretend to be a logged-in player)
-  - messages related to moves not allowed in the game or in the specific phase of the match
+- **Basic security of the communication**: the user, playing accordingly to the game rules, cannot send "wrong" messages, but, in any case, the server blocks corrupted messages. For example, messages coming from not logged-in users are blocked (even if they pretend to be a logged-in player)
  
 ## Instructions for use
 To use the application launch the JAR file from a terminal (Linux, MacOS) or Powershell (Windows).
@@ -52,13 +50,13 @@ java -jar ./deliveries/Jar/Eriantys.jar [SERVER | GUI | CLI] [PORT] [ADDRESS]
 >  In the [/deliveries/jar](https://github.com/giuse-boccia/ingsw2022-AM17/tree/main/deliveries/jar) folder you will find `Eriantys.jar` and another folder containing `Eriantys_b4m1.jar`. `Eriantys.jar` is tested and working on Windows, Linux and MacOs with M1 architecture; however, this jar can show compatibility problems on MacOs with older architectures. `Eriantys_b4m1.jar` works fine on all Intel Apple PCs.   
 
 > 🔧 In case of compatibility problems with provided *jar* files just clone the repository and run 
- ` mvn -package `  
+ ` mvn package `  
  
 All arguments are optional. 
 - If the `[SERVER | GUI | CLI]` is omitted than GUI is launched
-- If both the `PORT` and `ADDRESS` parameters are omitted then those values are taken from the configuration file in `deliveries/Jar/settings.json`
+- If both the `PORT` and `ADDRESS` parameters are omitted then those values are taken from the configuration file in `settings.json`. An example `settings.json` file can be found in `settings.json`
 ### Server
-To launch the server using the port found in `deliveries/Jar/settings.json`
+To launch the server using the port found in `settings.json`
 ```
 java -jar ./deliveries/Jar/Eriantys.jar server
 ```
@@ -69,7 +67,7 @@ java -jar ./deliveries/Jar/Eriantys.jar server 7373
 ```
 
 ### Client (CLI)
-To launch the cli using the server port and server address found in `deliveries/Jar/settings.json`
+To launch the cli using the server port and server address found in `settings.json`
 ```
 java -jar ./deliveries/Jar/Eriantys.jar cli
 ```
@@ -80,7 +78,7 @@ java -jar ./deliveries/Jar/Eriantys.jar cli 7373 192.168.1.10
 ```
 
 ### Client (GUI)
-To launch the gui using the server port and server address found in `deliveries/Jar/settings.json`
+To launch the gui using the server port and server address found in `settings.json`
 ```
 java -jar ./deliveries/Jar/Eriantys.jar gui
 ```
