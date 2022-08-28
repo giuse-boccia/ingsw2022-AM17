@@ -74,7 +74,8 @@ public class GameController {
             askForMoveInPAP(nextPlayer);
         } else {
             // We are in the planning phase
-            currentPlayerIndex = game.getCurrentRound().getFirstPlayerIndex();
+            String nextPlayerName = game.getCurrentRound().getPlanningPhase().getNextPlayer().getName();
+            currentPlayerIndex = getIndexFromPlayerName(nextPlayerName);
             PlayerClient nextPlayer = players.get(currentPlayerIndex);
             sendBroadcastUpdateMessage(nextPlayer.getUsername() + Messages.getMessage("is_playing"));
             askForAssistant(nextPlayer);
