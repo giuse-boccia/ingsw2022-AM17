@@ -1,11 +1,11 @@
 # Prova Finale Ingegneria del Software 2022 
 
 ## Group AM17
-| Name     | Surname    | Email                              | Codice Persona | GitHub                                            |
-|:---------|:-----------|:-----------------------------------|:---------------|:--------------------------------------------------|
-| Claudio  | Arione     | claudio.arione@mail.polimi.it      | 10699544       | [claudioarione](https://github.com/claudioarione) |
-| Riccardo | Begliomini | riccardo.begliomini@mail.polimi.it | 10696621       | [iVoid73](https://github.com/iVoid73)             |
-| Giuseppe | Boccia     | giuseppe.boccia@mail.polimi.it     | 10716235       | [giuse-boccia](https://github.com/giuse-boccia)   |
+| Name     | Surname    | Email                              |  GitHub                                            |
+|:---------|:-----------|:-----------------------------------|:--------------------------------------------------|
+| Claudio  | Arione     | claudio.arione@mail.polimi.it      | [claudioarione](https://github.com/claudioarione) |
+| Riccardo | Begliomini | riccardo.begliomini@mail.polimi.it | [iVoid73](https://github.com/iVoid73)             |
+| Giuseppe | Boccia     | giuseppe.boccia@mail.polimi.it     | [giuse-boccia](https://github.com/giuse-boccia)   |
 
 ## Progress
 | Functionality    | Advanced | State |
